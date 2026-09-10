@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1450" width="1000" height="1450">
+<rect width="100%" height="100%" fill="white"/>
+<text x="25" y="36" font-family="serif" font-size="24">Curves examples</text>
+<text x="20" y="80" font-family="serif" font-size="14">1. Arc(1, 6)</text>
+<svg x="20" y="92" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(1, 6)</title>
+<path class="arc" d="M 72.75 117.75 A 137.5 62.1360759494 0 0 1 347.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="80" font-family="serif" font-size="14">2. Arc(1, 6, start_up=False)</text>
+<svg x="520" y="92" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(1, 6, start_up=False)</title>
+<path class="arc" d="M 72.75 117.75 A 137.5 62.1360759494 0 0 0 347.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="310" font-family="serif" font-size="14">3. Arc(2, 5, cuts=(3,), start_up=False)</text>
+<svg x="20" y="322" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(2, 5, cuts=(3,), start_up=False)</title>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="arc" d="M 127.75 117.75 A 41.25 18.6408227848 0 0 0 210.25 117.75 A 41.25 18.6408227848 0 0 1 292.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+<text x="42.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="100.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="155.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="210.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="265.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="320.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="377.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="72.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="127.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="182.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="237.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="292.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="347.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+</svg>
+<text x="520" y="310" font-family="serif" font-size="14">4. Arc(2, 3, cuts=(4, 2, 4, 2, 4), start_up=False)</text>
+<svg x="520" y="322" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(2, 3, cuts=(4, 2, 4, 2, 4), start_up=False)</title>
+<path class="arc" d="M 127.75 117.75 A 74.125 33.4969936709 0 0 0 276 117.75 A 63.9583333333 28.9026898734 0 0 0 148.083333333 117.75 A 58.5833333333 26.4737341772 0 0 0 265.25 117.75 A 51.4166666667 23.2351265823 0 0 0 162.416666667 117.75 A 46.0416666667 20.8061708861 0 0 0 254.5 117.75 A 35.875 16.2118670886 0 0 0 182.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="540" font-family="serif" font-size="14">5. Arc(3, 6, cuts=(4, 0, 4))</text>
+<svg x="20" y="552" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(3, 6, cuts=(4, 0, 4))</title>
+<path class="arc" d="M 182.75 117.75 A 37.6666666667 17.0215189873 0 0 1 258.083333333 117.75 A 108.666666667 49.1063291139 0 0 1 40.75 117.75 A 115.833333333 52.3449367089 0 0 1 272.416666667 117.75 A 37.6666666667 17.0215189873 0 0 0 347.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="540" font-family="serif" font-size="14">6. Arc(0, 7): endpoints on the outer boundary</text>
+<svg x="520" y="552" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(0, 7): endpoints on the outer boundary</title>
+<path class="arc" d="M 12.75 117.75 A 197.5 89.25 0 0 1 407.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="770" font-family="serif" font-size="14">7. Arc(0, 4, cuts=(2,))</text>
+<svg x="20" y="782" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Arc(0, 4, cuts=(2,))</title>
+<path class="arc" d="M 12.75 117.75 A 71.25 32.1977848101 0 0 1 155.25 117.75 A 41.25 18.6408227848 0 0 0 237.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="770" font-family="serif" font-size="14">8. Loop((1, 4)): around objects 2, 3, 4</text>
+<svg x="520" y="782" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Loop((1, 4)): around objects 2, 3, 4</title>
+<path class="closed-curve" d="M 100.25 117.75 A 82.5 37.2816455696 0 0 1 265.25 117.75 A 82.5 37.2816455696 0 0 1 100.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="1000" font-family="serif" font-size="14">9. Loop((0, 6, 5, 1)): around the two ends</text>
+<svg x="20" y="1012" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Loop((0, 6, 5, 1)): around the two ends</title>
+<path class="closed-curve" d="M 40.75 117.75 A 169.5 76.596835443 0 0 1 379.75 117.75 A 29.75 13.4439873418 0 0 1 320.25 117.75 A 110 49.7088607595 0 0 0 100.25 117.75 A 29.75 13.4439873418 0 0 1 40.75 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="1000" font-family="serif" font-size="14">10. Nested loops plus an interior arc</text>
+<svg x="520" y="1012" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Nested loops plus an interior arc</title>
+<path class="closed-curve" d="M 40.75 117.75 A 169.5 76.596835443 0 0 1 379.75 117.75 A 169.5 76.596835443 0 0 1 40.75 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="closed-curve" d="M 100.25 117.75 A 110 49.7088607595 0 0 1 320.25 117.75 A 110 49.7088607595 0 0 1 100.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 182.75 117.75 A 27.5 12.4272151899 0 0 1 237.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="1230" font-family="serif" font-size="14">11. Three disjoint arcs</text>
+<svg x="20" y="1242" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Three disjoint arcs</title>
+<path class="arc" d="M 72.75 117.75 A 27.5 12.4272151899 0 0 1 127.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 182.75 117.75 A 27.5 12.4272151899 0 0 1 237.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 292.75 117.75 A 27.5 12.4272151899 0 0 1 347.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="1230" font-family="serif" font-size="14">12. Loop around boundaries and marked points</text>
+<svg x="520" y="1242" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Loop around boundaries and marked points</title>
+<path class="closed-curve" d="M 100.25 117.75 A 110 49.7088607595 0 0 1 320.25 117.75 A 110 49.7088607595 0 0 1 100.25 117.75 Z " fill="none" stroke="#ed2424" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="72.75" cy="117.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="182.75" cy="117.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="292.75" cy="117.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+</svg>

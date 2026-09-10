@@ -1,0 +1,195 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1450" width="1000" height="1450">
+<rect width="100%" height="100%" fill="white"/>
+<text x="25" y="36" font-family="serif" font-size="24">Genus examples</text>
+<text x="20" y="80" font-family="serif" font-size="14">1. Genus 1, no boundary components</text>
+<svg x="20" y="92" width="460" height="177" viewBox="0 0 258.5 177.5">
+<title>Genus 1, no boundary components</title>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 229.35 34.85 239.75 53.715 239.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 229.35 142.65 239.75 123.785 239.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<text x="520" y="80" font-family="serif" font-size="14">2. Genus 2, no boundary components</text>
+<svg x="520" y="92" width="460" height="177" viewBox="0 0 388.5 177.5">
+<title>Genus 2, no boundary components</title>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 359.35 34.85 369.75 53.715 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 359.35 142.65 369.75 123.785 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<text x="20" y="310" font-family="serif" font-size="14">3. Genus 3, with involution axis</text>
+<svg x="20" y="322" width="460" height="177" viewBox="0 0 518.5 177.5">
+<title>Genus 3, with involution axis</title>
+<path class="involution-axis" d="M 12.75 88.75 L 505.75 88.75" fill="none" stroke="#999999" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 347.65 34.85 365.85 21.55 389.25 21.55 C 412.65 21.55 430.85 34.85 454.25 34.85 C 489.35 34.85 499.75 53.715 499.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 347.65 142.65 365.85 155.95 389.25 155.95 C 412.65 155.95 430.85 142.65 454.25 142.65 C 489.35 142.65 499.75 123.785 499.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 358.05 88.75 C 372.09 73.35 406.41 73.35 420.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 358.05 88.75 C 372.09 104.15 406.41 104.15 420.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<text x="520" y="310" font-family="serif" font-size="14">4. Genus 5</text>
+<svg x="520" y="322" width="460" height="177" viewBox="0 0 778.5 177.5">
+<title>Genus 5</title>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 347.65 34.85 365.85 21.55 389.25 21.55 C 412.65 21.55 430.85 34.85 454.25 34.85 C 477.65 34.85 495.85 21.55 519.25 21.55 C 542.65 21.55 560.85 34.85 584.25 34.85 C 607.65 34.85 625.85 21.55 649.25 21.55 C 672.65 21.55 690.85 34.85 714.25 34.85 C 749.35 34.85 759.75 53.715 759.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 347.65 142.65 365.85 155.95 389.25 155.95 C 412.65 155.95 430.85 142.65 454.25 142.65 C 477.65 142.65 495.85 155.95 519.25 155.95 C 542.65 155.95 560.85 142.65 584.25 142.65 C 607.65 142.65 625.85 155.95 649.25 155.95 C 672.65 155.95 690.85 142.65 714.25 142.65 C 749.35 142.65 759.75 123.785 759.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 358.05 88.75 C 372.09 73.35 406.41 73.35 420.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 358.05 88.75 C 372.09 104.15 406.41 104.15 420.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 488.05 88.75 C 502.09 73.35 536.41 73.35 550.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 488.05 88.75 C 502.09 104.15 536.41 104.15 550.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 618.05 88.75 C 632.09 73.35 666.41 73.35 680.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 618.05 88.75 C 632.09 104.15 666.41 104.15 680.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<text x="20" y="540" font-family="serif" font-size="14">5. Optional second handle arc</text>
+<svg x="20" y="552" width="460" height="177" viewBox="0 0 388.5 177.5">
+<title>Optional second handle arc</title>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 359.35 34.85 369.75 53.715 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 359.35 142.65 369.75 123.785 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle-back" d="M 93.994 92.6 C 104.29 113.39 154.21 113.39 164.506 92.6" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle-back" d="M 223.994 92.6 C 234.29 113.39 284.21 113.39 294.506 92.6" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<text x="520" y="540" font-family="serif" font-size="14">6. Type I: slots 1 and 6</text>
+<svg x="520" y="552" width="460" height="177" viewBox="0 0 388.5 177.5">
+<title>Type I: slots 1 and 6</title>
+<path class="surface-outline" d="M 21.95 80.75 C 21.95 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 359.35 34.85 366.55 53.715 366.55 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 21.95 96.75 C 21.95 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 359.35 142.65 366.55 123.785 366.55 96.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-i-boundary" cx="21.95" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="366.55" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="770" font-family="serif" font-size="14">7. Type I: slots 2 and 3</text>
+<svg x="20" y="782" width="460" height="177" viewBox="0 0 388.5 177.5">
+<title>Type I: slots 2 and 3</title>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 359.35 34.85 369.75 53.715 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 359.35 142.65 369.75 123.785 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 80.75 C 112.09 73.35 146.41 73.35 160.45 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 96.75 C 112.09 104.15 146.41 104.15 160.45 96.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-i-boundary" cx="98.05" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="160.45" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="770" font-family="serif" font-size="14">8. All six Type I slots on genus 2</text>
+<svg x="520" y="782" width="460" height="177" viewBox="0 0 388.5 177.5">
+<title>All six Type I slots on genus 2</title>
+<path class="involution-axis" d="M 12.75 88.75 L 375.75 88.75" fill="none" stroke="#999999" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="surface-outline" d="M 21.95 80.75 C 21.95 53.715 29.15 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 359.35 34.85 366.55 53.715 366.55 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 21.95 96.75 C 21.95 123.785 29.15 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 359.35 142.65 366.55 123.785 366.55 96.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 80.75 C 112.09 73.35 146.41 73.35 160.45 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 96.75 C 112.09 104.15 146.41 104.15 160.45 96.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 80.75 C 242.09 73.35 276.41 73.35 290.45 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 96.75 C 242.09 104.15 276.41 104.15 290.45 96.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-i-boundary" cx="21.95" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="366.55" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="98.05" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="160.45" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="228.05" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="290.45" cy="88.75" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="1000" font-family="serif" font-size="14">9. Two Type II pairs: four boundaries</text>
+<svg x="20" y="1012" width="460" height="177" viewBox="0 0 388.5 198.14002787">
+<title>Two Type II pairs: four boundaries</title>
+<path class="surface-outline" d="M 18.75 99.0700139351 C 18.75 64.0350139351 29.15 45.1700139351 64.25 45.1700139351 C 87.65 45.1700139351 105.85 31.8700139351 129.25 31.8700139351 C 133.222930515 31.8700139351 137.045963813 32.2534048921 140.77 32.89 C 140.77 25.89 143.57 25.89 143.57 20.99" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 99.0700139351 C 18.75 134.105013935 29.15 152.970013935 64.25 152.970013935 C 87.65 152.970013935 105.85 166.270013935 129.25 166.270013935 C 133.222930515 166.270013935 137.045963813 165.886622978 140.77 165.25002787 C 140.77 172.25002787 143.57 172.25002787 143.57 177.15002787" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 157.57 20.99 C 157.57 25.89 160.37 31.0791356142 160.37 38.0791356142 C 171.23261783 41.5443994503 182.032542174 45.1700139351 194.25 45.1700139351 C 206.467457826 45.1700139351 217.26738217 41.5443994503 228.13 38.0791356142 C 228.13 31.0791356142 230.93 25.89 230.93 20.99" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 157.57 177.15002787 C 157.57 172.25002787 160.37 167.060892256 160.37 160.060892256 C 171.23261783 156.59562842 182.032542174 152.970013935 194.25 152.970013935 C 206.467457826 152.970013935 217.26738217 156.59562842 228.13 160.060892256 C 228.13 167.060892256 230.93 172.25002787 230.93 177.15002787" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 244.93 20.99 C 244.93 25.89 247.73 25.89 247.73 32.89 C 251.454036187 32.2534048921 255.277069485 31.8700139351 259.25 31.8700139351 C 282.65 31.8700139351 300.85 45.1700139351 324.25 45.1700139351 C 359.35 45.1700139351 369.75 64.0350139351 369.75 99.0700139351" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 244.93 177.15002787 C 244.93 172.25002787 247.73 172.25002787 247.73 165.25002787 C 251.454036187 165.886622978 255.277069485 166.270013935 259.25 166.270013935 C 282.65 166.270013935 300.85 152.970013935 324.25 152.970013935 C 359.35 152.970013935 369.75 134.105013935 369.75 99.0700139351" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 99.0700139351 C 112.09 83.6700139351 146.41 83.6700139351 160.45 99.0700139351" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 99.0700139351 C 112.09 114.470013935 146.41 114.470013935 160.45 99.0700139351" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 99.0700139351 C 242.09 83.6700139351 276.41 83.6700139351 290.45 99.0700139351" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 99.0700139351 C 242.09 114.470013935 276.41 114.470013935 290.45 99.0700139351" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-ii-boundary" cx="150.57" cy="20.99" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="150.57" cy="177.15002787" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="237.93" cy="20.99" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="237.93" cy="177.15002787" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="1000" font-family="serif" font-size="14">10. Left and right Type II pairs</text>
+<svg x="520" y="1012" width="460" height="177" viewBox="0 0 388.5 177.5">
+<title>Left and right Type II pairs</title>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 64.2758730182 23.825087258 47.6925307442 38.85 39.9186738439 C 38.85 32.9186738439 41.65 28.0357715693 41.65 23.1357715693" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 88.75 C 18.75 113.224126982 23.825087258 129.807469256 38.85 137.581326156 C 38.85 144.581326156 41.65 149.464228431 41.65 154.364228431" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 55.65 23.1357715693 C 55.65 28.0357715693 58.45 28.0357715693 58.45 35.0357715693 C 60.3038343722 34.9120934938 62.2362675891 34.85 64.25 34.85 C 87.65 34.85 105.85 21.55 129.25 21.55 C 152.65 21.55 170.85 34.85 194.25 34.85 C 217.65 34.85 235.85 21.55 259.25 21.55 C 282.65 21.55 300.85 34.85 324.25 34.85 C 326.263732411 34.85 328.196165628 34.9120934938 330.05 35.0357715693 C 330.05 28.0357715693 332.85 28.0357715693 332.85 23.1357715693" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 55.65 154.364228431 C 55.65 149.464228431 58.45 149.464228431 58.45 142.464228431 C 60.3038343722 142.587906506 62.2362675891 142.65 64.25 142.65 C 87.65 142.65 105.85 155.95 129.25 155.95 C 152.65 155.95 170.85 142.65 194.25 142.65 C 217.65 142.65 235.85 155.95 259.25 155.95 C 282.65 155.95 300.85 142.65 324.25 142.65 C 326.263732411 142.65 328.196165628 142.587906506 330.05 142.464228431 C 330.05 149.464228431 332.85 149.464228431 332.85 154.364228431" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 346.85 23.1357715693 C 346.85 28.0357715693 349.65 32.9186738439 349.65 39.9186738439 C 364.674912742 47.6925307442 369.75 64.2758730182 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 346.85 154.364228431 C 346.85 149.464228431 349.65 144.581326156 349.65 137.581326156 C 364.674912742 129.807469256 369.75 113.224126982 369.75 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 73.35 146.41 73.35 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 88.75 C 112.09 104.15 146.41 104.15 160.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 73.35 276.41 73.35 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 88.75 C 242.09 104.15 276.41 104.15 290.45 88.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-ii-boundary" cx="48.65" cy="23.1357715693" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="48.65" cy="154.364228431" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="339.85" cy="23.1357715693" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="339.85" cy="154.364228431" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="1230" font-family="serif" font-size="14">11. One Type I plus two Type II pairs</text>
+<svg x="20" y="1242" width="460" height="177" viewBox="0 0 388.5 193.065013305">
+<title>One Type I plus two Type II pairs</title>
+<path class="surface-outline" d="M 18.75 96.5325066523 C 18.75 72.0583796705 23.825087258 55.4750373965 38.85 47.7011804962 C 38.85 40.7011804962 41.65 35.8182782217 41.65 30.9182782217" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 96.5325066523 C 18.75 121.006633634 23.825087258 137.589975908 38.85 145.363832808 C 38.85 152.363832808 41.65 157.246735083 41.65 162.146735083" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 55.65 30.9182782217 C 55.65 35.8182782217 58.45 35.8182782217 58.45 42.8182782217 C 60.3038343722 42.6946001461 62.2362675891 42.6325066523 64.25 42.6325066523 C 87.65 42.6325066523 105.85 29.3325066523 129.25 29.3325066523 C 152.65 29.3325066523 170.85 42.6325066523 194.25 42.6325066523 C 202.386276191 42.6325066523 209.893882009 41.0245612758 217.21 38.9268489572 C 217.21 31.9268489572 220.01 25.89 220.01 20.99" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 55.65 162.146735083 C 55.65 157.246735083 58.45 157.246735083 58.45 150.246735083 C 60.3038343722 150.370413159 62.2362675891 150.432506652 64.25 150.432506652 C 87.65 150.432506652 105.85 163.732506652 129.25 163.732506652 C 152.65 163.732506652 170.85 150.432506652 194.25 150.432506652 C 202.386276191 150.432506652 209.893882009 152.040452029 217.21 154.138164347 C 217.21 161.138164347 220.01 167.175013305 220.01 172.075013305" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 234.01 20.99 C 234.01 25.89 236.81 25.89 236.81 32.89 C 243.961986258 30.8652106588 251.306366782 29.3325066523 259.25 29.3325066523 C 282.65 29.3325066523 300.85 42.6325066523 324.25 42.6325066523 C 359.35 42.6325066523 366.55 61.4975066523 366.55 88.5325066523" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 234.01 172.075013305 C 234.01 167.175013305 236.81 167.175013305 236.81 160.175013305 C 243.961986258 162.199802646 251.306366782 163.732506652 259.25 163.732506652 C 282.65 163.732506652 300.85 150.432506652 324.25 150.432506652 C 359.35 150.432506652 366.55 131.567506652 366.55 104.532506652" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 96.5325066523 C 112.09 81.1325066523 146.41 81.1325066523 160.45 96.5325066523" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98.05 96.5325066523 C 112.09 111.932506652 146.41 111.932506652 160.45 96.5325066523" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 96.5325066523 C 242.09 81.1325066523 276.41 81.1325066523 290.45 96.5325066523" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 228.05 96.5325066523 C 242.09 111.932506652 276.41 111.932506652 290.45 96.5325066523" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-ii-boundary" cx="48.65" cy="30.9182782217" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="48.65" cy="162.146735083" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="227.01" cy="20.99" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="227.01" cy="172.075013305" rx="7" ry="2.24" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-i-boundary" cx="366.55" cy="96.5325066523" rx="3.2" ry="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="1230" font-family="serif" font-size="14">12. Six pairs on a wider genus-3 surface</text>
+<svg x="520" y="1242" width="460" height="177" viewBox="0 0 629.5 187.59526448">
+<title>Six pairs on a wider genus-3 surface</title>
+<path class="surface-outline" d="M 18.75 93.7976322399 C 18.75 58.7626322399 31.55 39.8976322399 74.75 39.8976322399 C 85.410507557 39.8976322399 95.1941137145 38.0753215191 104.75 35.7797804393 C 104.75 29.7797804393 107.15 25.5019169392 107.15 21.3019169392" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 93.7976322399 C 18.75 128.83263224 31.55 147.69763224 74.75 147.69763224 C 85.410507557 147.69763224 95.1941137145 149.519942961 104.75 151.81548404 C 104.75 157.81548404 107.15 162.093347541 107.15 166.293347541" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 119.15 21.3019169392 C 119.15 25.5019169392 121.55 25.5019169392 121.55 31.5019169392 C 132.127476251 28.8505565393 142.896681151 26.5976322399 154.75 26.5976322399 C 165.648625405 26.5976322399 175.630738189 28.502260031 185.39 30.87 C 185.39 24.87 187.79 24.87 187.79 20.67" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 119.15 166.293347541 C 119.15 162.093347541 121.55 162.093347541 121.55 156.093347541 C 132.127476251 158.74470794 142.896681151 160.99763224 154.75 160.99763224 C 165.648625405 160.99763224 175.630738189 159.093004449 185.39 156.72526448 C 185.39 162.72526448 187.79 162.72526448 187.79 166.92526448" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 199.79 20.67 C 199.79 24.87 202.19 29.1532090702 202.19 35.1532090702 C 212.562153736 37.7346348114 223.135656434 39.8976322399 234.75 39.8976322399 C 245.886981079 39.8976322399 256.066922439 37.9087840743 266.03 35.4692658257 C 266.03 29.4692658257 268.43 25.183383075 268.43 20.983383075" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 199.79 166.92526448 C 199.79 162.72526448 202.19 158.442055409 202.19 152.442055409 C 212.562153736 149.860629668 223.135656434 147.69763224 234.75 147.69763224 C 245.886981079 147.69763224 256.066922439 149.686480405 266.03 152.125998654 C 266.03 158.125998654 268.43 162.411881405 268.43 166.611881405" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 280.43 20.983383075 C 280.43 25.183383075 282.83 25.183383075 282.83 31.183383075 C 292.997364525 28.6726038659 303.374440969 26.5976322399 314.75 26.5976322399 C 326.125559031 26.5976322399 336.502635475 28.6726038659 346.67 31.183383075 C 346.67 25.183383075 349.07 25.183383075 349.07 20.983383075" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 280.43 166.611881405 C 280.43 162.411881405 282.83 162.411881405 282.83 156.411881405 C 292.997364525 158.922660614 303.374440969 160.99763224 314.75 160.99763224 C 326.125559031 160.99763224 336.502635475 158.922660614 346.67 156.411881405 C 346.67 162.411881405 349.07 162.411881405 349.07 166.611881405" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 361.07 20.983383075 C 361.07 25.183383075 363.47 29.4692658257 363.47 35.4692658257 C 373.433077561 37.9087840743 383.613018921 39.8976322399 394.75 39.8976322399 C 406.364343566 39.8976322399 416.937846264 37.7346348114 427.31 35.1532090702 C 427.31 29.1532090702 429.71 24.87 429.71 20.67" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 361.07 166.611881405 C 361.07 162.411881405 363.47 158.125998654 363.47 152.125998654 C 373.433077561 149.686480405 383.613018921 147.69763224 394.75 147.69763224 C 406.364343566 147.69763224 416.937846264 149.860629668 427.31 152.442055409 C 427.31 158.442055409 429.71 162.72526448 429.71 166.92526448" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 441.71 20.67 C 441.71 24.87 444.11 24.87 444.11 30.87 C 453.869261811 28.502260031 463.851374595 26.5976322399 474.75 26.5976322399 C 486.603318849 26.5976322399 497.372523749 28.8505565393 507.95 31.5019169392 C 507.95 25.5019169392 510.35 25.5019169392 510.35 21.3019169392" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 441.71 166.92526448 C 441.71 162.72526448 444.11 162.72526448 444.11 156.72526448 C 453.869261811 159.093004449 463.851374595 160.99763224 474.75 160.99763224 C 486.603318849 160.99763224 497.372523749 158.74470794 507.95 156.093347541 C 507.95 162.093347541 510.35 162.093347541 510.35 166.293347541" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 522.35 21.3019169392 C 522.35 25.5019169392 524.75 29.7797804393 524.75 35.7797804393 C 534.305886286 38.0753215191 544.089492443 39.8976322399 554.75 39.8976322399 C 597.95 39.8976322399 610.75 58.7626322399 610.75 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 522.35 166.293347541 C 522.35 162.093347541 524.75 157.81548404 524.75 151.81548404 C 534.305886286 149.519942961 544.089492443 147.69763224 554.75 147.69763224 C 597.95 147.69763224 610.75 128.83263224 610.75 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 116.35 93.7976322399 C 133.63 78.3976322399 175.87 78.3976322399 193.15 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 116.35 93.7976322399 C 133.63 109.19763224 175.87 109.19763224 193.15 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 276.35 93.7976322399 C 293.63 78.3976322399 335.87 78.3976322399 353.15 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 276.35 93.7976322399 C 293.63 109.19763224 335.87 109.19763224 353.15 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 436.35 93.7976322399 C 453.63 78.3976322399 495.87 78.3976322399 513.15 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 436.35 93.7976322399 C 453.63 109.19763224 495.87 109.19763224 513.15 93.7976322399" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="type-ii-boundary" cx="113.15" cy="21.3019169392" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="113.15" cy="166.293347541" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="193.79" cy="20.67" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="193.79" cy="166.92526448" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="274.43" cy="20.983383075" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="274.43" cy="166.611881405" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="355.07" cy="20.983383075" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="355.07" cy="166.611881405" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="435.71" cy="20.67" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="435.71" cy="166.92526448" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="516.35" cy="21.3019169392" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="type-ii-boundary" cx="516.35" cy="166.293347541" rx="6" ry="1.92" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+</svg>

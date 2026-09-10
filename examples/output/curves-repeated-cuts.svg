@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.5 235.5" width="841" height="471" role="img">
+<title>Arc(2, 3, cuts=(4, 2, 4, 2, 4), start_up=False)</title>
+<path class="arc" d="M 127.75 117.75 A 74.125 33.4969936709 0 0 0 276 117.75 A 63.9583333333 28.9026898734 0 0 0 148.083333333 117.75 A 58.5833333333 26.4737341772 0 0 0 265.25 117.75 A 51.4166666667 23.2351265823 0 0 0 162.416666667 117.75 A 46.0416666667 20.8061708861 0 0 0 254.5 117.75 A 35.875 16.2118670886 0 0 0 182.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>

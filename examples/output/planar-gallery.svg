@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1450" width="1000" height="1450">
+<rect width="100%" height="100%" fill="white"/>
+<text x="25" y="36" font-family="serif" font-size="24">Planar examples</text>
+<text x="20" y="80" font-family="serif" font-size="14">1. Thesis blue and gray</text>
+<svg x="20" y="92" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Thesis blue and gray</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="52.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="80" font-family="serif" font-size="14">2. More room around the same five objects</text>
+<svg x="520" y="92" width="460" height="177" viewBox="0 0 525.5 235.5">
+<title>More room around the same five objects</title>
+<ellipse class="outer-boundary" cx="262.75" cy="117.75" rx="250" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="190.75" cy="117.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="226.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="262.75" cy="117.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="298.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="334.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="310" font-family="serif" font-size="14">3. Twelve marked points</text>
+<svg x="20" y="322" width="460" height="177" viewBox="0 0 481.5 165.5">
+<title>Twelve marked points</title>
+<ellipse class="outer-boundary" cx="240.75" cy="82.75" rx="228" ry="70" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="42.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="78.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="114.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="150.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="222.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="258.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="294.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="330.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="366.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="402.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="438.75" cy="82.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="310" font-family="serif" font-size="14">4. Twenty points; smaller dots</text>
+<svg x="520" y="322" width="460" height="177" viewBox="0 0 769.5 185.5">
+<title>Twenty points; smaller dots</title>
+<ellipse class="outer-boundary" cx="384.75" cy="92.75" rx="372" ry="80" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="42.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="78.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="114.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="150.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="222.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="258.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="294.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="330.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="366.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="402.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="438.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="474.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="510.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="546.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="582.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="618.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="654.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="690.75" cy="92.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="726.75" cy="92.75" r="3" fill="#006fff"/>
+</svg>
+<text x="20" y="540" font-family="serif" font-size="14">5. Six boundaries interspersed with points</text>
+<svg x="20" y="552" width="460" height="177" viewBox="0 0 481.5 165.5">
+<title>Six boundaries interspersed with points</title>
+<ellipse class="outer-boundary" cx="240.75" cy="82.75" rx="228" ry="70" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="114.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="150.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="186.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="222.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="258.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="294.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="330.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="366.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="402.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="438.75" cy="82.75" r="4" fill="#8b8b8b"/>
+</svg>
+<text x="520" y="540" font-family="serif" font-size="14">6. Outer ellipse hidden</text>
+<svg x="520" y="552" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Outer ellipse hidden</title>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="52.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="770" font-family="serif" font-size="14">7. Boundary radius 8; point radius 3</text>
+<svg x="20" y="782" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Boundary radius 8; point radius 3</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="8" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="3" fill="#006fff"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="8" fill="#8b8b8b"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="52.75" r="3" fill="#006fff"/>
+</svg>
+<text x="520" y="770" font-family="serif" font-size="14">8. Point radius 8; boundary radius 3</text>
+<svg x="520" y="782" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Point radius 8; boundary radius 3</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="3" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="8" fill="#006fff"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="3" fill="#8b8b8b"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="8" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="52.75" r="8" fill="#006fff"/>
+</svg>
+<text x="20" y="1000" font-family="serif" font-size="14">9. Configurable colors, white background</text>
+<svg x="20" y="1012" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Configurable colors, white background</title>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="4" fill="#167765"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="4" fill="#bd2535"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="4" fill="#167765"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="4" fill="#bd2535"/>
+<circle class="marked-point" cx="186.75" cy="52.75" r="4" fill="#bd2535"/>
+</svg>
+<text x="520" y="1000" font-family="serif" font-size="14">10. Free positions off the axis (no cut curves)</text>
+<svg x="520" y="1012" width="460" height="177" viewBox="0 0 265.5 135.5">
+<title>Free positions off the axis (no cut curves)</title>
+<ellipse class="outer-boundary" cx="132.75" cy="67.75" rx="120" ry="55" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="62.75" cy="67.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="202.75" cy="67.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="107.75" cy="47.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="107.75" cy="87.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="157.75" cy="47.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="157.75" cy="87.75" r="4" fill="#006fff"/>
+</svg>
+<text x="20" y="1230" font-family="serif" font-size="14">11. Individual radii 3, 5, 7, 9</text>
+<svg x="20" y="1242" width="460" height="177" viewBox="0 0 265.5 135.5">
+<title>Individual radii 3, 5, 7, 9</title>
+<ellipse class="outer-boundary" cx="132.75" cy="67.75" rx="120" ry="55" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="67.75" r="3" fill="#006fff"/>
+<circle class="inner-boundary" cx="112.75" cy="67.75" r="5" fill="#8b8b8b"/>
+<circle class="marked-point" cx="152.75" cy="67.75" r="7" fill="#006fff"/>
+<circle class="inner-boundary" cx="192.75" cy="67.75" r="9" fill="#8b8b8b"/>
+</svg>
+<text x="520" y="1230" font-family="serif" font-size="14">12. An empty, rounder disk</text>
+<svg x="520" y="1242" width="460" height="177" viewBox="0 0 245.5 205.5">
+<title>An empty, rounder disk</title>
+<ellipse class="outer-boundary" cx="122.75" cy="102.75" rx="110" ry="90" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+</svg>

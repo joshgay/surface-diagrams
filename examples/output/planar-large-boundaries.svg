@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 229.5 105.5" width="459" height="211" role="img">
+<title>Boundary radius 8; point radius 3</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="8" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="3" fill="#006fff"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="8" fill="#8b8b8b"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="3" fill="#006fff"/>
+<circle class="marked-point" cx="186.75" cy="52.75" r="3" fill="#006fff"/>
+</svg>

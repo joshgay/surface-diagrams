@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 481.5 165.5" width="963" height="331" role="img">
+<title>Six boundaries interspersed with points</title>
+<ellipse class="outer-boundary" cx="240.75" cy="82.75" rx="228" ry="70" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="78.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="114.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="150.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="186.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="222.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="258.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="marked-point" cx="294.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="330.75" cy="82.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary" cx="366.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="402.75" cy="82.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="438.75" cy="82.75" r="4" fill="#8b8b8b"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 265.5 135.5" width="531" height="271" role="img">
+<title>Individual radii 3, 5, 7, 9</title>
+<ellipse class="outer-boundary" cx="132.75" cy="67.75" rx="120" ry="55" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="67.75" r="3" fill="#006fff"/>
+<circle class="inner-boundary" cx="112.75" cy="67.75" r="5" fill="#8b8b8b"/>
+<circle class="marked-point" cx="152.75" cy="67.75" r="7" fill="#006fff"/>
+<circle class="inner-boundary" cx="192.75" cy="67.75" r="9" fill="#8b8b8b"/>
+</svg>
