@@ -1,12 +1,13 @@
 # Surface diagrams
 
-A small Python library for surface images, using Richard Buckman's thesis
-conventions: gray dots for planar inner boundaries, blue dots for marked points,
-and an optional outer ellipse. It draws minimal cut-coordinate arcs and loops,
-as well as symmetric higher-genus schematics with boundary rims. SVG output is
-vector artwork: enlarge it without losing sharpness or edit it in a drawing app.
+A Python library for generating diagrams of surfaces for work with mapping class
+groups and other relevant low dimensional geometry and topology. SVG output allows
+for arbitrary enlarging without losing sharpness.
 
-This is the first local working version, 0.1.0a1. Python 3.9+; no runtime dependencies.
+This is extremely experimental for now. It is based on older code a wrote a while ago,
+but this is the first local working version, 0.1.0a1. Python 3.9+; no runtime dependencies.
+I will finish editing this readme when the software is in a more finished state. For now
+what is here may be wrong or not yet implemented.
 
 ## Install and make an image
 
@@ -17,16 +18,9 @@ python -m pip install -e .
 python examples/make_images.py
 ```
 
-The examples create the original five SVGs plus 36 new examples, three overview
-sheets, and a [linked gallery](examples/output/GALLERY.md) in `examples/output/`.
+Examples should demonstrate all current capabilities but feel free to make requests.
+Three overview sheets, and a [linked gallery](examples/output/GALLERY.md) in `examples/output/`.
 All 36 constructors are in [examples/gallery.py](examples/gallery.py).
-
-On Richard's computer a working local environment is already installed:
-
-```powershell
-cd C:\GitHub\surface-diagrams
-.\.venv\Scripts\python.exe examples\make_images.py
-```
 
 Run your own scripts with that same Python, or select it in your editor.
 For a fresh installation, use recent pip/setuptools: Anaconda pip 21.2 cannot
@@ -201,7 +195,6 @@ export is not built in; SVGs can be converted externally when needed.
 `model.py` holds planar inputs/styles, `curves.py` plans routes, and `genus.py`
 builds higher-genus geometry. `layout.py` assembles format-independent primitives;
 `svg.py` serializes them. A future TikZ writer can reuse these primitives.
-The research projects are references, not runtime dependencies.
 
 ## Development
 
@@ -211,5 +204,4 @@ python -m unittest discover -s tests -v
 
 Tests use Python's standard `unittest` suite, including coordinate validation,
 visit-order preservation, seeded geometric checks, palette and SVG behavior,
-boundary symmetry and joins, and gallery smoke tests. No public release,
-remote repository, or license has been set up yet.
+boundary symmetry and joins, and gallery smoke tests.
