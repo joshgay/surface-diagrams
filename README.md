@@ -9,6 +9,8 @@ but this is the first local working version, 0.1.0a1. Python 3.9+; no runtime de
 I will finish editing this readme when the software is in a more finished state. For now
 what is here may be wrong or not yet implemented.
 
+The higher genus surfaces are quite ugly right now so expect them to improve soon.
+
 ## Install and make an image
 
 From this directory:
@@ -56,7 +58,7 @@ painting commands in the thesis's planar figures (PDF pages 36-38):
 | Element | Default | Customization |
 | --- | --- | --- |
 | Marked points | `#006fff` | `marked_point_color` |
-| Inner boundary dots | `#8b8b8b` | `boundary_color` |
+| Inner boundary components | `#8b8b8b` | `boundary_color` |
 | Curves | `#ff00d4` | `curve_color` |
 | Surface outline | `#000000` | `outline_color` |
 
