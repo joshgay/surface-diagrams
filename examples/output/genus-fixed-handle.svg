@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 334.5 137.5" width="669" height="275" role="img">
 <title>Type I: slots 2 and 3</title>
-<path class="surface-outline" d="M 18.75 68.75 C 18.75 33.75 33.05 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 18.75 68.75 C 18.75 103.75 33.05 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 44.75 35.25 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 92.75 35.25 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 57.25 24.75 C 130.583333333 25.19 203.916666667 25.19 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 57.25 112.75 C 130.583333333 112.31 203.916666667 112.31 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 315.75 68.75 C 315.75 33.75 301.45 24.75 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 315.75 68.75 C 315.75 103.75 301.45 112.75 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 79.25 56.75 C 95.09 55.25 129.41 55.25 145.25 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 79.25 80.75 C 95.09 82.25 129.41 82.25 145.25 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 189.25 68.75 C 205.09 55.25 239.41 55.25 255.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 189.25 68.75 C 205.09 82.25 239.41 82.25 255.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 315.75 68.75 C 315.75 44.75 299.25 24.75 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 315.75 68.75 C 315.75 92.75 299.25 112.75 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 80.75 C 89.15 84.15 135.35 84.15 145.25 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 56.75 C 95.75 56.65 128.75 56.65 145.25 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 189.25 66.55 C 199.15 84.15 245.35 84.15 255.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 193.485078925 71.51188 C 205.75 56.65 238.75 56.65 252.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 79.25 80.75 C 80.9068542495 80.75 82.25 75.377416998 82.25 68.75 C 82.25 62.122583002 80.9068542495 56.75 79.25 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 79.25 80.75 C 77.5931457505 80.75 76.25 75.377416998 76.25 68.75 C 76.25 62.122583002 77.5931457505 56.75 79.25 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 145.25 80.75 C 143.593145751 80.75 142.25 75.377416998 142.25 68.75 C 142.25 62.122583002 143.593145751 56.75 145.25 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

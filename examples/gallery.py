@@ -75,6 +75,13 @@ def gallery_examples():
             ('custom-proportions', 'Optional wider spacing and taller body', GenusSurface(2,handle_spacing=140,height=120,type_ii=(BoundaryPair(),BoundaryPair())), default),
             ('colored-background', 'Transparent collars on a colored background', GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('right'),BoundaryPair())), Style(background='#e9f4fa')),
         ],
+        'views': [
+            (vertical+'-'+horizontal, 'View from '+vertical+' / '+horizontal,
+             GenusSurface(3, type_i=(TypeIBoundary(8),),
+                          type_ii=(BoundaryPair('left'),BoundaryPair(),BoundaryPair()),
+                          view_vertical=vertical, view_horizontal=horizontal), default)
+            for vertical in ('below','above') for horizontal in ('right','left')
+        ],
     }
 
 

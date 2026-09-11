@@ -77,3 +77,12 @@ Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thes
 - [Optional wider spacing and taller body](genus-custom-proportions.svg)
 - [Transparent collars on a colored background](genus-colored-background.svg)
 
+## Views
+
+![views examples](views-gallery.svg)
+
+- [View from below / right](views-below-right.svg)
+- [View from below / left](views-below-left.svg)
+- [View from above / right](views-above-right.svg)
+- [View from above / left](views-above-left.svg)
+

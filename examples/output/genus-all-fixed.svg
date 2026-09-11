@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 347 137.5" width="694" height="275" role="img">
 <title>All six Type I slots on genus 2</title>
 <path class="involution-axis" d="M 19 68.75 L 328 68.75" fill="none" stroke="#999999" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
-<path class="surface-outline" d="M 25 43.75 C 25 33.75 39.3 24.75 63.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 25 93.75 C 25 103.75 39.3 112.75 63.5 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 25 43.75 C 43.7 43.75 42.6 24.75 63.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 25 93.75 C 43.7 93.75 42.6 112.75 63.5 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 63.5 24.75 C 136.833333333 25.19 210.166666667 25.19 283.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 63.5 112.75 C 136.833333333 112.31 210.166666667 112.31 283.5 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 322 43.75 C 322 33.75 307.7 24.75 283.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 322 93.75 C 322 103.75 307.7 112.75 283.5 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 85.5 56.75 C 101.34 55.25 135.66 55.25 151.5 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 85.5 80.75 C 101.34 82.25 135.66 82.25 151.5 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 195.5 56.75 C 211.34 55.25 245.66 55.25 261.5 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 195.5 80.75 C 211.34 82.25 245.66 82.25 261.5 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 322 43.75 C 303.3 43.75 304.4 24.75 283.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 322 93.75 C 303.3 93.75 304.4 112.75 283.5 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 85.5 80.75 C 95.4 84.15 141.6 84.15 151.5 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 85.5 56.75 C 102 56.65 135 56.65 151.5 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 195.5 80.75 C 205.4 84.15 251.6 84.15 261.5 80.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 195.5 56.75 C 212 56.65 245 56.65 261.5 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 25 93.75 C 21.5482203136 93.75 18.75 82.5571187458 18.75 68.75 C 18.75 54.9428812542 21.5482203136 43.75 25 43.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 25 93.75 C 28.4517796864 93.75 31.25 82.5571187458 31.25 68.75 C 31.25 54.9428812542 28.4517796864 43.75 25 43.75" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
 <path class="type-i-boundary" d="M 322 93.75 C 325.451779686 93.75 328.25 82.5571187458 328.25 68.75 C 328.25 54.9428812542 325.451779686 43.75 322 43.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

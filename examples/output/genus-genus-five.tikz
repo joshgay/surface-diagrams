@@ -6,36 +6,36 @@
 \path[use as bounding box] (-332.25,-68.75) rectangle (332.25,68.75);
 \clip (-332.25,-68.75) rectangle (332.25,68.75);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-313.5,0) .. controls (-313.5,35) and (-299.2,44) .. (-275,44);
+\draw[draw=sdcolor0,line width=1.125bp] (-313.5,0) .. controls (-313.5,24) and (-297,44) .. (-275,44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-313.5,0) .. controls (-313.5,-35) and (-299.2,-44) .. (-275,-44);
+\draw[draw=sdcolor0,line width=1.125bp] (-313.5,0) .. controls (-313.5,-24) and (-297,-44) .. (-275,-44);
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-275,44) .. controls (-91.6666666667,43.56) and (91.6666666667,43.56) .. (275,44);
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-275,-44) .. controls (-91.6666666667,-43.56) and (91.6666666667,-43.56) .. (275,-44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (313.5,0) .. controls (313.5,35) and (299.2,44) .. (275,44);
+\draw[draw=sdcolor0,line width=1.125bp] (313.5,0) .. controls (313.5,24) and (297,44) .. (275,44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (313.5,0) .. controls (313.5,-35) and (299.2,-44) .. (275,-44);
+\draw[draw=sdcolor0,line width=1.125bp] (313.5,0) .. controls (313.5,-24) and (297,-44) .. (275,-44);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-253,0) .. controls (-237.16,13.5) and (-202.84,13.5) .. (-187,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-253,2.2) .. controls (-243.1,-15.4) and (-196.9,-15.4) .. (-187,2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-253,0) .. controls (-237.16,-13.5) and (-202.84,-13.5) .. (-187,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-248.764921075,-2.76188) .. controls (-236.5,12.1) and (-203.5,12.1) .. (-189.370664725,-1.00892);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-143,0) .. controls (-127.16,13.5) and (-92.84,13.5) .. (-77,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-143,2.2) .. controls (-133.1,-15.4) and (-86.9,-15.4) .. (-77,2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-143,0) .. controls (-127.16,-13.5) and (-92.84,-13.5) .. (-77,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-138.764921075,-2.76188) .. controls (-126.5,12.1) and (-93.5,12.1) .. (-79.370664725,-1.00892);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-33,0) .. controls (-17.16,13.5) and (17.16,13.5) .. (33,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-33,2.2) .. controls (-23.1,-15.4) and (23.1,-15.4) .. (33,2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-33,0) .. controls (-17.16,-13.5) and (17.16,-13.5) .. (33,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-28.764921075,-2.76188) .. controls (-16.5,12.1) and (16.5,12.1) .. (30.629335275,-1.00892);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (77,0) .. controls (92.84,13.5) and (127.16,13.5) .. (143,0);
+\draw[draw=sdcolor0,line width=1.125bp] (77,2.2) .. controls (86.9,-15.4) and (133.1,-15.4) .. (143,2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (77,0) .. controls (92.84,-13.5) and (127.16,-13.5) .. (143,0);
+\draw[draw=sdcolor0,line width=1.125bp] (81.235078925,-2.76188) .. controls (93.5,12.1) and (126.5,12.1) .. (140.629335275,-1.00892);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (187,0) .. controls (202.84,13.5) and (237.16,13.5) .. (253,0);
+\draw[draw=sdcolor0,line width=1.125bp] (187,2.2) .. controls (196.9,-15.4) and (243.1,-15.4) .. (253,2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (187,0) .. controls (202.84,-13.5) and (237.16,-13.5) .. (253,0);
+\draw[draw=sdcolor0,line width=1.125bp] (191.235078925,-2.76188) .. controls (203.5,12.1) and (236.5,12.1) .. (250.629335275,-1.00892);
 \end{tikzpicture}
 \endgroup

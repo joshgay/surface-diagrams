@@ -18,7 +18,9 @@ save_svg(GenusSurface(3, type_ii=(BoundaryPair("left"), BoundaryPair("right"),
 ```
 
 The automatic body dimensions are 110 units per handle plus end margins, with
-height 100. These are optional appearance settings. The default radius of a
+height 100, or 150 when side pairs need more room. An explicit height overrides
+that choice. Side pairs have larger openings with more separation and rounded
+recesses between them. These are optional appearance settings. The default radius of a
 fixed boundary depends on its slot; end openings are larger than openings at
 handle tips. Automatic pairs are spread across their side in input order, and
 their radii are reduced as necessary to fit the spacing. Explicit positions or
@@ -31,15 +33,35 @@ points, tangent and outward-normal directions, and hidden-half information.
 The paths join those anchors with matching tangent directions. Elliptical rims
 are represented by the usual quarter-ellipse cubic approximation.
 
-The viewing convention follows the source sheets: inward halves of upper and
-left-facing collars are hidden; lower and right-facing openings show full rims.
-This asymmetry is a projection convention, not asymmetric boundary topology.
-Reflecting a diagram does not imply that the viewer changes sides. No white
-masking shapes are used; the outlines have actual openings.
+Choose the viewing direction with two independent options:
+
+```python
+surface = GenusSurface(3, view_vertical="above", view_horizontal="left")
+```
+
+The defaults are `view_vertical="below"` and `view_horizontal="right"`, as in
+D3. `view_vertical="above"` matches the D2A panel. A top-facing rim is fully
+visible from above and has a hidden inward half from below; bottom-facing rims
+reverse this. The horizontal choice similarly controls left/right-facing rims,
+including fixed boundaries inside handle openings. Stable boundary IDs and
+topology do not change with the view. See the
+[four-view examples](../examples/output/views-gallery.svg).
+
+Each handle opening has a longer near edge, with the shorter far edge ending
+on it just inside the tips. The near edge is lower when viewed from below and
+upper when viewed from above. The small side-dependent overlap reverses when
+the horizontal view reverses. This uses trimmed geometry and requires no white
+masking, including on colored backgrounds. Boundaries occupying handle tips
+retain their exact attachments. In D3-style rows, the outer contour connects
+directly to the outermost collars; a fixed end boundary has a short neck.
+
+`Presentation.faces_viewer(normal)` exposes the convention for future genus
+curve routing. A curve segment's local surface normal must be known before
+assigning its hidden style; vertical screen position alone is insufficient.
 
 Changes from the previous alpha default:
 
-- Height 100 replaces 170; openings are shallow rather than tall pointed lenses.
+- Height is automatic (100, or 150 with side pairs); openings are shallow.
 - The top/bottom contour no longer scallops once per handle.
 - Left/right pairs open sideways rather than sitting near the top corners.
 - Omitted boundary radii and pair positions are automatic; explicit numerical

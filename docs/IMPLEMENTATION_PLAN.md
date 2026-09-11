@@ -13,8 +13,11 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
   higher-genus schematics, Type I/II boundaries, SVG/TikZ, LaTeX inclusion, CLI.
 - Already implemented does not mean visually approved: the current higher-genus
   silhouettes and handle openings must be redesigned using the supplied SVGs.
-- P1 now implements the reference-based genus presentation; 52 tests pass on
-  Python 3.9 and 3.12. P2-P8 remain unfinished. See HANDOFF.md for the latest step.
+- P1 implements the reference-based genus presentation, including the September
+  11 refinement: independent above/below and left/right views, overlapping hole
+  edges, direct end collars, and roomier side pairs. See HANDOFF.md for checks.
+- P2 remains unfinished; its initial work is preserved as the unapplied patch
+  `docs/checkpoints/p2-circular-boundaries.patch`. P3-P8 have not started.
 - Existing TikZ/LaTeX support stays available. Extend it for the new features
   **only after the SVG geometry, topology, routing, examples, and tests work**.
 
@@ -22,7 +25,7 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
 | --- | --- | --- | --- |
 | P0 | Preserve references, inspect priorities, write portable plan | Complete |
 | P1 | Replace default higher-genus visual geometry | Complete | P0 |
-| P2 | True circular planar boundaries, horizontal arrangement first | Not started | P0 |
+| P2 | True circular planar boundaries, horizontal arrangement first | Partial work saved as patch; resume next | P0 |
 | P3 | Specify and validate disk-complement cut systems | Not started | P0 |
 | P4 | Standard numbered genus cut systems and arc/curve routing | Not started | P1, P3 |
 | P5 | General planar configurations, cut systems, daisy overlays | Not started | P2, P3 |
@@ -71,6 +74,17 @@ mathematical implementation stages; split them into commits as described below.
 10. Preserve all 114 supplied SVGs as references, including apparent variants
     and duplicates. Archiving them does not mean reimplementing every relation
     or every panel in all 114 files in this cycle.
+11. September 11 viewing requirements: support independent above/below and
+    left/right views. D3 is below/right; D2A is above/right. Facing boundaries
+    show full rims, opposite boundaries have hidden inward halves. Handle holes
+    have a longer near edge and a partially occluded shorter far edge. Future
+    overlaid arcs and closed curves must use the same local visibility convention.
+    Keep the original reference contours as the visual standard: direct smooth
+    left attachments, an actual right collar, rounder transitions, and broad,
+    well-separated side pairs on a taller E2-style body.
+12. Stop at tested, committed, pushed checkpoints with a precise portable handoff
+    before compute is exhausted. Preserve unfinished work explicitly; do not
+    leave a future AI to recover its status from the transcript.
 
 ## Visual specification from inspected sources
 

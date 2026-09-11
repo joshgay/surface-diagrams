@@ -1,4 +1,6 @@
 import unittest
+from dataclasses import replace
+from math import hypot
 from xml.etree import ElementTree as ET
 
 from surface_diagrams import GenusSurface, TypeIBoundary, BoundaryPair, Style, render_svg
@@ -16,8 +18,8 @@ class GenusTest(unittest.TestCase):
             cubic = commands[1][1:]
             width = cubic[-2]-start[0]
             midpoint = abs((start[1]+3*cubic[1]+3*cubic[3]+cubic[5])/8)
-            self.assertGreater(width, surface.handle_spacing*.55)
-            self.assertGreater(midpoint*2/width, .2)
+            self.assertGreater(width, surface.handle_spacing*.50)
+            self.assertGreater(midpoint*2/width, .17)
             self.assertLess(midpoint*2/width, .4)
 
     def test_default_top_has_no_per_handle_scallops(self):
@@ -60,11 +62,91 @@ class GenusTest(unittest.TestCase):
             self.assertEqual(r.tangent[0], 0)
             self.assertEqual(r.anchors[0][0], r.anchors[1][0])
 
-    def test_silhouette_and_handle_reflection(self):
+    def test_silhouette_reflection_and_view_reversal(self):
         p = presentation(GenusSurface(type_i=(TypeIBoundary(2),), type_ii=(BoundaryPair(),)))
-        for commands in p.contours+p.handles:
+        for commands in p.contours:
             reflected = _transform(commands, lambda x, y: (x, -y))
-            self.assertIn(reflected, p.contours+p.handles)
+            self.assertIn(reflected, p.contours)
+        above = presentation(GenusSurface(type_i=(TypeIBoundary(2),), type_ii=(BoundaryPair(),),
+                                          view_vertical='above'))
+        self.assertEqual(above.contours, p.contours)
+        self.assertEqual(above.handles, tuple(_transform(c, lambda x,y: (x,-y)) for c in p.handles))
+
+    def test_four_views_expose_correct_boundary_faces(self):
+        surface = GenusSurface(type_i=tuple(TypeIBoundary(i) for i in range(1,7)),
+                               type_ii=(BoundaryPair(),))
+        for vertical in ('above','below'):
+            for horizontal in ('left','right'):
+                with self.subTest(vertical=vertical, horizontal=horizontal):
+                    p = presentation(replace(surface, view_vertical=vertical, view_horizontal=horizontal))
+                    rims = {r.id:r for r in p.rims}
+                    self.assertEqual(rims['fixed-1'].hidden_inner, horizontal == 'right')
+                    self.assertEqual(rims['fixed-6'].hidden_inner, horizontal == 'left')
+                    self.assertEqual(rims['fixed-2'].hidden_inner, horizontal == 'left')
+                    self.assertEqual(rims['fixed-3'].hidden_inner, horizontal == 'right')
+                    self.assertEqual(rims['pair-1-upper'].hidden_inner, vertical == 'below')
+                    self.assertEqual(rims['pair-1-lower'].hidden_inner, vertical == 'above')
+                    for r in p.rims:
+                        self.assertEqual(p.faces_viewer(r.normal), not r.hidden_inner)
+                    paths = p.drawing(Style()).paths
+                    self.assertEqual(sum(path.dashed for path in paths), sum(r.hidden_inner for r in p.rims))
+                    ET.fromstring(render_svg(replace(surface, view_vertical=vertical, view_horizontal=horizontal)))
+
+    def test_side_pairs_visibility_follows_horizontal_view(self):
+        base = GenusSurface(type_ii=(BoundaryPair('left'),BoundaryPair('right')))
+        for horizontal in ('left','right'):
+            p = presentation(replace(base, view_horizontal=horizontal))
+            for r in p.rims:
+                self.assertEqual(r.hidden_inner, (r.x < 0) == (horizontal == 'right'))
+
+    def test_hole_overlap_is_real_geometry_in_every_view(self):
+        def point(c,t):
+            a = c[0][1:]
+            b,cc,d = c[1][1:3],c[1][3:5],c[1][5:7]
+            return tuple((1-t)**3*a[i]+3*t*(1-t)**2*b[i]+3*t*t*(1-t)*cc[i]+t**3*d[i]
+                         for i in (0,1))
+        for vertical in ('above','below'):
+            for horizontal in ('left','right'):
+                p = presentation(GenusSurface(3,view_vertical=vertical,view_horizontal=horizontal))
+                for near,far in zip(p.handles[::2],p.handles[1::2]):
+                    self.assertLess(near[0][1], far[0][1])
+                    self.assertGreater(near[-1][-2],far[-1][-2])
+                    samples = [point(near,i/1000) for i in range(1,1000)]
+                    for end in (far[0][1:],far[-1][-2:]):
+                        self.assertLess(min(hypot(x-end[0],y-end[1]) for x,y in samples),1e-8)
+                    self.assertEqual(point(near,.5)[1] > point(far,.5)[1], vertical == 'above')
+
+    def test_horizontal_view_mirrors_hole_occlusion(self):
+        right = presentation(GenusSurface(1)).handles
+        left = presentation(GenusSurface(1,view_horizontal='left')).handles
+        for r,l in zip(right,left):
+            # Reverse the reflected cubic to compare paths in left-to-right order.
+            points = [r[0][1:],r[1][1:3],r[1][3:5],r[1][5:7]]
+            expected = [(-x,y) for x,y in reversed(points)]
+            actual = [l[0][1:],l[1][1:3],l[1][3:5],l[1][5:7]]
+            for a,b in zip(actual,expected):
+                for x,y in zip(a,b):
+                    self.assertAlmostEqual(x,y)
+
+    def test_side_pair_defaults_give_room_and_larger_openings(self):
+        surface = GenusSurface(3,type_ii=(BoundaryPair('left'),BoundaryPair('right'),
+                                         BoundaryPair(),BoundaryPair()))
+        self.assertGreater(surface.height,GenusSurface(3).height)
+        self.assertEqual(replace(surface,height=120).height,120)
+        rims = {r.id:r for r in presentation(surface).rims}
+        left = rims['pair-1-upper']
+        self.assertGreater(left.radius,25)
+        self.assertGreater(left.y-left.radius,20)
+        self.assertGreater(rims['pair-4-upper'].x-rims['pair-3-upper'].x,200)
+
+    def test_d3_end_contours_join_directly_to_top_rims(self):
+        p = presentation(GenusSurface(3,type_i=(TypeIBoundary(8),),type_ii=(BoundaryPair(),)*6))
+        end = next(r for r in p.rims if r.id == 'fixed-8')
+        for anchor in end.anchors:
+            c = next(c for c in p.contours if c[-1][-2:] == anchor)
+            self.assertEqual(len(c),2)
+            self.assertAlmostEqual(c[-1][-3],anchor[1])
+            self.assertLess(c[-1][-4],anchor[0])
 
     def test_every_rim_anchor_joins_an_actual_contour(self):
         for surface in (
@@ -144,6 +226,8 @@ class GenusTest(unittest.TestCase):
 
     def test_invalid_boundary_geometry(self):
         for factory in (lambda: GenusSurface(0),
+                        lambda: GenusSurface(view_vertical='sideways'),
+                        lambda: GenusSurface(view_horizontal='above'),
                         lambda: GenusSurface(type_i=(TypeIBoundary(7),)),
                         lambda: GenusSurface(type_i=(TypeIBoundary(1), TypeIBoundary(1))),
                         lambda: BoundaryPair('inside'),

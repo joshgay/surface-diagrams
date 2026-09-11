@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 334.5 137.5" width="669" height="275" role="img">
 <title>Optional second handle arc</title>
-<path class="surface-outline" d="M 18.75 68.75 C 18.75 33.75 33.05 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 18.75 68.75 C 18.75 103.75 33.05 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 44.75 35.25 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 92.75 35.25 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 57.25 24.75 C 130.583333333 25.19 203.916666667 25.19 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 57.25 112.75 C 130.583333333 112.31 203.916666667 112.31 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 315.75 68.75 C 315.75 33.75 301.45 24.75 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 315.75 68.75 C 315.75 103.75 301.45 112.75 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 79.25 68.75 C 95.09 55.25 129.41 55.25 145.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 79.25 68.75 C 95.09 82.25 129.41 82.25 145.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 189.25 68.75 C 205.09 55.25 239.41 55.25 255.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 189.25 68.75 C 205.09 82.25 239.41 82.25 255.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle-back" d="M 77.27 70.37 C 89.15 91.025 135.35 91.025 147.23 70.37" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle-back" d="M 187.27 70.37 C 199.15 91.025 245.35 91.025 257.23 70.37" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 315.75 68.75 C 315.75 44.75 299.25 24.75 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 315.75 68.75 C 315.75 92.75 299.25 112.75 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 66.55 C 89.15 84.15 135.35 84.15 145.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 83.485078925 71.51188 C 95.75 56.65 128.75 56.65 142.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 189.25 66.55 C 199.15 84.15 245.35 84.15 255.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 193.485078925 71.51188 C 205.75 56.65 238.75 56.65 252.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle-back" d="M 77.27 70.07 C 89.15 86.9 135.35 86.9 147.23 70.07" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle-back" d="M 187.27 70.07 C 199.15 86.9 245.35 86.9 257.23 70.07" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

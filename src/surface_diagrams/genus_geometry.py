@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from .primitives import Drawing, Path
 
 _KAPPA = 0.5522847498307936
-_FOOTPRINT = 1.2
+_FOOTPRINT = 1.32
 
 
 def _transform(commands, transform):
@@ -63,6 +63,14 @@ class Presentation:
     back_handles: tuple
     rims: tuple
     show_axis: bool
+    view_vertical: str
+    view_horizontal: str
+
+    def faces_viewer(self, normal):
+        """Shared visibility convention for rims and future projected curves."""
+        vx = 1 if self.view_horizontal == "right" else -1
+        vy = 1 if self.view_vertical == "above" else -1
+        return normal[0]*vx + normal[1]*vy > 0
 
     def drawing(self, style):
         if any(r.depth*2 <= style.outline_width for r in self.rims):
@@ -99,6 +107,9 @@ def _placements(surface, region, low, high):
     positions = []
     for j, (index, pair) in enumerate(entries):
         fraction = (j+.5)/count if pair.position is None else .08 + .84*pair.position
+        if (pair.position is None and region == "top" and count == 2
+                and any(p.side in ("left", "right") for p in surface.type_ii)):
+            fraction = .16 + .68*j
         positions.append((low+(high-low)*fraction, index, pair))
     positions.sort()
     result = []
@@ -110,7 +121,7 @@ def _placements(surface, region, low, high):
                 clearance = min(clearance, (x-positions[j-1][0])/2)
             if j+1 < count:
                 clearance = min(clearance, (positions[j+1][0]-x)/2)
-            radius = min(natural, clearance*.75)
+            radius = min(natural, clearance*.70)
         else:
             radius = pair.radius
         if radius <= 0 or x-_FOOTPRINT*radius <= low or x+_FOOTPRINT*radius >= high:
@@ -137,57 +148,121 @@ def presentation(surface):
             raise ValueError("Type I boundary too large; increase height/spacing or reduce radius")
         fixed[boundary.slot] = radius
     lr, rr = fixed.get(1, 0), fixed.get(2*surface.genus+2, 0)
+    vx = 1 if surface.view_horizontal == "right" else -1
+    vy = 1 if surface.view_vertical == "above" else -1
+    def hidden(normal):
+        return normal[0]*vx + normal[1]*vy < 0
     # Smooth sides and an almost flat top, with no scalloping at each handle.
     # Side charts use u=y and outward v=+/-x, so collars open sideways.
-    left_chain = [((lr, rx), (hy*.7, rx), (base, -left+spacing*.22), (base, -left))]
-    right_chain = [((rr, rx), (hy*.7, rx), (base, right+spacing*.22), (base, right))]
+    def side_chain(radius, end):
+        if radius:
+            # The rim has a short horizontal neck before flaring into the body.
+            return [((radius, rx), (radius, rx-spacing*.17),
+                     (base, end+spacing*.19), (base, end))]
+        return [((0, rx), (hy*.48, rx),
+                 (base, end+spacing*.20), (base, end))]
+    left_chain = side_chain(lr, -left)
+    right_chain = side_chain(rr, right)
     top_chain = [((left, base), (left+(right-left)/3, base*.99),
                   (right-(right-left)/3, base*.99), (right, base))]
     contours, rims = [], []
+    has_top = any(_region(p) == "top" for p in surface.type_ii)
+    direct_ends = {side: has_top and not any(_region(p) == side for p in surface.type_ii)
+                   for side in ("left", "right")}
+    end_x = {"left": -rx, "right": rx}
+    if has_top:
+        top_necks = _placements(surface, "top", left, right)
+        a,ra,_ = top_necks[0]
+        b,rb,_ = top_necks[-1]
+        direct_ends["left"] &= a-ra < left+spacing*.31
+        direct_ends["right"] &= b+rb > right-spacing*.31
+        if direct_ends["left"]:
+            end_x["left"] = a-ra-spacing*.20
+        if direct_ends["right"]:
+            end_x["right"] = b+rb+spacing*.20
     for region, chain, transform, tangent, normal in (
         ("left", left_chain, lambda u,v: (-v,u), (0,1), (-1,0)),
         ("top", top_chain, lambda u,v: (u,v), (1,0), (0,1)),
         ("right", right_chain, lambda u,v: (v,u), (0,1), (1,0)),
     ):
-        low, high = chain[0][0][0], chain[-1][-1][0]
-        necks = _placements(surface, region, low, high)
-        parts, attachments = _neck_contour(chain, necks)
+        if direct_ends.get(region, False):
+            continue
+        entries = [(i,p) for i,p in enumerate(surface.type_ii) if _region(p) == region]
+        if (region in ("left", "right") and len(entries) == 1
+                and entries[0][1].position is None and chain[0][0][0] == 0):
+            # A side pair straddles the body's shoulder, not a tiny slot in it.
+            # This permits the broad end openings and deep middle recess in E2.
+            index, pair = entries[0]
+            radius = min(spacing*.26, hy*.36) if pair.radius is None else pair.radius
+            center = hy*.68
+            if radius >= center*.85:
+                raise ValueError("boundary pair cannot fit in its region; reduce radius")
+            inner, outer = center-radius, center+radius
+            end = chain[-1][-1][1]
+            parts = [(("M", 0, rx-spacing*.16),
+                      ("C", inner*_KAPPA, rx-spacing*.16,
+                       inner, rx-spacing*.16*_KAPPA, inner, rx)),
+                     (("M", outer, rx),
+                      ("C", outer, rx-spacing*.18, base, end+spacing*.18, base, end))]
+            attachments = [(center, rx, radius, index)]
+        else:
+            low, high = chain[0][0][0], chain[-1][-1][0]
+            necks = _placements(surface, region, low, high)
+            parts, attachments = _neck_contour(chain, necks)
+        if region == "top" and attachments:
+            if direct_ends["left"]:
+                u,v,r,_ = attachments[0]
+                tip = end_x["left"]
+                control = (tip+spacing*.12, lr) if lr else (tip, hy*.36)
+                parts[0] = (("M", tip, lr),
+                            ("C", *control, u-r, v-hy*.34, u-r, v))
+            if direct_ends["right"]:
+                u,v,r,_ = attachments[-1]
+                tip = end_x["right"]
+                control = (tip-spacing*.12, rr) if rr else (tip, hy*.36)
+                parts[-1] = (("M", u+r, v),
+                             ("C", u+r, v-hy*.34, *control, tip, rr))
         for commands in parts:
             upper = _transform(commands, transform)
             contours.extend((upper, _transform(upper, lambda x,y: (x,-y))))
         for u, v, radius, index in attachments:
             x, y = transform(u, v)
-            # Fixed viewing convention follows the references: inward halves
-            # of upper and left-facing rims are hidden, lower/right openings
-            # expose the full rim. Reflection changes geometry, not this view.
             for sign, suffix in ((1,"upper"), (-1,"lower")):
+                outward = (normal[0],sign*normal[1])
                 rims.append(Rim(f"pair-{index+1}-{suffix}", "type-ii-boundary",
                                 x, sign*y, radius, (tangent[0],sign*tangent[1]),
-                                (normal[0],sign*normal[1]),
-                                region == "left" or (region == "top" and sign == 1)))
-    for slot, x, radius, normal in ((1, -rx, lr, (-1,0)),
-                                   (2*surface.genus+2, rx, rr, (1,0))):
+                                outward, hidden(outward)))
+    for slot, x, radius, normal in ((1, end_x["left"], lr, (-1,0)),
+                                   (2*surface.genus+2, end_x["right"], rr, (1,0))):
         if radius:
             rims.append(Rim(f"fixed-{slot}", "type-i-boundary", x, 0, radius,
-                            (0,1), normal, normal[0] < 0))
+                            (0,1), normal, hidden(normal)))
     handles, back_handles = [], []
-    hr, hh = spacing*.30, hy*.27
+    hr, hh = spacing*.30, min(hy*.22, spacing*.13)
     for index in range(surface.genus):
         x = left+(index+.5)*spacing
         rleft, rright = fixed.get(2*index+2, 0), fixed.get(2*index+3, 0)
-        for sign in (1,-1):
-            handles.append((("M", x-hr, sign*rleft),
-                            ("C", x-hr*.52, sign*hh, x+hr*.52, sign*hh, x+hr, sign*rright)))
+        # The near edge extends beyond the far edge, whose endpoints terminate
+        # on it. Trimming geometry (rather than painting white) keeps the
+        # occlusion correct on transparent and colored backgrounds.
+        near = ((x-hr, vy*rleft if rleft else -vy*hh*.20),
+                (x-hr*.70, vy*hh*1.4), (x+hr*.70, vy*hh*1.4),
+                (x+hr, vy*rright if rright else -vy*hh*.20))
+        a = (x-hr, -vy*rleft) if rleft else _split(near, .085+.02*vx)[0][-1]
+        b = (x+hr, -vy*rright) if rright else _split(near, .915+.02*vx)[0][-1]
+        far = (a, (x-hr*.50, -vy*hh*1.1), (x+hr*.50, -vy*hh*1.1), b)
+        handles.extend((("M", *c[0]), ("C", *c[1], *c[2], *c[3])) for c in (near, far))
         for slot, bx, br, normal in ((2*index+2, x-hr, rleft, (1,0)),
                                      (2*index+3, x+hr, rright, (-1,0))):
             if br:
                 rims.append(Rim(f"fixed-{slot}", "type-i-boundary", bx, 0, br,
-                                (0,1), normal, normal[0] < 0))
+                                (0,1), normal, hidden(normal)))
         if surface.handle_style == "balloon" and not (rleft or rright):
-            back_handles.append((("M", x-hr*1.06, -hh*.12),
-                                 ("C", x-hr*.70, -hh*1.65, x+hr*.70, -hh*1.65, x+hr*1.06, -hh*.12)))
+            back_handles.append((("M", x-hr*1.06, vy*hh*.12),
+                                 ("C", x-hr*.70, vy*hh*1.65, x+hr*.70, vy*hh*1.65, x+hr*1.06, vy*hh*.12)))
     return Presentation(surface.width, surface.height, tuple(contours), tuple(handles),
-                        tuple(back_handles), tuple(rims), surface.show_axis)
+                        tuple(back_handles), tuple(rims), surface.show_axis,
+                        surface.view_vertical, surface.view_horizontal)
 
 
 def _split(cubic, t):
@@ -236,14 +311,14 @@ def _neck_contour(chain, necks):
         for _,c1,c2,end in before:
             commands.append(("C", *c1,*c2,*end))
         ya,yb = before[-1][-1][1],after[0][0][1]
-        y = max(ya,yb)+.45*radius
+        y = max(ya,yb)+.52*radius
         # Match the existing contour tangent at each cut. The other end is
         # tangent to the collar axis, so there is no kink at the rim anchor.
         end_control = before[-1][-2]
         start_control = after[0][1]
         slope_a = (ya-end_control[1])/(a-end_control[0])
         slope_b = (start_control[1]-yb)/(start_control[0]-b)
-        step = (_FOOTPRINT-1)*radius*.65
+        step = (_FOOTPRINT-1)*radius*.90
         commands.append(("C", a+step,ya+slope_a*step, x-radius,y-radius*.25, x-radius,y))
         parts.append(tuple(commands))
         commands = [("M",x+radius,y), ("C",x+radius,y-radius*.25,b-step,yb-slope_b*step,b,yb)]

@@ -50,24 +50,37 @@ class BoundaryPair:
 class GenusSurface:
     """A finite genus surface with an attractive default horizontal presentation.
 
-    Only genus and boundary data are normally needed. Spacing, height and the
-    alternate balloon handle style are optional appearance overrides.
+    Only genus and boundary data are normally needed. Height is automatic:
+    100 normally, 150 with side pairs. Spacing, height and the alternate balloon
+    handle style are optional appearance overrides. Independent vertical and
+    horizontal views default to below/right, following the D3 reference.
     """
     genus: int = 2
     handle_spacing: float = 110
-    height: float = 100
+    height: Optional[float] = None
     handle_style: str = "lens"
     show_axis: bool = False
     type_i: tuple = ()
     type_ii: tuple = ()
+    view_vertical: str = "below"
+    view_horizontal: str = "right"
 
     def __post_init__(self):
         if type(self.genus) is not int or self.genus < 1:
             raise ValueError("genus must be a positive integer")
+        object.__setattr__(self, "type_ii", tuple(self.type_ii))
+        if self.height is None:
+            side_pairs = any(isinstance(p, BoundaryPair) and p.side in ("left", "right")
+                             for p in self.type_ii)
+            object.__setattr__(self, "height", 150 if side_pairs else 100)
         for name in ("handle_spacing", "height"):
             _number(getattr(self, name), name, positive=True)
         if self.handle_style not in ("lens", "balloon"):
             raise ValueError("handle_style must be 'lens' or 'balloon'")
+        if self.view_vertical not in ("above", "below"):
+            raise ValueError("view_vertical must be 'above' or 'below'")
+        if self.view_horizontal not in ("left", "right"):
+            raise ValueError("view_horizontal must be 'left' or 'right'")
         if not isinstance(self.show_axis, bool):
             raise ValueError("show_axis must be boolean")
         object.__setattr__(self, "type_i", tuple(self.type_i))

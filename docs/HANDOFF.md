@@ -5,11 +5,15 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 
 ## Resume here
 
-**P0 and P1 complete; P2 next. P2-P8 have not started.**
+**P0 and P1 complete, including the September 11 visual refinement.
+P2 is unfinished and parked as a patch. P3-P8 have not started.**
 
-Next action: implement P2, actual circular planar boundaries in horizontal rows.
-Read `model.py`, `layout.py`, and `curves.py`. Boundary arcs must terminate on
-the circle rim and remain outside hole interiors; preserve the old dot behavior.
+Next action: resume P2, actual circular planar boundaries in horizontal rows.
+The working tree deliberately excludes its unfinished API. First read
+[the saved P2 notes](checkpoints/README.md), then apply
+`git apply docs/checkpoints/p2-circular-boundaries.patch` after checking git status.
+Read `model.py`, `layout.py`, `curves.py`, and `svg.py`. Boundary arcs must terminate
+on the circle rim and remain outside hole interiors; preserve old dot behavior.
 Keep generalized routing and new TikZ geometry for their later stages.
 
 Repository root on Richard's machine: `C:\GitHub\surface-diagrams`.
@@ -38,6 +42,17 @@ All source links below are repository-relative so another AI can work from a clo
 - P1 verification: 52 tests pass on Python 3.9.7 and 3.12.14. The SVG genus gallery
   and original-versus-generated comparison were visually inspected. Existing
   TikZ output was regenerated from shared primitives; no exporter logic changed.
+- September 11 refinement: 58 tests pass on Python 3.9.7 and 3.12.14. Python 3.9
+  requires `PYTHONPATH` pointing to this checkout's `src` (it has no installed
+  package). New tests
+  cover all four views, boundary visibility including handle-tip boundaries,
+  true trimmed hole overlap, mirrored occlusion, direct collar joins, and roomy
+  side-pair defaults. The updated D3/D2A/E2 comparison and four-view sheet were
+  visually inspected, along with all 17 genus gallery panels. Gallery now has
+  57 scenarios. SVG and existing TikZ outputs were regenerated; Tectonic compiled
+  the gallery successfully. No TikZ exporter code was changed, and this is not P7.
+- The unfinished P2 diff was saved byte-for-byte through git diff and reversed
+  out of the working tree. `git apply --check` confirms it can be restored.
 
 ## User decisions, in priority order
 
@@ -56,6 +71,12 @@ All source links below are repository-relative so another AI can work from a clo
 8. Extend TikZ/LaTeX for the new work last. The existing exporter stays usable.
 9. Include all supplied reference diagrams in the repository. This is an archive,
    not a request to implement all of their mapping-class calculations.
+10. Above/below and left/right are independent choices. D3 is below/right and
+    D2A is above/right. Boundary hidden halves and handle overlap follow those
+    views; future curves must also honor them. See `docs/genus-presentation.md`.
+11. Stop with a tested, committed, pushed checkpoint and portable next steps
+    before compute runs out. The user prefers to stay with Codex, but needs the
+    option to hand the repository to another AI without losing work.
 
 ## Important implementation traps
 
@@ -113,6 +134,7 @@ This is an environment issue, not a package defect. Do not bypass a denied actio
 | --- | --- | --- | --- |
 | P0 | Reference inspection; complete SVG inventory; controlling plan; this handoff | 44 baseline tests; 9 reference previews inspected | Start P1 |
 | P1 | Reference-based genus geometry, automatic collars, rim visibility, comparison sheet | 52 tests on Python 3.9/3.12; visual SVG checks; 53 gallery scenarios | Start P2 |
+| P1 refinement, September 11 | Four views, trimmed hole overlap, smooth direct collars, taller side-pair defaults; 57 gallery examples | 58 tests on Python 3.9/3.12; comparison, four-view and genus sheets inspected; existing TikZ gallery compiles | Restore saved P2 patch and finish P2 |
 
 Append a row or update it at each meaningful checkpoint. Record the actual files,
 commit, tests, failures, and next action. Never make a future AI infer status from

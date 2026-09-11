@@ -1,5 +1,6 @@
 """Compare finite default surfaces with selected crops of the original SVGs."""
 from copy import deepcopy
+from dataclasses import replace
 from html import escape
 from pathlib import Path
 import re
@@ -17,7 +18,7 @@ def make_reference_comparison(destination=None):
                                 BoundaryPair(), BoundaryPair()))
     examples = [
         ("D3HyperellipticLifted.svg", (0, 0, 205, 65), d3, "Genus 3: six pairs and an end boundary"),
-        ("D2AHyperellipticSurfaces.svg", (70, 238, 205, 63), d3, "Same default, no appearance overrides"),
+        ("D2AHyperellipticSurfaces.svg", (70, 238, 205, 63), replace(d3, view_vertical="above"), "Same surface, viewed from above/right"),
         ("E2MCKHOddGenusLiftedWithBoundaries.svg", (4, 4, 185, 76), e2, "Genus 3: side pairs and two top/bottom pairs"),
     ]
     lines = ['<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="940" viewBox="0 0 1100 940">',

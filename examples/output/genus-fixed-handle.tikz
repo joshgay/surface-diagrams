@@ -6,25 +6,25 @@
 \path[use as bounding box] (-167.25,-68.75) rectangle (167.25,68.75);
 \clip (-167.25,-68.75) rectangle (167.25,68.75);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-148.5,0) .. controls (-148.5,35) and (-134.2,44) .. (-110,44);
+\draw[draw=sdcolor0,line width=1.125bp] (-148.5,0) .. controls (-148.5,24) and (-132,44) .. (-110,44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-148.5,0) .. controls (-148.5,-35) and (-134.2,-44) .. (-110,-44);
+\draw[draw=sdcolor0,line width=1.125bp] (-148.5,0) .. controls (-148.5,-24) and (-132,-44) .. (-110,-44);
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-110,44) .. controls (-36.6666666667,43.56) and (36.6666666667,43.56) .. (110,44);
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-110,-44) .. controls (-36.6666666667,-43.56) and (36.6666666667,-43.56) .. (110,-44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (148.5,0) .. controls (148.5,35) and (134.2,44) .. (110,44);
+\draw[draw=sdcolor0,line width=1.125bp] (148.5,0) .. controls (148.5,24) and (132,44) .. (110,44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (148.5,0) .. controls (148.5,-35) and (134.2,-44) .. (110,-44);
+\draw[draw=sdcolor0,line width=1.125bp] (148.5,0) .. controls (148.5,-24) and (132,-44) .. (110,-44);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-88,12) .. controls (-72.16,13.5) and (-37.84,13.5) .. (-22,12);
+\draw[draw=sdcolor0,line width=1.125bp] (-88,-12) .. controls (-78.1,-15.4) and (-31.9,-15.4) .. (-22,-12);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-88,-12) .. controls (-72.16,-13.5) and (-37.84,-13.5) .. (-22,-12);
+\draw[draw=sdcolor0,line width=1.125bp] (-88,12) .. controls (-71.5,12.1) and (-38.5,12.1) .. (-22,12);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (22,0) .. controls (37.84,13.5) and (72.16,13.5) .. (88,0);
+\draw[draw=sdcolor0,line width=1.125bp] (22,2.2) .. controls (31.9,-15.4) and (78.1,-15.4) .. (88,2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (22,0) .. controls (37.84,-13.5) and (72.16,-13.5) .. (88,0);
+\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,-2.76188) .. controls (38.5,12.1) and (71.5,12.1) .. (85.629335275,-1.00892);
 % type-i-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (-88,-12) .. controls (-86.3431457505,-12) and (-85,-6.62741699797) .. (-85,0) .. controls (-85,6.62741699797) and (-86.3431457505,12) .. (-88,12);
 % type-i-boundary

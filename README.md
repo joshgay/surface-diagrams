@@ -209,8 +209,12 @@ are made by splitting the actual contour, so transparent output works without
 white masking patches. Type I and Type II radii are geometric boundary sizes,
 independent of the planar dot-size settings.
 
-Rim halves carry a fixed viewing convention: the inward halves of upper and
-left-facing rims are dashed; lower/right openings expose their full rim.
+Choose `view_vertical="above"` or `"below"` and `view_horizontal="left"` or
+`"right"`. The default is below/right (D3); above/right matches D2A. Facing rims
+are fully visible and opposite rims have a dashed inward half. Handle openings
+have overlapping edges that reverse with the view. Side pairs automatically get
+a taller body and larger, farther-separated openings. See the
+[four viewing directions](examples/output/views-gallery.svg).
 See [presentation details](docs/genus-presentation.md). This geometric
 presentation does not yet implement genus curve routing or certified cut systems.
 
