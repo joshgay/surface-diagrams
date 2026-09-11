@@ -5,6 +5,27 @@ from surface_diagrams.layout import layout
 
 
 class GenusTest(unittest.TestCase):
+    def test_compact_defaults_and_larger_handle_openings(self):
+        surface=GenusSurface()
+        self.assertLess(surface.width/surface.height,2)
+        d=layout(surface,Style())
+        upper=next(p for p in d.paths if p.role=='handle')
+        start=upper.commands[0][1:]
+        cubic=upper.commands[1][1:]
+        self.assertGreater(cubic[-2]-start[0],surface.handle_spacing*.6)
+        # Actual cubic midpoint, not its taller control polygon.
+        midpoint_y=(start[1]+3*cubic[1]+3*cubic[3]+cubic[5])/8
+        self.assertGreater(midpoint_y,surface.height*.2)
+        self.assertLess(midpoint_y,surface.height*.35)
+
+    def test_top_boundary_necks_protrude_only_slightly(self):
+        surface=GenusSurface(1,type_ii=(BoundaryPair("top"),))
+        d=layout(surface,Style())
+        rim=next(e for e in d.ellipses if e.y>0)
+        silhouette_peak=.96*surface.height/2
+        self.assertGreater(rim.y+rim.ry,silhouette_peak)
+        self.assertLess(rim.y+rim.ry-silhouette_peak,rim.rx)
+
     def test_closed_surfaces_have_requested_handle_count(self):
         for g in (1,2,3,7):
             d=layout(GenusSurface(g),Style())

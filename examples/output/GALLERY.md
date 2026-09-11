@@ -38,6 +38,23 @@ Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thes
 - [Three disjoint arcs](curves-disjoint.svg)
 - [Loop around boundaries and marked points](curves-mixed-loop.svg)
 
+## Directions
+
+![directions examples](directions-gallery.svg)
+
+- [Arc(3, 4): default is straight](directions-adjacent-default.svg)
+- [Arc(3, 4, direction="up")](directions-adjacent-up.svg)
+- [Arc(3, 4, direction="down")](directions-adjacent-down.svg)
+- [Arc(2, 5): default still goes up](directions-nonadjacent-default.svg)
+- [Arc(0, 1): straight from outer boundary](directions-outer-default.svg)
+- [Arc(0, 1, direction="up")](directions-outer-up.svg)
+- [Arc(0, 1, direction="down")](directions-outer-down.svg)
+- [Arc(6, 7): straight to outer boundary](directions-right-default.svg)
+- [Arc(2, 3, cuts=(4,)): itinerary preserved](directions-adjacent-with-cuts.svg)
+- [Straight chain with a curved arc over it](directions-shared-endpoints.svg)
+- [Consecutive boundary dots also join straight](directions-boundary-dots.svg)
+- [Default, up, down on three adjacent pairs](directions-three-directions.svg)
+
 ## Genus
 
 ![genus examples](genus-gallery.svg)

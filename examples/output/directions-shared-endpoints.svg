@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.5 235.5" width="841" height="471" role="img">
+<title>Straight chain with a curved arc over it</title>
+<path class="arc" d="M 72.75 117.75 L 127.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 127.75 117.75 L 182.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 72.75 117.75 A 55 24.8544303797 0 0 1 182.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+</svg>

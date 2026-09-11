@@ -2,7 +2,7 @@
 <title>Nested loops plus an interior arc</title>
 <path class="closed-curve" d="M 40.75 117.75 A 169.5 76.596835443 0 0 1 379.75 117.75 A 169.5 76.596835443 0 0 1 40.75 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="closed-curve" d="M 100.25 117.75 A 110 49.7088607595 0 0 1 320.25 117.75 A 110 49.7088607595 0 0 1 100.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="arc" d="M 182.75 117.75 A 27.5 12.4272151899 0 0 1 237.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 182.75 117.75 L 237.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
 <circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>

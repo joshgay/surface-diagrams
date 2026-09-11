@@ -7,6 +7,7 @@ advertised as a complete implementation of any named Thurston coordinate system.
 from dataclasses import dataclass
 from itertools import permutations
 from math import cos, sin, pi, sqrt
+from typing import Optional
 
 from .primitives import Path, Text
 
@@ -20,8 +21,6 @@ def _validate_common(curve):
     object.__setattr__(curve, "cuts", tuple(curve.cuts))
     for cut in curve.cuts:
         _integer(cut, "cut")
-    if not isinstance(curve.start_up, bool):
-        raise ValueError("start_up must be boolean")
     if len(curve.cuts) > 64:
         raise ValueError("at most 64 cut visits are supported per curve")
     if any(a == b for a, b in zip(curve.cuts, curve.cuts[1:])):
@@ -30,19 +29,29 @@ def _validate_common(curve):
 
 @dataclass(frozen=True)
 class Arc:
-    """Arc(start, end, cuts=(), start_up=True).
+    """Arc(start, end, cuts=(), direction="default").
 
     Objects are numbered 1..n by x position; 0 and n+1 mean the outer ellipse
     tips. Cut i is the open interval between objects i and i+1. The first
-    segment is above the axis when start_up=True; every cut changes sides.
+    segment goes up by default; every cut changes sides. With no cuts, default
+    draws consecutive endpoints or outer-boundary-to-object arcs straight.
+    Explicit direction="up"/"down" always curves. The legacy fourth positional
+    argument and start_up=True/False keyword still select explicit up/down.
     """
     start: int
     end: int
     cuts: tuple = ()
-    start_up: bool = True
+    start_up: Optional[bool] = None
+    direction: str = "default"
 
     def __post_init__(self):
         _validate_common(self)
+        if self.direction not in ("default", "up", "down"):
+            raise ValueError("direction must be 'default', 'up', or 'down'")
+        if self.start_up is not None and not isinstance(self.start_up, bool):
+            raise ValueError("start_up must be boolean or None")
+        if self.start_up is not None and self.direction != "default":
+            raise ValueError("specify direction or legacy start_up, not both")
         _integer(self.start, "start")
         _integer(self.end, "end")
         if self.start == self.end:
@@ -50,6 +59,18 @@ class Arc:
         if self.cuts and (self.cuts[0] in (self.start - 1, self.start)
                           or self.cuts[-1] in (self.end - 1, self.end)):
             raise ValueError("a terminal cut adjacent to its endpoint is nonminimal")
+
+    @property
+    def initial_up(self):
+        return self.start_up if self.start_up is not None else self.direction != "down"
+
+    def is_straight(self, object_count):
+        if self.cuts or self.start_up is not None or self.direction != "default":
+            return False
+        outer = (0, object_count + 1)
+        return ((self.start not in outer and self.end not in outer
+                 and abs(self.start - self.end) == 1)
+                or ((self.start in outer) != (self.end in outer)))
 
 
 @dataclass(frozen=True)
@@ -65,6 +86,8 @@ class Loop:
 
     def __post_init__(self):
         _validate_common(self)
+        if not isinstance(self.start_up, bool):
+            raise ValueError("start_up must be boolean")
         if len(self.cuts) < 2 or len(self.cuts) % 2:
             raise ValueError("a loop needs a positive even number of cut visits")
         if self.cuts[-1] == self.cuts[0]:
@@ -79,13 +102,19 @@ class RoutingError(ValueError):
 class HalfEllipse:
     start: float
     end: float
-    up: bool
+    up: Optional[bool]
     aspect: float
     owner: int
     start_node: int
     end_node: int
 
+    @property
+    def straight(self):
+        return self.up is None
+
     def point(self, t):
+        if self.straight:
+            return (self.start + (self.end - self.start) * t, 0.)
         middle = (self.start + self.end) / 2
         radius = abs(self.end - self.start) / 2
         direction = 1 if self.end > self.start else -1
@@ -94,15 +123,21 @@ class HalfEllipse:
 
 
 def _conflict(a, b):
-    """Exact combinatorial obstruction for chords in the same half-plane."""
+    """Reject chord interleaving, axis overlap, and crossings through the axis."""
+    l, r = sorted(a[:2]); s, t = sorted(b[:2])
+    if a[2] is None and b[2] is None:
+        return max(l, s) < min(r, t)
+    if a[2] is None:
+        return l < s < r or l < t < r
+    if b[2] is None:
+        return s < l < t or s < r < t
     if a[2] != b[2]:
         return False
-    l, r = sorted(a[:2]); s, t = sorted(b[:2])
     return (l < s < r < t or s < l < t < r or (l == s and r == t))
 
 
 def route(surface, style, *, max_states=20000):
-    """Return half-ellipses preserving every crossing of every itinerary.
+    """Return half-ellipses or straight segments, retaining every cut visit.
 
     Adapted from the legacy renderer's node-slot search. Visits to the same
     cut get distinct ordered positions, shared across the upper/lower sides.
@@ -139,8 +174,11 @@ def route(surface, style, *, max_states=20000):
         pairs = list(zip(nodes, nodes[1:]))
         if isinstance(curve, Loop):
             pairs.append((nodes[-1], nodes[0]))
+        first_up = curve.initial_up if isinstance(curve, Arc) else curve.start_up
+        straight = isinstance(curve, Arc) and curve.is_straight(n)
         for index, (a, b) in enumerate(pairs):
-            edges.append((a, b, curve.start_up if index % 2 == 0 else not curve.start_up))
+            up = None if straight else (first_up if index % 2 == 0 else not first_up)
+            edges.append((a, b, up))
             owners.append(owner)
     if node_count > 128:
         raise RoutingError("a diagram supports at most 128 route nodes; split it into panels")
@@ -179,7 +217,7 @@ def route(surface, style, *, max_states=20000):
     if positions is None:
         raise RoutingError("no noncrossing ordering realizes these itineraries together")
     aspect = surface.height / surface.width * style.curve_height
-    segments = tuple(HalfEllipse(positions[a], positions[b], up, aspect, owner, a, b)
+    segments = tuple(HalfEllipse(positions[a], positions[b], up, 0. if up is None else aspect, owner, a, b)
                      for (a, b, up), owner in zip(edges, owners))
     # Protect unrelated dots using the analytic minimum distance from an
     # axis point to a half ellipse (a quadratic in cos(theta)).
@@ -188,6 +226,8 @@ def route(surface, style, *, max_states=20000):
             if point.x in (segment.start, segment.end):
                 continue
             if _axis_distance(segment, point.x) <= dot_radius + style.curve_width / 2:
+                if segment.straight:
+                    raise RoutingError("straight arc meets an unrelated dot; specify direction='up' or 'down', or adjust dot/curve sizes")
                 raise RoutingError("curve clearance is too small near a dot; increase ellipse height or reduce dot/curve sizes")
     return segments
 
@@ -211,6 +251,9 @@ def curve_primitives(surface, style):
         pieces = [p for p in segments if p.owner == owner]
         commands = [("M", pieces[0].start, 0)]
         for p in pieces:
+            if p.straight:
+                commands.append(("L", p.end, 0))
+                continue
             radius = abs(p.end - p.start) / 2
             # Mathematical sweep is reversed by the SVG serializer's y flip.
             sweep = int((p.end < p.start) == p.up)

@@ -38,3 +38,20 @@ found among the Python files in the two reviewed projects. The topology is
 drawn in the thesis's conventional projection, with true contour openings for
 boundary necks. More detailed perspective, front/back curves, and standard
 chain overlays remain separate future work.
+
+
+## TikZ backend (0.1.0a2)
+
+The SVG and TikZ writers consume the same internal Drawing. The TikZ writer
+maps the current half-ellipse paths to native arcs and cubic paths to native
+Bezier controls; it does not sample or reroute curves. Arbitrary rotated SVG
+arc primitives are outside the current internal contract and raise an error.
+
+One unit is 0.75bp in TikZ, corresponding to one CSS pixel at 96 dpi. Coordinates,
+line widths, dash lengths, and label sizes all scale together. Text uses the
+LaTeX document's Roman font rather than a browser-selected serif font.
+
+Serialization follows the [PGF/TikZ path manual](https://tikz.dev/tikz-paths)
+and [transformation behavior](https://tikz.dev/tikz-transformations).
+The LaTeX companion only includes generated figures; mathematical layout stays
+in Python. No runtime dependencies have been added to the Python package.

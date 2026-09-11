@@ -45,8 +45,8 @@ class BoundaryPair:
 @dataclass(frozen=True)
 class GenusSurface:
     genus: int = 2
-    handle_spacing: float = 130
-    height: float = 140
+    handle_spacing: float = 110
+    height: float = 170
     handle_style: str = "lens"
     show_axis: bool = False
     type_i: tuple = ()
@@ -129,7 +129,7 @@ def genus_layout(surface, style):
         if r:
             ellipses.append(Ellipse(x, 0, r*.4, r, "none", style.outline_color, style.outline_width, "type-i-boundary"))
     centers = [left + (i+.5)*spacing for i in range(surface.genus)]
-    hr, hh = spacing*.24, hy*.22
+    hr, hh = spacing*.31, hy*.55
     for index, x in enumerate(centers):
         rleft, rright = fixed.get(2*index+2, 0), fixed.get(2*index+3, 0)
         for sign in (1, -1):
@@ -200,10 +200,10 @@ def _neck_contour(chain, necks):
         for _, c1, c2, end in before:
             commands.append(("C", *c1, *c2, *end))
         ya, yb = before[-1][-1][1], after[0][0][1]
-        y = max(ya,yb) + 1.7*radius
-        commands.append(("C", a, ya+radius, x-radius, y-radius*.7, x-radius, y))
+        y = max(ya,yb) + .6*radius
+        commands.append(("C", a, ya+radius*.35, x-radius, y-radius*.35, x-radius, y))
         parts.append(tuple(commands))
-        commands = [("M", x+radius, y), ("C", x+radius, y-radius*.7, b, yb+radius, b, yb)]
+        commands = [("M", x+radius, y), ("C", x+radius, y-radius*.35, b, yb+radius*.35, b, yb)]
         rims.append((x, y, radius))
         cursor = b
     for _, c1, c2, end in _trim(chain, cursor, chain[-1][-1][0]):

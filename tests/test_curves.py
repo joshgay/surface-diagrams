@@ -5,7 +5,7 @@ import unittest
 from xml.etree import ElementTree as ET
 
 from surface_diagrams import Arc, Loop, PlanarSurface, MarkedPoint, Style, RoutingError, render_svg
-from surface_diagrams.curves import route, _axis_distance
+from surface_diagrams.curves import route, _axis_distance, _conflict
 
 
 class CurvesTest(unittest.TestCase):
@@ -40,6 +40,75 @@ class CurvesTest(unittest.TestCase):
         parts = route(self.surface.with_curves(Arc(0,7)), self.style)
         self.assertEqual(parts[0].start, -self.surface.width/2)
         self.assertEqual(parts[-1].end, self.surface.width/2)
+
+    def test_default_consecutive_arcs_are_straight_in_both_directions(self):
+        for start, end in ((2,3), (3,2), (0,1), (1,0), (6,7), (7,6)):
+            with self.subTest(start=start, end=end):
+                surface = self.surface.with_curves(Arc(start,end))
+                piece, = route(surface,self.style)
+                self.assertTrue(piece.straight)
+                self.assertEqual(piece.point(.5), ((piece.start+piece.end)/2,0))
+                self.assertEqual(_axis_distance(piece,(piece.start+piece.end)/2),0)
+                svg = ET.fromstring(render_svg(surface))
+                path = svg.find("{http://www.w3.org/2000/svg}path")
+                self.assertIn("L",path.attrib["d"])
+                self.assertNotIn("A",path.attrib["d"])
+
+    def test_direction_overrides_and_legacy_calls_are_curved(self):
+        for start,end in ((2,3),(3,2),(0,1),(6,7)):
+            for direction,up in (("up",True),("down",False)):
+                modern, = route(self.surface.with_curves(Arc(start,end,direction=direction)),self.style)
+                legacy, = route(self.surface.with_curves(Arc(start,end,(),up)),self.style)
+                self.assertEqual(modern,legacy)
+                self.assertFalse(modern.straight)
+                self.assertEqual(modern.up,up)
+                self.assertGreater(modern.point(.5)[1]*(1 if up else -1),0)
+
+    def test_nonconsecutive_and_outer_to_outer_defaults_remain_up(self):
+        for surface,arc in ((self.surface,Arc(1,4)), (self.surface,Arc(0,7)),
+                            (PlanarSurface(),Arc(0,1))):
+            p, = route(surface.with_curves(arc),self.style)
+            self.assertIs(p.up,True)
+        self.assertEqual(Arc(1,2).direction,"default")
+
+    def test_default_never_removes_cut_visits(self):
+        for start,end,cuts in ((2,3,(4,)), (0,4,(2,))):
+            default = route(self.surface.with_curves(Arc(start,end,cuts)),self.style)
+            up = route(self.surface.with_curves(Arc(start,end,cuts,direction="up")),self.style)
+            down = route(self.surface.with_curves(Arc(start,end,cuts,direction="down")),self.style)
+            self.assertEqual(default,up)
+            self.assertEqual(len(default),len(cuts)+1)
+            self.assertTrue(all(not p.straight for p in default))
+            self.assertEqual([not p.up for p in up],[p.up for p in down])
+
+    def test_straight_arcs_cannot_overlap_or_meet_cut_crossings(self):
+        for curves in ((Arc(2,3),Arc(3,2)), (Arc(2,3),Loop((2,5)))):
+            with self.assertRaises(RoutingError):
+                render_svg(self.surface.with_curves(*curves))
+        # Shared object endpoints and an enclosing curved arc are permitted.
+        render_svg(self.surface.with_curves(Arc(1,2),Arc(2,3),Arc(1,3)))
+        render_svg(self.surface.with_curves(Arc(2,3),Arc(2,3,direction="up")))
+        for a,b,expected in (((0,4,None),(2,6,True),True),
+                             ((0,4,None),(4,6,True),False),
+                             ((0,4,None),(-1,5,False),False),
+                             ((0,4,None),(2,6,None),True)):
+            self.assertEqual(_conflict(a,b),expected)
+            self.assertEqual(_conflict(b,a),expected)
+
+    def test_outer_straight_arc_rejects_intervening_dots(self):
+        for start,end in ((0,3),(3,0),(4,7),(7,4)):
+            with self.assertRaisesRegex(RoutingError,"straight arc meets"):
+                render_svg(self.surface.with_curves(Arc(start,end)))
+            for direction in ("up","down"):
+                render_svg(self.surface.with_curves(Arc(start,end,direction=direction)))
+
+    def test_invalid_direction_is_rejected(self):
+        for kwargs in ({"direction":"sideways"}, {"direction":None}, {"start_up":1},
+                       {"direction":"up","start_up":True}):
+            with self.assertRaises(ValueError):
+                Arc(1,2,**kwargs)
+        with self.assertRaises(ValueError):
+            Loop((0,2),start_up=None)
 
     def test_loop_closure_and_svg(self):
         surface = self.surface.with_curves(Loop((0,6,5,1)))

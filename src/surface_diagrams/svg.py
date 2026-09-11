@@ -66,7 +66,7 @@ def save_svg(surface: PlanarSurface, path, *, style=None, scale=1, title="Planar
     document = render_svg(surface, style=style, scale=scale, title=title)
     destination = Path(path)
     if destination.suffix.lower() != ".svg":
-        raise ValueError("use an .svg filename; other output formats are not implemented")
+        raise ValueError("use an .svg filename; use save_tikz for TikZ output")
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(document, encoding="utf-8")
     return destination.resolve()

@@ -1,12 +1,15 @@
 # Surface diagrams
 
-A small Python library for surface images, using Richard Buckman's thesis
-conventions: gray dots for planar inner boundaries, blue dots for marked points,
-and an optional outer ellipse. It draws minimal cut-coordinate arcs and loops,
-as well as symmetric higher-genus schematics with boundary rims. SVG output is
-vector artwork: enlarge it without losing sharpness or edit it in a drawing app.
+A Python library for generating diagrams of surfaces for work with mapping class
+groups and other relevant low dimensional geometry and topology. SVG and TikZ output allows
+for arbitrary enlarging without losing sharpness.
 
-This is the first local working version, 0.1.0a1. Python 3.9+; no runtime dependencies.
+This is extremely experimental for now. It is based on older code I wrote a while ago,
+but this is the alpha version, 0.1.0a2. Python 3.9+; no runtime dependencies.
+I will finish editing this readme when the software is in a more finished state. For now
+what is here may be wrong or not yet implemented.
+
+The higher genus surfaces are quite ugly right now so expect them to improve soon.
 
 ## Install and make an image
 
@@ -17,18 +20,11 @@ python -m pip install -e .
 python examples/make_images.py
 ```
 
-The examples create the original five SVGs plus 36 new examples, three overview
-sheets, and a [linked gallery](examples/output/GALLERY.md) in `examples/output/`.
-All 36 constructors are in [examples/gallery.py](examples/gallery.py).
+Examples should demonstrate all current capabilities but feel free to make requests.
+Four SVG overview sheets and a [linked gallery](examples/output/GALLERY.md) are in
+`examples/output/`. All 48 constructors are in [examples/gallery.py](examples/gallery.py).
 
-On Richard's computer a working local environment is already installed:
-
-```powershell
-cd C:\GitHub\surface-diagrams
-.\.venv\Scripts\python.exe examples\make_images.py
-```
-
-Run your own scripts with that same Python, or select it in your editor.
+Run your own scripts with the Python environment where you installed the package.
 For a fresh installation, use recent pip/setuptools: Anaconda pip 21.2 cannot
 perform the editable installation above.
 
@@ -62,7 +58,7 @@ painting commands in the thesis's planar figures (PDF pages 36-38):
 | Element | Default | Customization |
 | --- | --- | --- |
 | Marked points | `#006fff` | `marked_point_color` |
-| Inner boundary dots | `#8b8b8b` | `boundary_color` |
+| Inner boundary components | `#8b8b8b` | `boundary_color` |
 | Curves | `#ff00d4` | `curve_color` |
 | Surface outline | `#000000` | `outline_color` |
 
@@ -111,7 +107,7 @@ directly in Jupyter with the default style via `_repr_svg_()`.
 from surface_diagrams import Arc, Loop
 
 surface = PlanarSurface.row("PPPPPP", spacing=55, height=210, margin=60)
-save_svg(surface.with_curves(Arc(2, 5, cuts=(3,), start_up=False)), "arc.svg")
+save_svg(surface.with_curves(Arc(2, 5, cuts=(3,), direction="down")), "arc.svg")
 save_svg(surface.with_curves(Loop((1, 4))), "loop.svg")
 save_svg(surface.with_curves(Loop((0, 6)), Loop((1, 5)), Arc(3, 4)), "nested.svg")
 ```
@@ -122,10 +118,24 @@ the open horizontal interval between objects i and i+1: the outside intervals
 are 0 and n. Arc endpoints 0 and n+1 are the left/right tips of the outer ellipse.
 Object endpoints connect to the drawn dot's center, including boundary dots.
 
-`Arc(start, end, cuts=(...), start_up=True)` follows the cuts in the supplied
-order, alternating sides after every crossing. Set `start_up=False` to begin
-below. Adjacent equal cuts and terminal cuts adjacent to their endpoint are
-rejected as nonminimal. Start and end must differ.
+`Arc(start, end, cuts=(...), direction="default")` follows the cuts in the
+supplied order, alternating sides after every crossing. Default begins above
+the axis, except that **arcs with no cuts** join consecutive objects, or an
+outer boundary tip and an object, with a straight horizontal segment.
+Set `direction="up"` or `direction="down"` to force a curved arc on that side,
+even between consecutive objects. An explicit cut itinerary is never shortened.
+
+For example, `Arc(2, 3)` is straight, `Arc(2, 3, direction="up")` curves up,
+and `Arc(2, 3, direction="down")` curves down. `Arc(1, 4)` still curves up.
+See the [direction comparison gallery](examples/output/directions-gallery.svg).
+Existing `start_up=True/False` keywords and fourth positional booleans still
+mean explicit up/down; do not combine them with a nondefault `direction`.
+
+A straight arc cannot pass through unrelated dots or another curve's cut
+crossing, or overlap another straight arc. In particular, a direct outer-tip
+arc to a nonnearest object is rejected if intervening dots obstruct it: choose
+`"up"` or `"down"` to go around them. Adjacent equal cuts and terminal cuts
+adjacent to their endpoint are rejected as nonminimal. Start and end must differ.
 
 `Loop((c0, c1, ...), start_up=True)` starts at the first cut and returns to it
 after the final cut. A loop needs an even number of crossings and no cyclic
@@ -139,10 +149,11 @@ routed together and must be disjoint except for shared arc endpoints.
 
 Minimality alone does not imply a simple curve. The renderer searches for a
 noninterleaving ordering of repeated visits to each interval, retaining the
-same visit position above and below. It draws nested half-ellipses under a
+same visit position above and below. Curved pieces are nested half-ellipses under a
 common vertical scaling: this preserves disjoint centerlines and places them
 inside the outer ellipse. Joins have matching vertical tangent directions.
-An analytic distance check prevents curves from entering unrelated dots.
+Straight segments also participate in intersection checks. An analytic distance
+check prevents either kind of segment from entering unrelated dots.
 
 Unsupported or impossible routes raise `RoutingError`. A failure may mean
 insufficient spacing, no noncrossing ordering, or a search limit; the message
@@ -166,7 +177,8 @@ save_svg(GenusSurface(
 ```
 
 The contour and lens-shaped handle openings follow the thesis's Figure 2.2
-projection. `handle_spacing` and `height` adjust their proportions; optional
+projection, with compact defaults (`handle_spacing=110`, `height=170`) and
+larger openings. `handle_spacing` and `height` adjust their proportions; optional
 `handle_style="balloon"` adds the second handle arc. This extra arc is omitted
 on handles occupied by Type I boundaries to keep their rims clear. These are
 surface schematics; handle openings are not counted as boundary components.
@@ -182,26 +194,76 @@ boundary components, exchanged by the modeled half-turn. Choose `left`, `right`,
 or `top`; `bottom` and `top-bottom` are aliases of `top`, because both members
 are always drawn. `position` ranges from 0 to 1 within the selected region.
 There is no fixed count limit, but necks must physically fit: enlarge the
-surface, separate positions, or reduce radii if they overlap. Neck attachments
+surface, separate positions, or reduce radii if they overlap. Top/bottom necks
+protrude only slightly beyond the silhouette. Neck attachments
 are made by splitting the actual contour, so transparent output works without
 white masking patches. Type I and Type II radii are geometric boundary sizes,
 independent of the planar dot-size settings.
+
+## TikZ and LaTeX
+
+```python
+from surface_diagrams import Arc, PlanarSurface, save_tikz
+
+surface = PlanarSurface.row("BPPB").with_curves(Arc(2, 3))
+save_tikz(surface, "figure.tikz")
+```
+
+`render_tikz(surface, style=..., scale=...)` returns text; `save_tikz` writes it.
+No LaTeX installation is needed to generate these files. To compile them, load
+TikZ in your document and include the generated picture:
+
+```tex
+\usepackage{tikz}
+% Inside the document:
+\input{figure.tikz}
+```
+
+The optional [LaTeX companion](latex/README.md) provides
+`\SurfaceDiagram[0.6]{figure.tikz}` for convenient uniform scaling.
+Both exporters share geometry, palette, drawing order, and framing. TikZ uses
+0.75bp per drawing unit, matching SVG at 96 dpi. Python's `scale` also scales
+strokes, dashes, and labels. Guide labels use the document's Roman font.
+
+Generate all 48 TikZ examples and a compilable gallery:
+
+```powershell
+python examples/make_latex.py
+cd examples/output
+pdflatex -interaction=nonstopmode -halt-on-error latex-gallery.tex
+```
+
+The companion is in `latex/` in this repository and is also included in Python
+installations under `share/surface-diagrams/latex` beneath the installation prefix.
+Copy it beside your LaTeX document, or use TikZ directly without the companion.
+
+## Command line
+
+```powershell
+python -m surface_diagrams --row "B P B P" figure.svg
+python -m surface_diagrams --genus 2 --scale 1.5 genus-two.tikz
+```
+
+After installation, `surface-diagrams` is an equivalent command. The filename
+chooses the output format. Use the Python API for curves, styles, or custom
+boundary placements; the CLI deliberately covers only basic rows and closed
+higher-genus surfaces.
 
 ## Scope and next steps
 
 Implemented: planar surfaces, row/custom positioning, adjustable dots/colors,
 minimal arcs/loops, noncrossing multicurves, coordinate guides, higher genus,
-all fixed boundary slots and left/right/top-bottom paired boundaries, SVG.
+all fixed boundary slots and left/right/top-bottom paired boundaries, SVG, TikZ,
+a LaTeX inclusion companion, and a small command-line entry point.
 
 Later: standard chain curves on higher-genus surfaces, marked points on them,
 Type II boundaries inside handle holes or at front/back locations, asymmetric
-layouts, hollow planar boundary circles, TikZ and a LaTeX companion. PNG/PDF
+layouts, and hollow planar boundary circles. PNG/PDF
 export is not built in; SVGs can be converted externally when needed.
 
 `model.py` holds planar inputs/styles, `curves.py` plans routes, and `genus.py`
 builds higher-genus geometry. `layout.py` assembles format-independent primitives;
-`svg.py` serializes them. A future TikZ writer can reuse these primitives.
-The research projects are references, not runtime dependencies.
+`svg.py` and `tikz.py` serialize the same geometry into their respective formats.
 
 ## Development
 
@@ -211,5 +273,8 @@ python -m unittest discover -s tests -v
 
 Tests use Python's standard `unittest` suite, including coordinate validation,
 visit-order preservation, seeded geometric checks, palette and SVG behavior,
-boundary symmetry and joins, and gallery smoke tests. No public release,
-remote repository, or license has been set up yet.
+boundary symmetry and joins, TikZ geometry and scaling, CLI validation, and gallery
+smoke tests.
+
+GitHub Actions runs Python tests on 3.9 and 3.12, checks gallery regeneration,
+and compiles every TikZ gallery example with pdfLaTeX.

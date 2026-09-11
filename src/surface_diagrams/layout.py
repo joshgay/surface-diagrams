@@ -1,4 +1,4 @@
-"""Internal drawing primitives shared by current SVG and future exporters.
+"""Internal drawing primitives shared by SVG and TikZ exporters.
 
 No exporter inheritance or plugin registry is needed. Coordinates remain
 mathematical (y upward) until each exporter writes them.
