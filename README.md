@@ -1,5 +1,8 @@
 # Surface diagrams
 
+Development roadmap: [implementation plan](docs/IMPLEMENTATION_PLAN.md),
+[current handoff](docs/HANDOFF.md), and [original reference diagrams](Figures/README.md).
+
 A Python library for generating diagrams of surfaces for work with mapping class
 groups and other relevant low dimensional geometry and topology. SVG and TikZ output allows
 for arbitrary enlarging without losing sharpness.

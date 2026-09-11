@@ -1,0 +1,577 @@
+{
+  "schema_version": 1,
+  "count": 114,
+  "total_bytes": 8102982,
+  "files": [
+    {
+      "file": "B1DoubleBranchCover.svg",
+      "bytes": 44599,
+      "sha256": "e3c5c437c4ff5a2817b5ebcfa8cc245105c04e72ebc927ebd8eed6926953a274"
+    },
+    {
+      "file": "B1DoubleBranchCoverDoubledBoundaryTwist.svg",
+      "bytes": 46364,
+      "sha256": "af3acba4d03c8c7a0ee42c44eec0231aaf4434f5b0c426a5864363e998ac38ab"
+    },
+    {
+      "file": "BCappingMapWithMarkedDisks.svg",
+      "bytes": 36021,
+      "sha256": "1b6920b3a7e9d0b912d6f85cbc5ee91beb9a16846c634720b57d0dc6da9861a0"
+    },
+    {
+      "file": "BCappingMapWithUnmarkedDisks.svg",
+      "bytes": 38840,
+      "sha256": "ebabe42d4b120400e10f5dd0690a42e340bdcd5a371b98730953ceb7b1006716"
+    },
+    {
+      "file": "BCappingWithUnmarkedDisks.svg",
+      "bytes": 28242,
+      "sha256": "1c783f44183b149a3b2c002441ed679ae49a1565a18584c166d1731902d5434e"
+    },
+    {
+      "file": "BCappingWithUnmarkedDisksExample.svg",
+      "bytes": 21425,
+      "sha256": "800eed9087c516ea2f1a753161bfde5fbc791990ec3e4870b454cdc7314afd4c"
+    },
+    {
+      "file": "BDehnTwistInvariant.svg",
+      "bytes": 38840,
+      "sha256": "ebabe42d4b120400e10f5dd0690a42e340bdcd5a371b98730953ceb7b1006716"
+    },
+    {
+      "file": "BDehnTwistsArcTwists Locally.svg",
+      "bytes": 18882,
+      "sha256": "0435049ac9cd3ba597cb41d3e04c637e41af01eaab48f76d026c587e3ad052ea"
+    },
+    {
+      "file": "BDehnTwistsArcTwists.svg",
+      "bytes": 54714,
+      "sha256": "663f21384f399668454a3c8ee2b8439869c6e577bfe079f92df4766a9cc136bd"
+    },
+    {
+      "file": "BDehnTwistsArcTwistsLocally.svg",
+      "bytes": 21389,
+      "sha256": "b7af4b84cc39480833a7a770164db9b4a5015b10405bad093150113cc3384421"
+    },
+    {
+      "file": "BDehnTwistsArcTwistsLocallyWithSquare.svg",
+      "bytes": 28204,
+      "sha256": "1d3c86801abd42d6eed24a0c82baa4b4a72d4f5656d50f9d5a27b191a90d512d"
+    },
+    {
+      "file": "BForgetfulMap.svg",
+      "bytes": 12498,
+      "sha256": "e370d6534dd44e9f2900602651a18843ddc1b4a74c071c0d573b05ab18480ff2"
+    },
+    {
+      "file": "BPlanarCutSystem.svg",
+      "bytes": 9861,
+      "sha256": "4e205b32a3dffc310a2a591fb59008d8b66a99236543a5fed0d1a389b4820811"
+    },
+    {
+      "file": "BPlanarInducedMaps.svg",
+      "bytes": 38551,
+      "sha256": "c45361fe7f63f02892538655cf9c7df0592df7b66672cfc60dff0388cd1b31e8"
+    },
+    {
+      "file": "BPlanarUnwinding.svg",
+      "bytes": 26345,
+      "sha256": "d37eb23385c0d7eadc4ad9a9641f06a625edb845869d2b38c681ad30b6206765"
+    },
+    {
+      "file": "C1A.svg",
+      "bytes": 27171,
+      "sha256": "3bb4d7724dab20b95417d3a628e2d4ab6b1e9cfcb696b2e61b257b8b23ebd180"
+    },
+    {
+      "file": "C1B.svg",
+      "bytes": 44826,
+      "sha256": "51a228e20c5ea5b3d25eaa4d3676dd48ab0eece4ee9ea4ea834f984286f9112c"
+    },
+    {
+      "file": "C2AAStandardLanternDiagrams.svg",
+      "bytes": 15361,
+      "sha256": "b9d41d71564e8bcdcafd0618d49c505549e9f59132532fea76cb392882a570ed"
+    },
+    {
+      "file": "C2ABPlanarLanternRelation.svg",
+      "bytes": 14297,
+      "sha256": "9a0c441d8f12c1e00537dc59696dcb91c07b5e56d997faaa36538e0fdf098d53"
+    },
+    {
+      "file": "C2ABPlanarLanternRelationFlip.svg",
+      "bytes": 14602,
+      "sha256": "52a76b11bbb2cf8ee1d7bde847d04dd5df60365d704d8fae3f892b63af03baf1"
+    },
+    {
+      "file": "C2ALanternDerivation.svg",
+      "bytes": 100571,
+      "sha256": "08c748d4cb7dc05cd5b451a4b3d0a23c87a43e00d17eddaf04839c9c509c7526"
+    },
+    {
+      "file": "C2BAHalfLantern.svg",
+      "bytes": 13828,
+      "sha256": "923d272ee9ef6c1ecb9deba5e17ff6fa9ccce935d2284249ab7565a284353e56"
+    },
+    {
+      "file": "C2BAHalfLanternFlip.svg",
+      "bytes": 14007,
+      "sha256": "0131935d450b1184fd7a3e222d7db6b145c1823ddcb3b334e7574e7418e6d1cc"
+    },
+    {
+      "file": "C2BBHalfLanternPicture.svg",
+      "bytes": 9014,
+      "sha256": "3b3103148529ce5ae939306dcc4bd9ab8a281558fe8ceace1af98333c0458d4f"
+    },
+    {
+      "file": "C2BHalfLanternDerivation.svg",
+      "bytes": 52563,
+      "sha256": "50d360549beee4fcf7b8841215dbe6d5893c8a123ba18bf5124d443ed4ea5803"
+    },
+    {
+      "file": "C2BHalfLanternDerivationFull.svg",
+      "bytes": 88803,
+      "sha256": "3ae99129879b708faad2f6415989c7b59b6448ed4bd00acc412f75d925f3baa3"
+    },
+    {
+      "file": "C2C.svg",
+      "bytes": 46196,
+      "sha256": "83ad522071ef084471ca1d8af525e3f8887ebcadab9f1e8b2bed8f2f19772a96"
+    },
+    {
+      "file": "C2CVertically.svg",
+      "bytes": 46121,
+      "sha256": "9ae94a5208188b3ebde3fa034175cf6538854328baaee00c5cd9289f52a764ba"
+    },
+    {
+      "file": "C3AB.svg",
+      "bytes": 40088,
+      "sha256": "f31d1ca85f6214328501f35dd9cfbde69f42308764b59785f85d9b6e0e366476"
+    },
+    {
+      "file": "C3ABFlip.svg",
+      "bytes": 42494,
+      "sha256": "e57faa52043578616d3591a4093c4729c5a64220a36455e0de98ee422859e0cb"
+    },
+    {
+      "file": "C3ADaisyRelation.svg",
+      "bytes": 18184,
+      "sha256": "107f1a9290bb7416e51d7fa1e61e3c542ffcd6d0ce7770be511bb5f779f4b131"
+    },
+    {
+      "file": "C3B.svg",
+      "bytes": 14646,
+      "sha256": "e0d8a5f97c1a02112b5e68383d08d819fee655d8b349f808ea6b3df1ca9d62e7"
+    },
+    {
+      "file": "C3BC.svg",
+      "bytes": 41828,
+      "sha256": "87ed150b9577855433806e6d6b53a36014ebd2c417970c6e8c8a2f318993056d"
+    },
+    {
+      "file": "C3C.svg",
+      "bytes": 42750,
+      "sha256": "dddd27cbfdb584dc44ac85cfb37e5cb5758ac7f744086bdd2768f2baa048858a"
+    },
+    {
+      "file": "C4A.svg",
+      "bytes": 33533,
+      "sha256": "e234d7ec2bf2e80d6e59045ead5e77f7bbd72de1b828a0448bb8a8118eee0a84"
+    },
+    {
+      "file": "C4ABInsideOutDaisyRelation.svg",
+      "bytes": 26624,
+      "sha256": "c36a03239df0fca4e975443f26b933731e2583e770be15efcc289995b913088a"
+    },
+    {
+      "file": "C4B.svg",
+      "bytes": 59314,
+      "sha256": "ea87e465d434657c07c4739e313179f02f790f33a81d8aa539352436ce31f327"
+    },
+    {
+      "file": "D1HyperellipticTorus.svg",
+      "bytes": 222623,
+      "sha256": "e97f69df286b278c801676cb26aced4203a864d399238f2d1bb09182d7465028"
+    },
+    {
+      "file": "D2AHyperellipticSurfaces.svg",
+      "bytes": 119029,
+      "sha256": "7421ad939ef355b6f1dc1264f0018548592fe798748d4e98c26159c6d0e47193"
+    },
+    {
+      "file": "D2CHyperellipticRelation.svg",
+      "bytes": 94237,
+      "sha256": "398cf86e3df105670517fc7d3e5d66602874bdf2adbf543f2e94b2d6d505eb06"
+    },
+    {
+      "file": "D2CHyperellipticRelationEquality.svg",
+      "bytes": 104527,
+      "sha256": "a75101e6340f1b04ebd449472decf0b8b89ee6ee9899413e3538e2925693868d"
+    },
+    {
+      "file": "D3HyperellipticLifted.svg",
+      "bytes": 302818,
+      "sha256": "557639c371e1d70c1cec24ee329c70f2d76bfc569332546d6c256a7aefae59c0"
+    },
+    {
+      "file": "D4AHyperellipticStepOne.svg",
+      "bytes": 72866,
+      "sha256": "bc9578c9819d5d332426c24b723962dbe5574a0942497b590861cc83ea61f84b"
+    },
+    {
+      "file": "D4BHyperellipticStepTwo.svg",
+      "bytes": 59617,
+      "sha256": "96925ce1177ff8eaa2bd512d6b240be1633148f540a46937de108af22354bd7a"
+    },
+    {
+      "file": "D4CHyperellipticStepThree.svg",
+      "bytes": 73980,
+      "sha256": "d5a9a41317f8ff5ecd761445a0de9a86a140aa956279eea4afe62258cb9b21ac"
+    },
+    {
+      "file": "E1MCKHOddGenus.svg",
+      "bytes": 69477,
+      "sha256": "1aad4ad4988328433c318b4748246ae9dd3357cbb8c347f80d26ae8ac0559782"
+    },
+    {
+      "file": "E2AMCKHOddGenusBoundaryLift.svg",
+      "bytes": 29343,
+      "sha256": "a299b5fabcc4117827330aa4f0045749369a3436f48ea7df5b07960432a9f53c"
+    },
+    {
+      "file": "E2MCKHOddGenusLifted.svg",
+      "bytes": 156183,
+      "sha256": "9af68a5bf24852415715f878f54d2f88e4698d09dfce29009dafdb43b2139cae"
+    },
+    {
+      "file": "E2MCKHOddGenusLiftedWithBoundaries.svg",
+      "bytes": 186491,
+      "sha256": "89df10f42efd322ea0ee577bd0f357e1f8e476d06412d67c49ef80c45294c94d"
+    },
+    {
+      "file": "E3AMCKHEvenGenus.svg",
+      "bytes": 84134,
+      "sha256": "171b90ab93cf6be0a205fd03194595194af266908d3423e326651d82b52b067e"
+    },
+    {
+      "file": "E3BMCKHEvenGenus.svg",
+      "bytes": 247656,
+      "sha256": "f0613f4744b0fd4f6083f6cf1dc6375d8a5d3a6216ec740464ce3c5fbdd09088"
+    },
+    {
+      "file": "E4AMCKStepOne.svg",
+      "bytes": 93015,
+      "sha256": "d6075971b2c9a3333ac2e52c8e786935ec4552f9b7341ed4eae71e1d5486704c"
+    },
+    {
+      "file": "E4BAMCKHStepTwo.svg",
+      "bytes": 166548,
+      "sha256": "0c377dac5cf984c3140697d5e4f4adc7319ce9baf9555af741c7a96c4e272cb2"
+    },
+    {
+      "file": "E4BMCKHStepTwo.svg",
+      "bytes": 154902,
+      "sha256": "d9aa475679795084476fd89bb7733f06c63b50f950cd280ad284167ebb0b8837"
+    },
+    {
+      "file": "E4BMCKStepTwo.svg",
+      "bytes": 232051,
+      "sha256": "db9c31e6feb881fade0b5be172f3a40929b25885ec0d909d6a9f9cdd4a471c8f"
+    },
+    {
+      "file": "E5AMCKStepThree.svg",
+      "bytes": 126453,
+      "sha256": "8ff3dd2cc813e5e668590a5a319e3cb052aaad5fde027f58d35e366afb9f0d68"
+    },
+    {
+      "file": "E5BMCKStepFour.svg",
+      "bytes": 132899,
+      "sha256": "0755df6a8b4d8153d28907757d4706ca81d1827ef996fc36081198566414ff75"
+    },
+    {
+      "file": "E6AMCKOddGenus.svg",
+      "bytes": 74218,
+      "sha256": "f98fba7cdbe4f84b8044982e2ae94b65437f3b7d6a2c2d2e5c980288f808f051"
+    },
+    {
+      "file": "E6BMCKEvenGenus.svg",
+      "bytes": 111580,
+      "sha256": "2d78a05ff3a16a654ff3e8569ca817e9eec9e428db88aeef6f450511544bf50a"
+    },
+    {
+      "file": "F1ABKH.svg",
+      "bytes": 31316,
+      "sha256": "96c32211165caff9ab4967c9f13bc61d89916b935ea6e2e9b1b8665a489e1ffa"
+    },
+    {
+      "file": "F1ABKHArrow.svg",
+      "bytes": 21385,
+      "sha256": "b7f51f4dcea0208e3efdc110d327f6a2d3eb12f30fea19e93a1abbc5ceda8ca4"
+    },
+    {
+      "file": "F1BBKH.svg",
+      "bytes": 21135,
+      "sha256": "be1ca982895aaa654093f7a0bbbc4aedc140010bb0f06da1360edc1b7467630c"
+    },
+    {
+      "file": "F1BBKHGenusTwoDerivationOne.svg",
+      "bytes": 18349,
+      "sha256": "385a09c90c4d9b319a46eb3e3eaa4af774304dce1537680edbfd731401fad936"
+    },
+    {
+      "file": "F1CABKH.svg",
+      "bytes": 85339,
+      "sha256": "23ce61c1629b920afa5002032c1d4e208969d27dc1f247ba643a4170225c9cd9"
+    },
+    {
+      "file": "F1CBKH 1.svg",
+      "bytes": 85419,
+      "sha256": "71f533d3452961f2910d5dac04b93e797047ccbeca86120c8f7a1012482e7ece"
+    },
+    {
+      "file": "F1CBKH.svg",
+      "bytes": 38519,
+      "sha256": "822d6fbe437a241d836c3c4ecb6593a8ccb875508aa560f455c09c5e2cb6023d"
+    },
+    {
+      "file": "F1DBKH.svg",
+      "bytes": 75614,
+      "sha256": "ab9c2414d4c5da28eef2122d55b0cb61964a56ec597b73f5fa1a78cf77ffd8d8"
+    },
+    {
+      "file": "F2ABKH.svg",
+      "bytes": 81589,
+      "sha256": "be452192d94e61c1bfdefcbb076a7b26244aba90b5b074a5ea67a259015b9a46"
+    },
+    {
+      "file": "F2BBKH.svg",
+      "bytes": 16966,
+      "sha256": "0d45872c1454fa1ed7f20ed3c6df9f2b059e344e29aa0034c815a58e9e614c97"
+    },
+    {
+      "file": "F2BBKHGenusTwoDerivationTwo.svg",
+      "bytes": 41725,
+      "sha256": "fb5a071f00ce8548101a1261ab640ef3c9e2571990444777508d50deaca906de"
+    },
+    {
+      "file": "F2CBKH.svg",
+      "bytes": 90463,
+      "sha256": "138d032ca936e6704d658c5273a83ab814a12e26cf562d2cb330bd31dc12ed31"
+    },
+    {
+      "file": "F3ABKH.svg",
+      "bytes": 41095,
+      "sha256": "c08e3abf10c0f111b7e831f2342df6d1111526ff418dbcf352e093a1cde1c050"
+    },
+    {
+      "file": "F3ACBKH.svg",
+      "bytes": 21674,
+      "sha256": "816ff48a25b784e510175e465910d25043dc12cfe5ff3cddb9e151152dd7b228"
+    },
+    {
+      "file": "F3BBKH Tilted.svg",
+      "bytes": 85396,
+      "sha256": "18f37f8202908796cfc30ea351f60b11c6d2c66da9acfb776b8d7653450f3299"
+    },
+    {
+      "file": "F3BBKHGenus2.svg",
+      "bytes": 85607,
+      "sha256": "02d9f424dc78f41807434564c7382a1a448133557d4d59515dab28840e9e4898"
+    },
+    {
+      "file": "F3BBKHGenusTwo.svg",
+      "bytes": 69877,
+      "sha256": "51132f9935ce03b1ed93242cbef2f67cf86456cd3c0924897adc92eabdc5f5f0"
+    },
+    {
+      "file": "F3BBKHGenusTwoDerivationThree.svg",
+      "bytes": 69824,
+      "sha256": "3a9a403f956b775148ec32dc2cc11ae0f9d89708c4b8ad9addef236b9587d95a"
+    },
+    {
+      "file": "F4ABKH.svg",
+      "bytes": 25636,
+      "sha256": "50beaf2008c25017dffa1f59b265c547584759ea1e493b82bdadb4320b22b2bd"
+    },
+    {
+      "file": "F4BBKHDerivation.svg",
+      "bytes": 52852,
+      "sha256": "d1d74a3d1177ef35a711cb0a14bbb9d438e0d675ce19512aa12d3caafe9f39d7"
+    },
+    {
+      "file": "F4BBKHGenusGDerivation.svg",
+      "bytes": 60574,
+      "sha256": "600640cb9f43b1103bab6391d67aaf9df4b8a3df75e23c81b12b459612dc2c55"
+    },
+    {
+      "file": "F4CBKH.svg",
+      "bytes": 32434,
+      "sha256": "a64dbd4eef14c262fb876a9eaddecad93368dba38e4603c7e977b28ebc14f4e0"
+    },
+    {
+      "file": "F5BKHGenusGRecursion.svg",
+      "bytes": 57315,
+      "sha256": "a5f6eba45a005a0ad44ab2177998ba5073cb57401f30fef12bfaac98cce49402"
+    },
+    {
+      "file": "F6ABKH.svg",
+      "bytes": 64121,
+      "sha256": "dbafb1d147ba0d522b87f6b44596f8b379a38ee10a85eec0d9690cebdd31e6e0"
+    },
+    {
+      "file": "F6BBKHGenusGFactorization.svg",
+      "bytes": 35763,
+      "sha256": "0e05eb648ad10248221fa43e27ad942f954ed85f646ff7b99112fa68e895c71d"
+    },
+    {
+      "file": "F7BKHGenusGLifted 2.svg",
+      "bytes": 256258,
+      "sha256": "7f24b5d92361e61322ae34ab1d7255a7abb5f70470171db3e92244ea6b376e93"
+    },
+    {
+      "file": "F7BKHGenusGLifted.svg",
+      "bytes": 256016,
+      "sha256": "ec881a5fe83903401421cbcd8d820f353aff448ee42f9ace3becd966a032b7a6"
+    },
+    {
+      "file": "F8BKH.svg",
+      "bytes": 101021,
+      "sha256": "5b152a0192911cc8d4b079829fa3a3da69527398eec527fa804090eeaea3986f"
+    },
+    {
+      "file": "F8BKHHomologyCalc.svg",
+      "bytes": 75994,
+      "sha256": "bf82f6dad7853e0bd795fabf358b9b062d98ab4f06e21aa16c59c6297aefce73"
+    },
+    {
+      "file": "F9BKHGenusTwo.svg",
+      "bytes": 90850,
+      "sha256": "9223bc6fbabf1d2b9fd827bbbaa83acc1867d387836eeec072f4de0dd3ec040c"
+    },
+    {
+      "file": "G1A.svg",
+      "bytes": 42232,
+      "sha256": "758fff7339d56e43f9b10755b5f906f629cfebf2147a06033250f77d078f33a3"
+    },
+    {
+      "file": "G1AB.svg",
+      "bytes": 17292,
+      "sha256": "54cc6e70a900ef39d9e7fa60653a8568034c8bd6f090305f34dc3ef5ba47ce46"
+    },
+    {
+      "file": "G1AWithoutProjection.svg",
+      "bytes": 17965,
+      "sha256": "8443ae54ba6ddc4ea6dae2991a1d274c7d75ba15ab1f19ca6ed375e01e66eaf9"
+    },
+    {
+      "file": "G1BA.svg",
+      "bytes": 26269,
+      "sha256": "884e436a823c0cad7388a3d3c387a34eb31731cef38d57c8dbccd5287e39bea8"
+    },
+    {
+      "file": "G1BB.svg",
+      "bytes": 25912,
+      "sha256": "edb6f910854e95987037d65acb225eede7cb68e1de5a07cc264933a58c8bcc04"
+    },
+    {
+      "file": "G2A.svg",
+      "bytes": 27050,
+      "sha256": "c86782bbcb4941613b6b4feb1f993666fa34d8260ca2d522ed8ed9b8f984da6c"
+    },
+    {
+      "file": "G2AResize.svg",
+      "bytes": 24587,
+      "sha256": "ce2e7b13ea686d38e98a3cd0e57c5d68cdb995d04cc41cdc30035f93e4dbef4d"
+    },
+    {
+      "file": "G2B.svg",
+      "bytes": 26555,
+      "sha256": "31f25f578a943142afac7af0c5937e2563746d27f064d7792be3fe75b15493b9"
+    },
+    {
+      "file": "G2C.svg",
+      "bytes": 2761,
+      "sha256": "1e697dffb4346d9a986ed0ffc46819c80ffe2b1eaa153f22fc36f88db842b5db"
+    },
+    {
+      "file": "G2CIntersectionEndpoint.svg",
+      "bytes": 25997,
+      "sha256": "52e2468c68d815ed5d86f16cfb3e6ca6d9a2b206aea52a56025b8202ed2e9a55"
+    },
+    {
+      "file": "G2Homology.svg",
+      "bytes": 56819,
+      "sha256": "1de34e6686facfb2814775ad163f243ed8217d847b8639b62f2e19fd2f0142e9"
+    },
+    {
+      "file": "G3A.svg",
+      "bytes": 29569,
+      "sha256": "02f68bb47580b46e1c0b2456b119c7dbc540b6d4c24e967be162977ffb26d0fe"
+    },
+    {
+      "file": "G3B.svg",
+      "bytes": 47676,
+      "sha256": "3482c5ce8cebf34bdf12abc9129b66f43db9223fb92bc0ccff23775a26e2950e"
+    },
+    {
+      "file": "G3C.svg",
+      "bytes": 26709,
+      "sha256": "7fb460f80e684f38f44312e22ce3eb203f7a480391fcd051ed3f6da8e7772726"
+    },
+    {
+      "file": "G3D.svg",
+      "bytes": 2249,
+      "sha256": "eb9dad2b1e6ee5dce78a819402344754e2931cc6923e42f9be94b3959bb6cbb3"
+    },
+    {
+      "file": "G4Homology.svg",
+      "bytes": 231000,
+      "sha256": "768445e3556e8a0ef83255a0b1b7e28ab516e90aba83c9b93e35d4f506db7c0c"
+    },
+    {
+      "file": "G5Homology.svg",
+      "bytes": 176838,
+      "sha256": "b3b52bbaf34a0ee88676ee2e86017dfaeb53bb47a83d2305d4525665185a7627"
+    },
+    {
+      "file": "G5HomologyGenusThree.svg",
+      "bytes": 115808,
+      "sha256": "d1760f2dafc3b0f29e04e259c69f65448be4751425fd10a3a65ba32a9008543f"
+    },
+    {
+      "file": "G5HomologyGenusTwo.svg",
+      "bytes": 61504,
+      "sha256": "0e7b97f470f44ebd682a37beae2305857b8ab01ace806276977fba2c5bc27e81"
+    },
+    {
+      "file": "G6Homology.svg",
+      "bytes": 118597,
+      "sha256": "96dffe019358f884d629461def5ee90b9077dfa702b999004396e8e7d28ebf7e"
+    },
+    {
+      "file": "G7BKHGenusGLiftedForHomologyCalculation.svg",
+      "bytes": 256258,
+      "sha256": "7f24b5d92361e61322ae34ab1d7255a7abb5f70470171db3e92244ea6b376e93"
+    },
+    {
+      "file": "G7GenusGBKHLiftedForHomology.svg",
+      "bytes": 236149,
+      "sha256": "59a60c3a503176fe00080293fd9360b05793cd6fed7cf0d1304629e06bb9e27a"
+    },
+    {
+      "file": "G9BKHGenusTwoForHomology.svg",
+      "bytes": 118695,
+      "sha256": "c1be7b6b6116b55e69fb552ff630fbbbe5dc4b141e0f974e086da945e07e356f"
+    },
+    {
+      "file": "G9BKHGenusTwoLiftedForHomologyCalculation.svg",
+      "bytes": 96268,
+      "sha256": "4481f709f838a6370f9df2bbfc7b99c1a7787f7bc17620e0737f3acffd50beb7"
+    },
+    {
+      "file": "GIntersectionBigons.svg",
+      "bytes": 15854,
+      "sha256": "443857a4a501465512af2f003ec04f75193d4cb9063293cbc0487d49eedc9b0f"
+    }
+  ]
+}
