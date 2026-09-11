@@ -3,15 +3,23 @@
 \begingroup
 \definecolor{sdcolor0}{HTML}{000000}
 \begin{tikzpicture}[x=0.75bp,y=0.75bp,line cap=round,line join=round]
-\path[use as bounding box] (-112.25,-103.75) rectangle (112.25,103.75);
-\clip (-112.25,-103.75) rectangle (112.25,103.75);
+\path[use as bounding box] (-112.25,-68.75) rectangle (112.25,68.75);
+\clip (-112.25,-68.75) rectangle (112.25,68.75);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-93.5,0) .. controls (-93.5,42.5425) and (-84.7,65.45) .. (-55,65.45) .. controls (-35.2,65.45) and (-19.8,81.6) .. (0,81.6) .. controls (19.8,81.6) and (35.2,65.45) .. (55,65.45) .. controls (84.7,65.45) and (93.5,42.5425) .. (93.5,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-93.5,0) .. controls (-93.5,35) and (-79.2,44) .. (-55,44);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-93.5,0) .. controls (-93.5,-42.5425) and (-84.7,-65.45) .. (-55,-65.45) .. controls (-35.2,-65.45) and (-19.8,-81.6) .. (0,-81.6) .. controls (19.8,-81.6) and (35.2,-65.45) .. (55,-65.45) .. controls (84.7,-65.45) and (93.5,-42.5425) .. (93.5,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-93.5,0) .. controls (-93.5,-35) and (-79.2,-44) .. (-55,-44);
+% surface-outline
+\draw[draw=sdcolor0,line width=1.125bp] (-55,44) .. controls (-18.3333333333,43.56) and (18.3333333333,43.56) .. (55,44);
+% surface-outline
+\draw[draw=sdcolor0,line width=1.125bp] (-55,-44) .. controls (-18.3333333333,-43.56) and (18.3333333333,-43.56) .. (55,-44);
+% surface-outline
+\draw[draw=sdcolor0,line width=1.125bp] (93.5,0) .. controls (93.5,35) and (79.2,44) .. (55,44);
+% surface-outline
+\draw[draw=sdcolor0,line width=1.125bp] (93.5,0) .. controls (93.5,-35) and (79.2,-44) .. (55,-44);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-34.1,0) .. controls (-18.755,46.75) and (18.755,46.75) .. (34.1,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-33,0) .. controls (-17.16,13.5) and (17.16,13.5) .. (33,0);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-34.1,0) .. controls (-18.755,-46.75) and (18.755,-46.75) .. (34.1,0);
+\draw[draw=sdcolor0,line width=1.125bp] (-33,0) .. controls (-17.16,-13.5) and (17.16,-13.5) .. (33,0);
 \end{tikzpicture}
 \endgroup

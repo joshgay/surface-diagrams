@@ -1,12 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 444.5 207.5" width="889" height="415" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 444.5 137.5" width="889" height="275" role="img">
 <title>Genus 3, with involution axis</title>
-<path class="involution-axis" d="M 12.75 103.75 L 431.75 103.75" fill="none" stroke="#999999" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
-<path class="surface-outline" d="M 18.75 103.75 C 18.75 61.2075 27.55 38.3 57.25 38.3 C 77.05 38.3 92.45 22.15 112.25 22.15 C 132.05 22.15 147.45 38.3 167.25 38.3 C 187.05 38.3 202.45 22.15 222.25 22.15 C 242.05 22.15 257.45 38.3 277.25 38.3 C 297.05 38.3 312.45 22.15 332.25 22.15 C 352.05 22.15 367.45 38.3 387.25 38.3 C 416.95 38.3 425.75 61.2075 425.75 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 18.75 103.75 C 18.75 146.2925 27.55 169.2 57.25 169.2 C 77.05 169.2 92.45 185.35 112.25 185.35 C 132.05 185.35 147.45 169.2 167.25 169.2 C 187.05 169.2 202.45 185.35 222.25 185.35 C 242.05 185.35 257.45 169.2 277.25 169.2 C 297.05 169.2 312.45 185.35 332.25 185.35 C 352.05 185.35 367.45 169.2 387.25 169.2 C 416.95 169.2 425.75 146.2925 425.75 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 78.15 103.75 C 93.495 57 131.005 57 146.35 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 78.15 103.75 C 93.495 150.5 131.005 150.5 146.35 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 188.15 103.75 C 203.495 57 241.005 57 256.35 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 188.15 103.75 C 203.495 150.5 241.005 150.5 256.35 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 298.15 103.75 C 313.495 57 351.005 57 366.35 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 298.15 103.75 C 313.495 150.5 351.005 150.5 366.35 103.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="involution-axis" d="M 12.75 68.75 L 431.75 68.75" fill="none" stroke="#999999" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 33.75 33.05 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 103.75 33.05 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 57.25 24.75 C 167.25 25.19 277.25 25.19 387.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 57.25 112.75 C 167.25 112.31 277.25 112.31 387.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 425.75 68.75 C 425.75 33.75 411.45 24.75 387.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 425.75 68.75 C 425.75 103.75 411.45 112.75 387.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 68.75 C 95.09 55.25 129.41 55.25 145.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 68.75 C 95.09 82.25 129.41 82.25 145.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 189.25 68.75 C 205.09 55.25 239.41 55.25 255.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 189.25 68.75 C 205.09 82.25 239.41 82.25 255.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 299.25 68.75 C 315.09 55.25 349.41 55.25 365.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 299.25 68.75 C 315.09 82.25 349.41 82.25 365.25 68.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

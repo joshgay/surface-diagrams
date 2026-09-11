@@ -15,7 +15,8 @@ class GalleryTest(unittest.TestCase):
             index=gallery.make_gallery(temp)
             self.assertTrue(index.exists())
             files=list(Path(temp).glob('*.svg'))
-            self.assertEqual(len(files),52)  # 48 individual examples and 4 sheets.
+            registry=gallery.gallery_examples()
+            self.assertEqual(len(files),sum(len(v) for v in registry.values())+len(registry))
             for file in files:
                 with self.subTest(file=file.name):
                     self.assertEqual(ET.parse(file).getroot().tag,'{http://www.w3.org/2000/svg}svg')

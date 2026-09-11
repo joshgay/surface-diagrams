@@ -28,7 +28,7 @@ pdflatex -interaction=nonstopmode -halt-on-error latex-gallery.tex
 ~~~
 
 LuaLaTeX, XeLaTeX, or Tectonic may be used instead. The generated document includes
-all 48 gallery examples and a page demonstrating multiple inclusions.
+the supported gallery examples and a page demonstrating multiple inclusions.
 Plain-text guide labels use the document's Roman font, so their glyphs can differ
 from those in a browser. Geometry, colors, strokes, and framing are shared.
 

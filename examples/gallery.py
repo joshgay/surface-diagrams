@@ -69,6 +69,11 @@ def gallery_examples():
             ('paired-left-right', 'Left and right Type II pairs', GenusSurface(type_ii=(BoundaryPair('left'),BoundaryPair('right'))), default),
             ('mixed-types', 'One Type I plus two Type II pairs', GenusSurface(type_i=(TypeIBoundary(6),),type_ii=(BoundaryPair('left'),BoundaryPair('top',.65))), default),
             ('many-pairs', 'Six pairs on a wider genus-3 surface', GenusSurface(3,handle_spacing=160,type_ii=tuple(BoundaryPair('top',p,radius=6) for p in (0,.2,.4,.6,.8,1))), default),
+            ('d3-default-boundaries', 'D3/D2A: six top-bottom pairs and an end boundary', GenusSurface(3,type_i=(TypeIBoundary(8),),type_ii=(BoundaryPair(),)*6), default),
+            ('e2-default-boundaries', 'E2: side pairs and two top-bottom pairs', GenusSurface(3,type_ii=(BoundaryPair('left'),BoundaryPair('right'),BoundaryPair(),BoundaryPair())), default),
+            ('automatic-pairs', 'Four pairs: automatic positions and sizes', GenusSurface(2,type_ii=(BoundaryPair(),)*4), default),
+            ('custom-proportions', 'Optional wider spacing and taller body', GenusSurface(2,handle_spacing=140,height=120,type_ii=(BoundaryPair(),BoundaryPair())), default),
+            ('colored-background', 'Transparent collars on a colored background', GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('right'),BoundaryPair())), Style(background='#e9f4fa')),
         ],
     }
 
@@ -81,7 +86,7 @@ def make_gallery(destination=None):
              'The constructors are in [gallery.py](../gallery.py).', '',
              'Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured '
              'from the thesis planar figures. High-genus examples are new schematics '
-             'following Figure 2.2, with boundary rims distinct from handle openings.', '']
+             'following the D3/D2A/E2 source SVGs, with boundary rims distinct from handle openings.', '']
     for category, examples in gallery_examples().items():
         height = ceil(len(examples)/2)*230+70
         sheet = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 {height}" width="1000" height="{height}">',

@@ -5,12 +5,12 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 
 ## Resume here
 
-**P0 complete; P1 next. No P1-P8 implementation has begun.**
+**P0 and P1 complete; P2 next. P2-P8 have not started.**
 
-Next action: inspect the four primary SVGs, especially the bottom lifted-surface
-panel of D2A and the surfaces in D3/E2; compare with `genus.py` and the current
-genus gallery. Implement P1's reference-based default surface presentation and
-its small finite examples. Do not start generalized routing or new TikZ work yet.
+Next action: implement P2, actual circular planar boundaries in horizontal rows.
+Read `model.py`, `layout.py`, and `curves.py`. Boundary arcs must terminate on
+the circle rim and remain outside hole interiors; preserve the old dot behavior.
+Keep generalized routing and new TikZ geometry for their later stages.
 
 Repository root on Richard's machine: `C:\GitHub\surface-diagrams`.
 Remote: `https://github.com/richardbuckman-math/surface-diagrams`.
@@ -32,7 +32,12 @@ All source links below are repository-relative so another AI can work from a clo
   SVGs were inventoried, not individually interpreted or visually reviewed.
 - [Figures/MANIFEST.json](../Figures/MANIFEST.json) records SHA-256 and byte size
   for every original SVG. The source SVGs are retained unchanged.
-- This checkpoint adds the reference archive and documentation only.
+- P1 adds `genus_geometry.py`, slot-aware radii, automatically spaced pairs,
+  sideways collars, and explicit hidden rim halves. It adds five untuned/override
+  examples and a source-comparison generator. Current gallery: 53 scenarios.
+- P1 verification: 52 tests pass on Python 3.9.7 and 3.12.14. The SVG genus gallery
+  and original-versus-generated comparison were visually inspected. Existing
+  TikZ output was regenerated from shared primitives; no exporter logic changed.
 
 ## User decisions, in priority order
 
@@ -54,8 +59,8 @@ All source links below are repository-relative so another AI can work from a clo
 
 ## Important implementation traps
 
-- Current handle openings are too tall/pointed for the newly specified defaults.
-  Primary references use shallow horizontal oval openings and shorter collars.
+- The primary references use shallow horizontal openings and short collars;
+  P1 now follows that default. Do not restore the old tall lenses or scalloping.
 - Genuine intersections in a cut graph, intersections between overlaid curves,
   and overlaps of front/back projected paths are three different things.
 - The old planar multicurve router deliberately rejects intersections. Daisy
@@ -107,6 +112,7 @@ This is an environment issue, not a package defect. Do not bypass a denied actio
 | Stage | Completed work | Evidence | Next step |
 | --- | --- | --- | --- |
 | P0 | Reference inspection; complete SVG inventory; controlling plan; this handoff | 44 baseline tests; 9 reference previews inspected | Start P1 |
+| P1 | Reference-based genus geometry, automatic collars, rim visibility, comparison sheet | 52 tests on Python 3.9/3.12; visual SVG checks; 53 gallery scenarios | Start P2 |
 
 Append a row or update it at each meaningful checkpoint. Record the actual files,
 commit, tests, failures, and next action. Never make a future AI infer status from

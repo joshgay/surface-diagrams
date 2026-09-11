@@ -2,7 +2,7 @@
 
 Run `python examples/make_images.py` to regenerate everything. The constructors are in [gallery.py](../gallery.py).
 
-Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thesis planar figures. High-genus examples are new schematics following Figure 2.2, with boundary rims distinct from handle openings.
+Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thesis planar figures. High-genus examples are new schematics following the D3/D2A/E2 source SVGs, with boundary rims distinct from handle openings.
 
 ## Planar
 
@@ -71,4 +71,9 @@ Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thes
 - [Left and right Type II pairs](genus-paired-left-right.svg)
 - [One Type I plus two Type II pairs](genus-mixed-types.svg)
 - [Six pairs on a wider genus-3 surface](genus-many-pairs.svg)
+- [D3/D2A: six top-bottom pairs and an end boundary](genus-d3-default-boundaries.svg)
+- [E2: side pairs and two top-bottom pairs](genus-e2-default-boundaries.svg)
+- [Four pairs: automatic positions and sizes](genus-automatic-pairs.svg)
+- [Optional wider spacing and taller body](genus-custom-proportions.svg)
+- [Transparent collars on a colored background](genus-colored-background.svg)
 

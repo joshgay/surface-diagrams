@@ -12,7 +12,8 @@ but this is the alpha version, 0.1.0a2. Python 3.9+; no runtime dependencies.
 I will finish editing this readme when the software is in a more finished state. For now
 what is here may be wrong or not yet implemented.
 
-The higher genus surfaces are quite ugly right now so expect them to improve soon.
+The default higher-genus presentation now follows the D3/D2A/E2 reference diagrams.
+See the [source comparison](examples/output/reference-comparison.svg).
 
 ## Install and make an image
 
@@ -24,8 +25,8 @@ python examples/make_images.py
 ```
 
 Examples should demonstrate all current capabilities but feel free to make requests.
-Four SVG overview sheets and a [linked gallery](examples/output/GALLERY.md) are in
-`examples/output/`. All 48 constructors are in [examples/gallery.py](examples/gallery.py).
+SVG overview sheets and a [linked gallery](examples/output/GALLERY.md) are in
+`examples/output/`. The constructors are in [examples/gallery.py](examples/gallery.py).
 
 Run your own scripts with the Python environment where you installed the package.
 For a fresh installation, use recent pip/setuptools: Anaconda pip 21.2 cannot
@@ -179,9 +180,9 @@ save_svg(GenusSurface(
 ), "genus-two-with-five-boundaries.svg")
 ```
 
-The contour and lens-shaped handle openings follow the thesis's Figure 2.2
-projection, with compact defaults (`handle_spacing=110`, `height=170`) and
-larger openings. `handle_spacing` and `height` adjust their proportions; optional
+The low horizontal contour and shallow handle openings follow the D3/D2A/E2
+source diagrams. `GenusSurface(2)` needs no appearance settings.
+`handle_spacing` and `height` adjust their proportions when needed; optional
 `handle_style="balloon"` adds the second handle arc. This extra arc is omitted
 on handles occupied by Type I boundaries to keep their rims clear. These are
 surface schematics; handle openings are not counted as boundary components.
@@ -189,19 +190,29 @@ surface schematics; handle openings are not counted as boundary components.
 Type I boundaries occupy fixed slots 1..2g+2 along the horizontal involution
 axis. Slot 1 is the left outer tip; each handle contributes its left and right
 tip in order; slot 2g+2 is the right outer tip. For genus 2, all six slots are
-available. `TypeIBoundary(slot, radius=8)` replaces a contour tip with an oval
-boundary rim connected to the upper/lower outlines. Duplicate slots are errors.
+available. `TypeIBoundary(slot)` replaces a contour tip with an oval boundary
+rim connected to the upper/lower outlines. Its radius is automatic: larger at
+outer ends, smaller in handle openings. An explicit radius overrides that size.
+Duplicate slots are errors.
 
-Each `BoundaryPair(side, position=.5, radius=7)` produces **two** Type II
+Each `BoundaryPair(side)` produces **two** Type II
 boundary components, exchanged by the modeled half-turn. Choose `left`, `right`,
 or `top`; `bottom` and `top-bottom` are aliases of `top`, because both members
-are always drawn. `position` ranges from 0 to 1 within the selected region.
-There is no fixed count limit, but necks must physically fit: enlarge the
-surface, separate positions, or reduce radii if they overlap. Top/bottom necks
-protrude only slightly beyond the silhouette. Neck attachments
+are always drawn. Omitted positions and radii are distributed and sized
+automatically. For example, `GenusSurface(3, type_ii=(BoundaryPair(),)*6)` draws
+six top/bottom pairs without tuning. Explicit `position` ranges from 0 to 1
+within the selected region; an explicit radius must fit. Side pairs open
+sideways, and top/bottom collars protrude only slightly. Extremely dense rims
+that cannot be distinguished at the selected stroke width raise an error.
+Neck attachments
 are made by splitting the actual contour, so transparent output works without
 white masking patches. Type I and Type II radii are geometric boundary sizes,
 independent of the planar dot-size settings.
+
+Rim halves carry a fixed viewing convention: the inward halves of upper and
+left-facing rims are dashed; lower/right openings expose their full rim.
+See [presentation details](docs/genus-presentation.md). This geometric
+presentation does not yet implement genus curve routing or certified cut systems.
 
 ## TikZ and LaTeX
 
@@ -228,7 +239,7 @@ Both exporters share geometry, palette, drawing order, and framing. TikZ uses
 0.75bp per drawing unit, matching SVG at 96 dpi. Python's `scale` also scales
 strokes, dashes, and labels. Guide labels use the document's Roman font.
 
-Generate all 48 TikZ examples and a compilable gallery:
+Generate the supported TikZ examples and a compilable gallery:
 
 ```powershell
 python examples/make_latex.py
@@ -264,8 +275,9 @@ Type II boundaries inside handle holes or at front/back locations, asymmetric
 layouts, and hollow planar boundary circles. PNG/PDF
 export is not built in; SVGs can be converted externally when needed.
 
-`model.py` holds planar inputs/styles, `curves.py` plans routes, and `genus.py`
-builds higher-genus geometry. `layout.py` assembles format-independent primitives;
+`model.py` holds planar inputs/styles and `curves.py` plans planar routes.
+`genus.py` holds genus inputs and `genus_geometry.py` builds their presentation.
+`layout.py` assembles format-independent primitives;
 `svg.py` and `tikz.py` serialize the same geometry into their respective formats.
 
 ## Development

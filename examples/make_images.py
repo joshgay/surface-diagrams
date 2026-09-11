@@ -22,6 +22,8 @@ def main():
         print(save_svg(surface, out / f"{name}.svg", style=style, scale=2, title=name))
     from gallery import make_gallery
     print(make_gallery(out))
+    from make_reference_comparison import make_reference_comparison
+    print(make_reference_comparison(out))
 
 
 if __name__ == "__main__":

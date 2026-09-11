@@ -13,15 +13,15 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
   higher-genus schematics, Type I/II boundaries, SVG/TikZ, LaTeX inclusion, CLI.
 - Already implemented does not mean visually approved: the current higher-genus
   silhouettes and handle openings must be redesigned using the supplied SVGs.
-- This checkpoint adds references and planning only. No new drawing, routing,
-  cut-system, boundary-circle, or exporter implementation has begun.
+- P1 now implements the reference-based genus presentation; 52 tests pass on
+  Python 3.9 and 3.12. P2-P8 remain unfinished. See HANDOFF.md for the latest step.
 - Existing TikZ/LaTeX support stays available. Extend it for the new features
   **only after the SVG geometry, topology, routing, examples, and tests work**.
 
 | Stage | Work | Status | Depends on |
 | --- | --- | --- | --- |
 | P0 | Preserve references, inspect priorities, write portable plan | Complete |
-| P1 | Replace default higher-genus visual geometry | Not started | P0 |
+| P1 | Replace default higher-genus visual geometry | Complete | P0 |
 | P2 | True circular planar boundaries, horizontal arrangement first | Not started | P0 |
 | P3 | Specify and validate disk-complement cut systems | Not started | P0 |
 | P4 | Standard numbered genus cut systems and arc/curve routing | Not started | P1, P3 |
