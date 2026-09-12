@@ -19,7 +19,7 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
 - P2 now implements circular planar holes, rim endpoints, clipping, clearance,
   and 14 examples. The saved partial patch has been incorporated and removed.
   P3 now implements the internal abstract-cellulation validator, parent incidence
-  checks and worked examples. P4-P8 have not started. All 93 tests pass on
+  checks and worked examples. P4 has started with standard chain cellulations; P5-P8 remain. The P3 checkpoint had 93 tests passing on
   Python 3.9/3.12; see HANDOFF.md and docs/cut-systems.md for the supported scope.
   An abstract certificate is not a rendered presentation certificate.
 - Existing TikZ/LaTeX support stays available. Extend it for the new features
@@ -31,7 +31,7 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
 | P1 | Replace default higher-genus visual geometry | Complete | P0 |
 | P2 | True circular planar boundaries, horizontal arrangement first | Complete | P0 |
 | P3 | Specify and validate disk-complement cut systems | Complete for explicit abstract cellulations; presentation binding remains P4 | P0 |
-| P4 | Standard numbered genus cut systems and arc/curve routing | Not started | P1, P3 |
+| P4 | Standard numbered genus cut systems and arc/curve routing | In progress: abstract standard chains and decoration spokes | P1, P3 |
 | P5 | General planar configurations, cut systems, daisy overlays | Not started | P2, P3 |
 | P6 | Secondary surface presentations and complete SVG integration | Not started | P4, P5 |
 | P7 | Extend TikZ/LaTeX for all new features | Not started | P6 |

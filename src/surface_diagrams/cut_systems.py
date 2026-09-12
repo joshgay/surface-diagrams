@@ -72,6 +72,14 @@ class Intersection:
 
 
 @dataclass(frozen=True)
+class Attachment:
+    """A supplementary cut ending at an interior point of another cut."""
+    corner: str
+    ending: str
+    through: str
+
+
+@dataclass(frozen=True)
 class Cellulation:
     faces: tuple
     pairs: tuple = ()
@@ -81,6 +89,7 @@ class Cellulation:
     parents: tuple = ()
     incidences: tuple = ()
     intersections: tuple = ()
+    attachments: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -170,7 +179,7 @@ def _prepare(cell, spec):
     if type(spec.genus) is not int or spec.genus < 0:
         _fail('invalid_genus', 'Expected genus must be a nonnegative integer')
     if any(len(items) > 16384 for items in (spec.boundaries, spec.marks, cell.pairs,
-           cell.boundaries, cell.marks, cell.cuts, cell.parents, cell.incidences, cell.intersections)):
+           cell.boundaries, cell.marks, cell.cuts, cell.parents, cell.incidences, cell.intersections, cell.attachments)):
         _fail('input_limit', 'At most 16384 records per collection are supported')
     if sum(len(p.walk) for p in cell.parents) > 16384:
         _fail('input_limit', 'At most 16384 parent edge visits are supported')
@@ -375,6 +384,16 @@ def _validate_incidence(cell, data, vertices, vertex_of):
     parent_ids = {p.id for p in cell.parents}
     sides, nxt, prev, face_of, paired, mate, boundary = data
     marked_vertices = {vertex_of[m.corner] for m in cell.marks if m.corner is not None}
+    attachments = {}
+    for attachment in cell.attachments:
+        if attachment.corner not in vertex_of:
+            _fail('unknown_vertex', 'Attachment needs an actual corner', attachment.corner)
+        vertex = vertex_of[attachment.corner]
+        if vertex in attachments or attachment.ending == attachment.through:
+            _fail('invalid_attachment', 'Attachment must join two distinct parents at a unique vertex', vertex)
+        if {attachment.ending, attachment.through} - parent_ids:
+            _fail('invalid_attachment', 'Attachment refers to an unknown parent', vertex)
+        attachments[vertex] = attachment
     for parent in cell.parents:
         if type(parent.number) is not int or parent.number < 1 or parent.number in numbers:
             _fail('cut_number', 'Parent numbers must be distinct positive integers', parent.id)
@@ -411,7 +430,9 @@ def _validate_incidence(cell, data, vertices, vertex_of):
                 _fail('parent_endpoint', 'Arc needs two explicit corner endpoints', parent.id)
             if tuple(vertex_of[e] for e in parent.endpoints) != (walk_vertices[0], walk_vertices[-1]):
                 _fail('parent_endpoint', 'Arc endpoint locators do not match its walk', parent.id)
-            if any(not records[v].boundary and v not in marked_vertices for v in (walk_vertices[0], walk_vertices[-1])):
+            if any(not records[v].boundary and v not in marked_vertices
+                   and not (v in attachments and attachments[v].ending == parent.id)
+                   for v in (walk_vertices[0], walk_vertices[-1])):
                 _fail('parent_endpoint', 'Arc endpoints must lie on a boundary or mark', parent.id)
             if any(records[v].boundary or v in marked_vertices for v in walk_vertices[1:-1]):
                 _fail('parent_boundary', 'Arc interior cannot pass through boundary or marked vertices', parent.id)
@@ -433,9 +454,17 @@ def _validate_incidence(cell, data, vertices, vertex_of):
         if len(crossing.parents) != 2 or len(set(crossing.parents)) != 2 or set(crossing.parents)-parent_ids:
             _fail('unsupported_intersection', 'Initially an intersection needs exactly two distinct known parents', vertex)
         intersections[vertex] = set(crossing.parents)
-    actual = set()
+    actual, actual_attachments = set(), set()
     for vertex, parents in visits.items():
         if len(parents) < 2:
+            continue
+        if vertex in attachments:
+            attachment = attachments[vertex]
+            if (records[vertex].boundary or vertex in intersections
+                    or set(parents) != {attachment.ending, attachment.through}
+                    or len(parents[attachment.ending]) != 1 or len(parents[attachment.through]) != 2):
+                _fail('invalid_attachment', 'Attachment needs one ending arc and one interior through-parent', vertex)
+            actual_attachments.add(vertex)
             continue
         actual.add(vertex)
         if intersections.get(vertex) != set(parents):
@@ -447,6 +476,8 @@ def _validate_incidence(cell, data, vertices, vertex_of):
         order = [owner[end] for end in record.ends if end in owner]
         if len(order) != 4 or any(order[i] == order[(i+1)%4] for i in range(4)):
             _fail('nontransverse_intersection', 'Parent edge ends do not alternate at the intersection', vertex)
+    if set(attachments) != actual_attachments:
+        _fail('invalid_attachment', 'Declared attachment does not match the parent walks')
     if set(intersections) != actual:
         _fail('false_intersection', 'Declared parents do not meet at the supplied vertex', *sorted(set(intersections)-actual))
 

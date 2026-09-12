@@ -5,10 +5,14 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 
 ## Resume here
 
-**P0-P3 complete for the supported abstract-cellulation scope.
-P4-P8 have not started.**
+**P0-P3 complete. P4 is in progress; P5-P8 have not started.**
 
-Next action: start P4a, standard genus chain cut systems. Read the P4 gate in
+Current P4a checkpoint: standard_cuts.py now builds certified 2g+1 chains and
+numbered boundary/mark spokes. See standard-chains.md. The validator now has
+explicit Attachment records for spoke endpoints on chain edges.
+
+Next action: implement disk routing and numbered diagnostics, then bind the
+standard cellulations to genus charts without inferring topology from pixels. Read the P4 gate in
 IMPLEMENTATION_PLAN.md and the implemented conventions/limits in cut-systems.md.
 Build actual chain cellulations and boundary/mark supplements, certify them
 with the internal validator, and bind those same cellulations to the genus
