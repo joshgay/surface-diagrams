@@ -1,8 +1,10 @@
 # Cut systems: combinatorial specification (P3a)
 
-Status: proposed internal contract, not a public API or an implemented validator.
-P3b must implement and test the certification below before P4 routing starts.
-The existing horizontal `Arc`/`Loop` interface is unchanged.
+Status: P3 abstract-cellulation validator implemented in
+`src/surface_diagrams/cut_systems.py`; its records remain internal and are not
+exported from the package root. The existing horizontal `Arc`/`Loop` interface
+is unchanged. P4 still needs standard chain constructions, numbered drawings,
+presentation bindings, and routing.
 
 ## Surface first, cuts second
 
@@ -32,7 +34,12 @@ claim validation of a genus SVG presentation.
 
 ## Proposed minimal records
 
-These names are provisional; do not export them from the package yet.
+The implementation follows these records with two simplifications: a selected
+`SidePair.id` is the cut-edge ID (`Cellulation.cuts`), and `ParentCut.walk`
+assigns its selected edges to a parent, so no separate `CutEdge` object is needed.
+`PresentationBinding` is reserved for P4; requesting a rendered certification
+scope currently returns `unsupported_binding`. Do not export these names from
+the package root yet.
 
 | Record | Fields and meaning |
 | --- | --- |
@@ -200,11 +207,80 @@ intersection promise follows from these coordinates.
 
 ## Implementation sequence
 
-P3a is this specification and the worked fixtures. P3b should first implement
-unlabelled polygon cellulations, full and partial gluing, manifold links and
-boundary/mark diagnostics. Then add parent walks and incidence validation.
-Make the table examples executable positive/negative tests and add a multi-disk
-case. Export no new public constructor until those tests pass. Keep P3 in
-progress until all gates in IMPLEMENTATION_PLAN.md are satisfied. P4 supplies
-standard chain constructions, numbered diagnostics and presentation bindings;
-P7 extends TikZ only after SVG integration is complete.
+P3a specified the model. P3b now implements full and partial gluing, vertex
+links, boundary cycles, mark copies, parent walks, transverse intersections,
+and diagnostics. All table examples and failure categories are executable in
+`tests/test_cut_systems.py`. P4 supplies standard chain constructions, numbered
+diagnostics and presentation bindings; P7 extends TikZ after SVG integration.
+
+## Running the implementation
+
+```powershell
+python examples/cut_system_examples.py
+python -m unittest discover -s tests -p test_cut_systems.py -v
+```
+
+The example command emits JSON. The checked-in result is
+[cut-systems.json](../examples/output/cut-systems.json). Seven fixtures each have
+a selected-cut and an uncut report. The disk passes with no cuts, as does the
+split disk when its diagonal is left auxiliary. Other uncut fixtures fail with
+the computed residual topology or interior mark. An uncut marked disk remains
+a topological disk, which is why mark validation is a separate check.
+
+For an internal torus certificate:
+
+```python
+from surface_diagrams.cut_systems import (
+    Cellulation, Face, SidePair, SurfaceSpec, validate_cut_system,
+)
+
+cell = Cellulation(
+    faces=(Face("F", ("a", "b", "-a", "-b")),),
+    pairs=(SidePair("a", "a", "-a"), SidePair("b", "b", "-b")),
+    cuts=("a", "b"),
+)
+report = validate_cut_system(cell, SurfaceSpec("torus", genus=1))
+assert report.certified
+assert report.complement[0].genus == 0
+assert len(report.complement[0].boundary_cycles) == 1
+```
+
+A corner locator names its outgoing side occurrence. Pair edge-end labels use
+`(pair_id, "start")` or `(pair_id, "end")` relative to `SidePair.first`.
+Boundary edge-end labels use the unpaired side ID. Link order follows polygon
+corner intervals from incoming to outgoing sides and crosses the glued outgoing
+side to the next corner. Interior order is compared up to rotation, preserving
+this orientation; boundary order is an interval with fixed first and last ends.
+`VertexIncidence.corners`, when supplied, asserts the exact recovered corner
+class. It never creates extra identifications.
+
+The side-pairing schema forbids pinches by construction: corners are distinct
+until their side gluings identify them. Links are nevertheless reconstructed
+and checked. A negative fixture asserting a merged vertex with disconnected
+interval links fails `vertex_identity`, despite the unchanged disk Euler count.
+Duplicate seam use and invalid orientation fail before reconstruction. No
+caller-supplied face or vertex topology is trusted.
+
+A face-interior mark denotes a distinct named point in that face, with no
+geometric coordinate promise. A vertex mark is transported to every corner
+copy after cutting. All those copies must be boundary points. Distinct mark
+IDs on the same full-surface vertex are rejected.
+
+The initial bound is 4096 faces, 16384 side occurrences, 16384 records per
+collection, 16384 parent edge visits, and 65536 incidence entries. Inputs must
+use the typed records and finite sequences. A connected orientable surface is
+required. No arbitrary extra corner gluing, nonorientable surface, shared parent
+edge, tangency, shared parent endpoint, triple parent intersection, or rendering
+binding is accepted. An arc cannot revisit its start vertex; same-boundary arcs
+with distinct endpoint vertices remain representable. Empty parents certify
+only the selected unlabelled graph; if parents are present every selected edge
+must have exactly one parent. These explicit limits do not weaken the older
+planar noncrossing router.
+
+Verification on September 12: 26 topology tests and all 67 preexisting tests
+pass on Python 3.9.7 and 3.12.14. Coverage includes all genus-two cut subsets,
+spines through genus eight, transverse and tangent parent loops, false projection
+vertices, auxiliary cell subdivision, reversed edge references, reordered faces,
+and preservation of every marked-vertex copy. JSON report regeneration is
+deterministic. No SVG geometry changed, and no new visual certification is
+claimed at this stage.

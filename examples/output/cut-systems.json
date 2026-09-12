@@ -1,0 +1,406 @@
+[
+  {
+    "example": "disk",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 1,
+        "euler": 1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "disk"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "disk",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 1,
+        "euler": 1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "disk"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "annulus",
+    "cuts": [
+      "a"
+    ],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 2,
+        "euler": 0
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "annulus"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "annulus",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": false,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 2,
+        "euler": 0
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "annulus"
+        ],
+        "genus": 0,
+        "boundaries": 2,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "residual_topology",
+        "message": "Complement has genus 0 and 2 boundaries; expected a disk",
+        "ids": [
+          "annulus"
+        ]
+      }
+    ]
+  },
+  {
+    "example": "marked-disk",
+    "cuts": [
+      "a"
+    ],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 1,
+        "euler": 1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "marked-disk"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "marked-disk",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": false,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 1,
+        "euler": 1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "marked-disk"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": [
+          "M"
+        ]
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "interior_marks",
+        "message": "Complement retains interior marked points",
+        "ids": [
+          "M"
+        ]
+      }
+    ]
+  },
+  {
+    "example": "torus",
+    "cuts": [
+      "a",
+      "b"
+    ],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 1,
+        "boundaries": 0,
+        "euler": 0
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "torus"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "torus",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": false,
+    "full": [
+      {
+        "genus": 1,
+        "boundaries": 0,
+        "euler": 0
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "torus"
+        ],
+        "genus": 1,
+        "boundaries": 0,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "residual_topology",
+        "message": "Complement has genus 1 and 0 boundaries; expected a disk",
+        "ids": [
+          "torus"
+        ]
+      }
+    ]
+  },
+  {
+    "example": "genus-two",
+    "cuts": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 2,
+        "boundaries": 0,
+        "euler": -2
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "genus-two"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "genus-two",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": false,
+    "full": [
+      {
+        "genus": 2,
+        "boundaries": 0,
+        "euler": -2
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "genus-two"
+        ],
+        "genus": 2,
+        "boundaries": 0,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "residual_topology",
+        "message": "Complement has genus 2 and 0 boundaries; expected a disk",
+        "ids": [
+          "genus-two"
+        ]
+      }
+    ]
+  },
+  {
+    "example": "pair-of-pants",
+    "cuts": [
+      "a",
+      "c"
+    ],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 3,
+        "euler": -1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "pair-of-pants"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "pair-of-pants",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": false,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 3,
+        "euler": -1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "pair-of-pants"
+        ],
+        "genus": 0,
+        "boundaries": 3,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "code": "residual_topology",
+        "message": "Complement has genus 0 and 3 boundaries; expected a disk",
+        "ids": [
+          "pair-of-pants"
+        ]
+      }
+    ]
+  },
+  {
+    "example": "split-disk",
+    "cuts": [
+      "a"
+    ],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 1,
+        "euler": 1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "left"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      },
+      {
+        "faces": [
+          "right"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "example": "split-disk",
+    "cuts": [],
+    "scope": "abstract_cellulation",
+    "certified": true,
+    "full": [
+      {
+        "genus": 0,
+        "boundaries": 1,
+        "euler": 1
+      }
+    ],
+    "complement": [
+      {
+        "faces": [
+          "left",
+          "right"
+        ],
+        "genus": 0,
+        "boundaries": 1,
+        "interior_marks": []
+      }
+    ],
+    "diagnostics": []
+  }
+]

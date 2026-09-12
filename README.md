@@ -292,18 +292,25 @@ higher-genus surfaces.
 
 Implemented: planar surfaces, row/custom positioning, adjustable dots/colors,
 minimal arcs/loops, noncrossing multicurves, coordinate guides, higher genus,
-all fixed boundary slots and left/right/top-bottom paired boundaries, SVG, TikZ,
+all fixed boundary slots and left/right/top-bottom paired boundaries, circular
+planar holes with rim-ended SVG arcs, SVG, TikZ,
 a LaTeX inclusion companion, and a small command-line entry point.
 
 Later: standard chain curves on higher-genus surfaces, marked points on them,
 Type II boundaries inside handle holes or at front/back locations, asymmetric
-layouts, and hollow planar boundary circles. PNG/PDF
+layouts, and TikZ support for circular planar holes. PNG/PDF
 export is not built in; SVGs can be converted externally when needed.
 
 `model.py` holds planar inputs/styles and `curves.py` plans planar routes.
 `genus.py` holds genus inputs and `genus_geometry.py` builds their presentation.
 `layout.py` assembles format-independent primitives;
 `svg.py` and `tikz.py` serialize the same geometry into their respective formats.
+
+The internal [cut-system validator](docs/cut-systems.md) reconstructs explicit
+polygon cellulations and checks whether selected cuts leave unmarked disks.
+Worked examples cover a disk, annulus, marked disk, torus, genus two, pair of
+pants, and a two-disk complement. This certifies abstract topology; integration
+with numbered genus drawings and generalized routes is the next stage.
 
 ## Development
 
