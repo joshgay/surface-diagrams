@@ -5,7 +5,26 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 
 ## Resume here
 
-**P0-P3 complete. P4 is in progress; P5-P8 have not started.**
+**Planning priority changed: follow R0-R7 in the revised IMPLEMENTATION_PLAN.md.**
+
+Richard wants a shared mathematical core, a calculation layer (including braids,
+mapping classes, factorizations and lifts), and a separate rendering layer in one
+repository. Future Heegaard, trisection, relative, bridge and Kirby diagram work
+is staged rather than added to the next release. ARCHITECTURE.md specifies the
+proposed curve representations and the distinction between notch rotation and a
+full boundary twist. RESEARCH_NOTES.md records primary sources and missing inputs.
+
+**Next action: R0.** Locate Richard's additional work; obtain/confirm the Dylan
+Thurston note; compare normal-strand and Dehn-Thurston representations on the
+small fixture set; formalize boundary/isotopy and multiplication conventions.
+Include Richard's proposal to identify mapping classes by images of a rigid
+reference arc system, with explicit stabilizer and normalization checks.
+Then implement one braid/factorization/diagram slice. Do not automatically resume
+the cusp prototype or attempt all future diagram families under the old roadmap.
+This turn changes planning documents only; it does not implement the new modules.
+
+The earlier visual-cycle status below is retained as a technical checkpoint:
+P0-P3 complete, P4 partial, P5-P8 unfinished and rescheduled.
 
 Current P4a checkpoint: standard_cuts.py now builds certified 2g+1 chains and
 numbered boundary/mark spokes. See standard-chains.md. The validator now has
@@ -32,7 +51,8 @@ marked vertices; the validator checks the resulting disk boundaries. Four new
 tests cover all views, stable walks, missing-spoke rejection, exact marked arc
 endpoints and maximal automatic mark counts. The marked-cut preview was inspected.
 
-Next action: extend the checked presentation binding to Type I/II boundaries.
+Previous P4 next action, now deferred behind R0: extend the checked presentation
+binding to Type I/II boundaries.
 The experimental `genus_outer_mesh.py` now classifies top/bottom rim halves and
 matching seams explicitly. Its unfinished integration is preserved in
 `docs/checkpoints/top-pair-binding.patch`; see that directory's README for the
@@ -41,9 +61,8 @@ applied to the public API, and the edge charts are not a surface certificate.
 The two edge-chart tests pass on Python 3.9/3.12; the full Python 3.12 suite now
 contains 129 tests. The saved patch passes `git apply --check`.
 These are still explicitly unsupported by GenusSurface.cut_system(); the
-standalone abstract decorated chain remains available. Then finish the remaining
-P4 boundary-route examples, P5 general planar/daisy arrangements,
-P6 secondary presets, P7 complete TikZ compilation, and P8 release audit.
+standalone abstract decorated chain remains available. The former instruction to
+finish all remaining P4-P8 work is superseded by the staged R0-R7 roadmap above.
 Closed route examples now include multiple handles, a separating loop producing
 two once-bordered tori, repeated visits to a cut edge, disjoint handle loops,
 and explicitly declared intersections. Their generated contact sheet was inspected:
