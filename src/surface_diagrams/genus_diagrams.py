@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from .genus_geometry import presentation
 from .genus_mesh import genus_binding
 from .mesh_atlas import cubic_point, _near
-from .primitives import Drawing, Path, Text
+from .primitives import Drawing, Path, Text, Ellipse
 from .disk_routes import DiskRoute, ItineraryError
 
 
@@ -32,6 +32,7 @@ class GenusDiagram:
         atlas,_=binding.charts()
         base=presentation(self.surface).drawing(style)
         paths,texts=list(base.paths),list(base.texts)
+        ellipses=list(base.ellipses)
         parents={p.number:p for p in binding.system.cellulation.parents}
         numbers=list(parents) if self.show_cuts else []
         for curve in self.curves:
@@ -44,6 +45,12 @@ class GenusDiagram:
                 raise TypeError('genus curves must be NamedCut or DiskRoute objects')
         geometry={t.face:t for t in binding.triangles}
         side_map={s:(geometry[f.id],i) for f in binding.system.cellulation.faces for i,s in enumerate(f.sides)}
+        for mark in binding.system.cellulation.marks:
+            triangle,index=side_map[mark.corner]
+            x,y=triangle.points[index]
+            ellipses.append(Ellipse(x,y,style.marked_point_radius,style.marked_point_radius,
+                                    style.marked_point_color,style.marked_point_color,0,'marked-point'))
+            texts.append(Text(x+7,y+2,mark.id,style.marked_point_color,9))
         for number in numbers:
             parent=parents[number]
             pieces=[]
@@ -56,7 +63,11 @@ class GenusDiagram:
             _append_paths(paths,pieces,style.curve_color,style.curve_width,'named-cut')
             if self.show_cuts:
                 front=[p for sheet,pts in pieces if sheet=='front' for p in pts]
-                if number%2:
+                if parent.kind == 'arc':
+                    x,y=front[len(front)//2]
+                    x+=9
+                    y-=5
+                elif number%2:
                     x,y=front[len(front)//2]
                     y+=9*(1 if self.surface.view_vertical=='above' else -1)
                 else:
@@ -68,7 +79,7 @@ class GenusDiagram:
         for route in routes:
             pieces=binding.project(route)
             _append_paths(paths,[(p.sheet,p.points) for p in pieces],style.curve_color,style.curve_width,'surface-route')
-        return Drawing(base.width,base.height,base.ellipses,tuple(paths),tuple(texts))
+        return Drawing(base.width,base.height,tuple(ellipses),tuple(paths),tuple(texts))
 
     def _repr_svg_(self):
         from .svg import render_svg

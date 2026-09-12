@@ -64,10 +64,16 @@ class GenusSurface:
     type_ii: tuple = ()
     view_vertical: str = "below"
     view_horizontal: str = "right"
+    marks: tuple = ()
 
     def __post_init__(self):
         if type(self.genus) is not int or self.genus < 1:
             raise ValueError("genus must be a positive integer")
+        object.__setattr__(self, "marks", tuple(self.marks))
+        if any(not isinstance(name,str) or not name for name in self.marks) or len(set(self.marks)) != len(self.marks):
+            raise ValueError("marks must have distinct nonempty string IDs")
+        if len(self.marks) > 2*self.genus+1:
+            raise ValueError("the automatic presentation supports at most 2g+1 marks")
         object.__setattr__(self, "type_ii", tuple(self.type_ii))
         if self.height is None:
             side_pairs = any(isinstance(p, BoundaryPair) and p.side in ("left", "right")
@@ -118,5 +124,8 @@ class GenusSurface:
 
 
 def genus_layout(surface, style):
+    if surface.marks:
+        from .genus_diagrams import GenusDiagram
+        return GenusDiagram(surface).drawing(style)
     from .genus_geometry import presentation
     return presentation(surface).drawing(style)

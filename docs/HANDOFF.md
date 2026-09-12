@@ -25,10 +25,15 @@ front/back visibility. The smooth genus-two preview was inspected. All 115 tests
 3.12.14 and 3.9.7; the 16-view regression checks include genus 1/2/3/5.
 The additional genus-seven four-view check also passed.
 
-Next action: extend the checked presentation binding to Type I/II boundaries
-and marked points with supplemental arcs. These are still explicitly unsupported
-by GenusSurface.cut_system(); the standalone abstract decorated chain remains
-available. Then finish P4 route examples, P5 general planar/daisy arrangements,
+Marked closed-genus surfaces now work with `GenusSurface(2, marks=('P', 'Q'))`.
+Supplementary mesh paths attach at regular cut vertices and reach the actual
+marked vertices; the validator checks the resulting disk boundaries. Four new
+tests cover all views, stable walks, missing-spoke rejection, exact marked arc
+endpoints and maximal automatic mark counts. The marked-cut preview was inspected.
+
+Next action: extend the checked presentation binding to Type I/II boundaries.
+These are still explicitly unsupported by GenusSurface.cut_system(); the
+standalone abstract decorated chain remains available. Then finish P4 route examples, P5 general planar/daisy arrangements,
 P6 secondary presets, P7 complete TikZ compilation, and P8 release audit.
 Do not mark P4 complete from closed examples alone. New binding modules and
 records remain experimental; projection flattening uses a numerical display

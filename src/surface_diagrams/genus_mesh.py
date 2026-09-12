@@ -239,4 +239,18 @@ def genus_binding(surface):
     report = system.validate()
     if not report.certified or len(report.complement)!=2:
         raise ItineraryError('genus presentation chain failed certification: '+str(report.diagnostics))
+    if surface.marks:
+        # Select distinct front-sheet cell centers in the upper outer band.
+        # Canonical positions, not projected distances, determine stable IDs.
+        candidates = [(index,sum(coordinates[v][0] for v in quad)/4)
+                      for index,quad in enumerate(quadrilaterals)
+                      if all(coordinates[v][1]>=ring_height for v in quad)]
+        sites=[]
+        for i,name in enumerate(surface.marks):
+            target=-surface.genus*spacing/2+(i+1)*surface.genus*spacing/(len(surface.marks)+1)
+            index,_=min(candidates,key=lambda item:(abs(item[1]-target),item[0]))
+            candidates=[item for item in candidates if item[0]!=index]
+            sites.append(f'front.{index}.0.0.s2')
+        from .mesh_marks import mark_mesh
+        system=mark_mesh(system,tuple(geometry),tuple(sites),surface.marks)
     return MeshBinding(system,tuple(geometry))

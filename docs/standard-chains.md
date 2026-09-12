@@ -79,3 +79,17 @@ Run `python examples/make_genus_cuts.py` for numbered genus 1/2/3/5, each genus-
 chain member, and a torus loop with its matching complementary-disk itinerary.
 The torus example chooses an explicit side whose mate is in the same cut disk;
 it does not guess a side from an ambiguous parent number.
+
+
+Automatic front-sheet marks can be supplied as stable string IDs:
+`GenusSurface(2, marks=('P', 'Q'))`. Up to `2g+1` marks are placed in the upper
+outer mesh band. Their positions are automatic; arbitrary point coordinates
+are not accepted by this constructor. Supplementary arcs are numbered after
+the chain in input mark order. Their combinatorial walks use mesh-edge counts,
+so changing the viewing direction does not choose a different cut.
+
+`DiskRoute((), MarkPoint('P'), MarkPoint('Q'))` routes between these two marks
+inside their common complementary disk and projects back to their exact surface
+vertices. The example generator saves the ordinary arc, numbered cuts, and
+matching cut-disk route. These marks remain mathematical points; they do not
+create puncture boundary circles.
