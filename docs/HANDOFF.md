@@ -33,6 +33,13 @@ tests cover all views, stable walks, missing-spoke rejection, exact marked arc
 endpoints and maximal automatic mark counts. The marked-cut preview was inspected.
 
 Next action: extend the checked presentation binding to Type I/II boundaries.
+The experimental `genus_outer_mesh.py` now classifies top/bottom rim halves and
+matching seams explicitly. Its unfinished integration is preserved in
+`docs/checkpoints/top-pair-binding.patch`; see that directory's README for the
+exact default-genus-two cusp failure and resume commands. The patch is not
+applied to the public API, and the edge charts are not a surface certificate.
+The two edge-chart tests pass on Python 3.9/3.12; the full Python 3.12 suite now
+contains 129 tests. The saved patch passes `git apply --check`.
 These are still explicitly unsupported by GenusSurface.cut_system(); the
 standalone abstract decorated chain remains available. Then finish the remaining
 P4 boundary-route examples, P5 general planar/daisy arrangements,

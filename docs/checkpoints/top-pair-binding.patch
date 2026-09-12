@@ -1,0 +1,179 @@
+diff --git a/src/surface_diagrams/genus_mesh.py b/src/surface_diagrams/genus_mesh.py
+index 057e8fc..7052ccb 100644
+--- a/src/surface_diagrams/genus_mesh.py
++++ b/src/surface_diagrams/genus_mesh.py
+@@ -7,7 +7,7 @@ from collections import defaultdict
+ from functools import lru_cache
+ from math import hypot, ceil
+
+-from .cut_systems import Cellulation, Face, Intersection, ParentCut, SidePair, SurfaceSpec
++from .cut_systems import Cellulation, Face, Intersection, ParentCut, SidePair, SurfaceSpec, BoundarySide
+ from .standard_cuts import CutSystem
+ from .genus_geometry import presentation
+ from .mesh_atlas import MeshBinding, MeshTriangle, cubic_slice, harmonic, _star_positive
+@@ -16,11 +16,15 @@ from .disk_routes import ItineraryError, _orient
+
+ @lru_cache(maxsize=16)
+ def genus_binding(surface):
+-    if surface.type_i or surface.type_ii:
+-        raise NotImplementedError('boundary chart binding is not implemented yet')
++    if surface.type_i or any(p.side in ('left','right') for p in surface.type_ii):
++        raise NotImplementedError('Type I and side-pair chart binding is not implemented yet')
+     if surface.genus > 7:
+         raise ValueError('the current presentation mesh supports genus 1..7')
+     drawing = presentation(surface)
++    outer_chart=None
++    if surface.type_ii:
++        from .genus_outer_mesh import PairedOuterChart
++        outer_chart=PairedOuterChart(surface,drawing)
+     spacing = surface.handle_spacing
+     rx, hy = surface.width/2, surface.height/2
+     hr, hh = spacing*.30, min(hy*.22, spacing*.13)
+@@ -35,6 +39,8 @@ def genus_binding(surface):
+         refined_xs.append(b)
+     xs=refined_xs
+     ys = (-hy, -ring_height, -hh, 0., hh, ring_height, hy)
++    if outer_chart:
++        xs,ys=outer_chart.refine(xs,ys)
+     coordinates = {(i,j):(x,y) for i,x in enumerate(xs) for j,y in enumerate(ys)}
+     triangles, quadrilaterals = [], []
+     for i in range(len(xs)-1):
+@@ -100,26 +106,34 @@ def genus_binding(surface):
+                 return (hh+x-(c-hr))/(2*hh+2*hr)
+             t0,t1 = parameter(x,y),parameter(u,v)
+         return cubic_slice(base,t0,t1) if t0<t1 else tuple(reversed(cubic_slice(base,t1,t0)))
+-    fixed, boundary_curves = {}, {}
++    fixed={sheet:{} for sheet in ('front','back')}
++    boundary_curves={sheet:{} for sheet in fixed}
++    physical_boundaries={}
+     for a,b in boundary_edges:
+-        c = curve(a,b)
+-        boundary_curves[a,b], boundary_curves[b,a] = c, tuple(reversed(c))
+-        for vertex,point in ((a,c[0]),(b,c[-1])):
+-            if vertex in fixed and hypot(point[0]-fixed[vertex][0],point[1]-fixed[vertex][1])>1e-7:
+-                raise ItineraryError('presentation boundary curves do not join consistently')
+-            fixed[vertex] = point
++        x,y=coordinates[a];u,v=coordinates[b]
++        on_outer=(x==u and abs(x)==rx) or (y==v and abs(y)==hy)
++        for sheet in fixed:
++            if outer_chart and on_outer:
++                c,boundary=outer_chart.edge(coordinates[a],coordinates[b],sheet)
++                if boundary:physical_boundaries[tuple(sorted((a,b)))]=boundary
++            else:c=curve(a,b)
++            boundary_curves[sheet][a,b],boundary_curves[sheet][b,a]=c,tuple(reversed(c))
++            for vertex,point in ((a,c[0]),(b,c[-1])):
++                if vertex in fixed[sheet] and hypot(point[0]-fixed[sheet][vertex][0],point[1]-fixed[sheet][vertex][1])>1e-7:
++                    raise ItineraryError('presentation boundary curves do not join consistently')
++                fixed[sheet][vertex]=point
+     from .genus_chain_geometry import smooth_chain_constraints
+-    chain_fixed,chain_curves=smooth_chain_constraints(surface,coordinates,triangles,fixed,centers,hr,hh,ring_height)
++    chain_fixed,chain_curves=smooth_chain_constraints(surface,coordinates,triangles,fixed['front'],centers,hr,hh,ring_height)
+     projected={}
+     all_curves={}
+     for sheet in ('front','back'):
+-        constraints=dict(fixed)
++        constraints=dict(fixed[sheet])
+         constraints.update(chain_fixed[sheet])
+         positions=harmonic(nodes,triangles,constraints,coordinates)
+-        if not all(_orient(*(positions[v] for v in t))>1e-9 for t in triangles):
+-            raise ItineraryError('smooth chain constraints fold the presentation mesh: '+repr((sheet,[(tuple(coordinates[v] for v in t),tuple(positions[v] for v in t)) for t in triangles if _orient(*(positions[v] for v in t))<=1e-9][:2])))
++        # These diagonals define harmonic graph weights only. The actual
++        # projection uses star-triangulated quads, certified edge by edge below.
+         projected[sheet]=positions
+-        all_curves[sheet]=dict(boundary_curves)
++        all_curves[sheet]=dict(boundary_curves[sheet])
+         all_curves[sheet].update(chain_curves[sheet])
+     faces, geometry, side_nodes = [], [], {}
+     directed, mesh_edges = {}, defaultdict(list)
+@@ -175,7 +189,7 @@ def genus_binding(surface):
+                                 clipped.append(tuple(p[axis]+ratio*(q[axis]-p[axis]) for axis in (0,1)))
+                         kernel=clipped
+                 if not kernel:
+-                    raise ItineraryError('curved mesh cell has no interior kernel: '+str((sheet,index)))
++                    raise ItineraryError('curved mesh cell has no interior kernel: '+str((sheet,index,tuple(coordinates[v] for v in t),polygon_points,[(a,t[(j+1)%4],sheet_curves.get((a,t[(j+1)%4]))) for j,a in enumerate(t)])))
+                 center_point=tuple(sum(p[axis] for p in kernel)/len(kernel) for axis in (0,1))
+                 if not valid_center(center_point):
+                     raise ItineraryError('curved mesh cell kernel could not be certified: '+str((sheet,index)))
+@@ -201,11 +215,15 @@ def genus_binding(surface):
+                         start,end = vs[k],vs[(k+1)%3]
+                         side_nodes[side] = (sheet,start,end)
+                         directed[sheet,start,end] = side
+-                        key = (('seam',frozenset((start,end))) if k==0 and edge in boundary_edges
++                        key = (('boundary',sheet,physical_boundaries[edge],frozenset((start,end))) if k==0 and edge in physical_boundaries
++                               else ('seam',frozenset((start,end))) if k==0 and edge in boundary_edges
+                                else (sheet,frozenset((start,end))))
+                         mesh_edges[key].append(side)
+-    pairs, edge_id = [], {}
+-    for i,sides in enumerate(mesh_edges.values()):
++    pairs, edge_id, boundary_sides = [], {}, []
++    for i,(key,sides) in enumerate(mesh_edges.items()):
++        if key[0] == 'boundary':
++            boundary_sides.append(BoundarySide(sides[0],key[2]))
++            continue
+         if len(sides)!=2:
+             raise ItineraryError('presentation mesh has an unmatched seam')
+         pair = SidePair(f'mesh-e{i}',*sides)
+@@ -236,8 +254,16 @@ def genus_binding(surface):
+             crossings.append(Intersection(corner,(f'c{other}',f'c{2*i+2}')))
+     parents.sort(key=lambda p:p.number)
+     cuts = tuple(edge_id[s] for p in parents for s in p.walk)
+-    cell = Cellulation(tuple(faces),tuple(pairs),cuts=cuts,parents=tuple(parents),intersections=tuple(crossings))
+-    system = CutSystem(cell,SurfaceSpec(f'default-genus-{surface.genus}',surface.genus))
++    cell = Cellulation(tuple(faces),tuple(pairs),boundaries=tuple(boundary_sides),cuts=cuts,parents=tuple(parents),intersections=tuple(crossings))
++    system = CutSystem(cell,SurfaceSpec(f'default-genus-{surface.genus}',surface.genus,tuple(r.id for r in drawing.rims)))
++    if boundary_sides:
++        from .mesh_marks import mark_mesh
++        sites=[]
++        for rim in drawing.rims:
++            candidates=[s.side for s in boundary_sides if s.boundary==rim.id and s.side.startswith('front.')]
++            site=candidates[len(candidates)//2]
++            sites.append((rim.id,site))
++        system=mark_mesh(system,tuple(geometry),(),(),boundary_sites=tuple(sites))
+     report = system.validate()
+     if not report.certified or len(report.complement)!=2:
+         raise ItineraryError('genus presentation chain failed certification: '+str(report.diagnostics))
+diff --git a/src/surface_diagrams/mesh_marks.py b/src/surface_diagrams/mesh_marks.py
+index 4adef1a..ad4b74d 100644
+--- a/src/surface_diagrams/mesh_marks.py
++++ b/src/surface_diagrams/mesh_marks.py
+@@ -7,7 +7,7 @@ from .standard_cuts import CutSystem
+ from .disk_routes import ItineraryError
+
+
+-def mark_mesh(system, triangles, sites, names):
++def mark_mesh(system, triangles, sites, names, *, boundary_sites=()):
+     cell = system.cellulation
+     _, vertices, vertex_of = _reconstruct(cell, _prepare(cell, system.surface))
+     faces = {f.id:f for f in cell.faces}
+@@ -21,8 +21,9 @@ def mark_mesh(system, triangles, sites, names):
+         a,b = vertex_of[side],vertex_of[following[side]]
+         if a not in seam and b not in seam:
+             graph.setdefault(a, []).append((b,side))
+-    parents, marks, attachments, cuts = list(cell.parents), [], [], list(cell.cuts)
+-    for name,site in zip(names,sites):
++    parents, marks, attachments, cuts = list(cell.parents), list(cell.marks), [], list(cell.cuts)
++    targets=[('boundary',name,site) for name,site in boundary_sites]+[('mark',name,site) for name,site in zip(names,sites)]
++    for kind,name,site in targets:
+         target = vertex_of[site]
+         memberships = {}
+         degrees = {}
+@@ -58,15 +59,16 @@ def mark_mesh(system, triangles, sites, names):
+         walk = tuple(backward)
+         if not walk:
+             raise ItineraryError('automatic mark lies on an existing cut')
+-        parent_id = 'mark:'+name
++        parent_id = kind+':'+name
+         number = len(parents)+1
+         parents.append(ParentCut(parent_id,number,'arc',walk,(walk[0],site)))
+-        marks.append(Mark(name,corner=site))
++        if kind=='mark':
++            marks.append(Mark(name,corner=site))
+         attachments.append(Attachment(walk[0],parent_id,next(iter(memberships[anchor]))))
+         cuts.extend(pairs[s].id for s in walk)
+     result = CutSystem(replace(cell,parents=tuple(parents),marks=tuple(marks),
+                                attachments=cell.attachments+tuple(attachments),cuts=tuple(cuts)),
+-                       replace(system.surface,marks=tuple(names)))
++                       replace(system.surface,marks=system.surface.marks+tuple(names)))
+     report = result.validate()
+     if not report.certified:
+         raise ItineraryError('marked mesh failed certification: '+str(report.diagnostics))
