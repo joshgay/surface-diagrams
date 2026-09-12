@@ -266,7 +266,7 @@ geometric coordinate promise. A vertex mark is transported to every corner
 copy after cutting. All those copies must be boundary points. Distinct mark
 IDs on the same full-surface vertex are rejected.
 
-The initial bound is 4096 faces, 16384 side occurrences, 16384 records per
+The initial bound is 8192 faces, 32768 side occurrences, 16384 records per
 collection, 16384 parent edge visits, and 65536 incidence entries. Inputs must
 use the typed records and finite sequences. A connected orientable surface is
 required. No arbitrary extra corner gluing, nonorientable surface, shared parent

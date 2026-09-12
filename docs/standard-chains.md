@@ -54,3 +54,28 @@ works without a geometry extension. This is not completion of P7.
 
 Surface projection and presentation binding remain unfinished. The diagnostic
 polygons are valid cut disks, not a replacement for the requested genus drawings.
+
+
+## Closed presentation binding checkpoint
+
+`GenusSurface(g).with_cut_system()` draws the actual numbered chain on the
+reference silhouette. `GenusSurface(g).cut_system()` returns its triangulated
+cellulation, whose side IDs can be used by `DiskRoute`. This is a different
+subdivision from `chain_system(g)`; side locators cannot be transferred between
+them. Numbers identify the same chain members. Use `NamedCut(number)` from
+`surface_diagrams.genus_diagrams` to draw a chain member directly.
+
+The closed default mesh currently supports genus 1 through 7. Type I/II
+boundaries are rejected explicitly while their chart extensions are unfinished.
+Each sheet is a holed planar domain; seams identify its front and back copies.
+The curved edge carriers use a Bernstein positivity check over each complete
+cubic. Tangent sampling only proposes cell centers; it never substitutes for
+that final check. The complementary disk charts solve a positive-weight graph
+Dirichlet problem and reject any flipped or degenerate triangle. Rendering
+flattens projected pieces with a numerical tolerance; this display approximation
+is distinct from the certified local curved-triangle orientation.
+
+Run `python examples/make_genus_cuts.py` for numbered genus 1/2/3/5, each genus-two
+chain member, and a torus loop with its matching complementary-disk itinerary.
+The torus example chooses an explicit side whose mate is in the same cut disk;
+it does not guess a side from an ambiguous parent number.

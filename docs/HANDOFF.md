@@ -17,15 +17,22 @@ reversal, boundary returns, explicit overlays and reconstruction after cutting
 along a route. Six generated SVG examples are in examples/output/cut-disks-*;
 the decorated disk preview was visually checked, including mark M.
 
-Next action: bind the standard cellulations to genus charts without inferring
-topology from pixels. The current convex diagnostic charts must not be projected
-onto the genus illustration by an unchecked interpolation. P4 remains incomplete. Read the P4 gate in
-IMPLEMENTATION_PLAN.md and the implemented conventions/limits in cut-systems.md.
-Build actual chain cellulations and boundary/mark supplements, certify them
-with the internal validator, and bind those same cellulations to the genus
-presentation. Do not treat the genus-two polygon spine as the requested chain.
-P4b adds stable numbered diagnostic drawings; P4c adds disk routes and projection.
-An abstract certificate alone never certifies a genus SVG embedding.
+Closed default-genus presentation binding now uses an explicit doubled holed
+mesh with smooth cubic chain edges. Every curved triangle passes a whole-curve
+Bernstein orientation certificate; harmonic cut-disk charts check every triangle.
+Genus 1/2/3/5/7 pass all four views. Named cuts and disk routes render with explicit
+front/back visibility. The smooth genus-two preview was inspected. All 115 tests pass on Python
+3.12.14 and 3.9.7; the 16-view regression checks include genus 1/2/3/5.
+The additional genus-seven four-view check also passed.
+
+Next action: extend the checked presentation binding to Type I/II boundaries
+and marked points with supplemental arcs. These are still explicitly unsupported
+by GenusSurface.cut_system(); the standalone abstract decorated chain remains
+available. Then finish P4 route examples, P5 general planar/daisy arrangements,
+P6 secondary presets, P7 complete TikZ compilation, and P8 release audit.
+Do not mark P4 complete from closed examples alone. New binding modules and
+records remain experimental; projection flattening uses a numerical display
+tolerance, separately from the whole-curve fold certificate.
 
 P3b adds `src/surface_diagrams/cut_systems.py`, 26 tests in
 `tests/test_cut_systems.py`, and seven worked examples in

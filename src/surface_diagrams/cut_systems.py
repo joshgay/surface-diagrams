@@ -187,10 +187,10 @@ def _prepare(cell, spec):
         _fail('input_limit', 'At most 65536 incidence entries are supported')
     _unique(spec.boundaries, 'boundary IDs')
     _unique(spec.marks, 'mark IDs')
-    if not cell.faces or len(cell.faces) > 4096:
-        _fail('input_limit', 'Supply 1..4096 faces')
-    if sum(len(f.sides) for f in cell.faces) > 16384:
-        _fail('input_limit', 'At most 16384 side occurrences are supported')
+    if not cell.faces or len(cell.faces) > 8192:
+        _fail('input_limit', 'Supply 1..8192 faces')
+    if sum(len(f.sides) for f in cell.faces) > 32768:
+        _fail('input_limit', 'At most 32768 side occurrences are supported')
     _unique((f.id for f in cell.faces), 'face IDs')
     sides = _unique((s for f in cell.faces for s in f.sides), 'side occurrences')
     nxt, prev, face_of = {}, {}, {}

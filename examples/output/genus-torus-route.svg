@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224.5 137.5" width="224.5" height="137.5" role="img">
+<title>Planar surface</title>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 44.75 35.25 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 18.75 68.75 C 18.75 92.75 35.25 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 57.25 24.75 C 93.9166666667 25.19 130.583333333 25.19 167.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 57.25 112.75 C 93.9166666667 112.31 130.583333333 112.31 167.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 205.75 68.75 C 205.75 44.75 189.25 24.75 167.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 205.75 68.75 C 205.75 92.75 189.25 112.75 167.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 66.55 C 89.15 84.15 135.35 84.15 145.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 83.485078925 71.51188 C 95.75 56.65 128.75 56.65 142.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-route" d="M 80.680570314 88.3863463113 L 81.3947080096 86.8377686102 L 82.1458681185 85.2673399745 L 82.3007487707 84.9420731302 L 82.4975516479 84.5970002316 L 83.3876799128 83.8716713578 L 85.8300147033 81.4619359296 L 89.4457282019 77.4152473003 L 89.8307204836 76.5341721826 L 89.9455386597 75.4602612218" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-route" d="M 89.9455386597 75.4602612218 L 90.069147713 76.8987243566 L 89.8229082535 80.2536549308 L 89.017849483 85.3557077224 L 88.4423416958 91.0456798341 L 88.314095026 94.9064289792 L 88.1994564526 102.478446141 L 88.168650611 103.374324586 L 88.1587898328 103.75607049 L 88.1659200149 104.665083578 L 88.1676742682 112.48326819" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="surface-route" d="M 88.1676742682 112.48326819 L 86.8849280025 108.158943695 L 85.0218668507 101.22693481 L 83.7309134889 96.8422051252 L 82.224034553 92.239428111 L 81.71595292 90.4315424767 L 81.2592983458 89.5662179161 L 80.9568852644 88.9849362746 L 80.680570314 88.3863463113" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

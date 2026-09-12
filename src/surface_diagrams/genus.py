@@ -93,6 +93,21 @@ class GenusSurface:
             raise ValueError("Type I slot exceeds 2g+2")
         if len({b.slot for b in self.type_i}) != len(self.type_i):
             raise ValueError("a fixed slot can have at most one boundary")
+
+    def cut_system(self):
+        """The checked cut system for this finite surface presentation."""
+        from .genus_mesh import genus_binding
+        return genus_binding(self).system
+
+    def with_cut_system(self):
+        """Display the numbered standard chain (closed surfaces currently supported)."""
+        from .genus_diagrams import GenusDiagram
+        return GenusDiagram(self,show_cuts=True)
+
+    def with_curves(self, *curves):
+        from .genus_diagrams import GenusDiagram
+        return GenusDiagram(self,tuple(curves))
+
     @property
     def width(self):
         return (self.genus + 0.7) * self.handle_spacing

@@ -219,7 +219,7 @@ class CutSystemTests(unittest.TestCase):
         self.assertFailure(validate_cut_system(replace(cell, faces=(Face('disk', ('x', 'x', 'y')),)), spec), 'duplicate_id')
         self.assertFailure(validate_cut_system(replace(cell, cuts=('unknown',)), spec), 'unknown_cut')
         self.assertFailure(validate_cut_system(cell, replace(spec, genus=True)), 'invalid_genus')
-        self.assertFailure(validate_cut_system(replace(cell, faces=cell.faces*4097), spec), 'input_limit')
+        self.assertFailure(validate_cut_system(replace(cell, faces=cell.faces*8193), spec), 'input_limit')
         self.assertFailure(validate_cut_system(replace(cell, marks=(Mark('M', face='disk'),)*16385), spec), 'input_limit')
 
     def test_tangent_closed_parents_are_not_transverse_intersections(self):

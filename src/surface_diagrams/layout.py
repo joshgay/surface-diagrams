@@ -12,6 +12,9 @@ from .primitives import Drawing, Ellipse
 def layout(surface: PlanarSurface, style: Style) -> Drawing:
     from .genus import GenusSurface, genus_layout
     from .cut_diagrams import CutDiskDiagram
+    from .genus_diagrams import GenusDiagram
+    if isinstance(surface, GenusDiagram):
+        return surface.drawing(style)
     if isinstance(surface, CutDiskDiagram):
         return surface.drawing(style)
     if isinstance(surface, GenusSurface):

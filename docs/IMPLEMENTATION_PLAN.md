@@ -31,7 +31,7 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
 | P1 | Replace default higher-genus visual geometry | Complete | P0 |
 | P2 | True circular planar boundaries, horizontal arrangement first | Complete | P0 |
 | P3 | Specify and validate disk-complement cut systems | Complete for explicit abstract cellulations; presentation binding remains P4 | P0 |
-| P4 | Standard numbered genus cut systems and arc/curve routing | In progress: abstract standard chains and decoration spokes | P1, P3 |
+| P4 | Standard numbered genus cut systems and arc/curve routing | In progress: closed-genus mesh binding, smooth chains and disk-route projection | P1, P3 |
 | P5 | General planar configurations, cut systems, daisy overlays | Not started | P2, P3 |
 | P6 | Secondary surface presentations and complete SVG integration | Not started | P4, P5 |
 | P7 | Extend TikZ/LaTeX for all new features | Not started | P6 |
