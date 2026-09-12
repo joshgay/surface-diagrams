@@ -82,7 +82,6 @@ Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thes
 - [Genus 2, no boundary components](genus-genus-two.svg)
 - [Genus 3, with involution axis](genus-genus-three.svg)
 - [Genus 5](genus-genus-five.svg)
-- [Optional second handle arc](genus-balloon.svg)
 - [Type I: slots 1 and 6](genus-fixed-ends.svg)
 - [Type I: slots 2 and 3](genus-fixed-handle.svg)
 - [All six Type I slots on genus 2](genus-all-fixed.svg)

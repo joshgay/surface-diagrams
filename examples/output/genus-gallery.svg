@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 2140" width="1000" height="2140">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1910" width="1000" height="1910">
 <rect width="100%" height="100%" fill="white"/>
 <text x="25" y="36" font-family="serif" font-size="24">Genus examples</text>
 <text x="20" y="80" font-family="serif" font-size="14">1. Genus 1, no boundary components</text>
@@ -64,24 +64,8 @@
 <path class="handle" d="M 519.25 66.55 C 529.15 84.15 575.35 84.15 585.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="handle" d="M 523.485078925 71.51188 C 535.75 56.65 568.75 56.65 582.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="20" y="540" font-family="serif" font-size="14">5. Optional second handle arc</text>
-<svg x="20" y="552" width="460" height="177" viewBox="0 0 334.5 137.5">
-<title>Optional second handle arc</title>
-<path class="surface-outline" d="M 18.75 68.75 C 18.75 44.75 35.25 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 18.75 68.75 C 18.75 92.75 35.25 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 57.25 24.75 C 130.583333333 25.19 203.916666667 25.19 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 57.25 112.75 C 130.583333333 112.31 203.916666667 112.31 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 315.75 68.75 C 315.75 44.75 299.25 24.75 277.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 315.75 68.75 C 315.75 92.75 299.25 112.75 277.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 79.25 66.55 C 89.15 84.15 135.35 84.15 145.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 83.485078925 71.51188 C 95.75 56.65 128.75 56.65 142.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 189.25 66.55 C 199.15 84.15 245.35 84.15 255.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 193.485078925 71.51188 C 205.75 56.65 238.75 56.65 252.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle-back" d="M 77.27 70.07 C 89.15 86.9 135.35 86.9 147.23 70.07" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle-back" d="M 187.27 70.07 C 199.15 86.9 245.35 86.9 257.23 70.07" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-<text x="520" y="540" font-family="serif" font-size="14">6. Type I: slots 1 and 6</text>
-<svg x="520" y="552" width="460" height="177" viewBox="0 0 347 137.5">
+<text x="20" y="540" font-family="serif" font-size="14">5. Type I: slots 1 and 6</text>
+<svg x="20" y="552" width="460" height="177" viewBox="0 0 347 137.5">
 <title>Type I: slots 1 and 6</title>
 <path class="surface-outline" d="M 25 43.75 C 43.7 43.75 42.6 24.75 63.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 25 93.75 C 43.7 93.75 42.6 112.75 63.5 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -98,8 +82,8 @@
 <path class="type-i-boundary" d="M 322 93.75 C 325.451779686 93.75 328.25 82.5571187458 328.25 68.75 C 328.25 54.9428812542 325.451779686 43.75 322 43.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 322 93.75 C 318.548220314 93.75 315.75 82.5571187458 315.75 68.75 C 315.75 54.9428812542 318.548220314 43.75 322 43.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="20" y="770" font-family="serif" font-size="14">7. Type I: slots 2 and 3</text>
-<svg x="20" y="782" width="460" height="177" viewBox="0 0 334.5 137.5">
+<text x="520" y="540" font-family="serif" font-size="14">6. Type I: slots 2 and 3</text>
+<svg x="520" y="552" width="460" height="177" viewBox="0 0 334.5 137.5">
 <title>Type I: slots 2 and 3</title>
 <path class="surface-outline" d="M 18.75 68.75 C 18.75 44.75 35.25 24.75 57.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 18.75 68.75 C 18.75 92.75 35.25 112.75 57.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -116,8 +100,8 @@
 <path class="type-i-boundary" d="M 145.25 80.75 C 143.593145751 80.75 142.25 75.377416998 142.25 68.75 C 142.25 62.122583002 143.593145751 56.75 145.25 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 145.25 80.75 C 146.906854249 80.75 148.25 75.377416998 148.25 68.75 C 148.25 62.122583002 146.906854249 56.75 145.25 56.75" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
 </svg>
-<text x="520" y="770" font-family="serif" font-size="14">8. All six Type I slots on genus 2</text>
-<svg x="520" y="782" width="460" height="177" viewBox="0 0 347 137.5">
+<text x="20" y="770" font-family="serif" font-size="14">7. All six Type I slots on genus 2</text>
+<svg x="20" y="782" width="460" height="177" viewBox="0 0 347 137.5">
 <title>All six Type I slots on genus 2</title>
 <path class="involution-axis" d="M 19 68.75 L 328 68.75" fill="none" stroke="#999999" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
 <path class="surface-outline" d="M 25 43.75 C 43.7 43.75 42.6 24.75 63.5 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -143,8 +127,8 @@
 <path class="type-i-boundary" d="M 261.5 80.75 C 259.843145751 80.75 258.5 75.377416998 258.5 68.75 C 258.5 62.122583002 259.843145751 56.75 261.5 56.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 261.5 80.75 C 263.156854249 80.75 264.5 75.377416998 264.5 68.75 C 264.5 62.122583002 263.156854249 56.75 261.5 56.75" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
 </svg>
-<text x="20" y="1000" font-family="serif" font-size="14">9. Two Type II pairs: four boundaries</text>
-<svg x="20" y="1012" width="460" height="177" viewBox="0 0 334.5 158.9576">
+<text x="520" y="770" font-family="serif" font-size="14">8. Two Type II pairs: four boundaries</text>
+<svg x="520" y="782" width="460" height="177" viewBox="0 0 334.5 158.9576">
 <title>Two Type II pairs: four boundaries</title>
 <path class="surface-outline" d="M 18.75 79.4788 C 18.75 55.4788 35.25 35.4788 57.25 35.4788" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 18.75 79.4788 C 18.75 103.4788 35.25 123.4788 57.25 123.4788" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -169,8 +153,8 @@
 <path class="type-ii-boundary" d="M 182.21 134.7076 C 182.21 137.745166124 192.059735504 140.2076 204.21 140.2076 C 216.360264496 140.2076 226.21 137.745166124 226.21 134.7076" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 182.21 134.7076 C 182.21 131.670033876 192.059735504 129.2076 204.21 129.2076 C 216.360264496 129.2076 226.21 131.670033876 226.21 134.7076" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="520" y="1000" font-family="serif" font-size="14">10. Left and right Type II pairs</text>
-<svg x="520" y="1012" width="460" height="177" viewBox="0 0 348 193.5">
+<text x="20" y="1000" font-family="serif" font-size="14">9. Left and right Type II pairs</text>
+<svg x="20" y="1012" width="460" height="177" viewBox="0 0 348 193.5">
 <title>Left and right Type II pairs</title>
 <path class="surface-outline" d="M 43.1 96.75 C 43.1 83.4951660041 35.220211597 72.75 25.5 72.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 43.1 96.75 C 43.1 110.004833996 35.220211597 120.75 25.5 120.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -195,8 +179,8 @@
 <path class="type-ii-boundary" d="M 322.5 120.75 C 326.227922061 120.75 329.25 132.838311755 329.25 147.75 C 329.25 162.661688245 326.227922061 174.75 322.5 174.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 322.5 120.75 C 318.772077939 120.75 315.75 132.838311755 315.75 147.75 C 315.75 162.661688245 318.772077939 174.75 322.5 174.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="20" y="1230" font-family="serif" font-size="14">11. One Type I plus two Type II pairs</text>
-<svg x="20" y="1242" width="460" height="177" viewBox="0 0 348.25 202.65359344">
+<text x="520" y="1000" font-family="serif" font-size="14">10. One Type I plus two Type II pairs</text>
+<svg x="520" y="1012" width="460" height="177" viewBox="0 0 348.25 202.65359344">
 <title>One Type I plus two Type II pairs</title>
 <path class="surface-outline" d="M 43.225 101.32679672 C 43.225 88.0719627241 35.345211597 77.32679672 25.625 77.32679672" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 43.225 101.32679672 C 43.225 114.581630716 35.345211597 125.32679672 25.625 125.32679672" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -223,8 +207,8 @@
 <path class="type-i-boundary" d="M 322.625 128.82679672 C 326.421957655 128.82679672 329.5 116.51462734 329.5 101.32679672 C 329.5 86.1389660997 326.421957655 73.82679672 322.625 73.82679672" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 322.625 128.82679672 C 318.828042345 128.82679672 315.75 116.51462734 315.75 101.32679672 C 315.75 86.1389660997 318.828042345 73.82679672 322.625 73.82679672" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="520" y="1230" font-family="serif" font-size="14">12. Six pairs on a wider genus-3 surface</text>
-<svg x="520" y="1242" width="460" height="177" viewBox="0 0 629.5 137.5">
+<text x="20" y="1230" font-family="serif" font-size="14">11. Six pairs on a wider genus-3 surface</text>
+<svg x="20" y="1242" width="460" height="177" viewBox="0 0 629.5 137.5">
 <title>Six pairs on a wider genus-3 surface</title>
 <path class="surface-outline" d="M 75.15 68.75 C 75.15 50.75 107.15 38.70849743 107.15 21.70849743" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 75.15 68.75 C 75.15 86.75 107.15 98.79150257 107.15 115.79150257" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -271,8 +255,8 @@
 <path class="type-ii-boundary" d="M 510.35 115.79150257 C 510.35 116.619929695 513.036291501 117.29150257 516.35 117.29150257 C 519.663708499 117.29150257 522.35 116.619929695 522.35 115.79150257" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 510.35 115.79150257 C 510.35 114.963075445 513.036291501 114.29150257 516.35 114.29150257 C 519.663708499 114.29150257 522.35 114.963075445 522.35 115.79150257" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="20" y="1460" font-family="serif" font-size="14">13. D3/D2A: six top-bottom pairs and an end boundary</text>
-<svg x="20" y="1472" width="460" height="177" viewBox="0 0 444.5 155.128385893">
+<text x="520" y="1230" font-family="serif" font-size="14">12. D3/D2A: six top-bottom pairs and an end boundary</text>
+<svg x="520" y="1242" width="460" height="177" viewBox="0 0 444.5 155.128385893">
 <title>D3/D2A: six top-bottom pairs and an end boundary</title>
 <path class="surface-outline" d="M 43.5 77.5641929467 C 43.5 59.5641929467 65.5 40.5625 65.5 23.5625" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 43.5 77.5641929467 C 43.5 95.5641929467 65.5 114.565885893 65.5 131.565885893" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -321,8 +305,8 @@
 <path class="type-i-boundary" d="M 401 102.564192947 C 404.451779686 102.564192947 407.25 91.3713116924 407.25 77.5641929467 C 407.25 63.7570742009 404.451779686 52.5641929467 401 52.5641929467" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 401 102.564192947 C 397.548220314 102.564192947 394.75 91.3713116924 394.75 77.5641929467 C 394.75 63.7570742009 397.548220314 52.5641929467 401 52.5641929467" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="520" y="1460" font-family="serif" font-size="14">14. E2: side pairs and two top-bottom pairs</text>
-<svg x="520" y="1472" width="460" height="177" viewBox="0 0 458 203.11540864">
+<text x="20" y="1460" font-family="serif" font-size="14">13. E2: side pairs and two top-bottom pairs</text>
+<svg x="20" y="1472" width="460" height="177" viewBox="0 0 458 203.11540864">
 <title>E2: side pairs and two top-bottom pairs</title>
 <path class="surface-outline" d="M 43.1 101.55770432 C 43.1 88.3028703241 35.220211597 77.55770432 25.5 77.55770432" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 43.1 101.55770432 C 43.1 114.812538316 35.220211597 125.55770432 25.5 125.55770432" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -361,8 +345,8 @@
 <path class="type-ii-boundary" d="M 432.5 125.55770432 C 436.227922061 125.55770432 439.25 137.646016075 439.25 152.55770432 C 439.25 167.469392565 436.227922061 179.55770432 432.5 179.55770432" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 432.5 125.55770432 C 428.772077939 125.55770432 425.75 137.646016075 425.75 152.55770432 C 425.75 167.469392565 428.772077939 179.55770432 432.5 179.55770432" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="20" y="1690" font-family="serif" font-size="14">15. Four pairs: automatic positions and sizes</text>
-<svg x="20" y="1702" width="460" height="177" viewBox="0 0 334.5 155.12015826">
+<text x="520" y="1460" font-family="serif" font-size="14">14. Four pairs: automatic positions and sizes</text>
+<svg x="520" y="1472" width="460" height="177" viewBox="0 0 334.5 155.12015826">
 <title>Four pairs: automatic positions and sizes</title>
 <path class="surface-outline" d="M 43.5 77.56007913 C 43.5 59.56007913 65.5 40.5625 65.5 23.5625" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 43.5 77.56007913 C 43.5 95.56007913 65.5 114.55765826 65.5 131.55765826" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -395,8 +379,8 @@
 <path class="type-ii-boundary" d="M 230.5 131.55765826 C 230.5 134.215528619 239.118518566 136.37015826 249.75 136.37015826 C 260.381481434 136.37015826 269 134.215528619 269 131.55765826" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 230.5 131.55765826 C 230.5 128.899787901 239.118518566 126.74515826 249.75 126.74515826 C 260.381481434 126.74515826 269 128.899787901 269 131.55765826" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="520" y="1690" font-family="serif" font-size="14">16. Optional wider spacing and taller body</text>
-<svg x="520" y="1702" width="460" height="177" viewBox="0 0 415.5 183.408211105">
+<text x="20" y="1690" font-family="serif" font-size="14">15. Optional wider spacing and taller body</text>
+<svg x="20" y="1702" width="460" height="177" viewBox="0 0 415.5 183.408211105">
 <title>Optional wider spacing and taller body</title>
 <path class="surface-outline" d="M 18.75 91.7041055525 C 18.75 62.9041055525 39.75 38.9041055525 67.75 38.9041055525" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 18.75 91.7041055525 C 18.75 120.504105553 39.75 144.504105553 67.75 144.504105553" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -421,8 +405,8 @@
 <path class="type-ii-boundary" d="M 251.35 158.058211105 C 251.35 161.703290454 263.169682604 164.658211105 277.75 164.658211105 C 292.330317396 164.658211105 304.15 161.703290454 304.15 158.058211105" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 251.35 158.058211105 C 251.35 154.413131756 263.169682604 151.458211105 277.75 151.458211105 C 292.330317396 151.458211105 304.15 154.413131756 304.15 158.058211105" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<text x="20" y="1920" font-family="serif" font-size="14">17. Transparent collars on a colored background</text>
-<svg x="20" y="1932" width="460" height="177" viewBox="0 0 348 202.45899904">
+<text x="520" y="1690" font-family="serif" font-size="14">16. Transparent collars on a colored background</text>
+<svg x="520" y="1702" width="460" height="177" viewBox="0 0 348 202.45899904">
 <title>Transparent collars on a colored background</title>
 <rect width="100%" height="100%" fill="#e9f4fa"/>
 <path class="surface-outline" d="M 43.1 101.22949952 C 43.1 87.9746655241 35.220211597 77.22949952 25.5 77.22949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

@@ -242,9 +242,9 @@ class GenusTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 render_svg(surface)
 
-    def test_balloon_and_axis_options(self):
-        d = layout(GenusSurface(3, handle_style='balloon', show_axis=True), Style())
-        self.assertEqual(sum(p.role == 'handle-back' for p in d.paths), 3)
+    def test_axis_without_additional_handle(self):
+        d = layout(GenusSurface(3, show_axis=True), Style())
+        self.assertEqual(sum(p.role == 'handle-back' for p in d.paths), 0)
         self.assertEqual(sum(p.role == 'involution-axis' for p in d.paths), 1)
 
     def test_scale_preserves_geometry(self):

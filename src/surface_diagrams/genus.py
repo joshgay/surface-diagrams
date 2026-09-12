@@ -51,14 +51,13 @@ class GenusSurface:
     """A finite genus surface with an attractive default horizontal presentation.
 
     Only genus and boundary data are normally needed. Height is automatic:
-    100 normally, 150 with side pairs. Spacing, height and the alternate balloon
-    handle style are optional appearance overrides. Independent vertical and
+    100 normally, 150 with side pairs. Spacing and height are optional
+    appearance overrides. Independent vertical and
     horizontal views default to below/right, following the D3 reference.
     """
     genus: int = 2
     handle_spacing: float = 110
     height: Optional[float] = None
-    handle_style: str = "lens"
     show_axis: bool = False
     type_i: tuple = ()
     type_ii: tuple = ()
@@ -81,8 +80,6 @@ class GenusSurface:
             object.__setattr__(self, "height", 150 if side_pairs else 100)
         for name in ("handle_spacing", "height"):
             _number(getattr(self, name), name, positive=True)
-        if self.handle_style not in ("lens", "balloon"):
-            raise ValueError("handle_style must be 'lens' or 'balloon'")
         if self.view_vertical not in ("above", "below"):
             raise ValueError("view_vertical must be 'above' or 'below'")
         if self.view_horizontal not in ("left", "right"):

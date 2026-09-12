@@ -65,7 +65,7 @@ Changes from the previous alpha default:
 - The top/bottom contour no longer scallops once per handle.
 - Left/right pairs open sideways rather than sitting near the top corners.
 - Omitted boundary radii and pair positions are automatic; explicit numerical
-  values remain supported. The `lens` and `balloon` style names remain valid.
+  values remain supported. The extra handle arc and its `handle_style` option have been removed.
 
 The result is presentation geometry only. It is not yet a topological
 cellulation, cut-system certificate, or genus curve router. Those are later

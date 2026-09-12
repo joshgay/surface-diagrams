@@ -182,9 +182,7 @@ save_svg(GenusSurface(
 
 The low horizontal contour and shallow handle openings follow the D3/D2A/E2
 source diagrams. `GenusSurface(2)` needs no appearance settings.
-`handle_spacing` and `height` adjust their proportions when needed; optional
-`handle_style="balloon"` adds the second handle arc. This extra arc is omitted
-on handles occupied by Type I boundaries to keep their rims clear. These are
+`handle_spacing` and `height` adjust their proportions when needed. These are
 surface schematics; handle openings are not counted as boundary components.
 
 Type I boundaries occupy fixed slots 1..2g+2 along the horizontal involution

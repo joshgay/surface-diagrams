@@ -79,7 +79,6 @@ def gallery_examples():
             ('genus-two', 'Genus 2, no boundary components', GenusSurface(2), default),
             ('genus-three', 'Genus 3, with involution axis', GenusSurface(3,show_axis=True), default),
             ('genus-five', 'Genus 5', GenusSurface(5), default),
-            ('balloon', 'Optional second handle arc', GenusSurface(2,handle_style='balloon'), default),
             ('fixed-ends', 'Type I: slots 1 and 6', GenusSurface(type_i=(TypeIBoundary(1),TypeIBoundary(6))), default),
             ('fixed-handle', 'Type I: slots 2 and 3', GenusSurface(type_i=(TypeIBoundary(2),TypeIBoundary(3))), default),
             ('all-fixed', 'All six Type I slots on genus 2', GenusSurface(type_i=tuple(TypeIBoundary(i) for i in range(1,7)),show_axis=True), default),

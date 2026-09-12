@@ -60,7 +60,6 @@ class Presentation:
     height: float
     contours: tuple
     handles: tuple
-    back_handles: tuple
     rims: tuple
     show_axis: bool
     view_vertical: str
@@ -83,8 +82,6 @@ class Presentation:
             paths.append(Path(commands, style.outline_color, style.outline_width, "surface-outline"))
         for commands in self.handles:
             paths.append(Path(commands, style.outline_color, style.outline_width, "handle"))
-        for commands in self.back_handles:
-            paths.append(Path(commands, style.outline_color, style.outline_width*.7, "handle-back"))
         for rim in self.rims:
             for sign in (1, -1):
                 hidden = sign == -1 and rim.hidden_inner
@@ -237,7 +234,7 @@ def presentation(surface):
         if radius:
             rims.append(Rim(f"fixed-{slot}", "type-i-boundary", x, 0, radius,
                             (0,1), normal, hidden(normal)))
-    handles, back_handles = [], []
+    handles = []
     hr, hh = spacing*.30, min(hy*.22, spacing*.13)
     for index in range(surface.genus):
         x = left+(index+.5)*spacing
@@ -257,11 +254,8 @@ def presentation(surface):
             if br:
                 rims.append(Rim(f"fixed-{slot}", "type-i-boundary", bx, 0, br,
                                 (0,1), normal, hidden(normal)))
-        if surface.handle_style == "balloon" and not (rleft or rright):
-            back_handles.append((("M", x-hr*1.06, vy*hh*.12),
-                                 ("C", x-hr*.70, vy*hh*1.65, x+hr*.70, vy*hh*1.65, x+hr*1.06, vy*hh*.12)))
     return Presentation(surface.width, surface.height, tuple(contours), tuple(handles),
-                        tuple(back_handles), tuple(rims), surface.show_axis,
+                        tuple(rims), surface.show_axis,
                         surface.view_vertical, surface.view_horizontal)
 
 
