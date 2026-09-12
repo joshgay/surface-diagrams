@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.5 235.5" width="841" height="471" role="img">
+<title>Numbered horizontal guides with a cut-crossing arc</title>
+<defs><clipPath id="sd-427504090dcc7de1e346" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-427504090dcc7de1e346)"/>
+<path class="arc" d="M 134.281928732 127.816474409 A 41.25 18.6408227848 0 0 0 210.25 117.75 A 41.25 18.6408227848 0 0 1 286.218071268 107.683525591" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-427504090dcc7de1e346)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<text x="36.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="100.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="155.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="210.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="265.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="320.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="383.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="72.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="127.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="182.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="237.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="292.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="347.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+</svg>

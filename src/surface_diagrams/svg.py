@@ -1,6 +1,7 @@
 """Dependency-free SVG serialization; all layout is computed separately."""
 
 from html import escape
+from hashlib import sha256
 from pathlib import Path
 
 from .layout import layout
@@ -40,15 +41,31 @@ def render_svg(surface: PlanarSurface, *, style=None, scale=1, title="Planar sur
                 values = [w/2+v if i % 2 == 0 else h/2-v for i, v in enumerate(values)]
             result.append(op + " " + " ".join(_n(v) for v in values))
         return " ".join(result)
+    holes = [s for s in drawing.ellipses if s.role == 'inner-boundary-circle']
+    clip = ''
+    if holes and drawing.paths:
+        clip_id = 'sd-' + sha256((repr(drawing)+title).encode('utf-8')).hexdigest()[:20]
+        commands = [('M',-w/2,-h/2),('L',w/2,-h/2),('L',w/2,h/2),('L',-w/2,h/2),('Z',)]
+        for s in holes:
+            commands.extend((('M',s.x-s.rx,s.y),
+                             ('A',s.rx,s.ry,0,1,0,s.x+s.rx,s.y),
+                             ('A',s.rx,s.ry,0,1,0,s.x-s.rx,s.y),('Z',)))
+        lines.append(f'<defs><clipPath id="{clip_id}" clipPathUnits="userSpaceOnUse">'
+                     f'<path d="{path_data(commands)}" clip-rule="evenodd" fill-rule="evenodd"/>'
+                     '</clipPath></defs>')
+        clip = f' clip-path="url(#{clip_id})"'
     for path in drawing.paths:
         extra = ' stroke-dasharray="3 3"' if path.dashed else ''
         lines.append(f'<path class="{path.role}" d="{path_data(path.commands)}" fill="none" '
                      f'stroke="{path.stroke}" stroke-width="{_n(path.stroke_width)}" '
-                     f'stroke-linecap="round" stroke-linejoin="round"{extra}/>')
+                     f'stroke-linecap="round" stroke-linejoin="round"{extra}{clip}/>')
     for shape in drawing.ellipses:
         attrs = (f'class="{shape.role}" cx="{_n(w / 2 + shape.x)}" '
                  f'cy="{_n(h / 2 - shape.y)}"')
-        if shape.role not in ("inner-boundary", "marked-point"):
+        if shape.role == 'inner-boundary-circle':
+            lines.append(f'<circle {attrs} r="{_n(shape.rx)}" fill="none" '
+                         f'stroke="{shape.stroke}" stroke-width="{_n(shape.stroke_width)}"/>')
+        elif shape.role not in ("inner-boundary", "marked-point"):
             lines.append(f'<ellipse {attrs} rx="{_n(shape.rx)}" ry="{_n(shape.ry)}" '
                          f'fill="{shape.fill}" stroke="{shape.stroke}" stroke-width="{_n(shape.stroke_width)}"/>')
         else:

@@ -6,7 +6,7 @@ advertised as a complete implementation of any named Thurston coordinate system.
 
 from dataclasses import dataclass
 from itertools import permutations
-from math import cos, sin, pi, sqrt
+from math import acos, cos, sin, pi, sqrt
 from typing import Optional
 
 from .primitives import Path, Text
@@ -225,7 +225,8 @@ def route(surface, style, *, max_states=20000):
         for point, dot_radius in zip(objects, radii[1:-1]):
             if point.x in (segment.start, segment.end):
                 continue
-            if _axis_distance(segment, point.x) <= dot_radius + style.curve_width / 2:
+            rim_width = style.outline_width if style.boundary_shape == 'circle' and type(point).__name__ == 'Boundary' else 0
+            if _axis_distance(segment, point.x) <= dot_radius + (style.curve_width+rim_width) / 2:
                 if segment.straight:
                     raise RoutingError("straight arc meets an unrelated dot; specify direction='up' or 'down', or adjust dot/curve sizes")
                 raise RoutingError("curve clearance is too small near a dot; increase ellipse height or reduce dot/curve sizes")
@@ -244,20 +245,58 @@ def _axis_distance(segment, x):
     return sqrt(max(0, best))
 
 
+def _rim_parameter(segment, radius):
+    """Parameter of the first intersection with a circle at the start endpoint.
+
+    For an ellipse, set z=1-cos(pi*t) and solve
+    (rx^2-ry^2)z^2 + 2*ry^2*z = radius^2 using the stable positive root.
+    Reversal gives the corresponding distance from the other endpoint.
+    """
+    if radius == 0:
+        return 0.
+    distance = abs(segment.end-segment.start)
+    if radius >= distance:
+        raise RoutingError("a boundary circle consumes an entire arc segment")
+    if segment.straight:
+        return radius/distance
+    rx, ry = distance/2, distance/2*segment.aspect
+    discriminant = ry**4 + (rx**2-ry**2)*radius**2
+    if discriminant < 0:
+        raise RoutingError("arc cannot reach the requested boundary rim")
+    z = radius**2/(ry**2+sqrt(discriminant))
+    return acos(max(-1., min(1., 1-z)))/pi
+
+
 def curve_primitives(surface, style):
-    segments = route(surface, style) if surface.curves else ()
+    segments = route(surface, style) if surface.curves or (style.boundary_shape == 'circle' and style.show_guides) else ()
+    from .model import Boundary
+    objects = sorted(surface.objects, key=lambda p: p.x)
+    def rim_radius(endpoint):
+        if style.boundary_shape != "circle" or not 1 <= endpoint <= len(objects):
+            return 0.
+        point = objects[endpoint-1]
+        if not isinstance(point, Boundary):
+            return 0.
+        return point.radius if point.radius is not None else style.boundary_radius
     paths = []
     for owner, curve in enumerate(surface.curves):
         pieces = [p for p in segments if p.owner == owner]
-        commands = [("M", pieces[0].start, 0)]
-        for p in pieces:
+        start_trim = _rim_parameter(pieces[0], rim_radius(curve.start)) if isinstance(curve, Arc) else 0.
+        end_trim = _rim_parameter(pieces[-1], rim_radius(curve.end)) if isinstance(curve, Arc) else 0.
+        if len(pieces) == 1 and start_trim+end_trim >= 1:
+            raise RoutingError("boundary circles leave no arc segment between their rims")
+        start = pieces[0].point(start_trim) if start_trim else (pieces[0].start, 0)
+        commands = [("M", *start)]
+        for index, p in enumerate(pieces):
+            trim = end_trim if index == len(pieces)-1 else 0.
+            end = p.point(1-trim) if trim else (p.end, 0)
             if p.straight:
-                commands.append(("L", p.end, 0))
+                commands.append(("L", *end))
                 continue
             radius = abs(p.end - p.start) / 2
             # Mathematical sweep is reversed by the SVG serializer's y flip.
             sweep = int((p.end < p.start) == p.up)
-            commands.append(("A", radius, radius * p.aspect, 0, 0, sweep, p.end, 0))
+            commands.append(("A", radius, radius * p.aspect, 0, 0, sweep, *end))
         if isinstance(curve, Loop):
             commands.append(("Z",))
         paths.append(Path(tuple(commands), style.curve_color, style.curve_width,
@@ -267,7 +306,7 @@ def curve_primitives(surface, style):
         xs = [-surface.width/2] + sorted(p.x for p in surface.objects) + [surface.width/2]
         paths.insert(0, Path((("M", xs[0], 0), ("L", xs[-1], 0)), "#aaaaaa", 0.6, "axis", True))
         for i, (a, b) in enumerate(zip(xs, xs[1:])):
-            texts.append(Text((a+b)/2, -12, str(i)))
+            texts.append(Text((a+rim_radius(i)+b-rim_radius(i+1))/2, -12, str(i)))
         for i, x in enumerate(xs[1:-1], 1):
-            texts.append(Text(x, 10, str(i), "#333333"))
+            texts.append(Text(x, max(10, rim_radius(i)+7), str(i), "#333333"))
     return tuple(paths), tuple(texts)

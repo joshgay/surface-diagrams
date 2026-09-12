@@ -16,8 +16,9 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
 - P1 implements the reference-based genus presentation, including the September
   11 refinement: independent above/below and left/right views, overlapping hole
   edges, direct end collars, and roomier side pairs. See HANDOFF.md for checks.
-- P2 remains unfinished; its initial work is preserved as the unapplied patch
-  `docs/checkpoints/p2-circular-boundaries.patch`. P3-P8 have not started.
+- P2 now implements circular planar holes, rim endpoints, clipping, clearance,
+  and 14 examples. The saved partial patch has been incorporated and removed.
+  P3-P8 have not started. The current suite has 67 tests; see HANDOFF.md.
 - Existing TikZ/LaTeX support stays available. Extend it for the new features
   **only after the SVG geometry, topology, routing, examples, and tests work**.
 
@@ -25,7 +26,7 @@ Richard's latest instructions supersede the older broad roadmap where they diffe
 | --- | --- | --- | --- |
 | P0 | Preserve references, inspect priorities, write portable plan | Complete |
 | P1 | Replace default higher-genus visual geometry | Complete | P0 |
-| P2 | True circular planar boundaries, horizontal arrangement first | Partial work saved as patch; resume next | P0 |
+| P2 | True circular planar boundaries, horizontal arrangement first | Complete | P0 |
 | P3 | Specify and validate disk-complement cut systems | Not started | P0 |
 | P4 | Standard numbered genus cut systems and arc/curve routing | Not started | P1, P3 |
 | P5 | General planar configurations, cut systems, daisy overlays | Not started | P2, P3 |

@@ -5,16 +5,17 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 
 ## Resume here
 
-**P0 and P1 complete, including the September 11 visual refinement.
-P2 is unfinished and parked as a patch. P3-P8 have not started.**
+**P0, P1, and P2 complete, including the September 11 visual refinement.
+P3-P8 have not started.**
 
-Next action: resume P2, actual circular planar boundaries in horizontal rows.
-The working tree deliberately excludes its unfinished API. First read
-[the saved P2 notes](checkpoints/README.md), then apply
-`git apply docs/checkpoints/p2-circular-boundaries.patch` after checking git status.
-Read `model.py`, `layout.py`, `curves.py`, and `svg.py`. Boundary arcs must terminate
-on the circle rim and remain outside hole interiors; preserve old dot behavior.
-Keep generalized routing and new TikZ geometry for their later stages.
+Next action: start P3, the cut-system specification and validator. Read the P3
+section of IMPLEMENTATION_PLAN.md before designing the data model. First write
+worked disk, annulus, marked disk, torus, genus-two, and pair-of-pants examples
+in `docs/cut-systems.md`, then implement actual gluing/incidence and disk-complement
+validation with positive and negative fixtures. Do not infer topology from SVG
+projection crossings or certify a cut system using only its Euler characteristic.
+P4 will use this for numbered genus systems and arcs/closed curves. Keep new
+TikZ geometry extensions until P7.
 
 Repository root on Richard's machine: `C:\GitHub\surface-diagrams`.
 Remote: `https://github.com/richardbuckman-math/surface-diagrams`.
@@ -53,6 +54,16 @@ All source links below are repository-relative so another AI can work from a clo
   the gallery successfully. No TikZ exporter code was changed, and this is not P7.
 - The unfinished P2 diff was saved byte-for-byte through git diff and reversed
   out of the working tree. `git apply --check` confirms it can be restored.
+  This was the historical P1 checkpoint. P2 has now incorporated that work;
+  its obsolete patch has been removed from the current tree.
+- P2: circular planar holes, rim-ended arcs, outline-aware clearance, transparent
+  stroke clipping, and numbered row guides. All 67 tests pass on Python 3.9.7
+  and 3.12.14 (nine additional P2 tests).
+  All 14 new gallery scenarios were visually inspected; 1,182 hole-interior
+  pixels per image were checked on transparent and colored outputs. Existing
+  planar/curve/direction/genus SVG examples were unchanged. Gallery: 71 scenarios.
+  New circular-hole TikZ output raises an explicit error pending P7; existing
+  export tests still run, and the LaTeX generator marks SVG-only examples.
 
 ## User decisions, in priority order
 
@@ -135,6 +146,7 @@ This is an environment issue, not a package defect. Do not bypass a denied actio
 | P0 | Reference inspection; complete SVG inventory; controlling plan; this handoff | 44 baseline tests; 9 reference previews inspected | Start P1 |
 | P1 | Reference-based genus geometry, automatic collars, rim visibility, comparison sheet | 52 tests on Python 3.9/3.12; visual SVG checks; 53 gallery scenarios | Start P2 |
 | P1 refinement, September 11 | Four views, trimmed hole overlap, smooth direct collars, taller side-pair defaults; 57 gallery examples | 58 tests on Python 3.9/3.12; comparison, four-view and genus sheets inspected; existing TikZ gallery compiles | Restore saved P2 patch and finish P2 |
+| P2 | Circular planar holes and rim endpoints; clipping and clearance; 14 examples; SVG-only export guard | 67 tests on Python 3.9/3.12; geometry and raster checks; old SVG examples unchanged | Start P3 specification and validator |
 
 Append a row or update it at each meaningful checkpoint. Record the actual files,
 commit, tests, failures, and next action. Never make a future AI infer status from

@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from surface_diagrams import (
-    Arc, GenusSurface, PlanarSurface, RoutingError, Style, render_tikz, save_tikz,
+    Arc, Boundary, GenusSurface, PlanarSurface, RoutingError, Style, render_tikz, save_tikz,
 )
 from surface_diagrams.curves import route
 from surface_diagrams.layout import layout
@@ -22,6 +22,11 @@ class TikzTest(unittest.TestCase):
         for examples in gallery.gallery_examples().values():
             for name, caption, surface, style in examples:
                 with self.subTest(name=name):
+                    if (isinstance(surface, PlanarSurface) and style.boundary_shape == 'circle'
+                            and any(isinstance(p, Boundary) for p in surface.objects)):
+                        with self.assertRaisesRegex(NotImplementedError, 'SVG only'):
+                            render_tikz(surface, style=style)
+                        continue
                     result = render_tikz(surface, style=style, title=caption)
                     drawing = layout(surface, style)
                     self.assertEqual(result.count(r"\draw["), len(drawing.paths))

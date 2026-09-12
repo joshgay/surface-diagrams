@@ -21,6 +21,25 @@ Blue `#006fff`, gray `#8b8b8b`, and magenta `#ff00d4` are measured from the thes
 - [Individual radii 3, 5, 7, 9](planar-per-object-size.svg)
 - [An empty, rounder disk](planar-empty.svg)
 
+## Circles
+
+![circles examples](circles-gallery.svg)
+
+- [An empty disk in circular-boundary mode](circles-empty.svg)
+- [An annulus with an arc joining its boundaries](circles-annulus.svg)
+- [Circular holes: default row and sizes](circles-default-row.svg)
+- [Circular holes and marked points](circles-mixed.svg)
+- [The same boundaries as gray dots](circles-dot-comparison.svg)
+- [A straight arc joins two circle rims](circles-straight.svg)
+- [An arc above the row ends on the rims](circles-up.svg)
+- [A reversed arc below the row](circles-down.svg)
+- [An arc from a hole to a marked point](circles-mixed-endpoints.svg)
+- [An arc from the outer boundary to a hole](circles-outer.svg)
+- [A closed curve surrounds circular holes](circles-loop.svg)
+- [Numbered horizontal guides with a cut-crossing arc](circles-numbered.svg)
+- [Individual circle radii: 8, 14, 20](circles-radii.svg)
+- [Transparent holes on a colored background](circles-colored.svg)
+
 ## Curves
 
 ![curves examples](curves-gallery.svg)

@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1680" width="1000" height="1680">
+<rect width="100%" height="100%" fill="white"/>
+<text x="25" y="36" font-family="serif" font-size="24">Circles examples</text>
+<text x="20" y="80" font-family="serif" font-size="14">1. An empty disk in circular-boundary mode</text>
+<svg x="20" y="92" width="460" height="177" viewBox="0 0 205.5 145.5">
+<title>An empty disk in circular-boundary mode</title>
+<ellipse class="outer-boundary" cx="102.75" cy="72.75" rx="90" ry="60" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="80" font-family="serif" font-size="14">2. An annulus with an arc joining its boundaries</text>
+<svg x="520" y="92" width="460" height="177" viewBox="0 0 85.5 105.5">
+<title>An annulus with an arc joining its boundaries</title>
+<defs><clipPath id="sd-adba06e5483de978e819" clipPathUnits="userSpaceOnUse"><path d="M 0 105.5 L 85.5 105.5 L 85.5 0 L 0 0 Z  M 30.75 52.75 A 12 12 0 1 1 54.75 52.75 A 12 12 0 1 1 30.75 52.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 12.75 52.75 L 30.75 52.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-adba06e5483de978e819)"/>
+<ellipse class="outer-boundary" cx="42.75" cy="52.75" rx="30" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="42.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="310" font-family="serif" font-size="14">3. Circular holes: default row and sizes</text>
+<svg x="20" y="322" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Circular holes: default row and sizes</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="42.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="78.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="114.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="150.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="186.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="310" font-family="serif" font-size="14">4. Circular holes and marked points</text>
+<svg x="520" y="322" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>Circular holes and marked points</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="42.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="78.75" cy="52.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary-circle" cx="114.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="150.75" cy="52.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary-circle" cx="186.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="540" font-family="serif" font-size="14">5. The same boundaries as gray dots</text>
+<svg x="20" y="552" width="460" height="177" viewBox="0 0 229.5 105.5">
+<title>The same boundaries as gray dots</title>
+<ellipse class="outer-boundary" cx="114.75" cy="52.75" rx="102" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary" cx="42.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="78.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="114.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="150.75" cy="52.75" r="4" fill="#8b8b8b"/>
+<circle class="inner-boundary" cx="186.75" cy="52.75" r="4" fill="#8b8b8b"/>
+</svg>
+<text x="520" y="540" font-family="serif" font-size="14">6. A straight arc joins two circle rims</text>
+<svg x="520" y="552" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>A straight arc joins two circle rims</title>
+<defs><clipPath id="sd-c401b717db1f63311c58" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 139.75 117.75 L 170.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-c401b717db1f63311c58)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="770" font-family="serif" font-size="14">7. An arc above the row ends on the rims</text>
+<svg x="20" y="782" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>An arc above the row ends on the rims</title>
+<defs><clipPath id="sd-9aa4d41cd8f9a00b6ccc" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 75.2272162365 106.008475409 A 137.5 62.1360759494 0 0 1 345.272783764 106.008475409" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-9aa4d41cd8f9a00b6ccc)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="770" font-family="serif" font-size="14">8. A reversed arc below the row</text>
+<svg x="520" y="782" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>A reversed arc below the row</title>
+<defs><clipPath id="sd-b561547d8c7008cf8d78" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 345.272783764 129.491524591 A 137.5 62.1360759494 0 0 1 75.2272162365 129.491524591" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-b561547d8c7008cf8d78)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="1000" font-family="serif" font-size="14">9. An arc from a hole to a marked point</text>
+<svg x="20" y="1012" width="460" height="177" viewBox="0 0 310.5 205.5">
+<title>An arc from a hole to a marked point</title>
+<defs><clipPath id="sd-968c089f1c75ab4a355a" clipPathUnits="userSpaceOnUse"><path d="M 0 205.5 L 310.5 205.5 L 310.5 0 L 0 0 Z  M 60.75 102.75 A 12 12 0 1 1 84.75 102.75 A 12 12 0 1 1 60.75 102.75 Z  M 170.75 102.75 A 12 12 0 1 1 194.75 102.75 A 12 12 0 1 1 170.75 102.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 75.6521346035 91.1062199118 A 82.5 44.2894736842 0 0 1 237.75 102.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-968c089f1c75ab4a355a)"/>
+<ellipse class="outer-boundary" cx="155.25" cy="102.75" rx="142.5" ry="90" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="102.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="127.75" cy="102.75" r="4" fill="#006fff"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="102.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="237.75" cy="102.75" r="4" fill="#006fff"/>
+</svg>
+<text x="520" y="1000" font-family="serif" font-size="14">10. An arc from the outer boundary to a hole</text>
+<svg x="520" y="1012" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>An arc from the outer boundary to a hole</title>
+<defs><clipPath id="sd-901a7f851be16c486dcd" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 12.75 117.75 L 60.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-901a7f851be16c486dcd)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="20" y="1230" font-family="serif" font-size="14">11. A closed curve surrounds circular holes</text>
+<svg x="20" y="1242" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>A closed curve surrounds circular holes</title>
+<defs><clipPath id="sd-457108df2d84363af135" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="closed-curve" d="M 100.25 117.75 A 82.5 37.2816455696 0 0 1 265.25 117.75 A 82.5 37.2816455696 0 0 1 100.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-457108df2d84363af135)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="1230" font-family="serif" font-size="14">12. Numbered horizontal guides with a cut-crossing arc</text>
+<svg x="520" y="1242" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Numbered horizontal guides with a cut-crossing arc</title>
+<defs><clipPath id="sd-427504090dcc7de1e346" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-427504090dcc7de1e346)"/>
+<path class="arc" d="M 134.281928732 127.816474409 A 41.25 18.6408227848 0 0 0 210.25 117.75 A 41.25 18.6408227848 0 0 1 286.218071268 107.683525591" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-427504090dcc7de1e346)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<text x="36.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="100.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="155.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="210.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="265.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="320.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="383.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="72.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="127.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="182.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="237.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="292.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="347.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+</svg>
+<text x="20" y="1460" font-family="serif" font-size="14">13. Individual circle radii: 8, 14, 20</text>
+<svg x="20" y="1472" width="460" height="177" viewBox="0 0 325.5 185.5">
+<title>Individual circle radii: 8, 14, 20</title>
+<ellipse class="outer-boundary" cx="162.75" cy="92.75" rx="150" ry="80" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="92.75" cy="92.75" r="8" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="162.75" cy="92.75" r="14" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="232.75" cy="92.75" r="20" fill="none" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<text x="520" y="1460" font-family="serif" font-size="14">14. Transparent holes on a colored background</text>
+<svg x="520" y="1472" width="460" height="177" viewBox="0 0 420.5 235.5">
+<title>Transparent holes on a colored background</title>
+<rect width="100%" height="100%" fill="#e9f4fa"/>
+<defs><clipPath id="sd-d8f07f65d17d66f4aa5c" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-d8f07f65d17d66f4aa5c)"/>
+<path class="arc" d="M 139.75 117.75 L 170.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d8f07f65d17d66f4aa5c)"/>
+<path class="closed-curve" d="M 210.25 117.75 A 86.75 39.2022151899 0 0 1 383.75 117.75 A 86.75 39.2022151899 0 0 1 210.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d8f07f65d17d66f4aa5c)"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="182.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="237.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="292.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="347.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<text x="36.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="100.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="155.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="210.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="265.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="320.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="383.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="72.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="127.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="182.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="237.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="292.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="347.75" y="98.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+</svg>
+</svg>

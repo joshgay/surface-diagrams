@@ -218,6 +218,27 @@ a taller body and larger, farther-separated openings. See the
 See [presentation details](docs/genus-presentation.md). This geometric
 presentation does not yet implement genus curve routing or certified cut systems.
 
+## Circular planar boundaries
+
+Use one style option to show actual circular holes instead of gray dots:
+
+```python
+surface = PlanarSurface.row("BPBPB")
+save_svg(surface, "circles.svg", style=Style(boundary_shape="circle"))
+```
+
+The automatic circle radius is 12; marked points remain blue dots. An explicit
+`boundary_radius` or a `Boundary(..., radius=...)` overrides the size. Existing
+`Arc` and `Loop` inputs work on horizontal rows: arcs end on the circle rims,
+and curves and guide lines stay out of the holes. Use `show_guides=True` for
+numbered horizontal guides. Circle outlines use `outline_color` and
+`outline_width`. The default dot presentation remains unchanged.
+
+See the [circle gallery](examples/output/circles-gallery.svg) and
+[geometry and limitations](docs/circular-boundaries.md). Circular-hole export
+currently supports SVG; its TikZ support is deferred to P7. Curves on general
+nonhorizontal arrangements are a later stage.
+
 ## TikZ and LaTeX
 
 ```python

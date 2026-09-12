@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .genus import GenusSurface
 from .layout import layout
-from .model import PlanarSurface, Style, _number
+from .model import Boundary, PlanarSurface, Style, _number
 
 
 def _n(value):
@@ -69,6 +69,9 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
     _number(scale, "scale", positive=True)
     if not isinstance(title, str):
         raise TypeError("title must be a string")
+    if (isinstance(surface, PlanarSurface) and style.boundary_shape == 'circle'
+            and any(isinstance(p, Boundary) for p in surface.objects)):
+        raise NotImplementedError("circular planar boundaries currently support SVG only; TikZ support is planned for P7")
     drawing = layout(surface, style)
     unit = .75 * scale
     colors = {}

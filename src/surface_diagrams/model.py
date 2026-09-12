@@ -21,7 +21,7 @@ def _point_check(point):
 
 @dataclass(frozen=True)
 class Boundary:
-    """An inner boundary shown as a gray dot. Radius is in drawing units."""
+    """An inner boundary shown as a dot or circular hole. Radius is in drawing units."""
 
     x: float
     y: float = 0
@@ -48,10 +48,12 @@ class Style:
     """Thesis conventions; dimensions and dot radii use drawing units.
 
     A transparent background fits both white paper and other documents.
-    Individual objects can override the two default dot radii.
+    boundary_shape='circle' draws actual outlined holes (SVG only for now).
+    Omitted boundary_radius is 4 for dots and 12 for circles. Individual objects
+    can override those radii. Marked points remain dots in either mode.
     """
 
-    boundary_radius: float = 4
+    boundary_radius: Optional[float] = None
     marked_point_radius: float = 4
     boundary_color: str = "#8b8b8b"
     marked_point_color: str = "#006fff"
@@ -64,8 +66,13 @@ class Style:
     curve_width: float = 2
     curve_height: float = 0.85
     show_guides: bool = False
+    boundary_shape: str = "dot"
 
     def __post_init__(self):
+        if self.boundary_shape not in ("dot", "circle"):
+            raise ValueError("boundary_shape must be 'dot' or 'circle'")
+        if self.boundary_radius is None:
+            object.__setattr__(self, "boundary_radius", 12 if self.boundary_shape == "circle" else 4)
         for name in ("boundary_radius", "marked_point_radius", "outline_width", "curve_width", "curve_height"):
             _number(getattr(self, name), name, positive=True)
         _number(self.padding, "padding")

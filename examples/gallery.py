@@ -13,6 +13,8 @@ def gallery_examples():
     default = Style()
     row = PlanarSurface.row('B P B P P')
     six = PlanarSurface.row('PPPPPP', spacing=55, height=210, margin=60)
+    circles = Style(boundary_shape='circle')
+    holes = PlanarSurface.row('BBBBBB',spacing=55,height=210,margin=60)
     return {
         'planar': [
             ('default', 'Thesis blue and gray', row, default),
@@ -27,6 +29,22 @@ def gallery_examples():
             ('custom-positions', 'Free positions off the axis (no cut curves)', PlanarSurface([Boundary(-70),Boundary(70),MarkedPoint(-25,20),MarkedPoint(-25,-20),MarkedPoint(25,20),MarkedPoint(25,-20)],height=110), default),
             ('per-object-size', 'Individual radii 3, 5, 7, 9', PlanarSurface([MarkedPoint(-60,radius=3),Boundary(-20,radius=5),MarkedPoint(20,radius=7),Boundary(60,radius=9)],height=110), default),
             ('empty', 'An empty, rounder disk', PlanarSurface(width=220,height=180), default),
+        ],
+        'circles': [
+            ('empty', 'An empty disk in circular-boundary mode', PlanarSurface(width=180,height=120), circles),
+            ('annulus', 'An annulus with an arc joining its boundaries', PlanarSurface.row('B').with_curves(Arc(0,1)), circles),
+            ('default-row', 'Circular holes: default row and sizes', PlanarSurface.row('BBBBB'), circles),
+            ('mixed', 'Circular holes and marked points', PlanarSurface.row('BPBPB'), circles),
+            ('dot-comparison', 'The same boundaries as gray dots', PlanarSurface.row('BBBBB'), default),
+            ('straight', 'A straight arc joins two circle rims', holes.with_curves(Arc(2,3)), circles),
+            ('up', 'An arc above the row ends on the rims', holes.with_curves(Arc(1,6,direction='up')), circles),
+            ('down', 'A reversed arc below the row', holes.with_curves(Arc(6,1,direction='down')), circles),
+            ('mixed-endpoints', 'An arc from a hole to a marked point', PlanarSurface.row('BPBP',spacing=55,height=180,margin=60).with_curves(Arc(1,4)), circles),
+            ('outer', 'An arc from the outer boundary to a hole', holes.with_curves(Arc(0,1)), circles),
+            ('loop', 'A closed curve surrounds circular holes', holes.with_curves(Loop((1,4))), circles),
+            ('numbered', 'Numbered horizontal guides with a cut-crossing arc', holes.with_curves(Arc(2,5,(3,),False)), replace(circles,show_guides=True)),
+            ('radii', 'Individual circle radii: 8, 14, 20', PlanarSurface((Boundary(-70,radius=8),Boundary(0,radius=14),Boundary(70,radius=20)),width=300,height=160), circles),
+            ('colored', 'Transparent holes on a colored background', holes.with_curves(Arc(2,3),Loop((3,6))), replace(circles,background='#e9f4fa',show_guides=True)),
         ],
         'curves': [
             ('simple-up', 'Arc(1, 6)', six.with_curves(Arc(1,6)), default),
