@@ -7,6 +7,7 @@ from pathlib import Path
 from .layout import layout
 from .model import PlanarSurface, Style, _number
 from .genus import GenusSurface
+from .cut_diagrams import CutDiskDiagram
 
 
 def _n(value):
@@ -15,8 +16,8 @@ def _n(value):
 
 def render_svg(surface: PlanarSurface, *, style=None, scale=1, title="Planar surface") -> str:
     """Return a standalone SVG. Scale changes display size, not coordinates."""
-    if not isinstance(surface, (PlanarSurface, GenusSurface)):
-        raise TypeError("surface must be a PlanarSurface or GenusSurface")
+    if not isinstance(surface, (PlanarSurface, GenusSurface, CutDiskDiagram)):
+        raise TypeError("surface must be a PlanarSurface, GenusSurface, or CutDiskDiagram")
     style = Style() if style is None else style
     if not isinstance(style, Style):
         raise TypeError("style must be a Style")

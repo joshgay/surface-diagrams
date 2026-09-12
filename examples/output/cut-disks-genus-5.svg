@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380" role="img">
+<title>Genus 5: numbered cut disks</title>
+<path class="cut-side" d="M 330 190 L 323.147912281 146.737620788" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 323.147912281 146.737620788 L 303.262379212 107.710064679" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 303.262379212 107.710064679 L 272.289935321 76.7376207875" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 272.289935321 76.7376207875 L 233.262379212 56.8520877187" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 233.262379212 56.8520877187 L 190 50" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 190 50 L 146.737620788 56.8520877187" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 146.737620788 56.8520877187 L 107.710064679 76.7376207875" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 107.710064679 76.7376207875 L 76.7376207875 107.710064679" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 76.7376207875 107.710064679 L 56.8520877187 146.737620788" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 56.8520877187 146.737620788 L 50 190" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 50 190 L 56.8520877187 233.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 56.8520877187 233.262379212 L 76.7376207875 272.289935321" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 76.7376207875 272.289935321 L 107.710064679 303.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 107.710064679 303.262379212 L 146.737620788 323.147912281" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 146.737620788 323.147912281 L 190 330" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 190 330 L 233.262379212 323.147912281" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 233.262379212 323.147912281 L 272.289935321 303.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 272.289935321 303.262379212 L 303.262379212 272.289935321" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 303.262379212 272.289935321 L 323.147912281 233.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 323.147912281 233.262379212 L 330 190" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 710 190 L 703.147912281 146.737620788" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 703.147912281 146.737620788 L 683.262379212 107.710064679" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 683.262379212 107.710064679 L 652.289935321 76.7376207875" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 652.289935321 76.7376207875 L 613.262379212 56.8520877187" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 613.262379212 56.8520877187 L 570 50" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 570 50 L 526.737620788 56.8520877187" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 526.737620788 56.8520877187 L 487.710064679 76.7376207875" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 487.710064679 76.7376207875 L 456.737620788 107.710064679" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 456.737620788 107.710064679 L 436.852087719 146.737620788" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 436.852087719 146.737620788 L 430 190" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 430 190 L 436.852087719 233.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 436.852087719 233.262379212 L 456.737620788 272.289935321" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 456.737620788 272.289935321 L 487.710064679 303.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 487.710064679 303.262379212 L 526.737620788 323.147912281" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 526.737620788 323.147912281 L 570 330" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 570 330 L 613.262379212 323.147912281" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 613.262379212 323.147912281 L 652.289935321 303.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 652.289935321 303.262379212 L 683.262379212 272.289935321" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 683.262379212 272.289935321 L 703.147912281 233.262379212" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 703.147912281 233.262379212 L 710 190" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="190" y="12" fill="#000000" font-size="12" font-family="serif" text-anchor="middle">chain-disk-1</text>
+<text x="338.426216228" y="166.491596813" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1+</text>
+<text x="323.897224037" y="121.775956736" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2-</text>
+<text x="296.261438641" y="83.738561359" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3+</text>
+<text x="258.224043264" y="56.1027759628" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4-</text>
+<text x="213.508403187" y="41.5737837722" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">5+</text>
+<text x="166.491596813" y="41.5737837722" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">6-</text>
+<text x="121.775956736" y="56.1027759628" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">7+</text>
+<text x="83.738561359" y="83.738561359" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">8-</text>
+<text x="56.1027759628" y="121.775956736" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">9+</text>
+<text x="41.5737837722" y="166.491596813" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">10-</text>
+<text x="41.5737837722" y="213.508403187" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">11+</text>
+<text x="56.1027759628" y="258.224043264" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">10+</text>
+<text x="83.738561359" y="296.261438641" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">9+</text>
+<text x="121.775956736" y="323.897224037" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">8+</text>
+<text x="166.491596813" y="338.426216228" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">7+</text>
+<text x="213.508403187" y="338.426216228" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">6+</text>
+<text x="258.224043264" y="323.897224037" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">5+</text>
+<text x="296.261438641" y="296.261438641" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4+</text>
+<text x="323.897224037" y="258.224043264" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3+</text>
+<text x="338.426216228" y="213.508403187" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2+</text>
+<text x="570" y="12" fill="#000000" font-size="12" font-family="serif" text-anchor="middle">chain-disk-2</text>
+<text x="718.426216228" y="166.491596813" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1-</text>
+<text x="703.897224037" y="121.775956736" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2+</text>
+<text x="676.261438641" y="83.738561359" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3-</text>
+<text x="638.224043264" y="56.1027759628" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4+</text>
+<text x="593.508403187" y="41.5737837722" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">5-</text>
+<text x="546.491596813" y="41.5737837722" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">6+</text>
+<text x="501.775956736" y="56.1027759628" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">7-</text>
+<text x="463.738561359" y="83.738561359" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">8+</text>
+<text x="436.102775963" y="121.775956736" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">9-</text>
+<text x="421.573783772" y="166.491596813" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">10+</text>
+<text x="421.573783772" y="213.508403187" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">11-</text>
+<text x="436.102775963" y="258.224043264" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">10-</text>
+<text x="463.738561359" y="296.261438641" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">9-</text>
+<text x="501.775956736" y="323.897224037" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">8-</text>
+<text x="546.491596813" y="338.426216228" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">7-</text>
+<text x="593.508403187" y="338.426216228" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">6-</text>
+<text x="638.224043264" y="323.897224037" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">5-</text>
+<text x="676.261438641" y="296.261438641" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4-</text>
+<text x="703.897224037" y="258.224043264" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3-</text>
+<text x="718.426216228" y="213.508403187" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2-</text>
+</svg>

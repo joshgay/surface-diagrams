@@ -25,3 +25,32 @@ as a substitute for certification.
 Verification: six new tests cover genera 1,2,3,5,8, boundary/mark cross-products,
 stable numbers, missing spokes and false attachments. Next: disk routing and
 numbered diagnostics, followed by checked bindings to the surface presentation.
+## Disk routing and diagnostics checkpoint
+
+`CutAtlas.build(system)` creates convex diagnostic charts for the certified
+complementary disks. `DiskRoute` uses explicit `Crossing(side, position)`
+locators; the opposite occurrence has parameter `1-position`. Arcs have explicit
+`BoundaryPoint` or `MarkPoint` endpoints. Repeated visits must use distinct
+positions. Number-only resolution fails with candidate sides when ambiguous.
+
+Routes consist of chords inside these disks. Self-intersections, coincident
+seam visits, boundary-following degeneracies and invalid face jumps fail.
+Families are disjoint by default; intentional transverse intersections must
+name the exact route/piece pair. Geometry uses doubles and a conservative
+1e-10 diagnostic-chart tolerance, not an exact-arithmetic intersection claim.
+No isotopy or minimal-intersection classification is promised.
+
+`cut_along_route(atlas, route)` subdivides crossed seams consistently, splits
+the cut disks along the route, glues the original cut graph back and reconstructs
+the surface cut only along that route. Its components establish separation and
+residual genus. Tests cover a nonseparating torus curve and an annular return arc
+that separates, as well as repeated crossings and reversal invariance.
+
+`system.diagram(*routes)` displays numbered complementary disks, oriented side
+copies, original boundary IDs and marked-point copies. Use `show_ids=True` for
+full side locators. `examples/make_cut_disks.py` generates six SVG diagnostics.
+These use existing line/text primitives, so existing TikZ serialization also
+works without a geometry extension. This is not completion of P7.
+
+Surface projection and presentation binding remain unfinished. The diagnostic
+polygons are valid cut disks, not a replacement for the requested genus drawings.

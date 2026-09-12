@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 260" width="520" height="260" role="img">
+<title>A torus curve in its cut disk</title>
+<path class="cut-side" d="M 210 130 L 130 50" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 130 50 L 50 130" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 50 130 L 130 210" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 130 210 L 210 130" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 470 130 L 390 50" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 390 50 L 310 130" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 310 130 L 390 210" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 390 210 L 470 130" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="disk-route" d="M 438 162 L 358 82" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="130" y="12" fill="#000000" font-size="12" font-family="serif" text-anchor="middle">chain-disk-1</text>
+<text x="178.485281374" y="81.5147186258" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1+</text>
+<text x="81.5147186258" y="81.5147186258" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2-</text>
+<text x="81.5147186258" y="178.485281374" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3+</text>
+<text x="178.485281374" y="178.485281374" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2+</text>
+<text x="390" y="12" fill="#000000" font-size="12" font-family="serif" text-anchor="middle">chain-disk-2</text>
+<text x="438.485281374" y="81.5147186258" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1-</text>
+<text x="341.514718626" y="81.5147186258" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2+</text>
+<text x="341.514718626" y="178.485281374" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3-</text>
+<text x="438.485281374" y="178.485281374" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2-</text>
+</svg>

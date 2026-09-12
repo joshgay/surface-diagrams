@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 324" width="620" height="324" role="img">
+<title>Genus two with two boundaries and one mark</title>
+<path class="disk-boundary" d="M 274 162 L 265.474507641 119.139455575" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 265.474507641 119.139455575 L 241.195959493 82.8040405071" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 241.195959493 82.8040405071 L 204.860544425 58.5254923587" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 204.860544425 58.5254923587 L 162 50" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 162 50 L 119.139455575 58.5254923587" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 119.139455575 58.5254923587 L 82.8040405071 82.8040405071" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 82.8040405071 82.8040405071 L 58.5254923587 119.139455575" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 58.5254923587 119.139455575 L 50 162" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 50 162 L 58.5254923587 204.860544425" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 58.5254923587 204.860544425 L 82.8040405071 241.195959493" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 82.8040405071 241.195959493 L 119.139455575 265.474507641" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 119.139455575 265.474507641 L 162 274" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 162 274 L 204.860544425 265.474507641" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 204.860544425 265.474507641 L 241.195959493 241.195959493" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 241.195959493 241.195959493 L 265.474507641 204.860544425" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 265.474507641 204.860544425 L 274 162" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="disk-boundary" d="M 570 162 L 560.294949054 119.479393566" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 560.294949054 119.479393566 L 533.102000582 85.3805147181" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 533.102000582 85.3805147181 L 493.807051528 66.4570646062" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 493.807051528 66.4570646062 L 450.192948472 66.4570646062" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 450.192948472 66.4570646062 L 410.897999418 85.3805147181" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 410.897999418 85.3805147181 L 383.705050946 119.479393566" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 383.705050946 119.479393566 L 374 162" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 374 162 L 383.705050946 204.520606434" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 383.705050946 204.520606434 L 410.897999418 238.619485282" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 410.897999418 238.619485282 L 450.192948472 257.542935394" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 450.192948472 257.542935394 L 493.807051528 257.542935394" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 493.807051528 257.542935394 L 533.102000582 238.619485282" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 533.102000582 238.619485282 L 560.294949054 204.520606434" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="cut-side" d="M 560.294949054 204.520606434 L 570 162" fill="none" stroke="#9c83a4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle class="marked-point" cx="204.860544425" cy="265.474507641" r="2.5" fill="#006fff"/>
+<text x="162" y="12" fill="#000000" font-size="12" font-family="serif" text-anchor="middle">chain-disk-1</text>
+<text x="281.506677185" y="138.228643923" fill="#000000" font-size="8" font-family="serif" text-anchor="middle">B1</text>
+<text x="263.312868915" y="94.3049052449" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">6-</text>
+<text x="229.695094755" y="60.6871310853" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1+</text>
+<text x="185.771356077" y="42.4933228145" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1+</text>
+<text x="138.228643923" y="42.4933228145" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2-</text>
+<text x="94.3049052449" y="60.6871310853" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3+</text>
+<text x="60.6871310853" y="94.3049052449" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4-</text>
+<text x="42.4933228145" y="138.228643923" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">5+</text>
+<text x="42.4933228145" y="185.771356077" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4+</text>
+<text x="60.6871310853" y="229.695094755" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3+</text>
+<text x="94.3049052449" y="263.312868915" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2+</text>
+<text x="138.228643923" y="281.506677185" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1+</text>
+<text x="185.771356077" y="281.506677185" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">8+</text>
+<text x="229.695094755" y="263.312868915" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">8-</text>
+<text x="263.312868915" y="229.695094755" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1+</text>
+<text x="281.506677185" y="185.771356077" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">6+</text>
+<text x="198.860068205" y="250.988076571" fill="#006fff" font-size="9" font-family="serif" text-anchor="middle">M</text>
+<text x="472" y="26" fill="#000000" font-size="12" font-family="serif" text-anchor="middle">chain-disk-2</text>
+<text x="576.846609473" y="138.069445576" fill="#000000" font-size="8" font-family="serif" text-anchor="middle">B2</text>
+<text x="556.080452608" y="94.94807652" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">7-</text>
+<text x="518.661130924" y="65.1071632473" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1-</text>
+<text x="472" y="54.4570646062" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1-</text>
+<text x="425.338869076" y="65.1071632473" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1-</text>
+<text x="387.919547392" y="94.94807652" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2+</text>
+<text x="367.153390527" y="138.069445576" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3-</text>
+<text x="367.153390527" y="185.930554424" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4+</text>
+<text x="387.919547392" y="229.05192348" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">5-</text>
+<text x="425.338869076" y="258.892836753" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">4-</text>
+<text x="472" y="269.542935394" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">3-</text>
+<text x="518.661130924" y="258.892836753" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">2-</text>
+<text x="556.080452608" y="229.05192348" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">1-</text>
+<text x="576.846609473" y="185.930554424" fill="#9c83a4" font-size="8" font-family="serif" text-anchor="middle">7+</text>
+</svg>

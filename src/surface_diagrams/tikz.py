@@ -4,6 +4,7 @@ from math import isclose
 from pathlib import Path
 
 from .genus import GenusSurface
+from .cut_diagrams import CutDiskDiagram
 from .layout import layout
 from .model import Boundary, PlanarSurface, Style, _number
 
@@ -61,8 +62,8 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
     dimensions, including strokes, dashes and labels. No TeX installation is
     needed to generate this string. Labels are plain text, not TeX commands.
     """
-    if not isinstance(surface, (PlanarSurface, GenusSurface)):
-        raise TypeError("surface must be a PlanarSurface or GenusSurface")
+    if not isinstance(surface, (PlanarSurface, GenusSurface, CutDiskDiagram)):
+        raise TypeError("surface must be a PlanarSurface, GenusSurface, or CutDiskDiagram")
     style = Style() if style is None else style
     if not isinstance(style, Style):
         raise TypeError("style must be a Style")

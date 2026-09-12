@@ -11,8 +11,15 @@ Current P4a checkpoint: standard_cuts.py now builds certified 2g+1 chains and
 numbered boundary/mark spokes. See standard-chains.md. The validator now has
 explicit Attachment records for spoke endpoints on chain edges.
 
-Next action: implement disk routing and numbered diagnostics, then bind the
-standard cellulations to genus charts without inferring topology from pixels. Read the P4 gate in
+Disk routing and numbered complementary-disk diagnostics now work in
+`disk_routes.py` and `cut_diagrams.py`. Ten new tests cover repeated crossings,
+reversal, boundary returns, explicit overlays and reconstruction after cutting
+along a route. Six generated SVG examples are in examples/output/cut-disks-*;
+the decorated disk preview was visually checked, including mark M.
+
+Next action: bind the standard cellulations to genus charts without inferring
+topology from pixels. The current convex diagnostic charts must not be projected
+onto the genus illustration by an unchecked interpolation. P4 remains incomplete. Read the P4 gate in
 IMPLEMENTATION_PLAN.md and the implemented conventions/limits in cut-systems.md.
 Build actual chain cellulations and boundary/mark supplements, certify them
 with the internal validator, and bind those same cellulations to the genus
