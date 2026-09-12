@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 474" width="576" height="474" role="img">
+<title>11-hurwitz-and-substitution</title>
+<path class="braid-strand" d="M 105 103 L 135 139" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 135 103 L 123.2 117.16 M 116.8 124.84 L 105 139" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 165 103 L 165 139" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 105 139 L 105 175" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 135 139 L 165 175" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 165 139 L 153.2 153.16 M 146.8 160.84 L 135 175" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 67 L 393 103" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 67 L 453 103" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 67 L 441.2 81.16 M 434.8 88.84 L 423 103" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 103 L 393 139" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 103 L 434.8 117.16 M 441.2 124.84 L 453 139" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 103 L 423 139" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 139 L 423 175" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 139 L 411.2 153.16 M 404.8 160.84 L 393 175" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 139 L 453 175" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 175 L 393 211" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 175 L 453 211" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 175 L 441.2 189.16 M 434.8 196.84 L 423 211" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 105 322 L 135 358" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 135 322 L 123.2 336.16 M 116.8 343.84 L 105 358" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 165 322 L 165 358" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 105 358 L 105 394" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 135 358 L 165 394" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 165 358 L 153.2 372.16 M 146.8 379.84 L 135 394" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 105 394 L 135 430" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 135 394 L 123.2 408.16 M 116.8 415.84 L 105 430" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 165 394 L 165 430" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 322 L 393 358" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 322 L 453 358" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 322 L 441.2 336.16 M 434.8 343.84 L 423 358" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 358 L 423 394" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 358 L 411.2 372.16 M 404.8 379.84 L 393 394" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 358 L 453 394" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 393 394 L 393 430" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 423 394 L 453 430" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 453 394 L 441.2 408.16 M 434.8 415.84 L 423 430" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="105" y="95" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="105" y="189" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="135" y="95" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="135" y="189" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="165" y="95" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="165" y="189" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="135" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">(a,b), a = +1 and b = +2</text>
+<text x="393" y="59" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="393" y="225" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="423" y="59" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="423" y="225" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="453" y="59" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="453" y="225" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="423" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">(b, b^-1 a b): the first two crossings cancel</text>
+<text x="105" y="314" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="105" y="444" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="135" y="314" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="135" y="444" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="165" y="314" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="165" y="444" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="135" y="279" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Substitution: braid relation, left word</text>
+<text x="393" y="314" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="393" y="444" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="423" y="314" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="423" y="444" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="453" y="314" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="453" y="444" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="423" y="279" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Braid relation, right word</text>
+</svg>

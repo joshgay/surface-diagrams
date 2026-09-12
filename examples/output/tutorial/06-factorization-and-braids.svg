@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 594 847.5" width="594" height="847.5" role="img">
+<title>06-factorization-and-braids</title>
+<path class="arc" d="M 103 152.75 L 168 152.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 420 104.75 L 465 200.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 465 104.75 L 447 143.15 M 438 162.35 L 420 200.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 510 104.75 L 510 200.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 168 435.25 L 233 435.25" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 420 387.25 L 420 483.25" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 465 387.25 L 510 483.25" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 510 387.25 L 492 425.65 M 483 444.85 L 465 483.25" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 38 717.75 A 32.5 22.3125 0 0 1 103 717.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 38 717.75 A 65 44.625 0 0 1 168 717.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 38 717.75 A 97.5 66.9375 0 0 1 233 717.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 420 669.75 L 465 717.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 465 669.75 L 447 688.95 M 438 698.55 L 420 717.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 510 669.75 L 510 717.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 420 717.75 L 420 765.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 465 717.75 L 510 765.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 510 717.75 L 492 736.95 M 483 746.55 L 465 765.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="168" cy="152.75" rx="130" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="103" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="168" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="233" cy="152.75" r="4" fill="#006fff"/>
+<ellipse class="outer-boundary" cx="168" cy="435.25" rx="130" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="103" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="168" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="233" cy="435.25" r="4" fill="#006fff"/>
+<ellipse class="outer-boundary" cx="168" cy="717.75" rx="130" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="103" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="168" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="233" cy="717.75" r="4" fill="#006fff"/>
+<text x="168" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Factor 1: half twist supported on arc (1,2)</text>
+<text x="420" y="96.75" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="420" y="214.75" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="465" y="96.75" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="465" y="214.75" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="510" y="96.75" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="510" y="214.75" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="465" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Corresponding crossing: +1</text>
+<text x="168" y="306.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Factor 2: half twist supported on arc (2,3)</text>
+<text x="420" y="379.25" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="420" y="497.25" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="465" y="379.25" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="465" y="497.25" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="510" y="379.25" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="510" y="497.25" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="465" y="306.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Corresponding crossing: +2</text>
+<text x="168" y="589" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Reference cuts C; image of product still to supply</text>
+<text x="420" y="661.75" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="420" y="779.75" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="465" y="661.75" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="465" y="779.75" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="510" y="661.75" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="510" y="779.75" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="465" y="589" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Stacked crossings, read top to bottom</text>
+</svg>

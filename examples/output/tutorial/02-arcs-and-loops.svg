@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 444.5 847.5" width="444.5" height="847.5" role="img">
+<title>02-arcs-and-loops</title>
+<path class="axis" d="M 24.75 152.75 L 419.75 152.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="arc" d="M 139.75 152.75 A 41.25 18.6408227848 0 0 0 222.25 152.75 A 41.25 18.6408227848 0 0 1 304.75 152.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="axis" d="M 24.75 435.25 L 419.75 435.25" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="closed-curve" d="M 112.25 435.25 A 82.5 37.2816455696 0 0 1 277.25 435.25 A 82.5 37.2816455696 0 0 1 112.25 435.25 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="axis" d="M 24.75 717.75 L 419.75 717.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="closed-curve" d="M 52.75 717.75 A 169.5 76.596835443 0 0 1 391.75 717.75 A 29.75 13.4439873418 0 0 1 332.25 717.75 A 110 49.7088607595 0 0 0 112.25 717.75 A 29.75 13.4439873418 0 0 1 52.75 717.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="222.25" cy="152.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="84.75" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="139.75" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="194.75" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="249.75" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="304.75" cy="152.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="359.75" cy="152.75" r="4" fill="#006fff"/>
+<ellipse class="outer-boundary" cx="222.25" cy="435.25" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="84.75" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="139.75" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="194.75" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="249.75" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="304.75" cy="435.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="359.75" cy="435.25" r="4" fill="#006fff"/>
+<ellipse class="outer-boundary" cx="222.25" cy="717.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="84.75" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="139.75" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="194.75" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="249.75" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="304.75" cy="717.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="359.75" cy="717.75" r="4" fill="#006fff"/>
+<text x="54.75" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="112.25" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="167.25" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="222.25" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="277.25" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="332.25" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="389.75" y="164.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="84.75" y="142.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="139.75" y="142.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="194.75" y="142.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="249.75" y="142.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="304.75" y="142.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="359.75" y="142.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="222.25" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Arc(2, 5, cuts=(3,), direction=&quot;down&quot;)</text>
+<text x="54.75" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="112.25" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="167.25" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="222.25" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="277.25" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="332.25" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="389.75" y="447.25" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="84.75" y="425.25" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="139.75" y="425.25" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="194.75" y="425.25" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="249.75" y="425.25" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="304.75" y="425.25" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="359.75" y="425.25" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="222.25" y="306.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Loop((1, 4)): surrounds objects 2, 3, 4</text>
+<text x="54.75" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="112.25" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="167.25" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="222.25" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="277.25" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="332.25" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="389.75" y="729.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="84.75" y="707.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="139.75" y="707.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="194.75" y="707.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="249.75" y="707.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="304.75" y="707.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="359.75" y="707.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="222.25" y="589" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Loop((0, 6, 5, 1)): a nonconsecutive enclosure</text>
+</svg>

@@ -5,6 +5,7 @@ from .genus_geometry import presentation
 from .genus_mesh import genus_binding
 from .mesh_atlas import cubic_point, _near
 from .primitives import Drawing, Path, Text, Ellipse
+from .visuals import RAINBOW
 from .disk_routes import DiskRoute, ItineraryError
 
 
@@ -53,6 +54,7 @@ class GenusDiagram:
             texts.append(Text(x+7,y+2,mark.id,style.marked_point_color,9))
         for number in numbers:
             parent=parents[number]
+            color=RAINBOW[(number-1)%len(RAINBOW)] if self.show_cuts else style.curve_color
             pieces=[]
             for side in parent.walk:
                 triangle,i=side_map[side]
@@ -60,7 +62,7 @@ class GenusDiagram:
                 if i==0 and triangle.curved:
                     pts=tuple(cubic_point(triangle.curved,t/12) for t in range(13))
                 pieces.append((triangle.sheet,pts))
-            _append_paths(paths,pieces,style.curve_color,style.curve_width,'named-cut')
+            _append_paths(paths,pieces,color,style.curve_width,'named-cut')
             if self.show_cuts:
                 front=[p for sheet,pts in pieces if sheet=='front' for p in pts]
                 if parent.kind == 'arc':
@@ -73,7 +75,7 @@ class GenusDiagram:
                 else:
                     x,y=max(front,key=lambda p:p[1])
                     y+=9
-                texts.append(Text(x,y,str(number),style.curve_color,10))
+                texts.append(Text(x,y,str(number),color,10))
         routes=tuple(c for c in self.curves if isinstance(c,DiskRoute))
         atlas.family(routes,intersections=self.intersections)
         for route in routes:

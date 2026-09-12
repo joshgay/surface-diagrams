@@ -15,6 +15,18 @@ what is here may be wrong or not yet implemented.
 The default higher-genus presentation now follows the D3/D2A/E2 reference diagrams.
 See the [source comparison](examples/output/reference-comparison.svg).
 
+## Illustrated tutorial
+
+Start with the [step-by-step tutorial](docs/TUTORIAL.md) or its
+[browser edition](docs/TUTORIAL.html). Run `python examples/tutorial.py` to
+regenerate the figures. It explains planar endpoint/cut numbering, closed curves,
+rainbow systems, intersection overlays, vertical factors beside braids, and
+higher-genus route inputs. Automatic actions and invariants remain later work.
+
+`ColoredCurve`, `PlanarDiagram`, `BraidDiagram`, `Panel`, and `Figure` are
+presentation tools for supplied configurations. The planar overlay option is
+explicit; the older `with_curves` route remains disjoint by default.
+
 ## Install and make an image
 
 From this directory:

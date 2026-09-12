@@ -4,6 +4,14 @@ Design proposal, September 12, 2026. These are contracts for the revised roadmap
 not a description of calculation features already implemented. Read
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) for scope and sequencing.
 
+## Current sequencing: visualization first
+
+Richard's latest priority supersedes the earlier calculation-led staging. Build
+and document drawings of supplied configurations before automatic actions,
+normal forms, cover decisions or invariants. The contracts below guide that
+separation; they are not prerequisites to shipping the visual tutorial and
+cut-system improvements. IMPLEMENTATION_PLAN.md now uses V0-V4, then C1-C4.
+
 ## Dependency boundaries
 
 ```text
@@ -90,7 +98,7 @@ investigating this representation; it does not establish coverage of our notched
 or closed-surface conventions. [Flipper's own documentation](https://flipper.readthedocs.io/en/latest/api/flipper.html)
 
 Dylan Thurston's draft on geometric intersection explicitly treats change of
-Dehn-Thurston coordinates and twisting. Compare that approach during R0 rather
+Dehn-Thurston coordinates and twisting. Compare that approach before C1 rather
 than prematurely ruling it out. See RESEARCH_NOTES.md for retrieval status and
 other references. Keep the abstraction open to an exact coordinate conversion;
 implement only one initial engine.
@@ -148,7 +156,7 @@ Proposed records and operations (not implemented):
   still requires an action or reconstruction algorithm.
 
 A uniquely determined isotopy class is not automatically a canonical serialized
-normal form or a cheap algorithm. R0/R2 must test image normalization, compatibility
+normal form or a cheap algorithm. C1 must test image normalization, compatibility
 and actions, including braid relations giving equal images and nontrivial twists
 that an insufficient reference system fails to detect. Equal products also do
 not identify their factorizations: distinct ordered factor sequences remain
@@ -288,5 +296,6 @@ surface projection must have an everywhere regular differential.
 
 This plan does not authorize implementing all diagram families at once, installing
 an algebra system, renaming the repository, or changing mathematical conventions
-without an explicit specification. First produce the R0 comparison and one
-braid/factorization-to-diagram example with an exact supported curve action.
+without an explicit specification. First complete the visual tutorial and
+requested cut-system diagrams. Exact actions and coordinate comparisons follow
+the visualization milestones in the controlling plan.

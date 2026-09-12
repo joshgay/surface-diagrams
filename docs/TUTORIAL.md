@@ -1,0 +1,445 @@
+# Drawing surfaces, cut systems, and factorizations
+
+A practical tutorial for the current library. **Drawing comes first.** You can
+supply curves, cut-system states and factor labels yourself; no calculation
+engine is required to lay them out. The runnable source for every numbered
+figure is [examples/tutorial.py](../examples/tutorial.py).
+
+## 1. Run the tutorial
+
+From the repository root, in your Python environment:
+
+```powershell
+python -m pip install -e .
+python examples/tutorial.py
+```
+
+This produces eleven main SVG figures, a full-size cut-disk diagnostic, and ten TikZ counterparts in
+[examples/output/tutorial](../examples/output/tutorial/). Open SVG files in a
+browser or vector editor. The circular-hole example is SVG-only for now.
+The [browser edition](TUTORIAL.html) contains the same instructions and figures.
+
+```python
+from surface_diagrams import (
+    Arc, Loop, PlanarSurface, GenusSurface, Style, save_svg, save_tikz,
+    ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure, RAINBOW,
+)
+```
+
+`save_svg(diagram, "figure.svg")` writes a transparent vector image. Use
+`scale=2` to enlarge everything uniformly. `save_tikz(diagram, "figure.tikz")`
+exports supported geometry for a document loading the TikZ package. The new
+TikZ examples are generated, but have not been TeX-compiled on this machine.
+
+## 2. Use case 1: read a planar surface before entering a curve
+
+```python
+surface = PlanarSurface.row("PPPPPP", spacing=55, height=210, margin=60)
+save_svg(surface, "input-map.svg", style=Style(show_guides=True))
+```
+
+![Numbered points and horizontal intervals](../examples/output/tutorial/01-input-map.svg)
+
+`P` is a marked point. `B` is an inner boundary. Number **both** kinds together
+from left to right, starting at 1. A pattern `BPPB` has objects 1 through 4,
+not separate boundary and marked-point numbering.
+
+There are two different sorts of numbers in the guide:
+
+| What you are choosing | Allowed values | Example for six objects |
+| --- | --- | --- |
+| An arc endpoint at an object | 1 through n | Endpoint 2 means the second object |
+| An arc endpoint on the outer boundary | 0 or n+1 | 0 is the left tip; 7 is the right tip |
+| A crossing of a horizontal interval | 0 through n | Cut 3 is the open gap between objects 3 and 4 |
+
+**These horizontal intervals are encoding guides, not the colored geometric cut
+system you are drawing.** Cut 0 and endpoint 0 also mean different things:
+the first is an open interval; the second is a particular outer-boundary point.
+
+For this planar routing API, all object centers must lie on y=0 with distinct
+x coordinates. Custom nonhorizontal arrangements can be drawn as surfaces, but
+routing on them remains future work. Increase `height` if a curve passes too
+close to other points; increase `spacing` if the row is crowded.
+
+## 3. Decide the arc's endpoints and its itinerary
+
+Think of walking along your proposed arc:
+
+1. Write the start and end object numbers.
+2. Decide whether the first piece lies above or below the horizontal axis.
+3. Record each open horizontal interval crossed, in traversal order.
+4. At each crossing, switch sides of the axis. Do not sort the list of cuts.
+5. Turn on guides and compare the result with your intended drawing.
+
+```python
+arc = Arc(2, 5, cuts=(3,), direction="down")
+save_svg(surface.with_curves(arc), "one-crossing.svg",
+         style=Style(show_guides=True))
+```
+
+This starts at object 2, goes below the row, crosses the gap between 3 and 4,
+and then goes above to object 5. `cuts=(3,)` is a one-entry Python tuple.
+
+`Arc(2, 3)` draws the straight segment between adjacent objects.
+`Arc(2, 3, direction="up")` bows above it; `direction="down"` bows below.
+`Arc(1, 5)` bows above the intervening objects. A straight outer-tip arc such
+as `Arc(0, 4)` would run through earlier objects, so use a curved direction.
+
+Repeated visits matter: `Arc(2, 3, cuts=(4, 2, 4, 2, 4), direction="down")`
+keeps all five visits. Consecutive identical cuts and a terminal cut next to
+its endpoint are rejected by this minimal-itinerary convention. Do not remove
+an essential winding just to make an error disappear.
+
+## 4. Specify a closed curve
+
+A loop has no endpoints. Choose a starting cut and record its cyclic sequence
+of crossings. The first segment starts above the axis unless `start_up=False`.
+The list must have a positive even length, because you return to the starting
+side. The closing crossing is implicit; do not repeat the first cut at the end.
+
+```python
+loop = Loop((1, 4))
+save_svg(surface.with_curves(loop), "enclosing-loop.svg")
+```
+
+`Loop((i-1, j))` surrounds the consecutive objects i through j. Here it encloses
+2, 3 and 4. An enclosing set alone is not a general coordinate system: winding
+and the path around other objects also matter. For example,
+`Loop((0, 6, 5, 1))` follows a route enclosing the two end objects.
+
+![An arc and two closed-curve recipes](../examples/output/tutorial/02-arcs-and-loops.svg)
+
+The router preserves the supplied itinerary. It does not decide isotopy equality
+or find a minimal-intersection representative. `RoutingError` may indicate
+obstructed geometry, an impossible disjoint arrangement, or the bounded search
+limit; read the specific message.
+
+## 5. Boundary endpoints: prefer left and right
+
+Use circles when you want to see actual boundary rims:
+
+```python
+holes = PlanarSurface.row("BPPB", spacing=65, height=180, margin=65)
+example = holes.with_curves(Arc(0, 1), Arc(1, 2), Arc(3, 4), Arc(4, 5))
+save_svg(example, "boundary-arcs.svg", style=Style(boundary_shape="circle"))
+```
+
+![Boundary-to-point and boundary-to-boundary arcs](../examples/output/tutorial/03-boundary-endpoints.svg)
+
+The first arc reaches the left rim of boundary 1; the second leaves its right
+rim for marked point 2. Boundary 4 behaves symmetrically. On a `BB` row,
+`Arc(1, 2)` joins the right rim of the left boundary to the left rim of the right
+boundary. These are the standard left/right attachments requested for cut systems.
+
+**Current limitation:** curved arcs aimed at a circular boundary are trimmed at
+their first geometric rim intersection; that need not be the leftmost or
+rightmost point. Explicit left/right anchors for curved arcs are a priority
+feature, with arbitrary-angle anchors reserved for nonstandard configurations.
+Do not interpret an automatic rim landing as a specified notch or fixed endpoint.
+
+## 6. Draw a rainbow reference cut system
+
+Give each cut a stable ID and color. Keep both when supplying its image later.
+
+```python
+points = PlanarSurface.row("PPP", spacing=65, height=210, margin=65)
+cuts = tuple(
+    ColoredCurve(f"c{i}", Arc(0, i, direction="up"), RAINBOW[i-1])
+    for i in range(1, 4)
+)
+reference = PlanarDiagram(points, cuts)
+save_svg(reference, "rainbow-cuts.svg", style=Style(show_guides=True))
+```
+
+![Rainbow reference arcs from the outer boundary to three points](../examples/output/tutorial/04-rainbow-planar-cuts.svg)
+
+These arcs run from a common outer-boundary endpoint to the three marked points.
+Colors identify the cuts, not twist signs. This planar drawing does not itself
+run the abstract cut-system validator or prove that its stabilizer is trivial.
+
+`PlanarDiagram` routes the curves together as a disjoint family by default.
+`RAINBOW` supplies seven colors; for a larger family provide additional distinct
+hex colors and retain labels. The higher-genus default likewise cycles this
+palette, with permanent cut numbers distinguishing any repeated colors.
+
+## 7. Show intersecting families and a twist's support
+
+The ordinary `surface.with_curves(...)` API requests a disjoint family. Use the
+explicit overlay option when you intend intersections:
+
+```python
+intersecting = PlanarDiagram(surface, (
+    ColoredCurve("a", Arc(1, 4), RAINBOW[0]),
+    ColoredCurve("b", Arc(3, 6), RAINBOW[4]),
+), allow_intersections=True)
+save_svg(intersecting, "intersecting.svg")
+
+support = ColoredCurve("twist-support", Loop((1, 3)), "#222222")
+save_svg(PlanarDiagram(points, cuts + (support,), allow_intersections=True),
+         "cuts-and-twist-support.svg")
+```
+
+![Intersecting arcs and reference cuts crossed by a twist-support curve](../examples/output/tutorial/05-intersecting-families.svg)
+
+Each curve is routed independently in overlay mode. The renderer retains its
+individual obstacle checks but does not certify intersections between layers.
+Inspect for coincident pieces or unintended extra crossings. Crossings of curves
+on the surface carry no braid over/under information.
+
+A loop picture describes the **support curve** of a Dehn twist. It does not
+specify the sign or exponent, and it does not apply the twist to anything.
+Likewise an arc can support a half twist when its endpoint conditions permit it.
+Supply that operation's label separately.
+
+To demonstrate an action now, supply the image of every reference cut yourself,
+keeping its ID and color. The automatic Dehn-twist/half-twist action is pending.
+The presentation API deliberately accepts supplied states before that engine exists.
+
+## 8. Stack factors vertically and put braids beside them
+
+`Figure` is a sequence of rows, each containing one or more `Panel` objects.
+One panel per row makes a vertical stack. Two panels per row make aligned
+surface/braid columns. Each panel can have its own `Style` and multiline title.
+
+```python
+figure = Figure((
+    (Panel(points.with_curves(Arc(1, 2)), "Factor 1: half twist on (1,2)"),
+     Panel(BraidDiagram(3, (1,), spacing=45, step=96), "Crossing +1")),
+    (Panel(points.with_curves(Arc(2, 3)), "Factor 2: half twist on (2,3)"),
+     Panel(BraidDiagram(3, (2,), spacing=45, step=96), "Crossing +2")),
+))
+save_svg(figure, "factorization.svg")
+```
+
+![A vertical factor sequence beside corresponding elementary braid drawings](../examples/output/tutorial/06-factorization-and-braids.svg)
+
+A braid is read **top to bottom**. `+i` means the strand currently in position i
+passes over the strand in position i+1; `-i` means under. Positions are 1-based.
+Colors and endpoint labels follow starting strand identities. The underpass has
+a real gap, so the image remains transparent. `BraidDiagram(3, ())` draws three
+straight strands. This API draws the word and tracks strands; it does not solve
+braid equality or derive a covering correspondence.
+
+Write down your multiplication convention alongside a factorization. If the
+rows are operations f1 then f2 in chronological order and maps compose
+right-to-left, the final action is f2*f1. A literal word f1*f2 is a different
+ordering convention. The panel labels do not silently resolve that difference.
+
+For action sequences, put the initial C at the top, then supplied states
+f1(C), f2(f1(C)), and so on below. Reuse colors by cut ID. A caption saying
+"identity" is not an equality check: comparing the final cut system to C requires
+isotopy and a justified rigidity convention. These remain calculation tasks.
+
+## 9. Use case 2: standard nonplanar surfaces and their cuts
+
+```python
+genus_two = GenusSurface(2)
+save_svg(genus_two.with_cut_system(), "standard-genus-cuts.svg")
+```
+
+![Numbered rainbow standard chains on genus one, two and three](../examples/output/tutorial/07-standard-genus-cuts.svg)
+
+The current standard system is a numbered **2g+1 filling chain**, not a collection
+of g disjoint Heegaard meridians. Its members intersect, and its complement has
+two disks. `with_cut_system()` colors its numbered members consistently. Hidden
+back-sheet portions are dashed. Reversing the view must not rename the cuts.
+
+The current checked closed-surface route binding covers the standard genus 1-7
+presentations. `view_vertical="above"` or `"below"`, and
+`view_horizontal="left"` or `"right"`, select the viewpoint. Genus holes are not
+boundary components. The misleading extra handle arc and `handle_style` option
+have been removed.
+
+For a known chain member, you do not need mesh coordinates:
+
+```python
+from surface_diagrams.genus_diagrams import NamedCut
+save_svg(genus_two.with_curves(NamedCut(2)), "known-closed-curve.svg")
+```
+
+For an arc between marks:
+
+```python
+from surface_diagrams.disk_routes import DiskRoute, MarkPoint
+marked = GenusSurface(2, marks=("P", "Q"))
+arc = DiskRoute((), MarkPoint("P"), MarkPoint("Q"), id="PQ")
+save_svg(marked.with_curves(arc), "marked-arc.svg")
+```
+
+![A marked arc and the standard system locating its endpoints](../examples/output/tutorial/08-genus-arc-and-chart.svg)
+
+This example uses compatible copies of P and Q in a complementary disk.
+Generally an empty crossing list does not join arbitrary endpoints automatically.
+
+## 10. Find the inputs for a general genus route
+
+`DiskRoute` describes a route through the disks obtained by cutting. It uses a
+more detailed locator than the planar integer intervals:
+
+| Input | Meaning |
+| --- | --- |
+| `Crossing(side, t)` | Cross one oriented side occurrence at fraction t, with 0 < t < 1 |
+| `MarkPoint("P")` | End at the specified marked point; use a corner locator when its copy is ambiguous |
+| `BoundaryPoint(side, t)` | End on an original unglued boundary side in a supported cut atlas |
+| Both endpoints omitted | A closed route, whose last piece must close consistently |
+| `id="alpha"` | Stable identity used to declare intersections between routes |
+
+A parent cut number can cover many subdivided segments and two side copies.
+Consequently, "cross cut 2" can be ambiguous. The library reports that ambiguity
+instead of choosing an arbitrary side.
+
+```python
+from surface_diagrams.disk_routes import CutAtlas, Crossing
+system = genus_two.cut_system()
+atlas = CutAtlas.build(system)
+save_svg(system.diagram(show_ids=True), "full-side-locators.svg")
+for parent in system.cellulation.parents:
+    print(parent.number, parent.kind, parent.walk)
+```
+
+Start with `NamedCut` when possible. Otherwise inspect the disk diagram, choose
+the oriented side encountered by your route, choose a position away from corners,
+and enter the crossings in order. `atlas.cross(Crossing(side, t))` gives the
+paired side at `1-t`. Validate the route with `atlas.route(route)` and draw it
+both on the surface and with `system.diagram(route)`.
+
+![A named genus curve and a route shown on the torus](../examples/output/tutorial/09-genus-closed-curves.svg)
+
+Open the [full-size cut-disk diagnostic](../examples/output/tutorial/09-torus-cut-disk-detail.svg)
+to see the same route in its chart. This dense mesh has many side occurrences;
+zoom the standalone SVG to read their labels. It is kept separate so it does not
+shrink the surface diagrams into unreadable thumbnails.
+
+The runnable tutorial constructs this torus loop by selecting a paired side whose
+two copies lie in the same complementary disk. That selection is a small worked
+example, not an algorithm for choosing any desired homotopy class.
+
+Side IDs currently depend on the presentation mesh. Do not copy them to another
+genus, a different cellulation, or `chain_system(g)` and expect the same curve.
+A friendlier numbered-segment input guide is a visualization priority.
+
+For genus intersections, use the existing explicit piece declarations, such as
+`intersections=((('alpha', 0), ('beta', 0)),)`, in `with_curves` and the disk
+preview. See [make_genus_cuts.py](../examples/make_genus_cuts.py) for a complete
+intersecting example. A projected crossing between front and back sheets does
+not by itself mean the surface curves intersect.
+
+## 11. Boundary templates and vertical action sequences
+
+```python
+from surface_diagrams import TypeIBoundary, BoundaryPair
+bordered = GenusSurface(2, type_i=(TypeIBoundary(6),))
+paired = GenusSurface(2, type_ii=(BoundaryPair("left"), BoundaryPair("top")))
+save_svg(Figure(((Panel(bordered, "One Type I boundary"),),
+                 (Panel(paired, "Four Type II boundaries"),))), "templates.svg")
+```
+
+![Standard higher-genus boundary templates](../examples/output/tutorial/10-boundary-surface-templates.svg)
+
+Boundary outlines work. **Cut-system/route binding on these Type I/II surfaces
+is still unsupported.** Finishing it is ahead of the calculation engine. The
+experimental cusp patch is not part of the public API.
+
+A vertical sequence of nonplanar panels uses the same `Figure` recipe as the
+planar case. Supply each intermediate curve system and its labels. Automatically
+applying mapping classes to the standard system and proving identity remains
+pending; the tutorial does not fabricate transformed curves.
+
+## 12. Use case 3: Hurwitz moves, substitutions, cyclic shifts
+
+The new layout tools can already display original and replacement products.
+You supply the replacement factors; there is no general rewrite engine yet.
+
+For the written product ab, one Hurwitz convention is
+`(a,b) -> (b,b^-1*a*b)`. Its product is still ab. For right-handed twists,
+conjugating the second factor transports its support curve by b^-1.
+
+```python
+move = Figure((
+    (Panel(BraidDiagram(3, (1,2)), "Original word"),
+     Panel(BraidDiagram(3, (2,-2,1,2)), "After (a,b) -> (b,b^-1 a b)")),
+    (Panel(BraidDiagram(3, (1,2,1)), "Braid relation: left"),
+     Panel(BraidDiagram(3, (2,1,2)), "Braid relation: right")),
+))
+save_svg(move, "rewrites.svg")
+```
+
+![Explicit Hurwitz and braid-relation replacements](../examples/output/tutorial/11-hurwitz-and-substitution.svg)
+
+Keep the grouping of `(b, b^-1*a*b)` in its factor labels even though the braid
+picture expands the second factor into three crossings. Substitutions need an
+explicit relation between the replaced blocks, with the same ambient surface
+and endpoint/boundary conventions. Keep a record of which relation was used.
+
+A cyclic shift is not unconditional equality of based products. If
+W = a1*a2*...*an, the shifted word a2*...*an*a1 equals a1^-1*W*a1.
+It preserves W when W is the identity or commutes with a1, including when W is
+central. Otherwise label it as conjugation or a change of basepoint when that is
+the intended equivalence. Future automatic moves must check this condition.
+
+## 13. Use case 4: homology, basis changes, fundamental groups
+
+This calculation work follows the visualization milestones. The inputs should
+be explicit, so we can already design its eventual figures without guessing.
+
+| Calculation | Required input | Planned output |
+| --- | --- | --- |
+| Surface homology | An oriented surface/cellulation; whether points are retained or removed; coefficient ring | Generators, relations and basis curves |
+| Change of basis | Ordered old/new bases and an orientation convention | Exact change-of-basis matrix alongside the colored bases |
+| Induced homology action | A mapping class with a supported curve action | Matrix and images of basis curves |
+| Fundamental group presentation | A connected cellulation, basepoint and maximal tree | Generators from remaining edges; relators from attaching face boundaries |
+| Action on fundamental group | Based paths and basepoint transport | Generator words, or an outer automorphism when only an unbased map is specified |
+
+For a connected compact orientable surface with b >= 1 boundary components,
+H1 has rank 2g+b-1, and the fundamental group is free of that rank. For a closed
+genus-g surface, H1 has rank 2g and the familiar presentation has generators
+ai, bi with the single relation product [ai,bi] = 1. Retained marked points do
+not change the underlying surface's homology; removed punctures do.
+
+Thus a surface fundamental-group **presentation** is a reasonable feature, not
+an open-ended research problem. This does not promise automatic recognition of
+arbitrary groups arising from 4-manifolds. The cellular construction is described
+in [Hatcher's Algebraic Topology, Chapters 1 and 2](https://pi.math.cornell.edu/~hatcher/AT/ATpage.html).
+
+Use exact integer matrices for integral bases. If columns of P are new basis
+vectors written in the old basis, coordinate columns satisfy x_old = P*x_new,
+and an action matrix changes by A_new = P^-1*A_old*P. A genuine integral basis
+change has determinant +1 or -1. Homology agreement alone cannot certify equality
+of mapping classes.
+
+## 14. Use case 5: Lefschetz-fibration signatures and other invariants
+
+This is a concrete later calculation target. Ozbagci gives a signature method
+using global monodromy; Cengel and Karakurt reformulate it for implementation and
+include bordered Lefschetz fibrations over the disk.
+[Ozbagci](https://arxiv.org/abs/math/9809178),
+[Cengel-Karakurt](https://arxiv.org/abs/1907.11507).
+
+Record the oriented fiber, whether it has boundary, the base, the ordered
+vanishing cycles, twist signs, multiplication convention, and any completion or
+gluing data. For a fibration over S2, include and check the necessary global
+monodromy relation. An arbitrary drawn factorization is not automatically such
+a fibration. Counts of separating/nonseparating cycles are insufficient for a
+general signature formula; special formulas need their hypotheses checked.
+
+The eventual display should put the ordered factor diagram beside a trace of
+its exact calculation and the final signature. Start with a known worked example,
+not a universal `signature()` accepting every diagram. Natural accompanying
+outputs include Euler characteristic and, within a specified handle model,
+homology and a fundamental-group presentation. Which other invariants follow
+must be stated with their assumptions. None of these are implemented by this tutorial.
+
+## 15. What to work on next
+
+| Priority | Deliverable |
+| --- | --- |
+| First | Explicit left/right curved boundary endpoints, stronger intersecting-family layouts, stable visual IDs and rainbow legends |
+| Next | Finish standard Type I/II cut-system and route drawings; easier route locators and input previews |
+| Next | Refine thesis-style vertical factor/action rows and braid correspondences; supplied Hurwitz/substitution sequences |
+| Next | Complete exports and requested additional diagram-family visualizations with supplied data |
+| Later | Automatic actions/equality and rewrite checks; homology/basis/fundamental-group calculations; Lefschetz invariants |
+
+The shared mathematical records can grow as these drawings need them. A general
+coordinate engine, cover solver or theorem about uniqueness is not a prerequisite
+for drawing a supplied configuration. See the [controlling plan](IMPLEMENTATION_PLAN.md)
+for the current visualization-first order.

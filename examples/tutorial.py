@@ -1,0 +1,95 @@
+"""Generate the tutorial's actual diagrams: python examples/tutorial.py."""
+from pathlib import Path
+from surface_diagrams import (
+    Arc, Loop, PlanarSurface, Style, GenusSurface, TypeIBoundary, BoundaryPair,
+    ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure, RAINBOW, save_svg, save_tikz,
+)
+from surface_diagrams.genus_diagrams import NamedCut
+from surface_diagrams.disk_routes import DiskRoute, MarkPoint, Crossing, CutAtlas
+
+
+def examples():
+    row = PlanarSurface.row('PPPPPP', spacing=55, height=210, margin=60)
+    guides = Style(show_guides=True)
+    yield '01-input-map', row, guides
+    yield '02-arcs-and-loops', Figure((
+        (Panel(row.with_curves(Arc(2,5,cuts=(3,),direction='down')), 'Arc(2, 5, cuts=(3,), direction="down")', guides),),
+        (Panel(row.with_curves(Loop((1,4))), 'Loop((1, 4)): surrounds objects 2, 3, 4', guides),),
+        (Panel(row.with_curves(Loop((0,6,5,1))), 'Loop((0, 6, 5, 1)): a nonconsecutive enclosure', guides),),
+    )), Style()
+    holes = PlanarSurface.row('BPPB', spacing=65, height=180, margin=65)
+    yield '03-boundary-endpoints', Figure((
+        (Panel(holes.with_curves(Arc(0,1), Arc(1,2), Arc(3,4), Arc(4,5)),
+               'Left/right rim endpoints: outer-to-hole and hole-to-point', Style(boundary_shape='circle', show_guides=True)),),
+        (Panel(PlanarSurface.row('BB', spacing=100, height=140, margin=65).with_curves(Arc(1,2)),
+               'Boundary-to-boundary: a straight arc joins facing rims', Style(boundary_shape='circle')),),
+    )), Style()
+    points = PlanarSurface.row('PPP', spacing=65, height=210, margin=65)
+    cuts = tuple(ColoredCurve(f'c{i}', Arc(0,i,direction='up'), RAINBOW[i-1]) for i in range(1,4))
+    yield '04-rainbow-planar-cuts', PlanarDiagram(points, cuts), guides
+    yield '05-intersecting-families', Figure((
+        (Panel(PlanarDiagram(row, (ColoredCurve('a',Arc(1,4),RAINBOW[0]),
+                                   ColoredCurve('b',Arc(3,6),RAINBOW[4])), True),
+               'Two intersecting arcs; colors retain their identities'),),
+        (Panel(PlanarDiagram(points, cuts+(ColoredCurve('twist-support',Loop((1,3)), '#222222'),), True),
+               'Reference cuts plus a twist-support curve (no action computed)'),),
+    )), Style()
+    yield '06-factorization-and-braids', Figure((
+        (Panel(points.with_curves(Arc(1,2)), 'Factor 1: half twist supported on arc (1,2)'),
+         Panel(BraidDiagram(3,(1,),spacing=45,step=96), 'Corresponding crossing: +1')),
+        (Panel(points.with_curves(Arc(2,3)), 'Factor 2: half twist supported on arc (2,3)'),
+         Panel(BraidDiagram(3,(2,),spacing=45,step=96), 'Corresponding crossing: +2')),
+        (Panel(PlanarDiagram(points,cuts), 'Reference cuts C; image of product still to supply'),
+         Panel(BraidDiagram(3,(1,2),spacing=45,step=48), 'Stacked crossings, read top to bottom')),
+    )), Style()
+    yield '07-standard-genus-cuts', Figure(tuple(
+        (Panel(GenusSurface(g).with_cut_system(), f'Genus {g}: numbered standard filling chain'),)
+        for g in (1,2,3)
+    )), Style()
+    surface = GenusSurface(2, marks=('P','Q'))
+    arc = DiskRoute((), MarkPoint('P'), MarkPoint('Q'), id='PQ')
+    yield '08-genus-arc-and-chart', Figure((
+        (Panel(surface.with_curves(arc), 'Arc from marked P to Q; no cut crossings'),),
+        (Panel(surface.with_cut_system(), 'Reference chain and mark attachments'),),
+    )), Style()
+    torus = GenusSurface(1)
+    atlas = CutAtlas.build(torus.cut_system())
+    side = next(s for s in atlas.pairs if atlas.sides[s].id == atlas.sides[atlas.cross(Crossing(s)).side].id)
+    loop = DiskRoute((Crossing(side,.37),),id='torus-loop')
+    yield '09-genus-closed-curves', Figure((
+        (Panel(GenusSurface(2).with_curves(NamedCut(2)), 'A known closed curve: NamedCut(2)'),),
+        (Panel(torus.with_curves(loop), 'Explicit one-crossing torus route'),),
+    )), Style()
+    yield '10-boundary-surface-templates', Figure((
+        (Panel(GenusSurface(2,type_i=(TypeIBoundary(6),)), 'Type I boundary at right end'),),
+        (Panel(GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('top'))), 'Two Type II pairs: four boundary components'),),
+    )), Style()
+    yield '11-hurwitz-and-substitution', Figure((
+        (Panel(BraidDiagram(3,(1,2)), '(a,b), a = +1 and b = +2'),
+         Panel(BraidDiagram(3,(2,-2,1,2)), '(b, b^-1 a b): the first two crossings cancel')),
+        (Panel(BraidDiagram(3,(1,2,1)), 'Substitution: braid relation, left word'),
+         Panel(BraidDiagram(3,(2,1,2)), 'Braid relation, right word')),
+    )), Style()
+
+
+def main(out=None):
+    out = Path(out) if out else Path(__file__).parent/'output'/'tutorial'
+    out.mkdir(parents=True, exist_ok=True)
+    count = 0
+    for name, diagram, style in examples():
+        save_svg(diagram, out/(name+'.svg'), style=style, title=name)
+        # Real circular holes need SVG clipping; never emit misleading TikZ.
+        if name != '03-boundary-endpoints':
+            save_tikz(diagram, out/(name+'.tikz'), style=style, title=name)
+        count += 1
+    torus = GenusSurface(1)
+    atlas = CutAtlas.build(torus.cut_system())
+    side = next(s for s in atlas.pairs if atlas.sides[s].id == atlas.sides[atlas.cross(Crossing(s)).side].id)
+    loop = DiskRoute((Crossing(side,.37),), id='torus-loop')
+    save_svg(torus.cut_system().diagram(loop), out/'09-torus-cut-disk-detail.svg',
+             title='Full-resolution torus cut-disk diagnostic; zoom to read side labels')
+    print(f'Generated {count} SVG tutorial figures plus a detailed cut-disk SVG and {count-1} TikZ counterparts in {out.resolve()}')
+
+
+if __name__ == '__main__':
+    main()

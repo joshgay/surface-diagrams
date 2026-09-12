@@ -6,6 +6,7 @@ from pathlib import Path
 from .genus import GenusSurface
 from .cut_diagrams import CutDiskDiagram
 from .genus_diagrams import GenusDiagram
+from .visuals import PlanarDiagram, BraidDiagram, Figure
 from .layout import layout
 from .model import Boundary, PlanarSurface, Style, _number
 
@@ -63,8 +64,8 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
     dimensions, including strokes, dashes and labels. No TeX installation is
     needed to generate this string. Labels are plain text, not TeX commands.
     """
-    if not isinstance(surface, (PlanarSurface, GenusSurface, CutDiskDiagram, GenusDiagram)):
-        raise TypeError("surface must be a PlanarSurface, GenusSurface, CutDiskDiagram, or GenusDiagram")
+    if not isinstance(surface, (PlanarSurface, GenusSurface, CutDiskDiagram, GenusDiagram, PlanarDiagram, BraidDiagram, Figure)):
+        raise TypeError("expected a supported surface, diagram, or Figure")
     style = Style() if style is None else style
     if not isinstance(style, Style):
         raise TypeError("style must be a Style")
@@ -75,6 +76,8 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
             and any(isinstance(p, Boundary) for p in surface.objects)):
         raise NotImplementedError("circular planar boundaries currently support SVG only; TikZ support is planned for P7")
     drawing = layout(surface, style)
+    if any(e.role == 'inner-boundary-circle' for e in drawing.ellipses):
+        raise NotImplementedError('circular planar boundaries currently support SVG only, including inside Figures')
     unit = .75 * scale
     colors = {}
 

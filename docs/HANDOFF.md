@@ -5,23 +5,34 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 
 ## Resume here
 
-**Planning priority changed: follow R0-R7 in the revised IMPLEMENTATION_PLAN.md.**
+**Visualization first: follow V0-V4, then C1-C4 in IMPLEMENTATION_PLAN.md.**
 
-Richard wants a shared mathematical core, a calculation layer (including braids,
-mapping classes, factorizations and lifts), and a separate rendering layer in one
-repository. Future Heegaard, trisection, relative, bridge and Kirby diagram work
-is staged rather than added to the next release. ARCHITECTURE.md specifies the
-proposed curve representations and the distinction between notch rotation and a
-full boundary twist. RESEARCH_NOTES.md records primary sources and missing inputs.
+Richard's five use cases now control the work: planar and standard nonplanar
+curves/cuts, vertical factorizations and adjacent braids, supplied visual
+transformations, then homology/fundamental-group and Lefschetz-invariant engines.
+The earlier R0 exact-core gate is superseded. Keep the architectural separation
+but do not defer drawings while researching calculations.
 
-**Next action: R0.** Locate Richard's additional work; obtain/confirm the Dylan
-Thurston note; compare normal-strand and Dehn-Thurston representations on the
-small fixture set; formalize boundary/isotopy and multiplication conventions.
-Include Richard's proposal to identify mapping classes by images of a rigid
-reference arc system, with explicit stabilizer and normalization checks.
-Then implement one braid/factorization/diagram slice. Do not automatically resume
-the cusp prototype or attempt all future diagram families under the old roadmap.
-This turn changes planning documents only; it does not implement the new modules.
+Tutorial: docs/TUTORIAL.md and browser edition docs/TUTORIAL.html. Run
+`python examples/tutorial.py` for eleven main SVGs, one detailed cut-disk SVG and ten TikZ counterparts.
+The extra handle arc and `handle_style` constructor option have been removed.
+New presentation records: ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure.
+Genus cut systems use numbered rainbow colors. Independent planar overlays are
+opt-in and do not certify intersections; supplied states are not computed actions.
+
+**Next action: V1/V2.** Add explicit left/right rim anchors for curved planar
+arcs, improve intersecting-family layout and visual labels, then finish standard
+Type I/II cut-system/route bindings and make genus route locators easier to select.
+Refine vertical action/factor rows with Richard's supplied examples. Calculation
+engines are later work. New TikZ examples need compilation when TeX is available.
+The separate work Richard mentioned still has no supplied location.
+
+Validation of this delivery: all 134 tests pass on Python 3.12, including five
+new overlay/braid/panel tests. All fourteen Python tutorial blocks executed.
+The eleven embedded images loaded in a browser; figures were visually inspected.
+A full-size cut-disk detail is linked separately to keep surface examples readable.
+The existing 129-test checkpoint is historical below. New TikZ outputs were
+serialized but not compiled because no TeX executable was found on PATH.
 
 The earlier visual-cycle status below is retained as a technical checkpoint:
 P0-P3 complete, P4 partial, P5-P8 unfinished and rescheduled.
@@ -51,7 +62,7 @@ marked vertices; the validator checks the resulting disk boundaries. Four new
 tests cover all views, stable walks, missing-spoke rejection, exact marked arc
 endpoints and maximal automatic mark counts. The marked-cut preview was inspected.
 
-Previous P4 next action, now deferred behind R0: extend the checked presentation
+Previous P4 next action, now prioritized in V2: extend the checked presentation
 binding to Type I/II boundaries.
 The experimental `genus_outer_mesh.py` now classifies top/bottom rim halves and
 matching seams explicitly. Its unfinished integration is preserved in
@@ -62,7 +73,7 @@ The two edge-chart tests pass on Python 3.9/3.12; the full Python 3.12 suite now
 contains 129 tests. The saved patch passes `git apply --check`.
 These are still explicitly unsupported by GenusSurface.cut_system(); the
 standalone abstract decorated chain remains available. The former instruction to
-finish all remaining P4-P8 work is superseded by the staged R0-R7 roadmap above.
+finish all remaining P4-P8 work is superseded by the visualization-first roadmap above.
 Closed route examples now include multiple handles, a separating loop producing
 two once-bordered tori, repeated visits to a cut edge, disjoint handle loops,
 and explicitly declared intersections. Their generated contact sheet was inspected:

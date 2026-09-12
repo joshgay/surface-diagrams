@@ -7,3 +7,6 @@ from .svg import render_svg, save_svg
 from .tikz import render_tikz, save_tikz
 
 __all__ = ["Boundary", "MarkedPoint", "PlanarSurface", "Style", "Arc", "Loop", "RoutingError", "GenusSurface", "TypeIBoundary", "BoundaryPair", "render_svg", "save_svg", "render_tikz", "save_tikz"]
+
+from .visuals import ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure, RAINBOW
+__all__ += ["ColoredCurve", "PlanarDiagram", "BraidDiagram", "Panel", "Figure", "RAINBOW"]

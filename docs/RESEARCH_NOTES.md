@@ -83,3 +83,23 @@ Richard clarified that fractional boundary actions are intended to admit lifts
 excluded by pointwise boundary fixing. The plan preserves full twist information
 and leaves the precise isotopy/category convention to be formalized on his
 examples. No relation making every fractional turn finite order has been imposed.
+
+## Homology, fundamental groups and Lefschetz signatures (later priorities)
+
+- **Allen Hatcher, Algebraic Topology**, Chapters 1 and 2:
+  [author's book page](https://pi.math.cornell.edu/~hatcher/AT/ATpage.html).
+  Cellular presentations and homology provide the standard starting point for
+  explicit surface generators, relations and basis calculations.
+- **Burak Ozbagci, Signatures of Lefschetz fibrations**:
+  [arXiv:math/9809178](https://arxiv.org/abs/math/9809178).
+  Gives a signature technique using global monodromy for fibrations over disk or sphere.
+- **Adalet Cengel and Cagri Karakurt, Partial fiber sum decompositions and
+  signatures of Lefschetz fibrations**:
+  [arXiv:1907.11507](https://arxiv.org/abs/1907.11507).
+  The abstract describes an implementation-oriented reformulation and coverage of
+  bordered Lefschetz fibrations over a disk. Full algorithm/hypothesis review is
+  still required before implementation; this session read the abstracts.
+
+Richard explicitly prioritizes the diagram tutorial and all visualizations over
+these calculations. Do not turn the existence of an algorithm into a reason to
+resume calculation-first staging.

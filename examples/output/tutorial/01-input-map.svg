@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420.5 235.5" width="420.5" height="235.5" role="img">
+<title>01-input-map</title>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="72.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="127.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="182.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="237.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="292.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="347.75" cy="117.75" r="4" fill="#006fff"/>
+<text x="42.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="100.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="155.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="210.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="265.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="320.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="377.75" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">6</text>
+<text x="72.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="127.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="182.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="237.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
+<text x="292.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">5</text>
+<text x="347.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">6</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 285.5 235.5" width="285.5" height="235.5" role="img">
+<title>04-rainbow-planar-cuts</title>
+<path class="axis" d="M 12.75 117.75 L 272.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="arc" d="M 12.75 117.75 A 32.5 22.3125 0 0 1 77.75 117.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 12.75 117.75 A 65 44.625 0 0 1 142.75 117.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 12.75 117.75 A 97.5 66.9375 0 0 1 207.75 117.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="142.75" cy="117.75" rx="130" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="77.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="142.75" cy="117.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="207.75" cy="117.75" r="4" fill="#006fff"/>
+<text x="45.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
+<text x="110.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="175.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="240.25" y="129.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="77.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="142.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="207.75" y="107.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">3</text>
+</svg>

@@ -1,181 +1,123 @@
-# Revised development plan: surface topology, calculations, and drawings
+# Visualization-first development plan
 
-This is the controlling plan, revised September 12, 2026 following Richard's
-request to separate mathematics, calculation, and visualization, and to include
-braids, factorizations, covering maps, and future low-dimensional diagram families.
-Read [ARCHITECTURE.md](ARCHITECTURE.md), [RESEARCH_NOTES.md](RESEARCH_NOTES.md), and
-[HANDOFF.md](HANDOFF.md) with it. Earlier user requirements remain valid unless
-explicitly rescheduled below; future ideas are not immediate implementation work.
+Controlling plan, updated September 12, 2026. Richard's latest instruction makes
+**all requested visualizations, including cut systems, higher priority than the
+calculation engines**. The earlier R0-R7 calculation-led sequence is superseded.
+The shared core/calculation/rendering separation remains useful, but building a
+general exact core is not a gate before improving drawings.
 
-The previous P0-P8 visual roadmap is preserved in
-[the visual-cycle archive](archive/IMPLEMENTATION_PLAN-visual-cycle-2026-09-12.md).
-Its exact reference, transparency, endpoint, topology, and export criteria remain
-acceptance criteria for the corresponding features when those features ship.
+Read the [tutorial](TUTORIAL.md), [architecture](ARCHITECTURE.md),
+[research notes](RESEARCH_NOTES.md), and [handoff](HANDOFF.md). The older
+[P0-P8 visual plan](archive/IMPLEMENTATION_PLAN-visual-cycle-2026-09-12.md) preserves
+reference-specific acceptance criteria. Preserve all original reference SVGs.
 
-## Immediate decision
+## User-facing priorities
 
-Keep one repository and the current installable package for now. Introduce three
-internal responsibilities: `core`, `compute`, and `render`. These are proposed
-module boundaries, not instructions to move every existing file immediately.
-The calculation engine and renderer depend on the mathematical core; the core
-must not depend on drawing meshes or an optional calculation backend. Preserve
-existing imports through compatibility adapters when files eventually move.
-Separate distributions can follow demonstrated need; separate repositories and
-independent release processes are not needed now.
-
-This revision supersedes the instruction to finish every P4-P8 feature before
-starting any calculation work. It does not mark those unfinished phases complete.
-
-## What exists
-
-- Attractive standard genus and planar SVG drawings, Type I/II surface outlines,
-  circular planar holes, and existing TikZ output.
-- An explicit abstract-cellulation validator and standard chains with decorations.
-- Checked closed-genus mesh bindings, numbered chains, automatic marks, and
-  continuous piecewise-smooth routes, including repeated visits and intersections.
-- 129 tests passed in the last full Python 3.12 run; the previous full 127-test
-  suite and two additional edge-chart tests passed on Python 3.9.
-- Type I/II genus route bindings remain unsupported. The top-pair prototype is
-  archived as a patch because its collar cusp needs another local projection model.
-- No mapping-class equality engine, braid engine, general cover engine, or
-  Heegaard/Kirby/trisection calculus has been implemented by these checkpoints.
-
-## Staged roadmap
-
-| Stage | Deliverable | Acceptance gate | Scope status |
-| --- | --- | --- | --- |
-| R0 | Reconcile Richard's work; specify surfaces, endpoints, boundary conventions, composition, and representation contracts | Record provenance of supplied work; settle or explicitly label open mathematical conventions; compare curve encodings on a small fixture set | Current planning work; user material still to be located |
-| R1 | Small shared core with one exact curve/arc encoding and adapters to current drawings | Mathematical identity survives restyling; serialization round trips; endpoint/peripheral/twist data survive; unsupported normalization is explicit | Next implementation slice |
-| R2 | Braids, elementary mapping classes, and ordered factorizations | Braid relations, inverses, composition convention, curve actions, and product checks on supported surfaces | First calculation milestone |
-| R3 | One factorization displayed coherently as braid, planar surface, and lifted surface | Stable factor/curve IDs, explicit correspondence maps, synchronized factor order, documented lift choices; no inference from matching colors | First integrated release target |
-| R4 | Cover data and boundary-aware lifting, beginning with explicit small examples | Monodromy, sheet transport, ramification, boundary action and lift ambiguity checked independently; positive and negative examples | Next mathematical extension |
-| R5 | Broader curve coordinates, higher-genus bases, additional covers and rendering presets | Each new algorithm has a declared domain and cross-checked examples; no theorem applied outside its hypotheses | Subsequent releases |
-| R6 | Heegaard and bridge diagram data, followed by trisection/relative diagram data | Dedicated diagram contracts and known fixtures, distinguishing representability from validity or equivalence | Future extensions |
-| R7 | Kirby diagrams and selected transformations between diagram families | Framing/handle information preserved; specific conversion hypotheses and inverse/check examples | Future extension; not required for first release |
-
-R3 may initially use one fully specified lift example rather than waiting for the
-general R4 lifting engine. That example must identify its theorem/construction
-and boundary convention. One coherent example is preferable to several unfinished
-universal engines.
-
-## R0: representation decision before another renderer redesign
-
-Prototype and compare explicit normal strands in a marked triangulation with
-Dehn-Thurston coordinates relative to a marked pants decomposition. Use Dylan
-Thurston's draft as one mathematical reference, not as an assumed ready-made
-implementation. Evaluate existing flipper/curver-style algorithms for overlap;
-no dependency or backend migration is selected by this document.
-
-Recommended starting representation: exact oriented strand paths, ordered
-crossings, local strand pairing, and endpoint data in a small *topological*
-triangulation/cellulation. Keep a compact normal-coordinate view where its
-uniqueness and normalization hypotheses have actually been implemented.
-The thousands of triangles used to draw a genus surface are not this core chart.
-
-Fixture set: punctured disk with three braid strands; annulus with winding and
-fixed endpoints; a boundary-parallel and a null-homotopic loop; a once-bordered
-torus; a closed genus-two separating curve; marked-point arcs; a surface with
-three notches on one boundary; and an explicit degree-two/three annular cover.
-Compare reconstruction, endpoint winding, twist actions, normalization, and
-translation to the current drawings. Pick the first implementation from evidence.
-Do not build two complete coordinate engines at once.
-
-Include Richard's image-of-cut-system proposal: specify a decorated reference
-system with a proved trivial stabilizer in each initially supported group, and
-represent a mapping class by its exact image system. The orbit is a torsor when
-this rigidity holds, and only a quotient by the stabilizer otherwise. Compare
-normalization and equality of these images on braid relations and annular twists.
-Keep the reference system distinct from the chart used to encode its image.
-ARCHITECTURE.md states the hypotheses and the distinction from Heegaard cut systems.
-
-## R1-R3: a small complete vertical slice
-
-1. Declare the ambient marked surface and boundary/isotopy convention.
-2. Represent an embedded arc and simple closed curve exactly, with explicit
-   orientation and endpoints; keep isotopy-class operations distinct from an
-   explicit representative's crossing arrangement.
-3. Represent an Artin braid word with strand count, endpoint labels and sign/order
-   convention. Add composition, inverse and the braid relation tests.
-4. Implement the supported half-twist/Dehn-twist actions and compare with a small
-   independent fixture or optional backend. An endpoint permutation is not a
-   braid equality test, and homology is not mapping-class equality in general.
-   Use exact images of a rigid reference system as the proposed word-independent
-   identity check, once normalization and the stabilizer argument are supported.
-5. Store a factorization as an ordered tuple of factors plus stable identities
-   and provenance, separately from its product. Start with a specified Hurwitz
-   move and its product-preservation test; general search is deferred.
-6. Render the same factor sequence in aligned panels, carrying explicit maps
-   between braid, base-surface, and lifted-surface data. Not every factorization
-   has every view; report why a requested view is unavailable.
-7. Ship that supported slice with SVG, its TikZ counterparts, examples, packaging,
-   and documentation. Do not let distant 4-manifold features block this release.
-
-## Notched boundaries and covers
-
-Richard clarified that the intended extension admits lifts whose boundary action
-would be forbidden by pointwise boundary fixing. Model this as a choice of
-boundary structure and allowed actions, rather than setting a fractional twist's
-power equal to the identity by fiat. Keep the finite notch permutation distinct
-from the full mapping class and any residual boundary Dehn twist.
-
-R0 must specify isotopies as well as maps: boundary labels, cyclic notch sets,
-allowed cyclic shifts, boundary-component permutations, and which data isotopies
-must preserve. The exact convention is still to be formalized with Richard's
-examples. The architecture must preserve enough information to support an
-explicit quotient later without silently imposing that quotient now.
-
-R4 starts with local degree-two/three annular models, then one branched cover of
-a marked disk, then a positive-genus base. Distinguish:
-
-- a homeomorphism lifting as a map of the chosen cover;
-- a lift satisfying the allowed marked-point and boundary actions;
-- descent/lifting statements about isotopy classes;
-- the Birman-Hilden property and any quotient by deck transformations.
-
-Return a witness or reason where implemented, and `unknown`/`unsupported` when
-no decision algorithm applies. A failed search is not proof of non-liftability.
-Detailed data and the annulus example are in ARCHITECTURE.md.
-
-## Future diagram families: separate types, shared ingredients
-
-| Family | Reused ingredients | Additional indispensable data |
+| Use case | Visual deliverable first | Calculation deliverable later |
 | --- | --- | --- |
-| Heegaard diagrams | Surface and curve systems | Alpha/beta families, labels, appropriate cut-system/handlebody conditions; chosen pointed, bordered or sutured variant |
-| Trisection diagrams | Surface and three curve systems | Alpha/beta/gamma roles, parameters and pairwise standardness data; a diagram is not simply any three colored curve systems |
-| Relative trisection diagrams | Bordered surface, curves, arcs | Precise relative convention, boundary/open-book information and, where required, arced markings/gluing data |
-| Classical bridge diagrams | Surface, arcs, braids/tangles | Endpoint matchings, crossing or height data, trivial-tangle/bridge data |
-| Bridge trisection / shadow / tri-plane diagrams | Surface arcs and tangle diagrams | Three systems, compatibility and specified ambient trisection; distinct from classical bridge diagrams |
-| Kirby diagrams | Link/tangle projections and labels | Over/under information, framings, dotted one-handles and handle-attachment conventions |
+| 1: planar mapping classes | Arcs/loops, colored reference cuts and supplied images, intersecting families, vertical factors and adjacent braids | Automatic twist/half-twist actions, identity/equality checks and covering correspondences |
+| 2: standard nonplanar surfaces | Standard rainbow cut systems, arcs/loops, all standard boundary placements, vertical supplied action states | Automatically act on a rigid reference system and compare products |
+| 3: transformations of products | Before/after Hurwitz moves, substitutions and admissible cyclic shifts with explicit supplied factors | Compute transformed support curves and verify the relation/equivalence involved |
+| 4: homology and fundamental group | Colored basis and supplied matrix/generator illustrations | Exact homology, basis changes, induced actions, fundamental-group presentations |
+| 5: Lefschetz fibrations | Factorizations with vanishing-cycle labels and space for a calculation trace | Signature and other invariants under explicit fibration hypotheses |
 
-Representation and rendering come before automatic moves; automatic moves come
-before a claim to recognize equivalence. Relative variants require explicit
-boundary data and morphisms, not a generic `relative=True` switch. Kirby diagrams
-will reuse drawing primitives, but will not be forced into a surface-multicurve
-encoding that loses crossing or framing information.
+Braids are also drawings: do not defer their visual representation until braid
+normal forms are implemented. The same applies to manually specified factor
+substitutions, cut-system images and cover correspondences.
 
-## Disposition of the old P4-P8 work
+## Visualization milestones
 
-| Old stage | Revised treatment |
-| --- | --- |
-| P4 | Preserve completed chains/routes. Introduce the core/presentation boundary first; finish only the boundary/curve cases needed by the next integrated example. Keep the cusp prototype isolated until validated. |
-| P5 | Standard punctured-disk and braid-related planar views move into the first slice; arbitrary custom layouts and the full daisy gallery remain later work. |
-| P6 | Optional presets follow a demonstrated user example; they no longer block the first calculation release. |
-| P7 | Verify SVG geometry before extending TikZ for each shipped slice; compile its examples before release. No need to await every future preset. |
-| P8 | Apply the audit to every release: tests, deterministic examples, packaging, documented limitations and clean pushes. It is no longer a single distant finish line. |
+| Stage | Work | Acceptance gate |
+| --- | --- | --- |
+| V0: tutorial and immediate corrections | Runnable illustrated tutorial; remove the nonsensical extra handle arc; document actual input conventions and gaps | Every displayed recipe runs; no pretend calculation APIs; removed option absent from active gallery |
+| V1: planar diagrams | Left/right boundary anchors for curved arcs, intersecting families, colored cut systems, labels and input previews | Point-to-point, boundary-to-point and boundary-to-boundary examples; standard endpoints at left/right rims; preserve route and color identities |
+| V2: nonplanar diagrams | Finish standard Type I/II cut bindings and routes; smooth practical route drawing; more accessible numbered-side locators | All requested standard templates carry their cuts and curves with correct front/back geometry; both surface and cut-disk previews agree |
+| V3: factors and visual transformations | Thesis-style vertical factor/action rows, adjacent braid/base/lifted views, supplied Hurwitz/substitution/cyclic-move sequences | Stable factor IDs, grouping and cut colors across rows; explicit multiplication convention; accurate supplied correspondences |
+| V4: exports and further visual families | SVG/TikZ parity for shipped visuals; requested Heegaard, bridge, trisection/relative and Kirby data/drawing examples | Each diagram family has the necessary labels, crossings, framing or boundary data; representability is distinguished from validity/equivalence |
 
-## Guardrails against uncontrolled scope
+V1-V3 can be improved incrementally together when a single worked example needs
+them. Calculations must not pull effort away from unfinished requested visuals.
+Each batch names a concrete drawing and its acceptance examples, rather than
+attempting every future diagram family in one universal abstraction.
 
-- Every implementation batch names one end-to-end mathematical example and its
-  acceptance tests. Long-term ideas stay in this roadmap until their stage begins.
-- Reuse existing working code; make incremental adapters, not a repository-wide
-  rewrite or a universal class hierarchy.
-- Keep exact mathematical data and proof/algorithm scope separate from numerical
-  drawing tolerances. A singular projection need not imply a singular surface.
-- Distinguish literal word equality, equal actions, isotopy, conjugacy, Hurwitz
-  equivalence, and equivalence of represented manifolds. No generic `equivalent`
-  operation may silently switch between them.
-- Preserve all 114 reference SVGs. Tests and pretty defaults remain requirements;
-  the first release simply has a smaller supported domain.
-- Continue tested, scoped commits and pushes under Richard's standing authorization.
-  Update HANDOFF.md with actual progress; never call a roadmap item implemented
-  because its data class or documentation exists.
+## What this tutorial delivery adds
+
+- Eleven main SVG tutorial figures, one detailed cut-disk SVG and ten TikZ counterparts; circular-hole
+  TikZ remains unsupported, and new TikZ outputs are not yet TeX-compiled here.
+- `ColoredCurve` and `PlanarDiagram`: disjoint colored families by default;
+  independently routed overlays with explicit `allow_intersections=True`.
+- `BraidDiagram`: signed crossings with transparent underpass gaps and persistent
+  strand colors/labels. This draws words; it does not solve equality.
+- `Panel` and `Figure`: aligned columns and vertical rows, including mixed genus,
+  planar, disk-chart and braid panels, using the existing exporters.
+- Rainbow numbered genus cut systems. The old extra handle arc, its constructor
+  option and gallery example are removed.
+
+Current limitations are explicit: overlay mode does not certify pairwise
+intersections and may produce coincident pieces; curved circular-boundary arcs
+still land where the old ellipse trimming meets the rim; Type I/II route bindings
+are unsupported. Mesh side IDs remain technical and chart-dependent. Automatic
+mapping-class action, Hurwitz transformations, homology and signature engines
+are not implemented by these presentation features.
+
+## Endpoint and identity requirements
+
+Most ordinary arcs join marked points. Cut systems additionally need
+boundary-to-point and boundary-to-boundary arcs. Standard boundary attachments
+should be at the leftmost/rightmost rim positions, not top/bottom. Nonstandard
+configurations may later request arbitrary explicit anchors. Treat a circle
+rim, a dot marker and a notched boundary as different endpoint conventions.
+
+Keep stable cut IDs and rainbow colors across supplied action states; do not
+reassign a cut's color from its changing position or endpoint order. Labels remain
+necessary for larger systems. Factor identity is separate from its support curve,
+exponent, product, and its position in the displayed sequence.
+
+A drawing of a twist-support curve does not apply the twist. A caption does not
+prove identity. The image-of-reference-system/torsor idea remains the proposed
+future equality mechanism when its stabilizer is proved trivial, with a supported
+isotopy/normalization algorithm. An ordinary Heegaard meridian system does not
+have that rigidity merely because it is called a cut system.
+
+## Later calculation roadmap
+
+| Stage | Input and deliverable | Required care |
+| --- | --- | --- |
+| C1 | Exact curve actions, braids, mapping classes and reference-system images | Declare endpoint/isotopy conventions and supported normalization domains; compare known relations and nontrivial actions |
+| C2 | Hurwitz/substitution checks, factorizations, general cover/lift machinery | Distinguish same product, conjugacy and Hurwitz equivalence; cyclic shifts need conditions; liftability and boundary admissibility are separate |
+| C3 | Homology, basis changes and surface fundamental-group presentations | Exact integer matrices, basepoints, ordered oriented bases and retained versus removed marked points |
+| C4 | Lefschetz signature and related invariants | Oriented fiber/base, vanishing cycles, signs, global monodromy and completion data; begin with a referenced algorithm and known examples |
+
+Signature computation is a concrete algorithmic prospect, not a promise that
+arbitrary factor lists specify a Lefschetz fibration. Ozbagci and the
+Cengel-Karakurt reformulation are candidates recorded in RESEARCH_NOTES.md.
+Computing a presentation for a specified surface fundamental group is feasible;
+recognizing arbitrary 4-manifold groups is a separate problem and not promised.
+
+## Architecture and research that remain useful
+
+Keep one repository and distribution, with core records shared by rendering and
+calculation. Introduce records only as actual drawings/operations need them; avoid
+a package-wide move or a plugin framework. Coordinate investigations (normal
+strands, Dehn-Thurston, Dylan Thurston's note) can inform future contracts without
+blocking present visualization work. Richard's separately reported work is still
+to be located; do not overwrite it or claim to have reviewed it.
+
+Preserve the notched-boundary proposal: allowed fractional rotations can admit
+lifts excluded by pointwise-fixed boundary conventions. Retain full twist and
+endpoint transport, and specify isotopies before asserting a relation. Covers may
+have arbitrary genus bases and marked points; separate their eventual computation
+from a supplied diagram of a concrete example.
+
+Heegaard/trisection systems reuse surface curves; bridge and Kirby diagrams also
+need tangles/crossing/framing data. Relative versions need explicit structures,
+not a universal `relative=True`. Their visualizations do not require automatic
+manifold recognition or a move-search engine.
+
+## Checks and completion discipline
+
+Preserve reference geometry, topology, transparency and endpoint requirements.
+Run relevant tests and inspect regenerated images. Verify TikZ only after SVG
+geometry is correct; compile examples when a TeX toolchain is available. Keep
+unsupported cases explicit. Continue scoped commits and pushes under Richard's
+standing authorization, and update HANDOFF.md with actual progress.
