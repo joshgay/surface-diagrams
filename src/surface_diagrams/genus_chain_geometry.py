@@ -74,7 +74,7 @@ def smooth_chain_constraints(surface,coordinates,triangles,boundary,centers,hr,h
                     hi=mid
             x=(lo+hi)/2
             values.append(quarter+inverse_x(e,x))
-            canonical=center-grid_radius if side==0 else center+grid_radius
+            canonical=center-hr-spacing*.10 if side==0 else center+hr+spacing*.10
             crossing_t[odd_index,canonical]=(x-o[0][0])/(o[-1][0]-o[0][0])
         crossing_u.append(tuple(values))
 
@@ -105,7 +105,7 @@ def smooth_chain_constraints(surface,coordinates,triangles,boundary,centers,hr,h
                     store(sheet,a,b,cubic_slice(odd[i,sheet],parameter(x),parameter(u)))
 
     for i,center in enumerate(centers):
-        left,right=center-grid_radius,center+grid_radius
+        left,right=center-hr-spacing*.10,center+hr+spacing*.10
         ul,ur=crossing_u[i]
         def parameter(x,y):
             y*=mirror

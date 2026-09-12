@@ -24,8 +24,8 @@ class GenusDiagram:
     show_cuts: bool = False
     intersections: tuple = ()
 
-    def with_curves(self, *curves):
-        return GenusDiagram(self.surface,self.curves+tuple(curves),self.show_cuts,self.intersections)
+    def with_curves(self, *curves, intersections=()):
+        return GenusDiagram(self.surface,self.curves+tuple(curves),self.show_cuts,self.intersections+tuple(intersections))
 
     def drawing(self, style):
         binding=genus_binding(self.surface)
@@ -88,14 +88,16 @@ class GenusDiagram:
 
 def _append_paths(paths,pieces,color,width,role):
     sheet,commands=None,[]
+    previous=None
     for current,points in pieces:
+        if previous is not None and not _near(previous,points[0]):
+            raise ItineraryError('projected route pieces do not join')
+        previous=points[-1]
         if current!=sheet:
             if commands:
                 paths.append(Path(tuple(commands),color,width,role,sheet=='back'))
             commands=[('M',*points[0])]
             sheet=current
-        elif commands and not _near(tuple(commands[-1][-2:]),points[0]):
-            raise ItineraryError('projected route pieces do not join')
         commands.extend(('L',*p) for p in points[1:])
     if commands:
         paths.append(Path(tuple(commands),color,width,role,sheet=='back'))

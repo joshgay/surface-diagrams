@@ -4,7 +4,7 @@ import unittest
 from surface_diagrams import GenusSurface, render_svg, render_tikz
 from surface_diagrams.genus_mesh import genus_binding
 from surface_diagrams.genus_diagrams import NamedCut, _append_paths
-from surface_diagrams.mesh_atlas import MeshBinding, _near, _star_positive
+from surface_diagrams.mesh_atlas import MeshBinding, MeshTriangle, flatten_segment, _near, _star_positive, _segment_distance
 from surface_diagrams.disk_routes import Crossing, DiskRoute, ItineraryError
 
 
@@ -72,5 +72,28 @@ class GenusMeshTests(unittest.TestCase):
         self.assertTrue(_star_positive(tuple(reversed(curve)), (.5,-1.), 1))
 
     def test_disconnected_projected_pieces_are_not_bridged(self):
-        with self.assertRaises(ItineraryError):
-            _append_paths([], [('front', ((0,0),(1,0))), ('front', ((2,0),(3,0)))], 'black', 1, 'route')
+        for sheet in ('front','back'):
+            with self.assertRaises(ItineraryError):
+                _append_paths([], [('front', ((0,0),(1,0))), (sheet, ((2,0),(3,0)))], 'black', 1, 'route')
+
+
+class ProjectionBoundTests(unittest.TestCase):
+    def test_s_bend_is_not_lost_at_its_zero_deviation_midpoint(self):
+        curve=((0.,0.),(1/3,1.),(2/3,-1.),(1.,0.))
+        triangle=MeshTriangle('T','front',(curve[0],curve[-1],(.5,5.)),curve)
+        self.assertTrue(_star_positive(curve,triangle.points[2],1))
+        self.assertEqual(triangle.project((.5,.5,0.)),(.5,0.))
+        error=.002
+        points=flatten_segment(triangle,(1.,0.,0.),(0.,1.,0.),error)
+        self.assertGreater(len(points),2)
+        for i in range(401):
+            t=i/400
+            point=triangle.project((1-t,t,0.))
+            self.assertLessEqual(min(_segment_distance(point,a,b) for a,b in zip(points,points[1:])),error)
+
+    def test_radial_segment_to_apex_is_exactly_straight(self):
+        curve=((0.,0.),(.3,-.3),(.7,-.3),(1.,0.))
+        triangle=MeshTriangle('T','front',(curve[0],curve[-1],(.5,1.)),curve)
+        points=flatten_segment(triangle,(.7,.3,0.),(0.,0.,1.),1e-8)
+        self.assertEqual(len(points),2)
+        self.assertEqual(points[-1],triangle.points[2])

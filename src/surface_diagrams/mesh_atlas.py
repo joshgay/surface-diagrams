@@ -198,22 +198,9 @@ class MeshBinding:
                         hi=min(hi,-a/difference)
                 if hi-lo <= 1e-10:
                     continue
-                def at(t):
-                    weights=tuple(a+t*(b-a) for a,b in zip(start,end))
-                    return triangle.project(weights)
-                points=[at(lo)]
-                def flatten(a,b,pa,pb,depth=0):
-                    mid=(a+b)/2
-                    pm=at(mid)
-                    delta=hypot(pm[0]-(pa[0]+pb[0])/2,pm[1]-(pa[1]+pb[1])/2)
-                    if delta>error:
-                        if depth>=16:
-                            raise ItineraryError('curved projection failed the rendering tolerance')
-                        flatten(a,mid,pa,pm,depth+1)
-                        flatten(mid,b,pm,pb,depth+1)
-                    else:
-                        points.append(pb)
-                flatten(lo,hi,points[0],at(hi))
+                low_weights=tuple(a+lo*(b-a) for a,b in zip(start,end))
+                high_weights=tuple(a+hi*(b-a) for a,b in zip(start,end))
+                points=flatten_segment(triangle,low_weights,high_weights,error)
                 fragments.append((lo,hi,ProjectedPiece(tuple(points),triangle.sheet,route.id,piece.index)))
             fragments.sort(key=lambda x:(x[0],x[1]))
             covered=0.
@@ -262,3 +249,67 @@ def _star_positive(curve,apex,sign,depth=0):
         return False
     return (_star_positive(cubic_slice(curve,0,.5),apex,sign,depth+1)
             and _star_positive(cubic_slice(curve,.5,1),apex,sign,depth+1))
+
+
+def _bernstein_product(a, b):
+    m,n=len(a)-1,len(b)-1
+    return tuple(sum(comb(m,i)*comb(n,k-i)*a[i]*b[k-i]
+                     for i in range(max(0,k-n),min(m,k)+1))/comb(m+n,k)
+                 for k in range(m+n+1))
+
+
+def _segment_distance(point, a, b):
+    dx,dy=b[0]-a[0],b[1]-a[1]
+    length=dx*dx+dy*dy
+    t=0. if not length else max(0.,min(1.,((point[0]-a[0])*dx+(point[1]-a[1])*dy)/length))
+    return hypot(point[0]-a[0]-t*dx,point[1]-a[1]-t*dy)
+
+
+def flatten_segment(triangle, start, end, error):
+    """Flatten a radial cubic carrier using positive rational Bezier bounds.
+
+    Multiplication by rho squared makes the projected line a homogeneous
+    cubic. Positive weights put the whole curve in its control-point convex
+    hull, providing a segment-wide bound instead of midpoint sampling.
+    """
+    if not isfinite(error) or error <= 0:
+        raise ValueError('projection error must be finite and positive')
+    def clean(weights):
+        if min(weights)<-1e-7:
+            raise ItineraryError('projected segment lies outside its triangle')
+        values=tuple(max(0.,x) for x in weights)
+        total=sum(values)
+        return tuple(x/total for x in values)
+    start,end=clean(start),clean(end)
+    points=[triangle.project(start)]
+    def flatten(a,b,depth=0):
+        pa,pb=triangle.project(a),triangle.project(b)
+        if not triangle.curved:
+            points.append(pb)
+            return
+        u,v=(a[0],b[0]),(a[1],b[1])
+        rho=(u[0]+v[0],u[1]+v[1])
+        # A line reaching the apex is radial, hence projects to a straight line.
+        if min(rho)==0:
+            points.append(pb)
+            return
+        rho2=_bernstein_product(rho,rho)
+        weights=_bernstein_product(rho2,(1.,1.))
+        apex_term=_bernstein_product(rho2,(a[2],b[2]))
+        u2,v2=_bernstein_product(u,u),_bernstein_product(v,v)
+        coefficients=(_bernstein_product(u2,u),_bernstein_product(u2,v),
+                      _bernstein_product(u,v2),_bernstein_product(v2,v))
+        controls=tuple(tuple((apex_term[k]*triangle.points[2][axis]+
+                              sum(factor*coefficient[k]*control[axis]
+                                  for factor,coefficient,control in zip((1,3,3,1),coefficients,triangle.curved)))/weights[k]
+                             for axis in (0,1)) for k in range(4))
+        if max(_segment_distance(p,pa,pb) for p in controls)<=error:
+            points.append(pb)
+            return
+        if depth>=24:
+            raise ItineraryError('curved projection failed the rendering tolerance')
+        middle=tuple((x+y)/2 for x,y in zip(a,b))
+        flatten(a,middle,depth+1)
+        flatten(middle,b,depth+1)
+    flatten(start,end)
+    return tuple(points)

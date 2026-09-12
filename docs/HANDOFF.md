@@ -21,8 +21,9 @@ Closed default-genus presentation binding now uses an explicit doubled holed
 mesh with smooth cubic chain edges. Every curved triangle passes a whole-curve
 Bernstein orientation certificate; harmonic cut-disk charts check every triangle.
 Genus 1/2/3/5/7 pass all four views. Named cuts and disk routes render with explicit
-front/back visibility. The smooth genus-two preview was inspected. All 115 tests pass on Python
-3.12.14 and 3.9.7; the 16-view regression checks include genus 1/2/3/5.
+front/back visibility. The smooth genus-two preview was inspected. The current
+127-test suite passes on Python 3.12.14 and 3.9.7; the 16-view regression checks
+include genus 1/2/3/5.
 The additional genus-seven four-view check also passed.
 
 Marked closed-genus surfaces now work with `GenusSurface(2, marks=('P', 'Q'))`.
@@ -33,11 +34,20 @@ endpoints and maximal automatic mark counts. The marked-cut preview was inspecte
 
 Next action: extend the checked presentation binding to Type I/II boundaries.
 These are still explicitly unsupported by GenusSurface.cut_system(); the
-standalone abstract decorated chain remains available. Then finish P4 route examples, P5 general planar/daisy arrangements,
+standalone abstract decorated chain remains available. Then finish the remaining
+P4 boundary-route examples, P5 general planar/daisy arrangements,
 P6 secondary presets, P7 complete TikZ compilation, and P8 release audit.
+Closed route examples now include multiple handles, a separating loop producing
+two once-bordered tori, repeated visits to a cut edge, disjoint handle loops,
+and explicitly declared intersections. Their generated contact sheet was inspected:
+the harmonic mesh projection is continuous but retains visible tangent changes
+between carriers. Smooth presentation-wide routing remains a visual refinement;
+do not describe these routes as globally smooth.
 Do not mark P4 complete from closed examples alone. New binding modules and
-records remain experimental; projection flattening uses a numerical display
-tolerance, separately from the whole-curve fold certificate.
+records remain experimental. Projection flattening now uses positive rational
+Bezier control hulls to bound every segment, separately from the whole-curve fold
+certificate; midpoint-only flattening has been removed. Disconnected projected
+pieces are rejected even when their sheet changes.
 
 P3b adds `src/surface_diagrams/cut_systems.py`, 26 tests in
 `tests/test_cut_systems.py`, and seven worked examples in

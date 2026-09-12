@@ -26,11 +26,13 @@ def genus_binding(surface):
     hr, hh = spacing*.30, min(hy*.22, spacing*.13)
     ring_height = (hh+hy)/2
     centers = [(i-(surface.genus-1)/2)*spacing for i in range(surface.genus)]
-    xs = sorted({-rx, rx, *[x+d for x in centers for d in (-hr-spacing*.10, -hr, -hr*.5, 0., hr*.5, hr, hr+spacing*.10)]})
+    xs = sorted({-rx, rx, *[value for x in centers for value in
+                             (x-hr-spacing*.10, x-hr, x-hr*.5, x, x+hr*.5, x+hr, x+hr+spacing*.10)]})
     refined_xs = [xs[0]]
     for a,b in zip(xs,xs[1:]):
-        count=max(1,ceil((b-a)/(spacing*.10)))
-        refined_xs.extend(a+(b-a)*i/count for i in range(1,count+1))
+        count=max(1,ceil((b-a)/(spacing*.10)-1e-10))
+        refined_xs.extend(a+(b-a)*i/count for i in range(1,count))
+        refined_xs.append(b)
     xs=refined_xs
     ys = (-hy, -ring_height, -hh, 0., hh, ring_height, hy)
     coordinates = {(i,j):(x,y) for i,x in enumerate(xs) for j,y in enumerate(ys)}

@@ -110,9 +110,9 @@ class GenusSurface:
         from .genus_diagrams import GenusDiagram
         return GenusDiagram(self,show_cuts=True)
 
-    def with_curves(self, *curves):
+    def with_curves(self, *curves, intersections=()):
         from .genus_diagrams import GenusDiagram
-        return GenusDiagram(self,tuple(curves))
+        return GenusDiagram(self,tuple(curves),intersections=tuple(intersections))
 
     @property
     def width(self):

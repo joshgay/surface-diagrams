@@ -72,8 +72,11 @@ The curved edge carriers use a Bernstein positivity check over each complete
 cubic. Tangent sampling only proposes cell centers; it never substitutes for
 that final check. The complementary disk charts solve a positive-weight graph
 Dirichlet problem and reject any flipped or degenerate triangle. Rendering
-flattens projected pieces with a numerical tolerance; this display approximation
-is distinct from the certified local curved-triangle orientation.
+flattens projected pieces with a whole-segment rational Bezier convex-hull bound:
+positive homogeneous weights enclose every projected segment. This uses floating
+point tolerances and is distinct from the local curved-triangle orientation
+certificate. An S-bend regression prevents a zero midpoint deviation from hiding
+a nonstraight segment.
 
 Run `python examples/make_genus_cuts.py` for numbered genus 1/2/3/5, each genus-two
 chain member, and a torus loop with its matching complementary-disk itinerary.
@@ -93,3 +96,19 @@ inside their common complementary disk and projects back to their exact surface
 vertices. The example generator saves the ordinary arc, numbered cuts, and
 matching cut-disk route. These marks remain mathematical points; they do not
 create puncture boundary circles.
+
+
+The genus-two examples now also include `genus-multiple-handles.svg`,
+`genus-separating.svg`, `genus-repeated-crossings.svg`, `genus-disjoint.svg`, and
+`genus-intersection.svg` with a matching intersection disk diagram. Tests
+reconstruct the separating route as two genus-one components with one boundary
+each; the multiple-handle route leaves a connected genus-one component with two
+boundaries. Repeated visits use different positions on the same cut edge.
+
+Declare genuine overlay crossings with
+`surface.with_curves(a, b, intersections=((('a', 0), ('b', 0)),))`, where each
+pair contains route IDs and zero-based disk-piece indices. Missing or extra
+records fail. Projected front/back overlaps are not additional intersections.
+The mesh projection is continuous and piecewise smooth; tangent changes between
+carriers remain visible in some routed examples. It does not promise globally
+smooth routes or minimal intersection representatives.
