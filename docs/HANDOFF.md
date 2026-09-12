@@ -6,16 +6,11 @@ roadmap for the new work. This file is the short, frequently updated checkpoint.
 ## Resume here
 
 **P0, P1, and P2 complete, including the September 11 visual refinement.
-P3-P8 have not started.**
+P3a specification written; P3b validator and P4-P8 remain.**
 
-Next action: start P3, the cut-system specification and validator. Read the P3
-section of IMPLEMENTATION_PLAN.md before designing the data model. First write
-worked disk, annulus, marked disk, torus, genus-two, and pair-of-pants examples
-in `docs/cut-systems.md`, then implement actual gluing/incidence and disk-complement
-validation with positive and negative fixtures. Do not infer topology from SVG
-projection crossings or certify a cut system using only its Euler characteristic.
-P4 will use this for numbered genus systems and arcs/closed curves. Keep new
-TikZ geometry extensions until P7.
+Next action: implement P3b from docs/cut-systems.md. P3a now specifies explicit polygon cellulations, auxiliary versus selected pairings, vertex links, full and cut-surface reconstruction, six worked surfaces, a multi-disk fixture, negative fixtures and route locators. No topology validator or new public API exists yet. Implement and test the unlabelled gluing kernel first, then parent walks and incidence checks. P3 remains in progress; P4 routing must wait.
+
+P2 was recovered and committed as 79bf6bd on September 12. All 67 tests passed again using the repository .venv; git diff --check passed. Earlier visual checks remain historical evidence; no geometry changed in P3a.
 
 Repository root on Richard's machine: `C:\GitHub\surface-diagrams`.
 Remote: `https://github.com/richardbuckman-math/surface-diagrams`.
@@ -146,6 +141,7 @@ This is an environment issue, not a package defect. Do not bypass a denied actio
 | P0 | Reference inspection; complete SVG inventory; controlling plan; this handoff | 44 baseline tests; 9 reference previews inspected | Start P1 |
 | P1 | Reference-based genus geometry, automatic collars, rim visibility, comparison sheet | 52 tests on Python 3.9/3.12; visual SVG checks; 53 gallery scenarios | Start P2 |
 | P1 refinement, September 11 | Four views, trimmed hole overlap, smooth direct collars, taller side-pair defaults; 57 gallery examples | 58 tests on Python 3.9/3.12; comparison, four-view and genus sheets inspected; existing TikZ gallery compiles | Restore saved P2 patch and finish P2 |
+| P3a, September 12 | docs/cut-systems.md: worked decompositions and proposed validation contract | Specification only; existing 67 tests pass, no validator implemented | Implement P3b gluing/link/mark kernel and fixtures |
 | P2 | Circular planar holes and rim endpoints; clipping and clearance; 14 examples; SVG-only export guard | 67 tests on Python 3.9/3.12; geometry and raster checks; old SVG examples unchanged | Start P3 specification and validator |
 
 Append a row or update it at each meaningful checkpoint. Record the actual files,
