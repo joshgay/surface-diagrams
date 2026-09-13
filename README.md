@@ -1,23 +1,29 @@
 # Surface diagrams
 
+`surface-diagrams` is a small Python library for drawing surfaces, curves, cut
+systems, and related pictures from low-dimensional topology. It produces SVG
+and TikZ from the same geometry, so figures stay sharp in a browser, a paper,
+or a set of lecture notes.
+
 Browse the [tutorial and gallery](https://richardbuckman-math.github.io/surface-diagrams/)
-and planned relation and Lefschetz-fibration catalog. See
+and the planned relation and Lefschetz-fibration catalog. See
 [publishing and releases](docs/RELEASING.md) for preview and deployment.
 
-Development roadmap: [implementation plan](docs/IMPLEMENTATION_PLAN.md),
-[current handoff](docs/HANDOFF.md), and [original reference diagrams](Figures/README.md).
+The package is an alpha release (`0.1.0a3`) for Python 3.9 and newer. It has no
+runtime dependencies. The public API is usable, but some higher-genus boundary
+and calculation features are deliberately incomplete; the limits are listed
+below rather than hidden behind approximate output.
 
-A Python library for generating diagrams of surfaces for work with mapping class
-groups and other relevant low dimensional geometry and topology. SVG and TikZ output allows
-for arbitrary enlarging without losing sharpness.
+This project grew from drawing code I used for my thesis. The current default
+higher-genus presentation follows the D3/D2A/E2 reference diagrams, and the
+planar colors are measured from the thesis figures. See the
+[source comparison](examples/output/reference-comparison.svg) and
+[provenance notes](docs/provenance.md).
 
-This is extremely experimental for now. It is based on older code I wrote a while ago,
-but this is the alpha version, 0.1.0a2. Python 3.9+; no runtime dependencies.
-I will finish editing this readme when the software is in a more finished state. For now
-what is here may be wrong or not yet implemented.
-
-The default higher-genus presentation now follows the D3/D2A/E2 reference diagrams.
-See the [source comparison](examples/output/reference-comparison.svg).
+For implementation status, see the [current handoff](docs/HANDOFF.md). The
+[implementation plan](docs/IMPLEMENTATION_PLAN.md) records the longer roadmap,
+and [Figures/README.md](Figures/README.md) identifies the original reference
+drawings.
 
 ## Illustrated tutorial
 
@@ -40,9 +46,9 @@ python -m pip install -e .
 python examples/make_images.py
 ```
 
-Examples should demonstrate all current capabilities but feel free to make requests.
-SVG overview sheets and a [linked gallery](examples/output/GALLERY.md) are in
-`examples/output/`. The constructors are in [examples/gallery.py](examples/gallery.py).
+The examples cover the supported public features. SVG overview sheets and a
+[linked gallery](examples/output/GALLERY.md) are in `examples/output/`; their
+constructors are in [examples/gallery.py](examples/gallery.py).
 
 Run your own scripts with the Python environment where you installed the package.
 For a fresh installation, use recent pip/setuptools: Anaconda pip 21.2 cannot
@@ -229,8 +235,10 @@ are fully visible and opposite rims have a dashed inward half. Handle openings
 have overlapping edges that reverse with the view. Side pairs automatically get
 a taller body and larger, farther-separated openings. See the
 [four viewing directions](examples/output/views-gallery.svg).
-See [presentation details](docs/genus-presentation.md). This geometric
-presentation does not yet implement genus curve routing or certified cut systems.
+See [presentation details](docs/genus-presentation.md). Closed genus surfaces
+have checked standard cut systems and route drawings. Boundary-decorated
+surfaces can draw reference families, but their complete certified Type I/II
+mesh bindings are still in progress.
 
 ## Circular planar boundaries
 
@@ -302,18 +310,32 @@ chooses the output format. Use the Python API for curves, styles, or custom
 boundary placements; the CLI deliberately covers only basic rows and closed
 higher-genus surfaces.
 
-## Scope and next steps
+## Scope and current limits
 
-Implemented: planar surfaces, row/custom positioning, adjustable dots/colors,
-minimal arcs/loops, noncrossing multicurves, coordinate guides, higher genus,
-all fixed boundary slots and left/right/top-bottom paired boundaries, circular
-planar holes with rim-ended arcs, SVG, TikZ,
-a LaTeX inclusion companion, and a small command-line entry point.
+The library currently supports:
 
-Later: standard chain curves on higher-genus surfaces, marked points on them,
-Type II boundaries inside handle holes or at front/back locations, asymmetric
-layouts. PNG/PDF
-export is not built in; SVGs can be converted externally when needed.
+- planar surfaces with row or custom positioning, configurable points and
+  boundaries, cut guides, arcs, loops, and checked disjoint multicurves;
+- circular planar holes with rim-ended arcs;
+- closed genus-g presentations with the standard `2g+1` reference family,
+  numbered cut systems, marked points, and checked route projections;
+- Type I boundary slots and left/right/top-bottom Type II pairs in the surface
+  presentation, including supplied reference-family overlays;
+- multi-panel figures, vertical factor displays, simple braid panels, SVG,
+  TikZ, Jupyter display, a LaTeX inclusion helper, and a basic command line.
+
+The package does not yet certify the full cut mesh for a genus surface carrying
+Type I or Type II boundaries. In particular, the top/bottom Type II prototype
+meets a genuine projection cusp where an inward rim rejoins the outer contour;
+it remains outside the public `cut_system()` path until that local chart passes
+the same strict certificate as the closed case. General automatic mapping-class
+actions, braid equality, homology, factorization search, and Lefschetz-fibration
+calculations are also outside this drawing package. PNG and PDF conversion are
+left to external tools.
+
+Later presentation work includes Type II boundaries inside handle holes or in
+front/back positions, asymmetric layouts, and more general boundary-to-curve
+route bindings.
 
 `model.py` holds planar inputs/styles and `curves.py` plans planar routes.
 `genus.py` holds genus inputs and `genus_geometry.py` builds their presentation.
@@ -322,9 +344,10 @@ export is not built in; SVGs can be converted externally when needed.
 
 The internal [cut-system validator](docs/cut-systems.md) reconstructs explicit
 polygon cellulations and checks whether selected cuts leave unmarked disks.
-Worked examples cover a disk, annulus, marked disk, torus, genus two, pair of
-pants, and a two-disk complement. This certifies abstract topology; integration
-with numbered genus drawings and generalized routes is the next stage.
+Worked examples cover a disk, annulus, marked disk, torus, genus two, a pair of
+pants, and a two-disk complement. Closed standard-genus drawings are bound to
+that checked topology; decorated boundary meshes remain the next integration
+stage.
 
 ## Development
 
