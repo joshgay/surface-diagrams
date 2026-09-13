@@ -168,6 +168,9 @@ class CircularBoundaryTest(unittest.TestCase):
         for background in (None, '#abc'):
             result = render_tikz(s, style=replace(self.style, background=background, show_guides=True))
             self.assertIn(r'\clip[even odd rule]', result)
+            clip = next(line for line in result.splitlines() if line.startswith(r'\clip[even odd rule]'))
+            self.assertNotIn('ellipse [', clip)
+            self.assertEqual(clip.count('ellipse (12 and 12)'), 6)
             scope = result.index(r'\begin{scope}')
             end = result.index(r'\end{scope}')
             self.assertLess(scope, result.index('% arc'))

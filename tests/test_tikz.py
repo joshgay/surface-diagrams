@@ -25,7 +25,7 @@ class TikzTest(unittest.TestCase):
                     result = render_tikz(surface, style=style, title=caption)
                     drawing = layout(surface, style)
                     self.assertEqual(result.count(r"\draw["), len(drawing.paths))
-                    self.assertEqual(result.count(" ellipse ["), len(drawing.ellipses)+sum(e.role == "inner-boundary-circle" for e in drawing.ellipses))
+                    self.assertEqual(result.count(" ellipse ["), len(drawing.ellipses))
                     self.assertEqual(result.count(r"\node["), len(drawing.texts))
                     self.assertEqual(result, render_tikz(surface, style=style, title=caption))
 

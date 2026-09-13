@@ -11,7 +11,7 @@
 \path[use as bounding box] (-189,-378.75) rectangle (189,378.75);
 \clip (-189,-378.75) rectangle (189,378.75);
 \begin{scope}
-\clip[even odd rule] (-189,-378.75) rectangle (189,378.75) (-97.5,241) ellipse [x radius=12,y radius=12] (97.5,241) ellipse [x radius=12,y radius=12] (-50,8.5) ellipse [x radius=12,y radius=12] (50,8.5) ellipse [x radius=12,y radius=12] (-50,-244) ellipse [x radius=12,y radius=12] (50,-244) ellipse [x radius=12,y radius=12];
+\clip[even odd rule] (-189,-378.75) rectangle (189,378.75) (-97.5,241) ellipse (12 and 12) (97.5,241) ellipse (12 and 12) (-50,8.5) ellipse (12 and 12) (50,8.5) ellipse (12 and 12) (-50,-244) ellipse (12 and 12) (50,-244) ellipse (12 and 12);
 % axis
 \draw[draw=sdcolor0,line width=0.45bp,dash pattern=on 2.25bp off 2.25bp] (-162.5,241) -- (162.5,241);
 % arc

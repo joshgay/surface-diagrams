@@ -8,7 +8,7 @@
 \path[use as bounding box] (-155.25,-102.75) rectangle (155.25,102.75);
 \clip (-155.25,-102.75) rectangle (155.25,102.75);
 \begin{scope}
-\clip[even odd rule] (-155.25,-102.75) rectangle (155.25,102.75) (-82.5,0) ellipse [x radius=12,y radius=12] (27.5,0) ellipse [x radius=12,y radius=12];
+\clip[even odd rule] (-155.25,-102.75) rectangle (155.25,102.75) (-82.5,0) ellipse (12 and 12) (27.5,0) ellipse (12 and 12);
 % arc
 \draw[draw=sdcolor0,line width=1.5bp] (-70.5,0) arc[start angle=180,end angle=0,x radius=76.5,y radius=41.0684210526];
 \end{scope}
