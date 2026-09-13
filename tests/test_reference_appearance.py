@@ -30,7 +30,15 @@ class ReferenceAppearanceTests(unittest.TestCase):
                 self.assertEqual({p.dashed for p in paths},{False,True})
                 for p in paths:
                     mean_y=sum(c[-1] for c in p.commands)/len(p.commands)
-                    self.assertEqual(p.dashed, mean_y*sign>0 if number%2 else mean_y*sign<0)
+                    if number%2:
+                        self.assertEqual(p.dashed, mean_y*sign>0)
+                    else:
+                        handle=presentation(surface).handles[number-1]
+                        a,b=handle[0][1:],handle[-1][-2:]
+                        def height(x): return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0])
+                        for command in p.commands:
+                            x,y=command[-2:]
+                            self.assertGreaterEqual((y-height(x))*sign*(-1 if p.dashed else 1),-1e-8)
             curves=[p for p in layout(surface.with_curves(NamedCut(2)),Style()).paths if p.role=='named-cut']
             points=[c[1:] for p in curves for c in p.commands]
             hole= presentation(surface).handles[:2]
@@ -40,6 +48,25 @@ class ReferenceAppearanceTests(unittest.TestCase):
                 hole_points.extend(cubic_point(controls,i/100) for i in range(101))
             self.assertLess(max(x for x,y in points)-max(x for x,y in hole_points),surface.handle_spacing*.05)
             self.assertLess(max(y for x,y in points)-max(y for x,y in hole_points),surface.handle_spacing*.08)
+
+    def test_even_cut_transitions_align_with_cusps_in_all_views(self):
+        for vertical in ('above','below'):
+            for horizontal in ('left','right'):
+                surface=GenusSurface(2,view_vertical=vertical,view_horizontal=horizontal)
+                paths=[p for p in layout(surface.with_curves(NamedCut(2)),Style()).paths if p.role=='named-cut']
+                handle=presentation(surface).handles[1]
+                a,b=handle[0][1:],handle[-1][-2:]
+                transitions=[]
+                for p in paths:
+                    for q in paths:
+                        if p.dashed==q.dashed: continue
+                        for point in (p.commands[0][1:],p.commands[-1][-2:]):
+                            if any(_near(point,end) for end in (q.commands[0][1:],q.commands[-1][-2:])):
+                                transitions.append(point)
+                self.assertTrue(transitions)
+                self.assertEqual(len({tuple(round(v,7) for v in p) for p in transitions}),2)
+                for x,y in transitions:
+                    self.assertAlmostEqual(y,a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]),places=7)
 
     def test_straight_marked_arc_uses_actual_endpoints_and_rejects_obstacles(self):
         surface=GenusSurface(2,marks=('P','Q'))

@@ -127,3 +127,8 @@ For a straight supplied visual arc between automatic marks, use
 `MarkedArc('P', 'Q')`. It checks the clear upper corridor and other marks.
 `DiskRoute` remains the choice for a particular cut itinerary, whose projection
 may bend. A straight MarkedArc has no automatic conversion to a disk itinerary.
+
+Even-wrap visibility now changes exactly on the projected line through the hole
+cusps, matching the neighboring odd cuts. The transition is not the horizontal
+y=0 line. Type I/II boundary and marked-point cut arcs are to lie in the vertical
+plane; their full presentation bindings remain under development.

@@ -478,3 +478,8 @@ The shared mathematical records can grow as these drawings need them. A general
 coordinate engine, cover solver or theorem about uniqueness is not a prerequisite
 for drawing a supplied configuration. See the [controlling plan](IMPLEMENTATION_PLAN.md)
 for the current visualization-first order.
+
+Even-wrap visibility now changes exactly on the projected line through the hole
+cusps, matching the neighboring odd cuts. The transition is not the horizontal
+y=0 line. Type I/II boundary and marked-point cut arcs are to lie in the vertical
+plane; their full presentation bindings remain under development.

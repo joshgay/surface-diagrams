@@ -304,3 +304,15 @@ different mathematical interpretations require the author's decision. Record
 progress and exact next actions before stopping or handing off. Do not claim
 a stage complete until its acceptance tests and visual checks pass.
 ```
+
+## Confirmed cusp-plane convention
+
+Type I/II boundary and marked-point reference arcs must lie in the vertical
+plane. Bind their endpoints to the actual boundary/mark geometry in that plane;
+do not fan them through an arbitrary surface chart. Even genus wraps change
+visibility on the projected line through the hole cusps, matching their odd
+neighbors, rather than at y=0. This affects presentation visibility only and
+preserves supplied curve itineraries and the checked cellulation.
+
+Cusp-plane update validation: 142 tests pass, including transition checks in all
+four viewing directions. Genus and tutorial outputs regenerated and inspected.

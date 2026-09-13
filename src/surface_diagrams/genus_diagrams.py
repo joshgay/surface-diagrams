@@ -84,13 +84,13 @@ class GenusDiagram:
                 if i==0 and triangle.curved:
                     pts=tuple(cubic_point(triangle.curved,t/12) for t in range(13))
                 pieces.append((triangle.sheet,pts))
-            # The named handle wrap has its own presentation visibility:
-            # above view: solid upper half, dashed lower half. Chart sheet
-            # membership is topological data and is not changed by this style.
+            # Visibility changes on the same cusp plane as the adjacent odd cuts.
+            # The projected cusp line can be tilted and need not lie at y=0.
             if number%2 == 0 and parent.kind == 'closed':
+                handle = presentation(self.surface).handles[number-1]
+                left, right = handle[0][1:], handle[-1][-2:]
                 sign=1 if self.surface.view_vertical == 'above' else -1
-                pieces=[('front' if sign*sum(y for x,y in pts)>=0 else 'back',pts)
-                        for sheet,pts in pieces]
+                pieces=_cusp_visibility(pieces,left,right,sign)
             _append_paths(paths,pieces,color,style.curve_width,'named-cut')
             if self.show_cuts:
                 front=[p for sheet,pts in pieces if sheet=='front' for p in pts]
@@ -149,6 +149,26 @@ class GenusDiagram:
     def _repr_svg_(self):
         from .svg import render_svg
         return render_svg(self)
+
+
+def _cusp_visibility(pieces, left, right, sign):
+    """Split presentation polylines exactly where they cross the cusp plane."""
+    def distance(point):
+        x,y=point
+        plane_y=left[1]+(right[1]-left[1])*(x-left[0])/(right[0]-left[0])
+        return sign*(y-plane_y)
+    result=[]
+    for _,points in pieces:
+        for a,b in zip(points,points[1:]):
+            da,db=distance(a),distance(b)
+            if da*db < 0:
+                t=da/(da-db)
+                crossing=(a[0]+t*(b[0]-a[0]),a[1]+t*(b[1]-a[1]))
+                result.extend((('front' if da>0 else 'back',(a,crossing)),
+                               ('front' if db>0 else 'back',(crossing,b))))
+            else:
+                result.append(('front' if da+db>=0 else 'back',(a,b)))
+    return result
 
 
 def _append_paths(paths,pieces,color,width,role):
