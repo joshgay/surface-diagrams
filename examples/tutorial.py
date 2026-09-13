@@ -97,6 +97,14 @@ def examples():
         (Panel(family.select(4), 'Factor 2: positive twist supported on member 4'),),
         (Panel(family, 'Reference family; action images are not computed'),),
     )), Style()
+    yield '15-mixed-boundary-views', Figure(tuple(
+        tuple(Panel(GenusSurface(3,type_i=(TypeIBoundary(8),),
+                    type_ii=(BoundaryPair('left'),BoundaryPair('top'),BoundaryPair('top')),
+                    marks=('M',),view_vertical=vertical,view_horizontal=horizontal).with_reference_arcs(
+                        mark_positions={'M':(0,45)}), f'{vertical} / {horizontal}')
+              for horizontal in ('left','right'))
+        for vertical in ('above','below')
+    )), Style()
 
 
 def main(out=None):

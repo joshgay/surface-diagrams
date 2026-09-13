@@ -1,7 +1,23 @@
 # Handoff: surface-diagrams
 
+## Tutorial site and catalog, September 13
+
+Interrupted mixed-boundary batch verified: 153 tests pass and all 15 tutorial
+figures regenerate. Portable site builder checks local HTML links. Twelve planned
+relation/fibration pages live in docs/catalog/*.json. User supplied the existing
+GitHub repository as publishing destination; GitHub Pages is primary, with an
+optional GitLab CI configuration. Release version is 0.1.0a3. See RELEASING.md.
+
+
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
+
+## Mixed four-view boundary reference families
+
+The common left Type II + top/bottom pairs + right Type I layout is now supported,
+also with explicit plane marks, in all four views. Only same-end Type I/II
+combinations remain excluded; the previous opposite-end restriction was overly
+broad. Tutorial figure 15 shows this fixture and its stable member identities.
 
 ## Member selection for bordered factor panels
 

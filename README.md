@@ -1,5 +1,9 @@
 # Surface diagrams
 
+Browse the [tutorial and gallery](https://richardbuckman-math.github.io/surface-diagrams/)
+and planned relation and Lefschetz-fibration catalog. See
+[publishing and releases](docs/RELEASING.md) for preview and deployment.
+
 Development roadmap: [implementation plan](docs/IMPLEMENTATION_PLAN.md),
 [current handoff](docs/HANDOFF.md), and [original reference diagrams](Figures/README.md).
 

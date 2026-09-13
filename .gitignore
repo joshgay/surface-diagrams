@@ -11,3 +11,5 @@ examples/output/*.aux
 examples/output/*.log
 examples/output/*.pdf
 examples/output/*.xdv
+
+public/

@@ -184,3 +184,23 @@ class BoundaryAnchorTests(unittest.TestCase):
         self.assertFalse(any('reference' in p.role or p.role=='named-cut' for p in empty.paths))
         for numbers in ((0,),(7,),(True,),(2,2)):
             with self.assertRaises(ValueError): family.select(*numbers)
+
+    def test_opposite_end_mixed_reference_family_in_four_views(self):
+        expected=None
+        for vertical in ('above','below'):
+            for horizontal in ('left','right'):
+                surface=GenusSurface(3,type_i=(TypeIBoundary(8),),
+                    type_ii=(BoundaryPair('left'),BoundaryPair('top'),BoundaryPair('top')),
+                    marks=('M',),view_vertical=vertical,view_horizontal=horizontal)
+                family=surface.with_reference_arcs(mark_positions={'M':(0,45)})
+                drawing=layout(family,Style())
+                self.assertEqual(sum(p.role=='boundary-reference-spoke' for p in drawing.paths),6)
+                self.assertEqual(sum(p.role=='mark-reference-spoke' for p in drawing.paths),1)
+                self.assertEqual(family.member_numbers,tuple(range(1,15)))
+                ids=tuple(a.id for a in surface.boundary_anchors())
+                if expected is None: expected=ids
+                self.assertEqual(ids,expected)
+                self.assertIn('boundary-reference-spoke',render_tikz(family))
+        with self.assertRaises(NotImplementedError):
+            render_svg(GenusSurface(2,type_i=(TypeIBoundary(1),),
+                type_ii=(BoundaryPair('left'),)).with_reference_arcs())

@@ -1,0 +1,20 @@
+image: python:3.12
+
+stages: [test, deploy]
+
+test:
+  stage: test
+  script:
+    - python -m pip install .
+    - python -m unittest discover -s tests
+    - python examples/tutorial.py
+    - git diff --exit-code -- examples/output
+
+deploy-pages:
+  stage: deploy
+  script:
+    - python examples/build_site.py
+  pages:
+    publish: public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

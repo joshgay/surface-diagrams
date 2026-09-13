@@ -19,7 +19,7 @@ figure is <a href="../examples/tutorial.py">examples/tutorial.py</a>.</p>
 <pre><code class="language-powershell">python -m pip install -e .
 python examples/tutorial.py
 </code></pre>
-<p>This produces fourteen main SVG figures, a full-size cut-disk diagnostic, and fourteen TikZ counterparts in
+<p>This produces fifteen main SVG figures, a full-size cut-disk diagnostic, and fifteen TikZ counterparts in
 <a href="../examples/output/tutorial/">examples/output/tutorial</a>. Open SVG files in a
 browser or vector editor. Circular-hole figures also export to TikZ.
 The <a href="TUTORIAL.html">browser edition</a> contains the same instructions and figures.</p>
@@ -350,8 +350,7 @@ inherits its visible/hidden style. New spoke colors and numbers follow boundary
 order. One Type II pair at each side is supported too, using its inner bank <code>a</code>.
 Its curved spoke joins the midpoint of the upper/lower outer corridor member;
 the curve starts tangent to the inward direction so it stays away from the collar.
-Side-pair bank <code>b</code>, multiple pairs on the same side, a Type I end rim combined
-with side pairs, remain unsupported. The reference
+Side-pair bank <code>b</code>, multiple pairs on the same side, a Type I rim and Type II pair on the same end, remain unsupported. The reference
 drawing is independent of the closed-surface mesh, including at the taller
 height used by side pairs.</p>
 <p><img src="../examples/output/tutorial/12-bordered-reference-families.svg" alt="Type I reference arcs and Type II vertical-plane spokes"></p>
@@ -388,6 +387,9 @@ boundary arcs; an even member is its closed wrap. Boundary and marked spokes
 retain their later numbers. An empty selection leaves the surface and marks.
 This draws supplied support curves and labels; it does not apply the factors or
 check their product.</p>
+<p>A side Type II pair and a Type I rim on the opposite end can be combined with
+top/bottom pairs and explicit marks. IDs and colors persist in all four views:</p>
+<p><img src="../examples/output/tutorial/15-mixed-boundary-views.svg" alt="Mixed boundary reference family in all four views"></p>
 <p>These are exact drawing attachment points, ready for the remaining reference-arc bindings.
 The guide does not yet draw a full bordered cut system or place marked-point
 spokes. Those remain unfinished; <code>cut_system()</code> still rejects bordered surfaces.</p>

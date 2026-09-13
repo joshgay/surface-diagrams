@@ -1,0 +1,16 @@
+{
+  "category": "relations",
+  "slug": "daisy",
+  "title": "Daisy",
+  "status": "Planned",
+  "description": "Derivations and factorizations will be added here. The precise surface, conventions and source references remain to be specified.",
+  "sections": {
+    "Surface and conventions": "Pending source material and verification.",
+    "Derivation": "Pending source material and verification.",
+    "Braid factorization": "Pending source material and verification.",
+    "Planar mapping class diagrams": "Pending source material and verification.",
+    "Standard mapping classes": "Pending source material and verification.",
+    "Equivalences and transformations": "Pending source material and verification.",
+    "References": "Pending source material and verification."
+  }
+}

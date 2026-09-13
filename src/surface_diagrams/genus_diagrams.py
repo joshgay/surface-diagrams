@@ -43,8 +43,9 @@ class BorderedReferenceDiagram:
             raise NotImplementedError('one Type II pair per side is currently supported')
         if side_pairs and self.pair_bank!='a':
             raise NotImplementedError('side Type II spokes currently use inner bank a')
-        if any(fixed.slot in (1,last) for fixed in surface.type_i) and side_pairs:
-            raise NotImplementedError('combined Type I end rims and side Type II spokes need separate binding')
+        if any((fixed.slot==1 and 'left' in side_pairs) or (fixed.slot==last and 'right' in side_pairs)
+               for fixed in surface.type_i):
+            raise NotImplementedError('a Type I rim and Type II pair on the same end need separate binding')
         if self.pair_bank not in ('a','b'):
             raise ValueError("pair_bank must be 'a' or 'b'")
         positions=dict(self.mark_positions)
