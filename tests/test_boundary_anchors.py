@@ -53,7 +53,7 @@ class BoundaryAnchorTests(unittest.TestCase):
                     {outline.handles[1][0][1:],outline.handles[-1][-1][-2:]})
                 self.assertIn('boundary-reference-arc',render_tikz(surface.with_reference_arcs()))
                 with self.assertRaises(NotImplementedError): surface.cut_system()
-        for surface in (GenusSurface(type_ii=(BoundaryPair('top'),)),):
+        for surface in (GenusSurface(type_ii=(BoundaryPair('left'),)),):
             with self.assertRaises(NotImplementedError): render_svg(surface.with_reference_arcs())
 
     def test_all_type_i_slots_attach_and_opened_rims_stay_inside_wrap(self):
@@ -91,3 +91,32 @@ class BoundaryAnchorTests(unittest.TestCase):
                                 self.assertLess(min(p[1] for p in points),y)
                                 self.assertGreater(max(p[1] for p in points),y)
                             start=command[-2:]
+
+    def test_top_bottom_pair_spokes_hit_the_actual_chain(self):
+        from surface_diagrams.genus_diagrams import _vertical_hits
+        for view in ('above','below'):
+            for bank in ('a','b'):
+                surface=GenusSurface(2,type_i=(TypeIBoundary(2),),
+                    type_ii=(BoundaryPair('top'),),view_vertical=view)
+                d=layout(surface.with_reference_arcs(pair_bank=bank),Style())
+                spokes=[p for p in d.paths if p.role=='boundary-reference-spoke']
+                self.assertEqual(len(spokes),2)
+                anchors={surface.boundary_anchor(f'pair-1-{side}',bank).point for side in ('upper','lower')}
+                self.assertEqual({p.commands[0][1:] for p in spokes},anchors)
+                chain=[p for p in d.paths if p.role in ('named-cut','boundary-reference-arc')]
+                for spoke in spokes:
+                    a,b=spoke.commands[0][1:],spoke.commands[-1][1:]
+                    self.assertAlmostEqual(a[0],b[0])
+                    self.assertGreater(abs(a[1]),abs(b[1]))
+                    self.assertTrue(any(abs(b[0]-hit[0])+abs(b[1]-hit[1])<1e-7
+                                        for p in chain for hit in _vertical_hits(p.commands,a[0])))
+                self.assertIn('boundary-reference-spoke',render_tikz(surface.with_reference_arcs(pair_bank=bank)))
+        with self.assertRaises(ValueError):
+            render_svg(GenusSurface(type_ii=(BoundaryPair('top'),)).with_reference_arcs(pair_bank='front'))
+
+    def test_vertical_cubic_hit_is_not_a_sampled_approximation(self):
+        from surface_diagrams.genus_diagrams import _vertical_hits
+        commands=(('M',0.,0.),('C',1.,1.,2.,1.,3.,0.))
+        hit,=tuple(_vertical_hits(commands,1.5))
+        self.assertAlmostEqual(hit[0],1.5,places=12)
+        self.assertAlmostEqual(hit[1],.75,places=12)

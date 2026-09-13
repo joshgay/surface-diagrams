@@ -14,7 +14,7 @@ python -m pip install -e .
 python examples/tutorial.py
 ```
 
-This produces eleven main SVG figures, a full-size cut-disk diagnostic, and eleven TikZ counterparts in
+This produces twelve main SVG figures, a full-size cut-disk diagnostic, and twelve TikZ counterparts in
 [examples/output/tutorial](../examples/output/tutorial/). Open SVG files in a
 browser or vector editor. Circular-hole figures also export to TikZ.
 The [browser edition](TUTORIAL.html) contains the same instructions and figures.
@@ -389,8 +389,20 @@ Any combination of Type I slots also works. A cusp boundary opens that corridor
 member into two arcs. Its even wrap uses a rounded enclosure of the actual hole
 and rim, with a small clearance, so it cannot run through the newly opened rim. This is a supplied reference drawing, not a certified
 bordered `CutSystem` or a chart in which `DiskRoute` can yet be evaluated.
-Type II connections and marked-point spokes
-remain unsupported by `with_reference_arcs()`.
+Top/bottom Type II pairs also have vertical-plane spokes:
+
+```python
+from surface_diagrams import BoundaryPair
+top_pairs = GenusSurface(2, type_ii=(BoundaryPair("top"),))
+save_svg(top_pairs.with_reference_arcs(pair_bank="a"), "type-ii-spokes.svg")
+```
+
+Each spoke goes from bank `a` (or `b`) to the first reference member directly
+inward from that anchor. It ends on that member's actual line or cubic and
+inherits its visible/hidden style. New spoke colors and numbers follow boundary
+order. Side Type II pairs and marked-point spokes remain unsupported.
+
+![Type I reference arcs and Type II vertical-plane spokes](../examples/output/tutorial/12-bordered-reference-families.svg)
 
 These are exact drawing attachment points, ready for the remaining reference-arc bindings.
 The guide does not yet draw a full bordered cut system or place marked-point

@@ -68,10 +68,6 @@ def examples():
         (Panel(torus.with_curves(loop), 'Explicit one-crossing torus route'),),
     )), Style()
     yield '10-boundary-surface-templates', Figure((
-        (Panel(GenusSurface(2,type_i=(TypeIBoundary(1),TypeIBoundary(6))).with_reference_arcs(),
-               'Type I end boundaries: vertical-plane reference arcs'),),
-        (Panel(GenusSurface(2,type_i=(TypeIBoundary(2),TypeIBoundary(3),TypeIBoundary(4))).with_reference_arcs(),
-               'Type I cusp boundaries: attached arcs and close rim enclosures'),),
         (Panel(GenusSurface(2,type_i=(TypeIBoundary(6),)).boundary_guide(), 'Type I: vertical-plane rim attachments'),),
         (Panel(GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('top'))).boundary_guide(), 'Type II: vertical-plane rim attachments'),),
     )), Style()
@@ -80,6 +76,15 @@ def examples():
          Panel(BraidDiagram(3,(2,-2,1,2)), '(b, b^-1 a b): the first two crossings cancel')),
         (Panel(BraidDiagram(3,(1,2,1)), 'Substitution: braid relation, left word'),
          Panel(BraidDiagram(3,(2,1,2)), 'Braid relation, right word')),
+    )), Style()
+
+    yield '12-bordered-reference-families', Figure((
+        (Panel(GenusSurface(2,type_i=(TypeIBoundary(1),TypeIBoundary(6))).with_reference_arcs(),
+               'Type I end boundaries: vertical-plane reference arcs'),),
+        (Panel(GenusSurface(2,type_i=(TypeIBoundary(2),TypeIBoundary(3),TypeIBoundary(4))).with_reference_arcs(),
+               'Type I cusp boundaries: attached arcs and close rim enclosures'),),
+        (Panel(GenusSurface(2,type_ii=(BoundaryPair('top'),)).with_reference_arcs(),
+               'Type II top/bottom boundaries: vertical-plane spokes'),),
     )), Style()
 
 

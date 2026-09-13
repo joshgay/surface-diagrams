@@ -11,20 +11,23 @@ from .disk_routes import DiskRoute, ItineraryError
 
 @dataclass(frozen=True)
 class BorderedReferenceDiagram:
-    """Supplied vertical-plane reference arcs for Type I boundaries.
+    """Supplied vertical-plane reference arcs for Type I and top/bottom Type II.
 
     This presentation is independent of the certified closed-surface mesh;
     it is not accepted as a CutSystem or as a DiskRoute chart binding.
     """
     surface: object
+    pair_bank: str = "a"
 
     def drawing(self, style):
         from dataclasses import replace
         from .genus import GenusSurface
         surface=self.surface
         last=2*surface.genus+2
-        if surface.type_ii:
-            raise NotImplementedError('reference arcs currently support Type I boundaries only')
+        if any(pair.side in ('left','right') for pair in surface.type_ii):
+            raise NotImplementedError('side Type II reference spokes are not implemented yet')
+        if self.pair_bank not in ('a','b'):
+            raise ValueError("pair_bank must be 'a' or 'b'")
         if surface.marks:
             raise NotImplementedError('bordered marked-point reference arcs are not implemented yet')
         outline=presentation(surface)
@@ -41,7 +44,10 @@ class BorderedReferenceDiagram:
             if f'fixed-{slot}' in rims:
                 return surface.boundary_anchor(f'fixed-{slot}',bank).point
             if slot in (1,last):
-                return ((-1 if slot==1 else 1)*surface.width/2,0.)
+                tips=[path[0][1:] for path in outline.contours if abs(path[0][2])<1e-9]
+                tips += [command[-2:] for path in outline.contours for command in path[1:]
+                         if abs(command[-1])<1e-9]
+                return (min(tips) if slot==1 else max(tips))
             hole=(slot-2)//2
             far=outline.handles[2*hole+1]
             return far[0][1:] if slot%2==0 else far[-1][-2:]
@@ -86,11 +92,57 @@ class BorderedReferenceDiagram:
                 layer=GenusDiagram(closed,(NamedCut(number),)).drawing(replace(style,curve_color=color))
                 paths.extend(p for p in layer.paths if p.role=='named-cut')
                 texts.extend(t for t in reference.texts if t.text==str(number))
+        chain=tuple(p for p in paths if p.role in ('named-cut','boundary-reference-arc'))
+        for index,rim in enumerate(r for r in outline.rims if r.role=='type-ii-boundary'):
+            start=surface.boundary_anchor(rim.id,self.pair_bank).point
+            hits=[]
+            for path in chain:
+                for point in _vertical_hits(path.commands,start[0]):
+                    if rim.y*(start[1]-point[1])>1e-8:
+                        hits.append((abs(start[1]-point[1]),point,path.dashed))
+            if not hits:
+                raise ItineraryError('Type II spoke misses the reference chain; change pair placement or bank')
+            _,end,dashed=min(hits,key=lambda item:item[0])
+            number=last+index
+            color=RAINBOW[(number-1)%len(RAINBOW)]
+            paths.append(Path((('M',*start),('L',*end)),color,style.curve_width,
+                              'boundary-reference-spoke',dashed))
+            texts.append(Text(start[0]+8,(start[1]+end[1])/2,str(number),color,9))
         return replace(base,paths=tuple(paths),texts=tuple(texts))
 
     def _repr_svg_(self):
         from .svg import render_svg
         return render_svg(self)
+
+
+def _vertical_hits(commands,x):
+    """Exact line hits and bisected monotone cubic hits, retaining actual paths."""
+    point=None
+    for command in commands:
+        if command[0]=='M':
+            point=command[1:]
+            continue
+        end=command[-2:]
+        if min(point[0],end[0])-1e-9 <= x <= max(point[0],end[0])+1e-9:
+            if abs(end[0]-point[0])<1e-10:
+                if abs(x-point[0])<1e-9:
+                    yield point
+                    yield end
+            elif command[0]=='L':
+                t=(x-point[0])/(end[0]-point[0])
+                yield (x,point[1]+t*(end[1]-point[1]))
+            elif command[0]=='C':
+                curve=(point,command[1:3],command[3:5],end)
+                low,high=0.,1.
+                increasing=end[0]>point[0]
+                for _ in range(48):
+                    mid=(low+high)/2
+                    if (cubic_point(curve,mid)[0]<x)==increasing: low=mid
+                    else: high=mid
+                yield cubic_point(curve,(low+high)/2)
+            else:
+                raise ItineraryError('unsupported reference-spoke target geometry')
+        point=end
 
 
 def _rounded_enclosure(left,right,bottom,top,gap):

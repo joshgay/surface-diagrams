@@ -3,6 +3,16 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Top/bottom Type II reference spokes
+
+`with_reference_arcs(pair_bank="a")` now handles top/bottom Type II pairs, including
+mixed Type I boundaries. Each rim gets a vertical-plane spoke to the first chain
+member directly inward from its chosen a/b anchor; cubic targets are bisected
+rather than snapped to sampled points. Spokes inherit target visibility and
+receive persistent boundary-order numbers/colors. Side Type II and mark spokes
+remain unfinished, as does the certified bordered mesh. Tutorial figure 12 now
+collects the bordered reference families; figure 10 retains attachment guides.
+
 ## All Type I slot reference families
 
 The reference drawing now accepts Type I boundaries at genus cusps as well as
