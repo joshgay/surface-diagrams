@@ -114,6 +114,27 @@ class CutAtlas:
         other = pair.second if locator.side == pair.first else pair.first
         return Crossing(other, 1-locator.position)
 
+    def crossing_on_cut(self, number, *, segment=1, bank='+', position=.5):
+        """Select an explicit numbered segment/bank from the cut-disk guide.
+
+        Segment numbers are 1-based in ParentCut.walk order. Banks match the
+        side pair's first (+) and second (-) sides. These are coordinates for
+        this cellulation, not coordinates invariant under mesh changes.
+        """
+        _position(position)
+        if type(number) is not int or type(segment) is not int or segment < 1:
+            raise ItineraryError('cut and segment numbers must be positive integers')
+        if bank not in ('+', '-'):
+            raise ItineraryError("bank must be '+' or '-'")
+        parents = [p for p in self.system.cellulation.parents if p.number == number]
+        if len(parents) != 1 or segment > len(parents[0].walk):
+            raise ItineraryError('unknown cut or segment number')
+        edge = parents[0].walk[segment-1]
+        pair = self.pairs.get(edge)
+        if pair is None:
+            raise ItineraryError('segment is not a selected cut side')
+        return Crossing(pair.first if bank == '+' else pair.second, position)
+
     def resolve_number(self, number, *, source_chart=None):
         parents = [p for p in self.system.cellulation.parents if p.number == number]
         if len(parents) != 1:

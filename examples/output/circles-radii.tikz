@@ -6,7 +6,8 @@
 \path[use as bounding box] (-162.75,-92.75) rectangle (162.75,92.75);
 \clip (-162.75,-92.75) rectangle (162.75,92.75);
 \begin{scope}
-\clip[even odd rule] (-162.75,-92.75) rectangle (162.75,92.75) (-70,0) ellipse (8 and 8) (0,0) ellipse (14 and 14) (70,0) ellipse (20 and 20);
+\pgfseteorule
+\clip (-162.75,-92.75) rectangle (162.75,92.75) (-70,0) ellipse (8 and 8) (0,0) ellipse (14 and 14) (70,0) ellipse (20 and 20);
 \end{scope}
 % outer-boundary
 \path[fill=none,draw=sdcolor0,line width=1.125bp] (0,0) ellipse [x radius=150,y radius=80];

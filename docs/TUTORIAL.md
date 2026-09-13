@@ -313,7 +313,7 @@ instead of choosing an arbitrary side.
 from surface_diagrams.disk_routes import CutAtlas, Crossing, DiskRoute, MarkPoint
 system = genus_two.cut_system()
 atlas = CutAtlas.build(system)
-save_svg(system.diagram(show_ids=True), "full-side-locators.svg")
+save_svg(system.diagram(show_segments=True), "numbered-segment-locators.svg")
 for parent in system.cellulation.parents:
     print(parent.number, parent.kind, parent.walk)
 ```
@@ -331,13 +331,27 @@ to see the same route in its chart. This dense mesh has many side occurrences;
 zoom the standalone SVG to read their labels. It is kept separate so it does not
 shrink the surface diagrams into unreadable thumbnails.
 
-The runnable tutorial constructs this torus loop by selecting a paired side whose
-two copies lie in the same complementary disk. That selection is a small worked
-example, not an algorithm for choosing any desired homotopy class.
+The guide label `2.1+` means cut 2, segment 1, bank `+`. Use the matching input:
 
-Side IDs currently depend on the presentation mesh. Do not copy them to another
-genus, a different cellulation, or `chain_system(g)` and expect the same curve.
-A friendlier numbered-segment input guide is a visualization priority.
+```python
+torus = GenusSurface(1)
+torus_system = torus.cut_system()
+torus_atlas = CutAtlas.build(torus_system)
+crossing = torus_atlas.crossing_on_cut(2, segment=1, bank="+", position=.37)
+loop = DiskRoute((crossing,), id="torus-loop")
+torus_atlas.route(loop)
+save_svg(torus.with_curves(loop), "numbered-torus-loop.svg")
+save_svg(torus_system.diagram(loop, show_segments=True), "numbered-torus-guide.svg")
+```
+
+Segments follow the parent cut's walk, numbered from 1; `+` and `-` identify the
+paired sides. Position runs from 0 to 1 along the chosen oriented side, so crossing
+to the other bank reverses it to `1-t`. Use `atlas.cross(crossing)` for that operation.
+The plus/minus bank labels do not mean front/back visibility or twist sign.
+
+This is an explicit worked route, not an algorithm for selecting any desired
+homotopy class. Segment numbers and raw side IDs depend on the cellulation; do not
+reuse them with another genus or mesh. `show_ids=True` still reveals the raw IDs.
 
 For genus intersections, use the existing explicit piece declarations, such as
 `intersections=((('alpha', 0), ('beta', 0)),)`, in `with_curves` and the disk

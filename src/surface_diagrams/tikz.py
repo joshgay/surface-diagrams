@@ -101,7 +101,7 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
         # The even-odd rule leaves genuine transparent holes without white masks.
         cutouts = ' '.join(f"{_point(e.x, e.y)} ellipse ({_n(e.rx)} and {_n(e.ry)})"
                            for e in holes)
-        body.extend([r"\begin{scope}", f"\\clip[even odd rule] {frame} {cutouts};"])
+        body.extend([r"\begin{scope}", r"\pgfseteorule", f"\\clip {frame} {cutouts};"])
     for path in drawing.paths:
         options = f"draw={color(path.stroke)},line width={length(path.stroke_width)}"
         if path.dashed:

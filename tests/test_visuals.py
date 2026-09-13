@@ -88,7 +88,7 @@ class VisualsTest(unittest.TestCase):
         figure = Figure(((Panel(circle, 'boundary to point', Style(boundary_shape='circle')),),))
         root = ET.fromstring(render_svg(figure))
         self.assertIsNotNone(root.find('.//{http://www.w3.org/2000/svg}clipPath'))
-        self.assertIn(r"\clip[even odd rule]", render_tikz(figure))
+        self.assertIn(r"\pgfseteorule", render_tikz(figure))
         with self.assertRaises(ValueError):
             Panel(circle, style=Style(background='#fff'))
 

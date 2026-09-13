@@ -13,12 +13,16 @@ class CutDiskDiagram:
     routes: tuple = ()
     intersections: tuple = ()
     show_ids: bool = False
+    show_segments: bool = False
 
     def drawing(self, style):
         atlas = CutAtlas.build(self.system)
         routed = atlas.family(self.routes, intersections=self.intersections)
         by_side = {s: pair for pair in self.system.cellulation.pairs for s in (pair.first, pair.second)}
         numbers = {by_side[s].id: parent.number for parent in self.system.cellulation.parents for s in parent.walk}
+        segments = {by_side[s].id: (parent.number, i)
+                    for parent in self.system.cellulation.parents
+                    for i, s in enumerate(parent.walk, 1)}
         boundaries = {b.side: b.boundary for b in self.system.cellulation.boundaries}
         radii = [max(80, 7*len(chart.sides)) for chart in atlas.charts]
         widths = [2*r+100 for r in radii]
@@ -43,7 +47,10 @@ class CutDiskDiagram:
                     label = side
                 else:
                     pair = by_side[side]
-                    label = str(numbers.get(pair.id, pair.id))+('+' if side == pair.first else '-')
+                    prefix = ('.'.join(map(str, segments[pair.id]))
+                              if self.show_segments and pair.id in segments
+                              else str(numbers.get(pair.id, pair.id)))
+                    label = prefix+('+' if side == pair.first else '-')
                 x, y = (a[0]+b[0])/2, (a[1]+b[1])/2
                 length = hypot(x, y)
                 label_point = point((x+12/radius*x/length, y+12/radius*y/length))

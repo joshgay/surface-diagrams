@@ -7,7 +7,8 @@
 \path[use as bounding box] (-42.75,-52.75) rectangle (42.75,52.75);
 \clip (-42.75,-52.75) rectangle (42.75,52.75);
 \begin{scope}
-\clip[even odd rule] (-42.75,-52.75) rectangle (42.75,52.75) (0,0) ellipse (12 and 12);
+\pgfseteorule
+\clip (-42.75,-52.75) rectangle (42.75,52.75) (0,0) ellipse (12 and 12);
 % arc
 \draw[draw=sdcolor0,line width=1.5bp] (-30,0) -- (-12,0);
 \end{scope}

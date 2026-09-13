@@ -280,7 +280,7 @@ instead of choosing an arbitrary side.</p>
 <pre><code class="language-python">from surface_diagrams.disk_routes import CutAtlas, Crossing, DiskRoute, MarkPoint
 system = genus_two.cut_system()
 atlas = CutAtlas.build(system)
-save_svg(system.diagram(show_ids=True), &quot;full-side-locators.svg&quot;)
+save_svg(system.diagram(show_segments=True), &quot;numbered-segment-locators.svg&quot;)
 for parent in system.cellulation.parents:
     print(parent.number, parent.kind, parent.walk)
 </code></pre>
@@ -294,12 +294,23 @@ both on the surface and with <code>system.diagram(route)</code>.</p>
 to see the same route in its chart. This dense mesh has many side occurrences;
 zoom the standalone SVG to read their labels. It is kept separate so it does not
 shrink the surface diagrams into unreadable thumbnails.</p>
-<p>The runnable tutorial constructs this torus loop by selecting a paired side whose
-two copies lie in the same complementary disk. That selection is a small worked
-example, not an algorithm for choosing any desired homotopy class.</p>
-<p>Side IDs currently depend on the presentation mesh. Do not copy them to another
-genus, a different cellulation, or <code>chain_system(g)</code> and expect the same curve.
-A friendlier numbered-segment input guide is a visualization priority.</p>
+<p>The guide label <code>2.1+</code> means cut 2, segment 1, bank <code>+</code>. Use the matching input:</p>
+<pre><code class="language-python">torus = GenusSurface(1)
+torus_system = torus.cut_system()
+torus_atlas = CutAtlas.build(torus_system)
+crossing = torus_atlas.crossing_on_cut(2, segment=1, bank=&quot;+&quot;, position=.37)
+loop = DiskRoute((crossing,), id=&quot;torus-loop&quot;)
+torus_atlas.route(loop)
+save_svg(torus.with_curves(loop), &quot;numbered-torus-loop.svg&quot;)
+save_svg(torus_system.diagram(loop, show_segments=True), &quot;numbered-torus-guide.svg&quot;)
+</code></pre>
+<p>Segments follow the parent cut&#39;s walk, numbered from 1; <code>+</code> and <code>-</code> identify the
+paired sides. Position runs from 0 to 1 along the chosen oriented side, so crossing
+to the other bank reverses it to <code>1-t</code>. Use <code>atlas.cross(crossing)</code> for that operation.
+The plus/minus bank labels do not mean front/back visibility or twist sign.</p>
+<p>This is an explicit worked route, not an algorithm for selecting any desired
+homotopy class. Segment numbers and raw side IDs depend on the cellulation; do not
+reuse them with another genus or mesh. <code>show_ids=True</code> still reveals the raw IDs.</p>
 <p>For genus intersections, use the existing explicit piece declarations, such as
 <code>intersections=(((&#39;alpha&#39;, 0), (&#39;beta&#39;, 0)),)</code>, in <code>with_curves</code> and the disk
 preview. See <a href="../examples/make_genus_cuts.py">make_genus_cuts.py</a> for a complete

@@ -3,6 +3,13 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Numbered route input update
+
+`CutAtlas.crossing_on_cut(number, segment=1, bank="+", position=.5)` matches
+`system.diagram(show_segments=True)` labels such as `2.1+`. Segment/bank coordinates
+are mesh-specific; bank signs are not visibility or twist signs. The torus tutorial
+now uses this explicit input. Type I/II mesh bindings remain the next major gap.
+
 ## Current checkpoint: September 13, 4:15 continuation
 
 The one-time continuation automation is paused. Endpoint commit a76f1c7 passed

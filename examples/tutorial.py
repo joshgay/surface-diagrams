@@ -61,8 +61,8 @@ def examples():
     )), Style()
     torus = GenusSurface(1)
     atlas = CutAtlas.build(torus.cut_system())
-    side = next(s for s in atlas.pairs if atlas.sides[s].id == atlas.sides[atlas.cross(Crossing(s)).side].id)
-    loop = DiskRoute((Crossing(side,.37),),id='torus-loop')
+    crossing = atlas.crossing_on_cut(2, segment=1, bank='+', position=.37)
+    loop = DiskRoute((crossing,),id='torus-loop')
     yield '09-genus-closed-curves', Figure((
         (Panel(GenusSurface(2).with_curves(NamedCut(2)), 'A known closed curve: NamedCut(2)'),),
         (Panel(torus.with_curves(loop), 'Explicit one-crossing torus route'),),
@@ -95,9 +95,9 @@ def main(out=None):
     (out/"tutorial-gallery.tex").write_text("\n".join(tex)+"\n", encoding="utf-8")
     torus = GenusSurface(1)
     atlas = CutAtlas.build(torus.cut_system())
-    side = next(s for s in atlas.pairs if atlas.sides[s].id == atlas.sides[atlas.cross(Crossing(s)).side].id)
-    loop = DiskRoute((Crossing(side,.37),), id='torus-loop')
-    save_svg(torus.cut_system().diagram(loop), out/'09-torus-cut-disk-detail.svg',
+    crossing = atlas.crossing_on_cut(2, segment=1, bank='+', position=.37)
+    loop = DiskRoute((crossing,), id='torus-loop')
+    save_svg(torus.cut_system().diagram(loop, show_segments=True), out/'09-torus-cut-disk-detail.svg',
              title='Full-resolution torus cut-disk diagnostic; zoom to read side labels')
     print(f'Generated {count} SVG tutorial figures plus a detailed cut-disk SVG and {count} TikZ counterparts in {out.resolve()}')
 

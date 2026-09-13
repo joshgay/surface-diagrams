@@ -21,6 +21,22 @@ class DiskRouteTests(unittest.TestCase):
         self.system = chain_system(1)
         self.atlas = CutAtlas.build(self.system)
 
+    def test_numbered_segment_locator_matches_guide_and_reversal(self):
+        crossing = self.atlas.crossing_on_cut(2, segment=1, bank='+', position=.4)
+        self.assertEqual(crossing, Crossing('c2.e1+', .4))
+        reverse = self.atlas.crossing_on_cut(2, segment=1, bank='-', position=.6)
+        self.assertEqual(self.atlas.cross(crossing), reverse)
+        self.assertEqual(len(self.atlas.route(DiskRoute((crossing,))).pieces), 1)
+        xml = ET.fromstring(render_svg(self.system.diagram(show_segments=True)))
+        labels = [n.text for n in xml.iter()]
+        self.assertIn('2.1+', labels)
+        self.assertIn('2.1-', labels)
+        for kw in ({'segment':0}, {'segment':999}, {'segment':True}, {'bank':'front'}, {'position':2}):
+            with self.assertRaises(ItineraryError):
+                self.atlas.crossing_on_cut(2, **kw)
+        with self.assertRaises(ItineraryError):
+            self.atlas.crossing_on_cut(999)
+
     def test_one_crossing_closed_curve_and_nonseparation(self):
         route = DiskRoute((Crossing('c2.e1+', .4),))
         result = self.atlas.route(route)

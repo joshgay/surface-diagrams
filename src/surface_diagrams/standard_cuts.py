@@ -19,9 +19,9 @@ class CutSystem:
     def validate(self):
         return validate_cut_system(self.cellulation, self.surface)
 
-    def diagram(self, *routes, show_ids=False, intersections=()):
+    def diagram(self, *routes, show_ids=False, show_segments=False, intersections=()):
         from .cut_diagrams import CutDiskDiagram
-        return CutDiskDiagram(self, tuple(routes), tuple(intersections), show_ids)
+        return CutDiskDiagram(self, tuple(routes), tuple(intersections), show_ids, show_segments)
 
     @property
     def numbers(self):
