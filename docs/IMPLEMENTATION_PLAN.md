@@ -174,3 +174,7 @@ The checked bordered mesh is still a separate unfinished requirement.
 All Type I slots now have supplied vertical-plane reference-family drawings.
 Next: Type II boundary connections and marked-point spokes; certified bordered
 mesh bindings remain distinct from these presentation diagrams.
+
+Standard top/bottom Type II spokes and one inner-bank pair per side now have
+supplied drawings. Remaining boundary variants and marked-point spokes must be
+bound explicitly; the reference renderer no longer relies on a closed mesh.

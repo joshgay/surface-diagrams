@@ -3,6 +3,18 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Side Type II spokes and independent presentation geometry
+
+Standard side pairs now connect their inner a anchors to the midpoint of the
+outer odd member's upper/lower branch, with inward-tangent cubic spokes. One pair
+per side is supported, also mixed with top/bottom pairs and interior Type I rims.
+Explicit exclusions: outer bank b for side pairs, repeated same-side pairs, Type I
+end rims combined with side pairs, and marks. These cases need further bindings.
+The supplied reference drawing no longer asks the closed-surface mesh to validate
+it; direct even-wrap geometry avoids the unsupported height-150 closed mesh case.
+The certified mesh validator itself is unchanged. Tutorial figure 12 includes a
+mixed side/top example.
+
 ## Top/bottom Type II reference spokes
 
 `with_reference_arcs(pair_bank="a")` now handles top/bottom Type II pairs, including

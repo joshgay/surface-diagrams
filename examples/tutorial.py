@@ -85,6 +85,8 @@ def examples():
                'Type I cusp boundaries: attached arcs and close rim enclosures'),),
         (Panel(GenusSurface(2,type_ii=(BoundaryPair('top'),)).with_reference_arcs(),
                'Type II top/bottom boundaries: vertical-plane spokes'),),
+        (Panel(GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('top'))).with_reference_arcs(),
+               'Type II side and top/bottom pairs: inner-bank spokes'),),
     )), Style()
 
 

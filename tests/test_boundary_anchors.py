@@ -53,7 +53,7 @@ class BoundaryAnchorTests(unittest.TestCase):
                     {outline.handles[1][0][1:],outline.handles[-1][-1][-2:]})
                 self.assertIn('boundary-reference-arc',render_tikz(surface.with_reference_arcs()))
                 with self.assertRaises(NotImplementedError): surface.cut_system()
-        for surface in (GenusSurface(type_ii=(BoundaryPair('left'),)),):
+        for surface in (GenusSurface(type_ii=(BoundaryPair('left'),BoundaryPair('left'))),):
             with self.assertRaises(NotImplementedError): render_svg(surface.with_reference_arcs())
 
     def test_all_type_i_slots_attach_and_opened_rims_stay_inside_wrap(self):
@@ -120,3 +120,31 @@ class BoundaryAnchorTests(unittest.TestCase):
         hit,=tuple(_vertical_hits(commands,1.5))
         self.assertAlmostEqual(hit[0],1.5,places=12)
         self.assertAlmostEqual(hit[1],.75,places=12)
+
+    def test_side_pair_spokes_use_inner_rim_banks_and_actual_midpoints(self):
+        from surface_diagrams.mesh_atlas import cubic_point
+        for side in ('left','right'):
+            for view in ('above','below'):
+                surface=GenusSurface(2,type_ii=(BoundaryPair(side),),view_vertical=view)
+                d=layout(surface.with_reference_arcs(),Style())
+                spokes=[p for p in d.paths if p.role=='boundary-reference-spoke']
+                self.assertEqual(len(spokes),2)
+                expected={surface.boundary_anchor(f'pair-1-{sign}','a').point for sign in ('upper','lower')}
+                self.assertEqual({p.commands[0][1:] for p in spokes},expected)
+                mids=[]
+                for path in d.paths:
+                    if path.role=='named-cut' and len(path.commands)==2 and path.commands[1][0]=='C':
+                        cmd=path.commands[1]
+                        mids.append(cubic_point((path.commands[0][1:],cmd[1:3],cmd[3:5],cmd[-2:]),.5))
+                for spoke in spokes:
+                    self.assertIn(spoke.commands[-1][-2:],mids)
+                    self.assertEqual(spoke.commands[1][0],'C')
+                self.assertIn('boundary-reference-spoke',render_svg(surface.with_reference_arcs()))
+        with self.assertRaises(NotImplementedError):
+            render_svg(GenusSurface(type_ii=(BoundaryPair('left'),)).with_reference_arcs(pair_bank='b'))
+
+    def test_reference_presentation_does_not_require_closed_mesh(self):
+        from unittest.mock import patch
+        surface=GenusSurface(2,type_ii=(BoundaryPair('left'),))
+        with patch('surface_diagrams.genus_diagrams.genus_binding',side_effect=AssertionError('mesh requested')):
+            self.assertIn('boundary-reference-spoke',render_svg(surface.with_reference_arcs()))

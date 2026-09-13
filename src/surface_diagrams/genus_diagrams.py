@@ -21,21 +21,21 @@ class BorderedReferenceDiagram:
 
     def drawing(self, style):
         from dataclasses import replace
-        from .genus import GenusSurface
         surface=self.surface
         last=2*surface.genus+2
-        if any(pair.side in ('left','right') for pair in surface.type_ii):
-            raise NotImplementedError('side Type II reference spokes are not implemented yet')
+        side_pairs=[pair.side for pair in surface.type_ii if pair.side in ('left','right')]
+        if len(side_pairs)!=len(set(side_pairs)):
+            raise NotImplementedError('one Type II pair per side is currently supported')
+        if side_pairs and self.pair_bank!='a':
+            raise NotImplementedError('side Type II spokes currently use inner bank a')
+        if any(fixed.slot in (1,last) for fixed in surface.type_i) and side_pairs:
+            raise NotImplementedError('combined Type I end rims and side Type II spokes need separate binding')
         if self.pair_bank not in ('a','b'):
             raise ValueError("pair_bank must be 'a' or 'b'")
         if surface.marks:
             raise NotImplementedError('bordered marked-point reference arcs are not implemented yet')
         outline=presentation(surface)
         base=outline.drawing(style)
-        closed=GenusSurface(surface.genus,handle_spacing=surface.handle_spacing,
-            height=surface.height,view_vertical=surface.view_vertical,
-            view_horizontal=surface.view_horizontal)
-        reference=GenusDiagram(closed,show_cuts=True).drawing(style)
         paths,texts=list(base.paths),[]
         rims={rim.id:rim for rim in outline.rims}
         vy=1 if surface.view_vertical=='above' else -1
@@ -52,7 +52,9 @@ class BorderedReferenceDiagram:
             far=outline.handles[2*hole+1]
             return far[0][1:] if slot%2==0 else far[-1][-2:]
 
+        members={}
         for number in range(1,2*surface.genus+2):
+            begin=len(paths)
             color=RAINBOW[(number-1)%len(RAINBOW)]
             if number%2:
                 # The corridor member joins consecutive vertical-plane slots.
@@ -89,30 +91,64 @@ class BorderedReferenceDiagram:
                 _append_paths(paths,pieces,color,style.curve_width,'named-cut')
                 texts.append(Text((min(xs)+max(xs))/2,max(ys)+gap+9,str(number),color,10))
             else:
-                layer=GenusDiagram(closed,(NamedCut(number),)).drawing(replace(style,curve_color=color))
-                paths.extend(p for p in layer.paths if p.role=='named-cut')
-                texts.extend(t for t in reference.texts if t.text==str(number))
+                center=(number//2-1-(surface.genus-1)/2)*surface.handle_spacing
+                radius=surface.handle_spacing*.335
+                ry=min(surface.height*.17,surface.handle_spacing*.17)
+                points=_ellipse_reference(center,radius,ry)
+                far=outline.handles[number-1]
+                pieces=_cusp_visibility((('front',points),),far[0][1:],far[-1][-2:],vy)
+                _append_paths(paths,pieces,color,style.curve_width,'named-cut')
+                texts.append(Text(center,ry+9,str(number),color,10))
+            members[number]=tuple(paths[begin:])
         chain=tuple(p for p in paths if p.role in ('named-cut','boundary-reference-arc'))
         for index,rim in enumerate(r for r in outline.rims if r.role=='type-ii-boundary'):
             start=surface.boundary_anchor(rim.id,self.pair_bank).point
-            hits=[]
-            for path in chain:
-                for point in _vertical_hits(path.commands,start[0]):
-                    if rim.y*(start[1]-point[1])>1e-8:
-                        hits.append((abs(start[1]-point[1]),point,path.dashed))
-            if not hits:
-                raise ItineraryError('Type II spoke misses the reference chain; change pair placement or bank')
-            _,end,dashed=min(hits,key=lambda item:item[0])
+            if rim.normal[0]:
+                number=1 if rim.x<0 else last-1
+                upper=rim.y>0
+                def midpoint(path):
+                    command=path.commands[1]
+                    return cubic_point((path.commands[0][1:],command[1:3],command[3:5],command[-2:]),.5)
+                target=(max if upper else min)(members[number],key=lambda path:midpoint(path)[1])
+                end=midpoint(target)
+                inward=end[0]-start[0]
+                commands=(('M',*start),('C',start[0]+.7*inward,start[1],
+                            end[0],end[1]+.3*(start[1]-end[1]),*end))
+                dashed=target.dashed
+            else:
+                hits=[]
+                for path in chain:
+                    for point in _vertical_hits(path.commands,start[0]):
+                        if rim.y*(start[1]-point[1])>1e-8:
+                            hits.append((abs(start[1]-point[1]),point,path.dashed))
+                if not hits:
+                    raise ItineraryError('Type II spoke misses the reference chain; change pair placement or bank')
+                _,end,dashed=min(hits,key=lambda item:item[0])
+                commands=(('M',*start),('L',*end))
             number=last+index
             color=RAINBOW[(number-1)%len(RAINBOW)]
-            paths.append(Path((('M',*start),('L',*end)),color,style.curve_width,
-                              'boundary-reference-spoke',dashed))
+            paths.append(Path(commands,color,style.curve_width,'boundary-reference-spoke',dashed))
             texts.append(Text(start[0]+8,(start[1]+end[1])/2,str(number),color,9))
         return replace(base,paths=tuple(paths),texts=tuple(texts))
 
     def _repr_svg_(self):
         from .svg import render_svg
         return render_svg(self)
+
+
+def _ellipse_reference(center,rx,ry):
+    """The standard even wrap, sampled from its four cubic quarters."""
+    k=.5522847498307936
+    quarters=(((rx,0),(rx,k*ry),(k*rx,ry),(0,ry)),
+              ((0,ry),(-k*rx,ry),(-rx,k*ry),(-rx,0)),
+              ((-rx,0),(-rx,-k*ry),(-k*rx,-ry),(0,-ry)),
+              ((0,-ry),(k*rx,-ry),(rx,-k*ry),(rx,0)))
+    points=[]
+    for quarter in quarters:
+        for i in range(25):
+            x,y=cubic_point(quarter,i/24)
+            points.append((center+x,y))
+    return tuple(points)
 
 
 def _vertical_hits(commands,x):

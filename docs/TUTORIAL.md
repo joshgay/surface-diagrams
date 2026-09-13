@@ -400,7 +400,13 @@ save_svg(top_pairs.with_reference_arcs(pair_bank="a"), "type-ii-spokes.svg")
 Each spoke goes from bank `a` (or `b`) to the first reference member directly
 inward from that anchor. It ends on that member's actual line or cubic and
 inherits its visible/hidden style. New spoke colors and numbers follow boundary
-order. Side Type II pairs and marked-point spokes remain unsupported.
+order. One Type II pair at each side is supported too, using its inner bank `a`.
+Its curved spoke joins the midpoint of the upper/lower outer corridor member;
+the curve starts tangent to the inward direction so it stays away from the collar.
+Side-pair bank `b`, multiple pairs on the same side, a Type I end rim combined
+with side pairs, and marked-point spokes remain unsupported. The reference
+drawing is independent of the closed-surface mesh, including at the taller
+height used by side pairs.
 
 ![Type I reference arcs and Type II vertical-plane spokes](../examples/output/tutorial/12-bordered-reference-families.svg)
 
