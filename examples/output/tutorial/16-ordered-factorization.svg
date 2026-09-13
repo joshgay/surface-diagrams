@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471 774.5" width="471" height="774.5" role="img">
+<title>16-ordered-factorization</title>
+<path class="arc" d="M 163 633.75 L 208 633.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 208 422.25 L 253 422.25" fill="none" stroke="#168aad" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 163 210.75 L 208 210.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 708.5 L 371 632.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 708.5 L 407 632.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 708.5 L 443 632.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 632.75 L 385.4 618.35 M 392.6 611.15 L 407 596.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 632.75 L 371 596.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 632.75 L 443 596.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 596.75 L 371 521" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 596.75 L 407 521" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 596.75 L 443 521" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 521 L 371 497" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 521 L 407 497" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 521 L 443 497" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 497 L 371 421.25" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 497 L 407 421.25" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 497 L 443 421.25" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 421.25 L 371 385.25" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 421.25 L 443 385.25" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 421.25 L 428.6 406.85 M 421.4 399.65 L 407 385.25" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 385.25 L 371 309.5" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 385.25 L 407 309.5" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 385.25 L 443 309.5" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 309.5 L 371 285.5" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 309.5 L 407 285.5" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 309.5 L 443 285.5" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 285.5 L 371 209.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 285.5 L 407 209.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 285.5 L 443 209.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 209.75 L 385.4 195.35 M 392.6 188.15 L 407 173.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 209.75 L 371 173.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 209.75 L 443 173.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 371 173.75 L 371 98" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 407 173.75 L 407 98" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="braid-strand" d="M 443 173.75 L 443 98" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="factor-braid-block" d="M 449 708.5 L 455 708.5 L 455 521 L 449 521" fill="none" stroke="#000000" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="factor-braid-block" d="M 449 497 L 455 497 L 455 309.5 L 449 309.5" fill="none" stroke="#000000" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="factor-braid-block" d="M 449 285.5 L 455 285.5 L 455 98 L 449 98" fill="none" stroke="#000000" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="factor-group" d="M 80 708.5 L 75 708.5 L 75 309.5 L 80 309.5" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="factor-group" d="M 80 285.5 L 75 285.5 L 75 98 L 80 98" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<ellipse class="outer-boundary" cx="208" cy="633.75" rx="85" ry="50" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="163" cy="633.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="208" cy="633.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="253" cy="633.75" r="4" fill="#006fff"/>
+<ellipse class="outer-boundary" cx="208" cy="422.25" rx="85" ry="50" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="163" cy="422.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="208" cy="422.25" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="253" cy="422.25" r="4" fill="#006fff"/>
+<ellipse class="outer-boundary" cx="208" cy="210.75" rx="85" ry="50" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="marked-point" cx="163" cy="210.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="208" cy="210.75" r="4" fill="#006fff"/>
+<circle class="marked-point" cx="253" cy="210.75" r="4" fill="#006fff"/>
+<text x="208" y="545" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">1. [a]</text>
+<text x="208" y="560" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Half twist on c1</text>
+<text x="208" y="333.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">2. [b]^-1</text>
+<text x="208" y="348.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Inverse half twist on c2</text>
+<text x="208" y="122" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">3. [a-again]</text>
+<text x="208" y="137" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Same support c1; distinct factor ID</text>
+<text x="371" y="722.5" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="371" y="90" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="407" y="722.5" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="407" y="90" fill="#e08214" font-size="9" font-family="serif" text-anchor="middle">2</text>
+<text x="443" y="722.5" fill="#b59b00" font-size="9" font-family="serif" text-anchor="middle">3</text>
+<text x="443" y="90" fill="#d73027" font-size="9" font-family="serif" text-anchor="middle">1</text>
+<text x="40.5" y="512" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">block A</text>
+<text x="40.5" y="194.75" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">block B</text>
+<text x="235.5" y="28" fill="#000000" font-size="11" font-family="serif" text-anchor="middle">Product (right-to-left):</text>
+<text x="235.5" y="44" fill="#000000" font-size="11" font-family="serif" text-anchor="middle">[a-again] * [b]^-1 * [a]</text>
+<text x="235.5" y="60" fill="#000000" font-size="11" font-family="serif" text-anchor="middle">Application order: bottom-to-top</text>
+<text x="235.5" y="746.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Supplied supports / braid blocks; no action or equality checked.</text>
+</svg>

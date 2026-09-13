@@ -89,6 +89,15 @@ are unsupported. Mesh side IDs remain technical and chart-dependent. Automatic
 mapping-class action, Hurwitz transformations, homology and signature engines
 are not implemented by these presentation features.
 
+V3 progress: `FactorPanel` and `FactorizationDiagram` now provide application-order
+rows, stable factor IDs distinct from support curves, signed-power labels,
+contiguous groups, complete supplied action-state columns and a continuous
+adjacent braid with persistent strand identities. The default is bottom-to-top
+with an explicit right-to-left product. Standalone braids also accept upward
+traversal without mirroring crossing signs. Tutorial figures 16/17 and their
+SVG/TikZ exports cover planar and bordered examples. These are supplied
+presentations; automatic transformations and certified lifts remain later work.
+
 Curved circular-boundary arcs now use exact left/right rim anchors, with optional
 `start_side` and `end_side` controls and analytical endpoint-hole clearance checks.
 

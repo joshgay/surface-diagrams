@@ -11,7 +11,8 @@ from .primitives import Drawing, Ellipse
 
 def layout(surface: PlanarSurface, style: Style) -> Drawing:
     from .visuals import PlanarDiagram, BraidDiagram, Figure
-    if isinstance(surface, (PlanarDiagram, BraidDiagram, Figure)):
+    from .factorizations import FactorizationDiagram
+    if isinstance(surface, (PlanarDiagram, BraidDiagram, Figure, FactorizationDiagram)):
         return surface.drawing(style)
     from .genus import GenusSurface, genus_layout
     from .cut_diagrams import CutDiskDiagram

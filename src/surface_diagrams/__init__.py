@@ -13,3 +13,6 @@ __all__ += ["ColoredCurve", "PlanarDiagram", "BraidDiagram", "Panel", "Figure", 
 
 from .genus_diagrams import MarkedArc
 __all__ += ["MarkedArc"]
+
+from .factorizations import FactorPanel, FactorizationDiagram
+__all__ += ["FactorPanel", "FactorizationDiagram"]

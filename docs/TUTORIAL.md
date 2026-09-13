@@ -14,7 +14,7 @@ python -m pip install -e .
 python examples/tutorial.py
 ```
 
-This produces fifteen main SVG figures, a full-size cut-disk diagnostic, and fifteen TikZ counterparts in
+This produces seventeen main SVG figures, a full-size cut-disk diagnostic, and seventeen TikZ counterparts in
 [examples/output/tutorial](../examples/output/tutorial/). Open SVG files in a
 browser or vector editor. Circular-hole figures also export to TikZ.
 The [browser edition](TUTORIAL.html) contains the same instructions and figures.
@@ -28,8 +28,10 @@ from surface_diagrams import (
 
 `save_svg(diagram, "figure.svg")` writes a transparent vector image. Use
 `scale=2` to enlarge everything uniformly. `save_tikz(diagram, "figure.tikz")`
-exports supported geometry for a document loading the TikZ package. The new
-TikZ examples are generated, but have not been TeX-compiled on this machine.
+exports supported geometry for a document loading the TikZ package. To compile
+all seventeen TikZ figures, run `pdflatex -halt-on-error tutorial-gallery.tex`
+from `examples/output/tutorial`. The gallery fits both the width and height of
+each figure to the page, including tall factor/action stacks.
 
 ## 2. Use case 1: read a planar surface before entering a curve
 
@@ -227,22 +229,104 @@ save_svg(figure, "factorization.svg")
 
 ![A vertical factor sequence beside corresponding elementary braid drawings](../examples/output/tutorial/06-factorization-and-braids.svg)
 
-A braid is read **top to bottom**. `+i` means the strand currently in position i
-passes over the strand in position i+1; `-i` means under. Positions are 1-based.
+A standalone braid is read **top to bottom** by default. `+i` means the upper
+strand in position i passes over the upper strand in position i+1; `-i` means
+under. Positions are 1-based.
 Colors and endpoint labels follow starting strand identities. The underpass has
 a real gap, so the image remains transparent. `BraidDiagram(3, ())` draws three
 straight strands. This API draws the word and tracks strands; it does not solve
 braid equality or derive a covering correspondence.
+
+Use `BraidDiagram(3, (1, 2), direction="bottom-to-top")` to traverse the supplied
+word upward instead. The first entry is now the bottom crossing. Signs still use
+the same **upper-end** convention: a positive crossing followed upward takes the
+lower-left strand under the lower-right strand. Direction changes neither the
+sign of a generator nor the supplied word; it is not a mirror-image operation.
 
 Write down your multiplication convention alongside a factorization. If the
 rows are operations f1 then f2 in chronological order and maps compose
 right-to-left, the final action is f2*f1. A literal word f1*f2 is a different
 ordering convention. The panel labels do not silently resolve that difference.
 
-For action sequences, put the initial C at the top, then supplied states
-f1(C), f2(f1(C)), and so on below. Reuse colors by cut ID. A caption saying
+For a manually assembled top-to-bottom action sequence, put the initial C at
+the top, then supplied states f1(C), f2(f1(C)), and so on below. Reuse colors by cut ID. A caption saying
 "identity" is not an equality check: comparing the final cut system to C requires
 isotopy and a justified rigidity convention. These remain calculation tasks.
+
+### Ordered factor rows with a continuous braid
+
+`FactorizationDiagram` handles ordering, factor IDs, grouping and row alignment.
+Its factors are supplied in **application order**. It draws bottom to top by
+default: for `(a, b)`, a is the bottom factor and acts first, while the displayed
+right-to-left product is `b*a`. Set `direction="top-to-bottom"` for a descending
+presentation of the same application sequence. Product order stays unchanged.
+
+```python
+from surface_diagrams import FactorPanel, FactorizationDiagram
+
+small = PlanarSurface.row("PPP", spacing=45, height=100, margin=40)
+a_support = PlanarDiagram(small, (
+    ColoredCurve("c1", Arc(1, 2), RAINBOW[0]),
+))
+b_support = PlanarDiagram(small, (
+    ColoredCurve("c2", Arc(2, 3), RAINBOW[4]),
+))
+ordered = FactorizationDiagram((
+    FactorPanel("a", Panel(a_support, "Half twist on c1"),
+                braid_word=(1,), group="block A"),
+    FactorPanel("b", Panel(b_support, "Inverse half twist on c2"),
+                exponent=-1, braid_word=(-2,), group="block A"),
+    FactorPanel("a-again", Panel(a_support, "Same support; distinct factor ID"),
+                braid_word=(1,), group="block B"),
+), strands=3, braid_spacing=36)
+save_svg(ordered, "ordered-factorization.svg")
+save_tikz(ordered, "ordered-factorization.tikz")
+```
+
+![Application-ordered factors with grouped, continuous braid blocks](../examples/output/tutorial/16-ordered-factorization.svg)
+
+The adjacent braid is continuous: strand colors and endpoint identities are
+transported through every block and the intervening space. Its crossing signs
+use the fixed upper-end convention above. Each block gets enough height for its
+supplied crossings; support diagrams are never rescaled. Repeated support curves
+are allowed, but each factor needs a distinct ID. Reusing a support keeps its
+cut IDs, colors, dashing and full itinerary. Group names label contiguous blocks;
+reusing a group name after an intervening group is rejected.
+
+`braid_word` is the **complete supplied block**, including any exponent or
+inverse already encoded by the caller. The renderer does not exponentiate a
+word, derive a lift, cancel adjacent inverse crossings, or verify that it matches
+the support. With `strands` set, every factor must provide a block: `()` means
+straight strands, whereas `None` means no block was supplied and is rejected.
+Omit `strands` and all braid words for a surface-only sequence. An empty factor
+sequence displays product `1` and, if requested, straight strands.
+
+### Supplied action states on bordered surfaces
+
+To add an aligned state column, supply `initial_state=Panel(...)` and a
+`state=Panel(...)` for **every** factor. A factor's state is the supplied image
+after that factor, never an image computed by this renderer. Missing intermediate
+states are rejected so the drawing cannot silently skip an action step.
+
+```python
+bordered = GenusSurface(2, type_i=(TypeIBoundary(6),)).with_reference_arcs()
+subset = bordered.select(2, 4)
+actions = FactorizationDiagram((
+    FactorPanel("t2", Panel(bordered.select(2), "Twist on member 2"),
+                state=Panel(subset, "Selected members 2 and 4")),
+    FactorPanel("t4", Panel(bordered.select(4), "Inverse twist on member 4"),
+                exponent=-1, state=Panel(subset, "Selected members 2 and 4")),
+), initial_state=Panel(subset, "Two disjoint members only"))
+save_svg(actions, "supplied-action-states.svg")
+save_tikz(actions, "supplied-action-states.tikz")
+```
+
+![Bordered support panels and complete supplied action states](../examples/output/tutorial/17-supplied-action-states.svg)
+
+Here the two disjoint support members remain unchanged under twists about either
+member. This is only a selected subset, **not** a filling reference system;
+unchanged pictures do not show that the product is the identity. No action,
+Hurwitz move, substitution or equality algorithm is implemented by these panels.
 
 ## 9. Use case 2: standard nonplanar surfaces and their cuts
 
@@ -571,7 +655,8 @@ must be stated with their assumptions. None of these are implemented by this tut
 | --- | --- |
 | First | Stronger intersecting-family layouts, stable visual IDs and rainbow legends |
 | Next | Finish standard Type I/II cut-system and route drawings; easier route locators and input previews |
-| Next | Refine thesis-style vertical factor/action rows and braid correspondences; supplied Hurwitz/substitution sequences |
+| Available | Application-ordered factor/action rows, stable factor IDs and groups, continuous supplied braid blocks, SVG/TikZ parity |
+| Next | Further supplied Hurwitz/substitution examples and remaining nonplanar route bindings |
 | Next | Complete exports and requested additional diagram-family visualizations with supplied data |
 | Later | Automatic actions/equality and rewrite checks; homology/basis/fundamental-group calculations; Lefschetz invariants |
 

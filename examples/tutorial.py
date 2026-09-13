@@ -3,6 +3,7 @@ from pathlib import Path
 from surface_diagrams import (
     Arc, Loop, PlanarSurface, Style, GenusSurface, TypeIBoundary, BoundaryPair,
     ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure, RAINBOW, save_svg, save_tikz,
+    FactorPanel, FactorizationDiagram,
 )
 from surface_diagrams.genus_diagrams import NamedCut, MarkedArc
 from surface_diagrams.disk_routes import DiskRoute, Crossing, CutAtlas
@@ -106,17 +107,50 @@ def examples():
         for vertical in ('above','below')
     )), Style()
 
+    # Application order is explicit; the continuous braid transports strand
+    # colors across blocks, including the row containing an inverse factor.
+    small = PlanarSurface.row('PPP', spacing=45, height=100, margin=40)
+    a = PlanarDiagram(small, (ColoredCurve('c1', Arc(1,2), RAINBOW[0]),))
+    b = PlanarDiagram(small, (ColoredCurve('c2', Arc(2,3), RAINBOW[4]),))
+    yield '16-ordered-factorization', FactorizationDiagram((
+        FactorPanel('a', Panel(a, 'Half twist on c1'), braid_word=(1,), group='block A'),
+        FactorPanel('b', Panel(b, 'Inverse half twist on c2'), exponent=-1, braid_word=(-2,), group='block A'),
+        FactorPanel('a-again', Panel(a, 'Same support c1; distinct factor ID'), braid_word=(1,), group='block B'),
+    ), strands=3, braid_spacing=36), Style()
+
+    # These two disjoint members are unchanged by twists supported on either
+    # member. They are ONLY a subset, not a filling reference system or an
+    # equality certificate for the product.
+    subset = family.select(2,4)
+    yield '17-supplied-action-states', FactorizationDiagram((
+        FactorPanel('t2', Panel(family.select(2), 'Twist supported on member 2'),
+                    state=Panel(subset, 'Selected members 2 and 4')),
+        FactorPanel('t4', Panel(family.select(4), 'Inverse twist on member 4'), exponent=-1,
+                    state=Panel(subset, 'Selected members 2 and 4')),
+    ), initial_state=Panel(subset, 'Two disjoint members, not the full cut system')), Style()
+
 
 def main(out=None):
     out = Path(out) if out else Path(__file__).parent/'output'/'tutorial'
     out.mkdir(parents=True, exist_ok=True)
     count = 0
     tex = [r"\documentclass{article}", r"\usepackage{tikz,graphicx}",
-           r"\usepackage[margin=15mm]{geometry}", r"\begin{document}"]
+           r"\usepackage[margin=15mm]{geometry}",
+           # Fit both dimensions: tall factor/action stacks must not run off
+           # the page when the gallery scales them to the full text width.
+           r"\newsavebox{\diagram}",
+           r"\newcommand{\tutorialfigure}[1]{%",
+           r"  \sbox{\diagram}{\input{#1}}%",
+           r"  \ifdim\wd\diagram>0.9\linewidth",
+           r"    \sbox{\diagram}{\resizebox{0.9\linewidth}{!}{\usebox{\diagram}}}%",
+           r"  \fi",
+           r"  \ifdim\dimexpr\ht\diagram+\dp\diagram\relax>0.9\textheight",
+           r"    \resizebox*{!}{0.9\textheight}{\usebox{\diagram}}%",
+           r"  \else\usebox{\diagram}\fi}", r"\begin{document}"]
     for name, diagram, style in examples():
         save_svg(diagram, out/(name+'.svg'), style=style, title=name)
         save_tikz(diagram, out/(name+'.tikz'), style=style, title=name)
-        tex.extend([r"\begin{center}", r"\resizebox{0.9\linewidth}{!}{\input{"+name+r".tikz}}",
+        tex.extend([r"\begin{center}", r"\tutorialfigure{"+name+r".tikz}",
                     r"\end{center}", r"\clearpage"])
         count += 1
     tex.append(r"\end{document}")

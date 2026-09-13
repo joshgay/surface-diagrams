@@ -95,17 +95,24 @@ class PlanarDiagram:
 
 @dataclass(frozen=True)
 class BraidDiagram:
-    """Draw signed adjacent crossings, read top to bottom.
+    """Draw signed adjacent crossings in the supplied traversal order.
 
-    +i: the strand in position i passes OVER position i+1 (positions are 1-based).
-    -i: it passes UNDER. Colors track starting strand IDs through crossings.
+    +i: the UPPER strand in position i passes OVER upper position i+1
+    (positions are 1-based); -i passes UNDER. This sign convention is fixed
+    in the drawing, as in the original top-to-bottom API. Colors track starting
+    strand IDs through crossings.
     The empty word draws the identity. No braid equality or lifting is computed.
+    direction defaults to 'top-to-bottom' for compatibility; 'bottom-to-top'
+    starts at the bottom instead. Neither option reverses or simplifies word.
+    Consequently, following +i upward takes the lower-left strand UNDER the
+    lower-right strand. Changing direction does not mirror crossing signs.
     """
     strands: int
     word: tuple = ()
     spacing: float = 30
     step: float = 36
     colors: tuple = RAINBOW
+    direction: str = 'top-to-bottom'
 
     def __post_init__(self):
         if type(self.strands) is not int or self.strands < 1:
@@ -120,46 +127,69 @@ class BraidDiagram:
             raise ValueError('provide at least one strand color')
         for color in self.colors:
             Style(curve_color=color)
+        if self.direction not in ('top-to-bottom', 'bottom-to-top'):
+            raise ValueError('direction must be top-to-bottom or bottom-to-top')
 
     def drawing(self, style):
-        paths, texts = [], []
         levels = max(1, len(self.word))
-        h = levels*self.step
-        xs = [(i-(self.strands-1)/2)*self.spacing for i in range(self.strands)]
-        order = list(range(self.strands))
-        # Straight crossing segments with a genuine gap in the underpass:
-        # transparent backgrounds work without white masks.
         if style.curve_width*4 >= min(self.spacing, self.step):
             raise ValueError('braid strokes are too wide; increase spacing/step or reduce curve_width')
-        gap = min(.24, max(.10, style.curve_width*1.6/self.spacing))
-        for level in range(levels):
-            crossing = self.word[level] if self.word else None
-            left = abs(crossing)-1 if crossing else -2
-            y0, y1 = h/2-level*self.step, h/2-(level+1)*self.step
-            for pos, identity in enumerate(order):
-                dest = left+1 if pos == left else left if pos == left+1 else pos
-                under = (pos == left+1 if crossing and crossing > 0 else pos == left)
-                x0, x1 = xs[pos], xs[dest]
-                def point(t):
-                    return x0+(x1-x0)*t, y0+(y1-y0)*t
-                commands = [('M', x0, y0)]
-                if under:
-                    commands.extend((('L', *point(.5-gap)), ('M', *point(.5+gap))))
-                commands.append(('L', x1, y1))
-                paths.append(Path(tuple(commands), self.colors[identity % len(self.colors)],
-                                  style.curve_width, 'braid-strand'))
-            if crossing:
-                order[left], order[left+1] = order[left+1], order[left]
-        for pos in range(self.strands):
-            texts.append(Text(xs[pos], h/2+8, str(pos+1), self.colors[pos % len(self.colors)], 9))
-            identity = order[pos]
-            texts.append(Text(xs[pos], -h/2-14, str(identity+1), self.colors[identity % len(self.colors)], 9))
+        h = levels*self.step
+        sign = 1 if self.direction == 'bottom-to-top' else -1
+        ys = tuple(sign*(-h/2+i*self.step) for i in range(levels+1))
+        paths, order = _braid_paths(self.strands, self.word or (None,), ys,
+                                    self.spacing, self.colors, style)
+        texts = _braid_labels(self.strands, order, ys[0], ys[-1], self.spacing, self.colors)
         return Drawing(max(self.spacing, (self.strands-1)*self.spacing)+2*style.padding,
                        h+40+2*style.padding, (), tuple(paths), tuple(texts))
 
     def _repr_svg_(self):
         from .svg import render_svg
         return render_svg(self)
+
+
+def _braid_paths(strands, crossings, ys, spacing, colors, style):
+    """One continuous braid through caller-supplied levels, in traversal order.
+
+    None is a straight connector (not a crossing or an algebraic cancellation).
+    Shared by BraidDiagram and the factor-aligned presentation renderer.
+    """
+    paths, order = [], list(range(strands))
+    xs = [(i-(strands-1)/2)*spacing for i in range(strands)]
+    gap = min(.24, max(.10, style.curve_width*1.6/spacing))
+    for crossing, y0, y1 in zip(crossings, ys, ys[1:]):
+        if style.curve_width*4 >= min(spacing, abs(y1-y0) if crossing is not None else spacing):
+            raise ValueError('braid strokes are too wide; increase spacing/step or reduce curve_width')
+        left = abs(crossing)-1 if crossing is not None else -2
+        for pos, identity in enumerate(order):
+            dest = left+1 if pos == left else left if pos == left+1 else pos
+            left_over = crossing is not None and ((crossing > 0) == (y0 > y1))
+            under = crossing is not None and (pos == left+1 if left_over else pos == left)
+            x0, x1 = xs[pos], xs[dest]
+            def point(t):
+                return x0+(x1-x0)*t, y0+(y1-y0)*t
+            commands = [('M', x0, y0)]
+            if under:
+                commands.extend((('L', *point(.5-gap)), ('M', *point(.5+gap))))
+            commands.append(('L', x1, y1))
+            paths.append(Path(tuple(commands), colors[identity % len(colors)],
+                              style.curve_width, 'braid-strand'))
+        if crossing is not None:
+            order[left], order[left+1] = order[left+1], order[left]
+    return tuple(paths), tuple(order)
+
+
+def _braid_labels(strands, order, entry, exit, spacing, colors):
+    texts = []
+    top_to_bottom = entry > exit
+    for pos in range(strands):
+        x = (pos-(strands-1)/2)*spacing
+        texts.append(Text(x, entry+(8 if top_to_bottom else -14),
+                          str(pos+1), colors[pos % len(colors)], 9))
+        identity = order[pos]
+        texts.append(Text(x, exit+(-14 if top_to_bottom else 8),
+                          str(identity+1), colors[identity % len(colors)], 9))
+    return tuple(texts)
 
 
 @dataclass(frozen=True)
