@@ -170,3 +170,7 @@ spokes to those attachments, then complete the bordered cellulation.
 Type I end-boundary reference families are now drawn by `with_reference_arcs()`.
 Next extend to fixed boundaries at genus cusps, then Type II arcs and marks.
 The checked bordered mesh is still a separate unfinished requirement.
+
+All Type I slots now have supplied vertical-plane reference-family drawings.
+Next: Type II boundary connections and marked-point spokes; certified bordered
+mesh bindings remain distinct from these presentation diagrams.

@@ -11,7 +11,7 @@ from .disk_routes import DiskRoute, ItineraryError
 
 @dataclass(frozen=True)
 class BorderedReferenceDiagram:
-    """Supplied vertical-plane reference arcs for end Type I boundaries.
+    """Supplied vertical-plane reference arcs for Type I boundaries.
 
     This presentation is independent of the certified closed-surface mesh;
     it is not accepted as a CutSystem or as a DiskRoute chart binding.
@@ -23,8 +23,8 @@ class BorderedReferenceDiagram:
         from .genus import GenusSurface
         surface=self.surface
         last=2*surface.genus+2
-        if surface.type_ii or any(b.slot not in (1,last) for b in surface.type_i):
-            raise NotImplementedError('reference arcs currently support Type I end boundaries only')
+        if surface.type_ii:
+            raise NotImplementedError('reference arcs currently support Type I boundaries only')
         if surface.marks:
             raise NotImplementedError('bordered marked-point reference arcs are not implemented yet')
         outline=presentation(surface)
@@ -36,22 +36,52 @@ class BorderedReferenceDiagram:
         paths,texts=list(base.paths),[]
         rims={rim.id:rim for rim in outline.rims}
         vy=1 if surface.view_vertical=='above' else -1
+
+        def endpoint(slot, bank):
+            if f'fixed-{slot}' in rims:
+                return surface.boundary_anchor(f'fixed-{slot}',bank).point
+            if slot in (1,last):
+                return ((-1 if slot==1 else 1)*surface.width/2,0.)
+            hole=(slot-2)//2
+            far=outline.handles[2*hole+1]
+            return far[0][1:] if slot%2==0 else far[-1][-2:]
+
         for number in range(1,2*surface.genus+2):
             color=RAINBOW[(number-1)%len(RAINBOW)]
-            boundary='fixed-1' if number==1 else f'fixed-{last}' if number==last-1 else None
-            if boundary in rims:
-                rim=rims[boundary]
-                far=outline.handles[1 if number==1 else -1]
-                cusp=far[0][1:] if number==1 else far[-1][-2:]
+            if number%2:
+                # The corridor member joins consecutive vertical-plane slots.
+                bordered=any(f'fixed-{slot}' in rims for slot in (number,number+1))
                 for sign,bank in ((-vy,'a' if vy>0 else 'b'),(vy,'b' if vy>0 else 'a')):
-                    start=surface.boundary_anchor(boundary,bank).point
-                    width=cusp[0]-start[0]
+                    start,end=endpoint(number,bank),endpoint(number+1,bank)
+                    width=end[0]-start[0]
                     lift=sign*min(surface.height*.12,abs(width)*.32)
-                    controls=(start,(start[0]+width/3,start[1]+lift),
-                              (cusp[0]-width/3,cusp[1]+lift),cusp)
-                    commands=(('M',*start),('C',*controls[1],*controls[2],*cusp))
-                    paths.append(Path(commands,color,style.curve_width,'boundary-reference-arc',sign==vy))
-                texts.append(Text((rim.x+cusp[0])/2,9*vy,str(number),color,10))
+                    commands=(('M',*start),('C',start[0]+width/3,start[1]+lift,
+                                end[0]-width/3,end[1]+lift,*end))
+                    paths.append(Path(commands,color,style.curve_width,
+                                      'boundary-reference-arc' if bordered else 'named-cut',sign==vy))
+                texts.append(Text((start[0]+end[0])/2,(start[1]+end[1])/2+4*vy,
+                                  str(number),color,10))
+            elif any(f'fixed-{slot}' in rims for slot in (number,number+1)):
+                # An opened cusp is wider than the old cusp. A small rounded
+                # rectangle encloses the actual hole/rim control hulls with a
+                # uniform gap, rather than cutting through an opened rim.
+                hole=number//2-1
+                controls=[tuple(cmd[i:i+2]) for path in outline.handles[2*hole:2*hole+2]
+                          for cmd in path for i in range(1,len(cmd),2)]
+                xs=[p[0] for p in controls]; ys=[p[1] for p in controls]
+                for slot in (number,number+1):
+                    rim=rims.get(f'fixed-{slot}')
+                    if rim:
+                        xs.extend((rim.x-rim.depth,rim.x+rim.depth))
+                        ys.extend((-rim.radius,rim.radius))
+                gap=surface.handle_spacing*.035
+                points=_rounded_enclosure(min(xs),max(xs),min(ys),max(ys),gap)
+                def plane_point(slot):
+                    rim=rims.get(f'fixed-{slot}')
+                    return (rim.x,rim.y) if rim else endpoint(slot,'a')
+                pieces=_cusp_visibility((('front',points),),plane_point(number),plane_point(number+1),vy)
+                _append_paths(paths,pieces,color,style.curve_width,'named-cut')
+                texts.append(Text((min(xs)+max(xs))/2,max(ys)+gap+9,str(number),color,10))
             else:
                 layer=GenusDiagram(closed,(NamedCut(number),)).drawing(replace(style,curve_color=color))
                 paths.extend(p for p in layer.paths if p.role=='named-cut')
@@ -61,6 +91,18 @@ class BorderedReferenceDiagram:
     def _repr_svg_(self):
         from .svg import render_svg
         return render_svg(self)
+
+
+def _rounded_enclosure(left,right,bottom,top,gap):
+    """Polyline of a rounded offset box; the supplied hull stays inside it."""
+    from math import cos,sin,pi
+    points=[]
+    for cx,cy,angle in ((right,top,0),(left,top,90),(left,bottom,180),(right,bottom,270)):
+        for i in range(13):
+            t=(angle+90*i/12)*pi/180
+            points.append((cx+gap*cos(t),cy+gap*sin(t)))
+    points.append(points[0])
+    return tuple(points)
 
 
 @dataclass(frozen=True)

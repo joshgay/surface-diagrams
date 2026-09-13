@@ -3,6 +3,17 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## All Type I slot reference families
+
+The reference drawing now accepts Type I boundaries at genus cusps as well as
+outer ends. Odd corridor members use the actual two slot endpoints, opening into
+arcs wherever a boundary is present. Even members around opened cusps use a
+rounded offset enclosure of the hole/rim control hulls, keeping a small gap;
+unopened holes retain the earlier tight wraps. This is presentation geometry,
+not a certified bordered mesh. Type II and marked spokes remain unsupported.
+Validation: 146 tests and 17 tutorial recipes pass; the updated figures were
+visually inspected. The preceding end-boundary commit passed remote CI.
+
 ## Type I end reference arcs
 
 `GenusSurface.with_reference_arcs()` draws the reference family for one or both
@@ -10,9 +21,9 @@ Type I end boundaries. Each end member becomes two vertical-plane arcs joining
 actual rim anchors to the neighboring cusp; interior members retain their IDs,
 colors, and cusp-aligned visibility. Both exports and all four views are covered.
 This separate presentation API does not pretend to supply a certified bordered
-cellulation. Type I genus-cusp boundaries, Type II connections and marks remain
-explicitly unsupported. Tutorial figure 10 now shows the end reference family.
-The user's one-time 9:16 a.m. Eastern continuation is scheduled (COUNT=1).
+cellulation. Type II connections and marks remain explicitly unsupported. Tutorial figure 10 now shows the end reference family.
+The user's one-time 9:16 a.m. Eastern continuation fired during this work; do not
+reschedule it.
 
 ## Boundary-plane endpoint bindings
 

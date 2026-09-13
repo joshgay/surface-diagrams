@@ -98,7 +98,7 @@ class GenusSurface:
             raise ValueError("a fixed slot can have at most one boundary")
 
     def with_reference_arcs(self):
-        """Draw reference arcs for Type I end boundaries (presentation only)."""
+        """Draw reference arcs for Type I boundaries (presentation only)."""
         from .genus_diagrams import BorderedReferenceDiagram
         return BorderedReferenceDiagram(self)
 

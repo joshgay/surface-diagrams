@@ -375,7 +375,7 @@ for attachment in boundary_surface.boundary_anchors():
 attachment = boundary_surface.boundary_anchor("fixed-6", "a")
 ```
 
-Type I boundaries at the two outer ends now have a reference-arc drawing:
+Type I boundaries at outer ends or genus cusps now have a reference-arc drawing:
 
 ```python
 end_bordered = GenusSurface(2, type_i=(TypeIBoundary(1), TypeIBoundary(6)))
@@ -385,9 +385,11 @@ save_tikz(end_bordered.with_reference_arcs(), "end-boundary-reference.tikz")
 
 The end members become two arcs from the rim's vertical-plane attachments to
 the neighboring genus cusp; internal chain members keep their IDs and colors.
-One end boundary also works. This is a supplied reference drawing, not a certified
+Any combination of Type I slots also works. A cusp boundary opens that corridor
+member into two arcs. Its even wrap uses a rounded enclosure of the actual hole
+and rim, with a small clearance, so it cannot run through the newly opened rim. This is a supplied reference drawing, not a certified
 bordered `CutSystem` or a chart in which `DiskRoute` can yet be evaluated.
-Type I boundaries at genus cusps, Type II connections and marked-point spokes
+Type II connections and marked-point spokes
 remain unsupported by `with_reference_arcs()`.
 
 These are exact drawing attachment points, ready for the remaining reference-arc bindings.
