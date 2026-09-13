@@ -361,6 +361,25 @@ not by itself mean the surface curves intersect.
 
 ## 11. Boundary templates and vertical action sequences
 
+`boundary_guide()` labels the actual rim intersections with the vertical plane.
+The short drawing labels (1a, 1b, etc.) map to boundary IDs in the legend. Banks
+`a` and `b` follow each rim's tangent orientation; they do not mean front/back,
+twist sign, or the banks of the numbered cut-disk segments.
+
+```python
+from surface_diagrams import TypeIBoundary
+boundary_surface = GenusSurface(2, type_i=(TypeIBoundary(6),))
+save_svg(boundary_surface.boundary_guide(), "boundary-attachments.svg")
+for attachment in boundary_surface.boundary_anchors():
+    print(attachment.id, attachment.point)
+attachment = boundary_surface.boundary_anchor("fixed-6", "a")
+```
+
+These are exact drawing attachment points, ready for the reference-arc bindings.
+The guide does not yet draw a full bordered cut system or place marked-point
+spokes. Those remain unfinished; `cut_system()` still rejects bordered surfaces.
+
+
 ```python
 from surface_diagrams import TypeIBoundary, BoundaryPair
 bordered = GenusSurface(2, type_i=(TypeIBoundary(6),))

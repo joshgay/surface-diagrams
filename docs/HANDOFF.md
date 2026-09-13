@@ -3,6 +3,17 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Boundary-plane endpoint bindings
+
+`GenusSurface.boundary_anchors()` returns exact rim/vertical-plane attachments
+with boundary IDs and a/b banks. `boundary_anchor(id, bank)` resolves one;
+`boundary_guide()` draws a labeled SVG/TikZ inventory, now in tutorial figure 10.
+The positions are the actual endpoints shared by both half-rims, not rim centers.
+Bank letters track tangent orientation, not front/back or cut-disk banks.
+These are presentation bindings only: connecting reference arcs, marked-point
+bindings and certified Type I/II cellulations still need implementation.
+The previous cusp-transition CI run passed (db2b04a).
+
 ## Numbered route input update
 
 `CutAtlas.crossing_on_cut(number, segment=1, bank="+", position=.5)` matches

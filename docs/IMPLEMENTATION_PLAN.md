@@ -162,3 +162,7 @@ do not fan them through an arbitrary surface chart. Even genus wraps change
 visibility on the projected line through the hole cusps, matching their odd
 neighbors, rather than at y=0. This affects presentation visibility only and
 preserves supplied curve itineraries and the checked cellulation.
+
+Boundary-plane progress: exact named rim attachments and their labeled guide are
+implemented in all views. Next bind connecting reference arcs and marked-point
+spokes to those attachments, then complete the bordered cellulation.

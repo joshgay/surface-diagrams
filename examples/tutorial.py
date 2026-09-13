@@ -68,8 +68,8 @@ def examples():
         (Panel(torus.with_curves(loop), 'Explicit one-crossing torus route'),),
     )), Style()
     yield '10-boundary-surface-templates', Figure((
-        (Panel(GenusSurface(2,type_i=(TypeIBoundary(6),)), 'Type I boundary at right end'),),
-        (Panel(GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('top'))), 'Two Type II pairs: four boundary components'),),
+        (Panel(GenusSurface(2,type_i=(TypeIBoundary(6),)).boundary_guide(), 'Type I: vertical-plane rim attachments'),),
+        (Panel(GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('top'))).boundary_guide(), 'Type II: vertical-plane rim attachments'),),
     )), Style()
     yield '11-hurwitz-and-substitution', Figure((
         (Panel(BraidDiagram(3,(1,2)), '(a,b), a = +1 and b = +2'),

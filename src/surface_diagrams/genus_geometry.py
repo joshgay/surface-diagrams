@@ -19,6 +19,18 @@ def _transform(commands, transform):
 
 
 @dataclass(frozen=True)
+class BoundaryAnchor:
+    """An actual rim/vertical-plane intersection; a/b follow rim orientation."""
+    boundary: str
+    bank: str
+    point: tuple
+
+    @property
+    def id(self):
+        return self.boundary+':'+self.bank
+
+
+@dataclass(frozen=True)
 class Rim:
     id: str
     role: str

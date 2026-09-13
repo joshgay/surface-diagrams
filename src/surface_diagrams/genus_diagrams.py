@@ -10,6 +10,43 @@ from .disk_routes import DiskRoute, ItineraryError
 
 
 @dataclass(frozen=True)
+class BoundaryGuide:
+    """A visual inventory of actual vertical-plane rim attachments."""
+    surface: object
+
+    def drawing(self, style):
+        from dataclasses import replace
+        from .visuals import _shift
+        if self.surface.marks:
+            raise NotImplementedError('bordered marked-point plane bindings are not implemented yet')
+        outline=presentation(self.surface)
+        base=outline.drawing(style)
+        if not outline.rims:
+            return base
+        rows=len(outline.rims)
+        extra=20*rows+18
+        moved=_shift(base,0,extra/2)
+        ellipses,texts=list(moved.ellipses),list(moved.texts)
+        for i,rim in enumerate(outline.rims,1):
+            color=RAINBOW[(i-1)%len(RAINBOW)]
+            for bank,point,direction in zip(('a','b'),rim.anchors,(-1,1)):
+                x,y=point
+                ellipses.append(Ellipse(x,y+extra/2,2,2,color,'none',0,'boundary-anchor'))
+                texts.append(Text(x+direction*10*rim.tangent[0]+8*rim.normal[0],
+                                  y+extra/2+direction*10*rim.tangent[1]+8*rim.normal[1]-3,
+                                  str(i)+bank,color,8))
+            y=-base.height/2+extra/2-20*i
+            texts.append(Text(0,y,f'{i} = {rim.id}   (a / b)',color,10))
+        width=max(base.width,max(len(r.id) for r in outline.rims)*8+120)
+        return replace(moved,width=width,height=base.height+extra,
+                       ellipses=tuple(ellipses),texts=tuple(texts))
+
+    def _repr_svg_(self):
+        from .svg import render_svg
+        return render_svg(self)
+
+
+@dataclass(frozen=True)
 class NamedCut:
     number: int
 

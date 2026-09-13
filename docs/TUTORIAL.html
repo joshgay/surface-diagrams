@@ -317,6 +317,20 @@ preview. See <a href="../examples/make_genus_cuts.py">make_genus_cuts.py</a> for
 intersecting example. A projected crossing between front and back sheets does
 not by itself mean the surface curves intersect.</p>
 <h2>11. Boundary templates and vertical action sequences</h2>
+<p><code>boundary_guide()</code> labels the actual rim intersections with the vertical plane.
+The short drawing labels (1a, 1b, etc.) map to boundary IDs in the legend. Banks
+<code>a</code> and <code>b</code> follow each rim&#39;s tangent orientation; they do not mean front/back,
+twist sign, or the banks of the numbered cut-disk segments.</p>
+<pre><code class="language-python">from surface_diagrams import TypeIBoundary
+boundary_surface = GenusSurface(2, type_i=(TypeIBoundary(6),))
+save_svg(boundary_surface.boundary_guide(), &quot;boundary-attachments.svg&quot;)
+for attachment in boundary_surface.boundary_anchors():
+    print(attachment.id, attachment.point)
+attachment = boundary_surface.boundary_anchor(&quot;fixed-6&quot;, &quot;a&quot;)
+</code></pre>
+<p>These are exact drawing attachment points, ready for the reference-arc bindings.
+The guide does not yet draw a full bordered cut system or place marked-point
+spokes. Those remain unfinished; <code>cut_system()</code> still rejects bordered surfaces.</p>
 <pre><code class="language-python">from surface_diagrams import TypeIBoundary, BoundaryPair
 bordered = GenusSurface(2, type_i=(TypeIBoundary(6),))
 paired = GenusSurface(2, type_ii=(BoundaryPair(&quot;left&quot;), BoundaryPair(&quot;top&quot;)))

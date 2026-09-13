@@ -97,6 +97,25 @@ class GenusSurface:
         if len({b.slot for b in self.type_i}) != len(self.type_i):
             raise ValueError("a fixed slot can have at most one boundary")
 
+    def boundary_anchors(self):
+        """Exact vertical-plane attachments, keyed by boundary ID and bank a/b."""
+        from .genus_geometry import BoundaryAnchor, presentation
+        return tuple(BoundaryAnchor(rim.id, bank, point)
+                     for rim in presentation(self).rims
+                     for bank, point in zip(('a','b'), rim.anchors))
+
+    def boundary_anchor(self, boundary, bank):
+        """Resolve one attachment without guessing a rim center or visible half."""
+        for anchor in self.boundary_anchors():
+            if (anchor.boundary,anchor.bank)==(boundary,bank):
+                return anchor
+        raise ValueError('unknown boundary ID or bank; inspect boundary_anchors()')
+
+    def boundary_guide(self):
+        """Label rim attachment points; does not assert a certified cut system."""
+        from .genus_diagrams import BoundaryGuide
+        return BoundaryGuide(self)
+
     def cut_system(self):
         """The checked cut system for this finite surface presentation."""
         from .genus_mesh import genus_binding

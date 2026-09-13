@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 433.95899904" width="372" height="433.95899904" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 569.95899904" width="372" height="569.95899904" role="img">
 <title>10-boundary-surface-templates</title>
 <path class="surface-outline" d="M 37.5 103.75 C 37.5 79.75 54 59.75 76 59.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 37.5 103.75 C 37.5 127.75 54 147.75 76 147.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -12,28 +12,53 @@
 <path class="handle" d="M 212.235078925 100.98812 C 224.5 115.85 257.5 115.85 271.629335275 102.74108" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 334.5 128.75 C 337.951779686 128.75 340.75 117.557118746 340.75 103.75 C 340.75 89.9428812542 337.951779686 78.75 334.5 78.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-i-boundary" d="M 334.5 128.75 C 331.048220314 128.75 328.25 117.557118746 328.25 103.75 C 328.25 89.9428812542 331.048220314 78.75 334.5 78.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 55.1 320.72949952 C 55.1 307.474665524 47.220211597 296.72949952 37.5 296.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 55.1 320.72949952 C 55.1 333.984333516 47.220211597 344.72949952 37.5 344.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 37.5 242.72949952 C 57.3 242.72949952 56.2 254.72949952 76 254.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 37.5 398.72949952 C 57.3 398.72949952 56.2 386.72949952 76 386.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 76 254.72949952 C 102.986666667 254.97237952 129.973333333 255.12587968 156.96 255.19 C 163.296 255.205054336 164 249.25 164 243.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 76 386.72949952 C 102.986666667 386.48661952 129.973333333 386.33311936 156.96 386.26899904 C 163.296 386.253944704 164 392.20899904 164 397.70899904" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 208 243.75 C 208 249.25 208.704 255.205054336 215.04 255.19 C 242.026666667 255.12587968 269.013333333 254.97237952 296 254.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 208 397.70899904 C 208 392.20899904 208.704 386.253944704 215.04 386.26899904 C 242.026666667 386.33311936 269.013333333 386.48661952 296 386.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 334.5 320.72949952 C 334.5 284.72949952 318 254.72949952 296 254.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="surface-outline" d="M 334.5 320.72949952 C 334.5 356.72949952 318 386.72949952 296 386.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 98 323.58949952 C 107.9 300.70949952 154.1 300.70949952 164 323.58949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 102.235078925 317.13905552 C 114.5 336.45949952 147.5 336.45949952 161.629335275 319.41790352" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 208 323.58949952 C 217.9 300.70949952 264.1 300.70949952 274 323.58949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 212.235078925 317.13905552 C 224.5 336.45949952 257.5 336.45949952 271.629335275 319.41790352" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="type-ii-boundary" d="M 37.5 296.72949952 C 33.7720779386 296.72949952 30.75 284.641187765 30.75 269.72949952 C 30.75 254.817811275 33.7720779386 242.72949952 37.5 242.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="type-ii-boundary" d="M 37.5 296.72949952 C 41.2279220614 296.72949952 44.25 284.641187765 44.25 269.72949952 C 44.25 254.817811275 41.2279220614 242.72949952 37.5 242.72949952" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
-<path class="type-ii-boundary" d="M 37.5 344.72949952 C 33.7720779386 344.72949952 30.75 356.817811275 30.75 371.72949952 C 30.75 386.641187765 33.7720779386 398.72949952 37.5 398.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="type-ii-boundary" d="M 37.5 344.72949952 C 41.2279220614 344.72949952 44.25 356.817811275 44.25 371.72949952 C 44.25 386.641187765 41.2279220614 398.72949952 37.5 398.72949952" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
-<path class="type-ii-boundary" d="M 164 243.75 C 164 240.712433876 173.849735504 238.25 186 238.25 C 198.150264496 238.25 208 240.712433876 208 243.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="type-ii-boundary" d="M 164 243.75 C 164 246.787566124 173.849735504 249.25 186 249.25 C 198.150264496 249.25 208 246.787566124 208 243.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="type-ii-boundary" d="M 164 397.70899904 C 164 400.746565164 173.849735504 403.20899904 186 403.20899904 C 198.150264496 403.20899904 208 400.746565164 208 397.70899904" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="type-ii-boundary" d="M 164 397.70899904 C 164 394.671432916 173.849735504 392.20899904 186 392.20899904 C 198.150264496 392.20899904 208 394.671432916 208 397.70899904" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
-<text x="186" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Type I boundary at right end</text>
-<text x="186" y="208.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Two Type II pairs: four boundary components</text>
+<path class="surface-outline" d="M 55.1 358.72949952 C 55.1 345.474665524 47.220211597 334.72949952 37.5 334.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 55.1 358.72949952 C 55.1 371.984333516 47.220211597 382.72949952 37.5 382.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 37.5 280.72949952 C 57.3 280.72949952 56.2 292.72949952 76 292.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 37.5 436.72949952 C 57.3 436.72949952 56.2 424.72949952 76 424.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 76 292.72949952 C 102.986666667 292.97237952 129.973333333 293.12587968 156.96 293.19 C 163.296 293.205054336 164 287.25 164 281.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 76 424.72949952 C 102.986666667 424.48661952 129.973333333 424.33311936 156.96 424.26899904 C 163.296 424.253944704 164 430.20899904 164 435.70899904" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 208 281.75 C 208 287.25 208.704 293.205054336 215.04 293.19 C 242.026666667 293.12587968 269.013333333 292.97237952 296 292.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 208 435.70899904 C 208 430.20899904 208.704 424.253944704 215.04 424.26899904 C 242.026666667 424.33311936 269.013333333 424.48661952 296 424.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 334.5 358.72949952 C 334.5 322.72949952 318 292.72949952 296 292.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="surface-outline" d="M 334.5 358.72949952 C 334.5 394.72949952 318 424.72949952 296 424.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 98 361.58949952 C 107.9 338.70949952 154.1 338.70949952 164 361.58949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 102.235078925 355.13905552 C 114.5 374.45949952 147.5 374.45949952 161.629335275 357.41790352" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 208 361.58949952 C 217.9 338.70949952 264.1 338.70949952 274 361.58949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 212.235078925 355.13905552 C 224.5 374.45949952 257.5 374.45949952 271.629335275 357.41790352" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="type-ii-boundary" d="M 37.5 334.72949952 C 33.7720779386 334.72949952 30.75 322.641187765 30.75 307.72949952 C 30.75 292.817811275 33.7720779386 280.72949952 37.5 280.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="type-ii-boundary" d="M 37.5 334.72949952 C 41.2279220614 334.72949952 44.25 322.641187765 44.25 307.72949952 C 44.25 292.817811275 41.2279220614 280.72949952 37.5 280.72949952" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="type-ii-boundary" d="M 37.5 382.72949952 C 33.7720779386 382.72949952 30.75 394.817811275 30.75 409.72949952 C 30.75 424.641187765 33.7720779386 436.72949952 37.5 436.72949952" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="type-ii-boundary" d="M 37.5 382.72949952 C 41.2279220614 382.72949952 44.25 394.817811275 44.25 409.72949952 C 44.25 424.641187765 41.2279220614 436.72949952 37.5 436.72949952" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<path class="type-ii-boundary" d="M 164 281.75 C 164 278.712433876 173.849735504 276.25 186 276.25 C 198.150264496 276.25 208 278.712433876 208 281.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="type-ii-boundary" d="M 164 281.75 C 164 284.787566124 173.849735504 287.25 186 287.25 C 198.150264496 287.25 208 284.787566124 208 281.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="type-ii-boundary" d="M 164 435.70899904 C 164 438.746565164 173.849735504 441.20899904 186 441.20899904 C 198.150264496 441.20899904 208 438.746565164 208 435.70899904" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="type-ii-boundary" d="M 164 435.70899904 C 164 432.671432916 173.849735504 430.20899904 186 430.20899904 C 198.150264496 430.20899904 208 432.671432916 208 435.70899904" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<ellipse class="boundary-anchor" cx="334.5" cy="128.75" rx="2" ry="2" fill="#d73027" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="334.5" cy="78.75" rx="2" ry="2" fill="#d73027" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="37.5" cy="334.72949952" rx="2" ry="2" fill="#d73027" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="37.5" cy="280.72949952" rx="2" ry="2" fill="#d73027" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="37.5" cy="382.72949952" rx="2" ry="2" fill="#e08214" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="37.5" cy="436.72949952" rx="2" ry="2" fill="#e08214" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="164" cy="281.75" rx="2" ry="2" fill="#b59b00" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="208" cy="281.75" rx="2" ry="2" fill="#b59b00" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="164" cy="435.70899904" rx="2" ry="2" fill="#23964f" stroke="none" stroke-width="0"/>
+<ellipse class="boundary-anchor" cx="208" cy="435.70899904" rx="2" ry="2" fill="#23964f" stroke="none" stroke-width="0"/>
+<text x="342.5" y="141.75" fill="#d73027" font-size="8" font-family="serif" text-anchor="middle">1a</text>
+<text x="342.5" y="71.75" fill="#d73027" font-size="8" font-family="serif" text-anchor="middle">1b</text>
+<text x="186" y="192.5" fill="#d73027" font-size="10" font-family="serif" text-anchor="middle">1 = fixed-6   (a / b)</text>
+<text x="186" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Type I: vertical-plane rim attachments</text>
+<text x="29.5" y="347.72949952" fill="#d73027" font-size="8" font-family="serif" text-anchor="middle">1a</text>
+<text x="29.5" y="273.72949952" fill="#d73027" font-size="8" font-family="serif" text-anchor="middle">1b</text>
+<text x="186" y="479.95899904" fill="#d73027" font-size="10" font-family="serif" text-anchor="middle">1 = pair-1-upper   (a / b)</text>
+<text x="29.5" y="375.72949952" fill="#e08214" font-size="8" font-family="serif" text-anchor="middle">2a</text>
+<text x="29.5" y="449.72949952" fill="#e08214" font-size="8" font-family="serif" text-anchor="middle">2b</text>
+<text x="186" y="499.95899904" fill="#e08214" font-size="10" font-family="serif" text-anchor="middle">2 = pair-1-lower   (a / b)</text>
+<text x="154" y="276.75" fill="#b59b00" font-size="8" font-family="serif" text-anchor="middle">3a</text>
+<text x="218" y="276.75" fill="#b59b00" font-size="8" font-family="serif" text-anchor="middle">3b</text>
+<text x="186" y="519.95899904" fill="#b59b00" font-size="10" font-family="serif" text-anchor="middle">3 = pair-2-upper   (a / b)</text>
+<text x="154" y="446.70899904" fill="#23964f" font-size="8" font-family="serif" text-anchor="middle">4a</text>
+<text x="218" y="446.70899904" fill="#23964f" font-size="8" font-family="serif" text-anchor="middle">4b</text>
+<text x="186" y="539.95899904" fill="#23964f" font-size="10" font-family="serif" text-anchor="middle">4 = pair-2-lower   (a / b)</text>
+<text x="186" y="246.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Type II: vertical-plane rim attachments</text>
 </svg>
