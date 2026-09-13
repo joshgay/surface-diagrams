@@ -20,19 +20,28 @@ New presentation records: ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figu
 Genus cut systems use numbered rainbow colors. Independent planar overlays are
 opt-in and do not certify intersections; supplied states are not computed actions.
 
-**Next action: V1/V2.** Add explicit left/right rim anchors for curved planar
-arcs, improve intersecting-family layout and visual labels, then finish standard
-Type I/II cut-system/route bindings and make genus route locators easier to select.
-Refine vertical action/factor rows with Richard's supplied examples. Calculation
-engines are later work. New TikZ examples need compilation when TeX is available.
-The separate work Richard mentioned still has no supplied location.
+**Current visual refinements:** balanced Type I end clearance is pushed in
+`e4f7b32`. The four-view fixture now has a 44-unit right strip, comparable to its
+44-unit inter-hole gap and roughly 43-unit opposite strip. The missing generated
+LaTeX gallery update was also fixed; GitHub run 34735538354 passed all jobs.
 
-Validation of this delivery: all 134 tests pass on Python 3.12, including five
-new overlay/braid/panel tests. All fourteen Python tutorial blocks executed.
-The eleven embedded images loaded in a browser; figures were visually inspected.
-A full-size cut-disk detail is linked separately to keep surface examples readable.
-The existing 129-test checkpoint is historical below. New TikZ outputs were
-serialized but not compiled because no TeX executable was found on PATH.
+The next batch changes the default to above/right, makes planar reference cuts
+straight symmetry-axis intervals, tightens even genus cuts and applies Richard's
+confirmed opposite visibility patterns (above view: odd solid below; even solid
+above). `PlanarSurface.with_cut_system()` supplies the standard colored intervals.
+`MarkedArc` supplies straight visual arcs between automatic marks while preserving
+explicit DiskRoute itinerary behavior. See the tutorial for the two input types.
+
+Validation: all 138 tests pass on Python 3.12; the three new appearance tests
+also pass on Python 3.9. All fourteen tutorial Python blocks ran, and the
+regenerated figures were visually inspected. CI now also
+regenerates genus and tutorial figures in its Python 3.12 job so stale outputs
+cannot be missed by the gallery-only generation step.
+
+**Next action after this batch: V1/V2.** Add left/right curved boundary anchors,
+improve family layouts/labels, then finish Type I/II cut bindings and make genus
+route locators easier to select. Gentle top/bottom undulation remains a minor
+later refinement. Calculation engines remain behind requested visualizations.
 
 The earlier visual-cycle status below is retained as a technical checkpoint:
 P0-P3 complete, P4 partial, P5-P8 unfinished and rescheduled.

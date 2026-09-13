@@ -18,8 +18,8 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (93.5,0) .. controls (93.5,-24) and (77,-44) .. (55,-44);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-33,2.2) .. controls (-23.1,-15.4) and (23.1,-15.4) .. (33,2.2);
+\draw[draw=sdcolor0,line width=1.125bp] (-33,-2.2) .. controls (-23.1,15.4) and (23.1,15.4) .. (33,-2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-28.764921075,-2.76188) .. controls (-16.5,12.1) and (16.5,12.1) .. (30.629335275,-1.00892);
+\draw[draw=sdcolor0,line width=1.125bp] (-28.764921075,2.76188) .. controls (-16.5,-12.1) and (16.5,-12.1) .. (30.629335275,1.00892);
 \end{tikzpicture}
 \endgroup

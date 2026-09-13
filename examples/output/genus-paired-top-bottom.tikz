@@ -26,28 +26,28 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (148.5,0) .. controls (148.5,-24) and (132,-44) .. (110,-44);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-88,2.2) .. controls (-78.1,-15.4) and (-31.9,-15.4) .. (-22,2.2);
+\draw[draw=sdcolor0,line width=1.125bp] (-88,-2.2) .. controls (-78.1,15.4) and (-31.9,15.4) .. (-22,-2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-83.764921075,-2.76188) .. controls (-71.5,12.1) and (-38.5,12.1) .. (-24.370664725,-1.00892);
+\draw[draw=sdcolor0,line width=1.125bp] (-83.764921075,2.76188) .. controls (-71.5,-12.1) and (-38.5,-12.1) .. (-24.370664725,1.00892);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (22,2.2) .. controls (31.9,-15.4) and (78.1,-15.4) .. (88,2.2);
+\draw[draw=sdcolor0,line width=1.125bp] (22,-2.2) .. controls (31.9,15.4) and (78.1,15.4) .. (88,-2.2);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,-2.76188) .. controls (38.5,12.1) and (71.5,12.1) .. (85.629335275,-1.00892);
+\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,2.76188) .. controls (38.5,-12.1) and (71.5,-12.1) .. (85.629335275,1.00892);
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (-58.96,55.2288) .. controls (-58.96,58.2663661241) and (-49.1102644963,60.7288) .. (-36.96,60.7288) .. controls (-24.8097355037,60.7288) and (-14.96,58.2663661241) .. (-14.96,55.2288);
 % type-ii-boundary
-\draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (-58.96,55.2288) .. controls (-58.96,52.1912338759) and (-49.1102644963,49.7288) .. (-36.96,49.7288) .. controls (-24.8097355037,49.7288) and (-14.96,52.1912338759) .. (-14.96,55.2288);
+\draw[draw=sdcolor0,line width=1.125bp] (-58.96,55.2288) .. controls (-58.96,52.1912338759) and (-49.1102644963,49.7288) .. (-36.96,49.7288) .. controls (-24.8097355037,49.7288) and (-14.96,52.1912338759) .. (-14.96,55.2288);
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (-58.96,-55.2288) .. controls (-58.96,-58.2663661241) and (-49.1102644963,-60.7288) .. (-36.96,-60.7288) .. controls (-24.8097355037,-60.7288) and (-14.96,-58.2663661241) .. (-14.96,-55.2288);
 % type-ii-boundary
-\draw[draw=sdcolor0,line width=1.125bp] (-58.96,-55.2288) .. controls (-58.96,-52.1912338759) and (-49.1102644963,-49.7288) .. (-36.96,-49.7288) .. controls (-24.8097355037,-49.7288) and (-14.96,-52.1912338759) .. (-14.96,-55.2288);
+\draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (-58.96,-55.2288) .. controls (-58.96,-52.1912338759) and (-49.1102644963,-49.7288) .. (-36.96,-49.7288) .. controls (-24.8097355037,-49.7288) and (-14.96,-52.1912338759) .. (-14.96,-55.2288);
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (14.96,55.2288) .. controls (14.96,58.2663661241) and (24.8097355037,60.7288) .. (36.96,60.7288) .. controls (49.1102644963,60.7288) and (58.96,58.2663661241) .. (58.96,55.2288);
 % type-ii-boundary
-\draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (14.96,55.2288) .. controls (14.96,52.1912338759) and (24.8097355037,49.7288) .. (36.96,49.7288) .. controls (49.1102644963,49.7288) and (58.96,52.1912338759) .. (58.96,55.2288);
+\draw[draw=sdcolor0,line width=1.125bp] (14.96,55.2288) .. controls (14.96,52.1912338759) and (24.8097355037,49.7288) .. (36.96,49.7288) .. controls (49.1102644963,49.7288) and (58.96,52.1912338759) .. (58.96,55.2288);
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (14.96,-55.2288) .. controls (14.96,-58.2663661241) and (24.8097355037,-60.7288) .. (36.96,-60.7288) .. controls (49.1102644963,-60.7288) and (58.96,-58.2663661241) .. (58.96,-55.2288);
 % type-ii-boundary
-\draw[draw=sdcolor0,line width=1.125bp] (14.96,-55.2288) .. controls (14.96,-52.1912338759) and (24.8097355037,-49.7288) .. (36.96,-49.7288) .. controls (49.1102644963,-49.7288) and (58.96,-52.1912338759) .. (58.96,-55.2288);
+\draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (14.96,-55.2288) .. controls (14.96,-52.1912338759) and (24.8097355037,-49.7288) .. (36.96,-49.7288) .. controls (49.1102644963,-49.7288) and (58.96,-52.1912338759) .. (58.96,-55.2288);
 \end{tikzpicture}
 \endgroup

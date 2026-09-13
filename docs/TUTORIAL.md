@@ -52,8 +52,8 @@ There are two different sorts of numbers in the guide:
 | An arc endpoint on the outer boundary | 0 or n+1 | 0 is the left tip; 7 is the right tip |
 | A crossing of a horizontal interval | 0 through n | Cut 3 is the open gap between objects 3 and 4 |
 
-**These horizontal intervals are encoding guides, not the colored geometric cut
-system you are drawing.** Cut 0 and endpoint 0 also mean different things:
+**The default colored reference system follows these very same horizontal
+intervals.** An interval number and an endpoint number still mean different things:
 the first is an open interval; the second is a particular outer-boundary point.
 
 For this planar routing API, all object centers must lie on y=0 with distinct
@@ -144,16 +144,20 @@ Give each cut a stable ID and color. Keep both when supplying its image later.
 ```python
 points = PlanarSurface.row("PPP", spacing=65, height=210, margin=65)
 cuts = tuple(
-    ColoredCurve(f"c{i}", Arc(0, i, direction="up"), RAINBOW[i-1])
-    for i in range(1, 4)
+    ColoredCurve(f"c{i}", Arc(i-1, i), RAINBOW[i-1])
+    for i in range(1, 5)
 )
 reference = PlanarDiagram(points, cuts)
 save_svg(reference, "rainbow-cuts.svg", style=Style(show_guides=True))
 ```
 
-![Rainbow reference arcs from the outer boundary to three points](../examples/output/tutorial/04-rainbow-planar-cuts.svg)
+![Rainbow reference cuts along the symmetry axis](../examples/output/tutorial/04-rainbow-planar-cuts.svg)
 
-These arcs run from a common outer-boundary endpoint to the three marked points.
+These are straight consecutive segments on the symmetry axis: only c1 starts
+at the left outer boundary; c2 joins point 1 to point 2, c3 joins point 2
+to point 3, and c4 joins point 3 to the right boundary. They occupy the same intervals used as the horizontal curve guides.
+For the standard colors and IDs, the shorter equivalent is
+`reference = points.with_cut_system()`.
 Colors identify the cuts, not twist signs. This planar drawing does not itself
 run the abstract cut-system validator or prove that its stabilizer is trivial.
 
@@ -239,10 +243,13 @@ save_svg(genus_two.with_cut_system(), "standard-genus-cuts.svg")
 
 ![Numbered rainbow standard chains on genus one, two and three](../examples/output/tutorial/07-standard-genus-cuts.svg)
 
+The default view is **above/right**. Odd cuts are solid below and dashed above;
+even cuts closely surround the holes, solid above and dashed below. The below
+view reverses those visibility conventions.
+
 The current standard system is a numbered **2g+1 filling chain**, not a collection
 of g disjoint Heegaard meridians. Its members intersect, and its complement has
-two disks. `with_cut_system()` colors its numbered members consistently. Hidden
-back-sheet portions are dashed. Reversing the view must not rename the cuts.
+two disks. `with_cut_system()` colors its numbered members consistently. Dashed portions follow the odd/even visibility convention above. Reversing the view must not rename the cuts.
 
 The current checked closed-surface route binding covers the standard genus 1-7
 presentations. `view_vertical="above"` or `"below"`, and
@@ -260,16 +267,20 @@ save_svg(genus_two.with_curves(NamedCut(2)), "known-closed-curve.svg")
 For an arc between marks:
 
 ```python
-from surface_diagrams.disk_routes import DiskRoute, MarkPoint
+from surface_diagrams import MarkedArc
 marked = GenusSurface(2, marks=("P", "Q"))
-arc = DiskRoute((), MarkPoint("P"), MarkPoint("Q"), id="PQ")
+arc = MarkedArc("P", "Q", id="PQ")
 save_svg(marked.with_curves(arc), "marked-arc.svg")
 ```
 
 ![A marked arc and the standard system locating its endpoints](../examples/output/tutorial/08-genus-arc-and-chart.svg)
 
-This example uses compatible copies of P and Q in a complementary disk.
-Generally an empty crossing list does not join arbitrary endpoints automatically.
+`MarkedArc` draws the straight segment in the clear upper band, using the actual
+mark positions. It rejects an obstructing intermediate mark or a segment outside
+that band. For a specific winding/crossing sequence use `DiskRoute` with
+`MarkPoint` endpoints instead; it preserves its chart itinerary and can bend.
+These are distinct inputs: a supplied straight visual arc is not silently
+substituted for an explicitly specified disk route.
 
 ## 10. Find the inputs for a general genus route
 
@@ -289,7 +300,7 @@ Consequently, "cross cut 2" can be ambiguous. The library reports that ambiguity
 instead of choosing an arbitrary side.
 
 ```python
-from surface_diagrams.disk_routes import CutAtlas, Crossing
+from surface_diagrams.disk_routes import CutAtlas, Crossing, DiskRoute, MarkPoint
 system = genus_two.cut_system()
 atlas = CutAtlas.build(system)
 save_svg(system.diagram(show_ids=True), "full-side-locators.svg")

@@ -39,8 +39,7 @@ Choose the viewing direction with two independent options:
 surface = GenusSurface(3, view_vertical="above", view_horizontal="left")
 ```
 
-The defaults are `view_vertical="below"` and `view_horizontal="right"`, as in
-D3. `view_vertical="above"` matches the D2A panel. A top-facing rim is fully
+The defaults are `view_vertical="above"` and `view_horizontal="right"`. `view_vertical="above"` matches the D2A panel. A top-facing rim is fully
 visible from above and has a hidden inward half from below; bottom-facing rims
 reverse this. The horizontal choice similarly controls left/right-facing rims,
 including fixed boundaries inside handle openings. Stable boundary IDs and

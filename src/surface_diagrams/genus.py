@@ -53,7 +53,7 @@ class GenusSurface:
     Only genus and boundary data are normally needed. Height is automatic:
     100 normally, 150 with side pairs. Spacing and height are optional
     appearance overrides. Independent vertical and
-    horizontal views default to below/right, following the D3 reference.
+    horizontal views default to above/right.
     """
     genus: int = 2
     handle_spacing: float = 110
@@ -61,7 +61,7 @@ class GenusSurface:
     show_axis: bool = False
     type_i: tuple = ()
     type_ii: tuple = ()
-    view_vertical: str = "below"
+    view_vertical: str = "above"
     view_horizontal: str = "right"
     marks: tuple = ()
 

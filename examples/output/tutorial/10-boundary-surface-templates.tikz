@@ -18,13 +18,13 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (148.5,88.22949952) .. controls (129.8,88.22949952) and (130.9,69.22949952) .. (110,69.22949952);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-88,115.42949952) .. controls (-78.1,97.82949952) and (-31.9,97.82949952) .. (-22,115.42949952);
+\draw[draw=sdcolor0,line width=1.125bp] (-88,111.02949952) .. controls (-78.1,128.62949952) and (-31.9,128.62949952) .. (-22,111.02949952);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-83.764921075,110.46761952) .. controls (-71.5,125.32949952) and (-38.5,125.32949952) .. (-24.370664725,112.22057952);
+\draw[draw=sdcolor0,line width=1.125bp] (-83.764921075,115.99137952) .. controls (-71.5,101.12949952) and (-38.5,101.12949952) .. (-24.370664725,114.23841952);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (22,115.42949952) .. controls (31.9,97.82949952) and (78.1,97.82949952) .. (88,115.42949952);
+\draw[draw=sdcolor0,line width=1.125bp] (22,111.02949952) .. controls (31.9,128.62949952) and (78.1,128.62949952) .. (88,111.02949952);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,110.46761952) .. controls (38.5,125.32949952) and (71.5,125.32949952) .. (85.629335275,112.22057952);
+\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,115.99137952) .. controls (38.5,101.12949952) and (71.5,101.12949952) .. (85.629335275,114.23841952);
 % type-i-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (148.5,88.22949952) .. controls (151.951779686,88.22949952) and (154.75,99.4223807742) .. (154.75,113.22949952) .. controls (154.75,127.036618266) and (151.951779686,138.22949952) .. (148.5,138.22949952);
 % type-i-boundary
@@ -50,13 +50,13 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (148.5,-103.75) .. controls (148.5,-139.75) and (132,-169.75) .. (110,-169.75);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-88,-100.89) .. controls (-78.1,-123.77) and (-31.9,-123.77) .. (-22,-100.89);
+\draw[draw=sdcolor0,line width=1.125bp] (-88,-106.61) .. controls (-78.1,-83.73) and (-31.9,-83.73) .. (-22,-106.61);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (-83.764921075,-107.340444) .. controls (-71.5,-88.02) and (-38.5,-88.02) .. (-24.370664725,-105.061596);
+\draw[draw=sdcolor0,line width=1.125bp] (-83.764921075,-100.159556) .. controls (-71.5,-119.48) and (-38.5,-119.48) .. (-24.370664725,-102.438404);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (22,-100.89) .. controls (31.9,-123.77) and (78.1,-123.77) .. (88,-100.89);
+\draw[draw=sdcolor0,line width=1.125bp] (22,-106.61) .. controls (31.9,-83.73) and (78.1,-83.73) .. (88,-106.61);
 % handle
-\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,-107.340444) .. controls (38.5,-88.02) and (71.5,-88.02) .. (85.629335275,-105.061596);
+\draw[draw=sdcolor0,line width=1.125bp] (26.235078925,-100.159556) .. controls (38.5,-119.48) and (71.5,-119.48) .. (85.629335275,-102.438404);
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (-148.5,-79.75) .. controls (-152.227922061,-79.75) and (-155.25,-67.6616882454) .. (-155.25,-52.75) .. controls (-155.25,-37.8383117546) and (-152.227922061,-25.75) .. (-148.5,-25.75);
 % type-ii-boundary
@@ -68,11 +68,11 @@
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (-22,-26.77050048) .. controls (-22,-23.7329343559) and (-12.1502644963,-21.27050048) .. (0,-21.27050048) .. controls (12.1502644963,-21.27050048) and (22,-23.7329343559) .. (22,-26.77050048);
 % type-ii-boundary
-\draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (-22,-26.77050048) .. controls (-22,-29.8080666041) and (-12.1502644963,-32.27050048) .. (0,-32.27050048) .. controls (12.1502644963,-32.27050048) and (22,-29.8080666041) .. (22,-26.77050048);
+\draw[draw=sdcolor0,line width=1.125bp] (-22,-26.77050048) .. controls (-22,-29.8080666041) and (-12.1502644963,-32.27050048) .. (0,-32.27050048) .. controls (12.1502644963,-32.27050048) and (22,-29.8080666041) .. (22,-26.77050048);
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=1.125bp] (-22,-180.72949952) .. controls (-22,-183.767065644) and (-12.1502644963,-186.22949952) .. (0,-186.22949952) .. controls (12.1502644963,-186.22949952) and (22,-183.767065644) .. (22,-180.72949952);
 % type-ii-boundary
-\draw[draw=sdcolor0,line width=1.125bp] (-22,-180.72949952) .. controls (-22,-177.691933396) and (-12.1502644963,-175.22949952) .. (0,-175.22949952) .. controls (12.1502644963,-175.22949952) and (22,-177.691933396) .. (22,-180.72949952);
+\draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (-22,-180.72949952) .. controls (-22,-177.691933396) and (-12.1502644963,-175.22949952) .. (0,-175.22949952) .. controls (12.1502644963,-175.22949952) and (22,-177.691933396) .. (22,-180.72949952);
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor0,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (0,192.97949952) {Type I boundary at right end};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor0,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (0,8.47949952) {Two Type II pairs: four boundary components};
 \end{tikzpicture}

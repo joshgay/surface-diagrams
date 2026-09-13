@@ -13,18 +13,18 @@ def make_reference_comparison(destination=None):
     root = Path(__file__).resolve().parents[1]
     out = Path(destination) if destination else root / "examples" / "output"
     out.mkdir(parents=True, exist_ok=True)
-    d3 = GenusSurface(3, type_i=(TypeIBoundary(8),), type_ii=(BoundaryPair(),)*6)
+    d3 = GenusSurface(3, type_i=(TypeIBoundary(8),), type_ii=(BoundaryPair(),)*6, view_vertical="below")
     e2 = GenusSurface(3, type_ii=(BoundaryPair('left'), BoundaryPair('right'),
-                                BoundaryPair(), BoundaryPair()))
+                                BoundaryPair(), BoundaryPair()), view_vertical="below")
     examples = [
-        ("D3HyperellipticLifted.svg", (0, 0, 205, 65), d3, "Genus 3: six pairs and an end boundary"),
+        ("D3HyperellipticLifted.svg", (0, 0, 205, 65), d3, "Genus 3: six pairs and an end boundary, below/right"),
         ("D2AHyperellipticSurfaces.svg", (70, 238, 205, 63), replace(d3, view_vertical="above"), "Same surface, viewed from above/right"),
-        ("E2MCKHOddGenusLiftedWithBoundaries.svg", (4, 4, 185, 76), e2, "Genus 3: side pairs and two top/bottom pairs"),
+        ("E2MCKHOddGenusLiftedWithBoundaries.svg", (4, 4, 185, 76), e2, "Genus 3: side and top/bottom pairs, below/right"),
     ]
     lines = ['<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="940" viewBox="0 0 1100 940">',
              '<rect width="1100" height="940" fill="white"/>',
-             '<text x="30" y="34" font-family="serif" font-size="24">Primary references and new defaults</text>',
-             '<text x="30" y="59" font-family="serif" font-size="14">Left: original abbreviated reference. Right: finite generated surface; curves arrive in a later stage.</text>']
+             '<text x="30" y="34" font-family="serif" font-size="24">Primary references and matching presentations</text>',
+             '<text x="30" y="59" font-family="serif" font-size="14">Left: original abbreviated reference. Right: finite surface with the corresponding viewing direction.</text>']
     for i, (filename, crop, surface, caption) in enumerate(examples):
         y = 95 + i*275
         lines.append(f'<text x="30" y="{y}" font-family="serif" font-size="16">{escape(filename)}</text>')

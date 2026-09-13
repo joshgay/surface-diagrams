@@ -10,10 +10,10 @@
 <path class="surface-outline" d="M 304.9 96.75 C 304.9 110.004833996 312.779788403 120.75 322.5 120.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 322.5 18.75 C 302.7 18.75 303.8 30.75 284 30.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 322.5 174.75 C 302.7 174.75 303.8 162.75 284 162.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 86 93.89 C 95.9 116.77 142.1 116.77 152 93.89" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 90.235078925 100.340444 C 102.5 81.02 135.5 81.02 149.629335275 98.061596" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 196 93.89 C 205.9 116.77 252.1 116.77 262 93.89" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 200.235078925 100.340444 C 212.5 81.02 245.5 81.02 259.629335275 98.061596" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 86 99.61 C 95.9 76.73 142.1 76.73 152 99.61" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 90.235078925 93.159556 C 102.5 112.48 135.5 112.48 149.629335275 95.438404" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 196 99.61 C 205.9 76.73 252.1 76.73 262 99.61" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 200.235078925 93.159556 C 212.5 112.48 245.5 112.48 259.629335275 95.438404" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 25.5 72.75 C 21.7720779386 72.75 18.75 60.6616882454 18.75 45.75 C 18.75 30.8383117546 21.7720779386 18.75 25.5 18.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="type-ii-boundary" d="M 25.5 72.75 C 29.2279220614 72.75 32.25 60.6616882454 32.25 45.75 C 32.25 30.8383117546 29.2279220614 18.75 25.5 18.75" fill="none" stroke="#000000" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3"/>
 <path class="type-ii-boundary" d="M 25.5 120.75 C 21.7720779386 120.75 18.75 132.838311755 18.75 147.75 C 18.75 162.661688245 21.7720779386 174.75 25.5 174.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

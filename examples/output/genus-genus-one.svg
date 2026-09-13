@@ -6,6 +6,6 @@
 <path class="surface-outline" d="M 57.25 112.75 C 93.9166666667 112.31 130.583333333 112.31 167.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 205.75 68.75 C 205.75 44.75 189.25 24.75 167.25 24.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="surface-outline" d="M 205.75 68.75 C 205.75 92.75 189.25 112.75 167.25 112.75" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 79.25 66.55 C 89.15 84.15 135.35 84.15 145.25 66.55" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="handle" d="M 83.485078925 71.51188 C 95.75 56.65 128.75 56.65 142.879335275 69.75892" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 79.25 70.95 C 89.15 53.35 135.35 53.35 145.25 70.95" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="handle" d="M 83.485078925 65.98812 C 95.75 80.85 128.75 80.85 142.879335275 67.74108" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

@@ -67,10 +67,10 @@ class GenusTest(unittest.TestCase):
         for commands in p.contours:
             reflected = _transform(commands, lambda x, y: (x, -y))
             self.assertIn(reflected, p.contours)
-        above = presentation(GenusSurface(type_i=(TypeIBoundary(2),), type_ii=(BoundaryPair(),),
-                                          view_vertical='above'))
-        self.assertEqual(above.contours, p.contours)
-        self.assertEqual(above.handles, tuple(_transform(c, lambda x,y: (x,-y)) for c in p.handles))
+        opposite = presentation(GenusSurface(type_i=(TypeIBoundary(2),), type_ii=(BoundaryPair(),),
+                                          view_vertical='below'))
+        self.assertEqual(opposite.contours, p.contours)
+        self.assertEqual(opposite.handles, tuple(_transform(c, lambda x,y: (x,-y)) for c in p.handles))
 
     def test_four_views_expose_correct_boundary_faces(self):
         surface = GenusSurface(type_i=tuple(TypeIBoundary(i) for i in range(1,7)),

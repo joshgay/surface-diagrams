@@ -17,6 +17,11 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - run: python examples/make_images.py
       - run: python examples/make_latex.py
+      - name: Regenerate checked genus and tutorial figures
+        if: matrix.python-version == '3.12'
+        run: |
+          python examples/make_genus_cuts.py
+          python examples/tutorial.py
       - run: git diff --exit-code -- examples/output
   latex:
     runs-on: ubuntu-latest

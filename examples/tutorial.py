@@ -4,8 +4,8 @@ from surface_diagrams import (
     Arc, Loop, PlanarSurface, Style, GenusSurface, TypeIBoundary, BoundaryPair,
     ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure, RAINBOW, save_svg, save_tikz,
 )
-from surface_diagrams.genus_diagrams import NamedCut
-from surface_diagrams.disk_routes import DiskRoute, MarkPoint, Crossing, CutAtlas
+from surface_diagrams.genus_diagrams import NamedCut, MarkedArc
+from surface_diagrams.disk_routes import DiskRoute, Crossing, CutAtlas
 
 
 def examples():
@@ -25,7 +25,7 @@ def examples():
                'Boundary-to-boundary: a straight arc joins facing rims', Style(boundary_shape='circle')),),
     )), Style()
     points = PlanarSurface.row('PPP', spacing=65, height=210, margin=65)
-    cuts = tuple(ColoredCurve(f'c{i}', Arc(0,i,direction='up'), RAINBOW[i-1]) for i in range(1,4))
+    cuts = tuple(ColoredCurve(f'c{i}', Arc(i-1,i), RAINBOW[i-1]) for i in range(1,5))
     yield '04-rainbow-planar-cuts', PlanarDiagram(points, cuts), guides
     yield '05-intersecting-families', Figure((
         (Panel(PlanarDiagram(row, (ColoredCurve('a',Arc(1,4),RAINBOW[0]),
@@ -47,9 +47,9 @@ def examples():
         for g in (1,2,3)
     )), Style()
     surface = GenusSurface(2, marks=('P','Q'))
-    arc = DiskRoute((), MarkPoint('P'), MarkPoint('Q'), id='PQ')
+    arc = MarkedArc('P','Q',id='PQ')
     yield '08-genus-arc-and-chart', Figure((
-        (Panel(surface.with_curves(arc), 'Arc from marked P to Q; no cut crossings'),),
+        (Panel(surface.with_curves(arc), 'Straight visual arc from marked P to Q'),),
         (Panel(surface.with_cut_system(), 'Reference chain and mark attachments'),),
     )), Style()
     torus = GenusSurface(1)

@@ -220,7 +220,7 @@ white masking patches. Type I and Type II radii are geometric boundary sizes,
 independent of the planar dot-size settings.
 
 Choose `view_vertical="above"` or `"below"` and `view_horizontal="left"` or
-`"right"`. The default is below/right (D3); above/right matches D2A. Facing rims
+`"right"`. The default is above/right; below/right remains available. Facing rims
 are fully visible and opposite rims have a dashed inward half. Handle openings
 have overlapping edges that reverse with the view. Side pairs automatically get
 a taller body and larger, farther-separated openings. See the

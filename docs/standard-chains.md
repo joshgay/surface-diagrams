@@ -112,3 +112,18 @@ records fail. Projected front/back overlaps are not additional intersections.
 The mesh projection is continuous and piecewise smooth; tangent changes between
 carriers remain visible in some routed examples. It does not promise globally
 smooth routes or minimal intersection representatives.
+
+## Updated reference appearance
+
+The default camera is above/right. Odd chain members run solid below and dashed
+above; even members closely surround the openings, solid above and dashed below.
+The below view reverses this pattern. Even-wrap visibility is a named-curve
+presentation convention, separate from the underlying topological mesh sheet;
+the chart incidence, cut membership and certificates are unchanged by dash style.
+The tighter curve geometry is incorporated in the checked mesh, not merely drawn
+over a different mesh. General DiskRoute strokes retain their sheet visibility.
+
+For a straight supplied visual arc between automatic marks, use
+`MarkedArc('P', 'Q')`. It checks the clear upper corridor and other marks.
+`DiskRoute` remains the choice for a particular cut itinerary, whose projection
+may bend. A straight MarkedArc has no automatic conversion to a disk itinerary.

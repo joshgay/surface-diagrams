@@ -1,7 +1,7 @@
 """Regenerate closed-genus numbered chains and checked route examples."""
 from pathlib import Path
 from surface_diagrams import GenusSurface, save_svg
-from surface_diagrams.genus_diagrams import NamedCut
+from surface_diagrams.genus_diagrams import NamedCut, MarkedArc
 from surface_diagrams.disk_routes import Crossing, DiskRoute, CutAtlas, MarkPoint
 
 OUT = Path(__file__).parent / 'output'
@@ -20,7 +20,7 @@ save_svg(surface.cut_system().diagram(route), OUT / 'genus-torus-route-disks.svg
 surface = GenusSurface(2, marks=('P', 'Q'))
 route = DiskRoute((), MarkPoint('P'), MarkPoint('Q'), id='PQ')
 save_svg(surface.with_cut_system(), OUT / 'genus-marked-cuts.svg')
-save_svg(surface.with_curves(route), OUT / 'genus-marked-arc.svg')
+save_svg(surface.with_curves(MarkedArc('P','Q',id='PQ')), OUT / 'genus-marked-arc.svg')
 save_svg(surface.cut_system().diagram(route), OUT / 'genus-marked-disks.svg')
 
 # Fixed oriented mesh locators: a loop through both handles and a transverse

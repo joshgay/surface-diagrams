@@ -8,9 +8,10 @@
 <path class="braid-strand" d="M 420 387.25 L 420 483.25" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="braid-strand" d="M 465 387.25 L 510 483.25" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="braid-strand" d="M 510 387.25 L 492 425.65 M 483 444.85 L 465 483.25" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="arc" d="M 38 717.75 A 32.5 22.3125 0 0 1 103 717.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="arc" d="M 38 717.75 A 65 44.625 0 0 1 168 717.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path class="arc" d="M 38 717.75 A 97.5 66.9375 0 0 1 233 717.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 38 717.75 L 103 717.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 103 717.75 L 168 717.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 168 717.75 L 233 717.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path class="arc" d="M 233 717.75 L 298 717.75" fill="none" stroke="#23964f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="braid-strand" d="M 420 669.75 L 465 717.75" fill="none" stroke="#d73027" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="braid-strand" d="M 465 669.75 L 447 688.95 M 438 698.55 L 420 717.75" fill="none" stroke="#e08214" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path class="braid-strand" d="M 510 669.75 L 510 717.75" fill="none" stroke="#b59b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

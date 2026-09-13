@@ -30,6 +30,15 @@ cut-system drawings. No exact scalloping amplitude is prescribed now.
 
 After this correction continue V1-V3 visual work; calculation engines remain later.
 
+Further confirmed presentation requirements: default above/right view; planar
+reference cuts are straight consecutive symmetry-axis intervals, including the
+outer end intervals (only the first starts at the left boundary); even genus
+cuts closely follow the holes rather than large enclosing ellipses. In the
+above view, odd cuts are solid below/dashed above, while even cuts are solid
+above/dashed below. Straight mark-to-mark visual arcs take precedence over the
+bent diagnostic-disk projection when no explicit itinerary is being requested.
+Keep explicit DiskRoute inputs faithful to their supplied itineraries.
+
 ## User-facing priorities
 
 | Use case | Visual deliverable first | Calculation deliverable later |

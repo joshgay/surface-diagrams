@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="940" viewBox="0 0 1100 940">
 <rect width="1100" height="940" fill="white"/>
-<text x="30" y="34" font-family="serif" font-size="24">Primary references and new defaults</text>
-<text x="30" y="59" font-family="serif" font-size="14">Left: original abbreviated reference. Right: finite generated surface; curves arrive in a later stage.</text>
+<text x="30" y="34" font-family="serif" font-size="24">Primary references and matching presentations</text>
+<text x="30" y="59" font-family="serif" font-size="14">Left: original abbreviated reference. Right: finite surface with the corresponding viewing direction.</text>
 <text x="30" y="95" font-family="serif" font-size="16">D3HyperellipticLifted.svg</text>
-<text x="580" y="95" font-family="serif" font-size="16">Genus 3: six pairs and an end boundary</text>
+<text x="580" y="95" font-family="serif" font-size="16">Genus 3: six pairs and an end boundary, below/right</text>
 <ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://vectornator.io" height="215" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 205 65" width="510" xml:space="preserve" x="25" y="110">
 <ns0:defs />
 <ns0:clipPath id="source0-ArtboardFrame">
@@ -2827,7 +2827,7 @@
 <ns0:path class="type-i-boundary" d="M 415.5 102.564192947 C 412.048220314 102.564192947 409.25 91.3713116924 409.25 77.5641929467 C 409.25 63.7570742009 412.048220314 52.5641929467 415.5 52.5641929467" fill="none" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
 </ns0:svg>
 <text x="30" y="645" font-family="serif" font-size="16">E2MCKHOddGenusLiftedWithBoundaries.svg</text>
-<text x="580" y="645" font-family="serif" font-size="16">Genus 3: side pairs and two top/bottom pairs</text>
+<text x="580" y="645" font-family="serif" font-size="16">Genus 3: side and top/bottom pairs, below/right</text>
 <ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://vectornator.io" height="215" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="4 4 185 76" width="510" xml:space="preserve" x="25" y="660">
 <ns0:defs />
 <ns0:clipPath id="source2-ArtboardFrame">

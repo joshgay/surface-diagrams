@@ -141,6 +141,18 @@ class PlanarSurface:
         )
         return cls(objects, width=span + 2 * margin, height=height)
 
+    def with_cut_system(self):
+        """Draw the standard colored symmetry-axis intervals, including both ends.
+
+        Cut i joins endpoint i to i+1 for i=0..n. This is the visual reference
+        used by planar Arc/Loop itineraries, not an isotopy/equality certificate.
+        An empty disk needs no reference cuts.
+        """
+        from .visuals import PlanarDiagram, ColoredCurve, RAINBOW
+        from .curves import Arc
+        return PlanarDiagram(self, tuple(ColoredCurve(f'cut-{i}', Arc(i,i+1),
+                             RAINBOW[i % len(RAINBOW)]) for i in range(len(self.objects)+1 if self.objects else 0)))
+
     def with_curves(self, *curves):
         """Return a new surface with the supplied arcs/loops appended."""
         return replace(self, curves=self.curves + tuple(curves))

@@ -10,3 +10,6 @@ __all__ = ["Boundary", "MarkedPoint", "PlanarSurface", "Style", "Arc", "Loop", "
 
 from .visuals import ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure, RAINBOW
 __all__ += ["ColoredCurve", "PlanarDiagram", "BraidDiagram", "Panel", "Figure", "RAINBOW"]
+
+from .genus_diagrams import MarkedArc
+__all__ += ["MarkedArc"]

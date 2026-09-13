@@ -5,8 +5,9 @@
 \definecolor{sdcolor1}{HTML}{D73027}
 \definecolor{sdcolor2}{HTML}{E08214}
 \definecolor{sdcolor3}{HTML}{B59B00}
-\definecolor{sdcolor4}{HTML}{000000}
-\definecolor{sdcolor5}{HTML}{006FFF}
+\definecolor{sdcolor4}{HTML}{23964F}
+\definecolor{sdcolor5}{HTML}{000000}
+\definecolor{sdcolor6}{HTML}{006FFF}
 \begin{tikzpicture}[x=0.75bp,y=0.75bp,line cap=round,line join=round]
 \path[use as bounding box] (-297,-423.75) rectangle (297,423.75);
 \clip (-297,-423.75) rectangle (297,423.75);
@@ -27,11 +28,13 @@
 % braid-strand
 \draw[draw=sdcolor3,line width=1.5bp] (213,36.5) -- (195,-1.9) (186,-21.1) -- (168,-59.5);
 % arc
-\draw[draw=sdcolor1,line width=1.5bp] (-259,-294) arc[start angle=180,end angle=0,x radius=32.5,y radius=22.3125];
+\draw[draw=sdcolor1,line width=1.5bp] (-259,-294) -- (-194,-294);
 % arc
-\draw[draw=sdcolor2,line width=1.5bp] (-259,-294) arc[start angle=180,end angle=0,x radius=65,y radius=44.625];
+\draw[draw=sdcolor2,line width=1.5bp] (-194,-294) -- (-129,-294);
 % arc
-\draw[draw=sdcolor3,line width=1.5bp] (-259,-294) arc[start angle=180,end angle=0,x radius=97.5,y radius=66.9375];
+\draw[draw=sdcolor3,line width=1.5bp] (-129,-294) -- (-64,-294);
+% arc
+\draw[draw=sdcolor4,line width=1.5bp] (-64,-294) -- (1,-294);
 % braid-strand
 \draw[draw=sdcolor1,line width=1.5bp] (123,-246) -- (168,-294);
 % braid-strand
@@ -45,52 +48,52 @@
 % braid-strand
 \draw[draw=sdcolor3,line width=1.5bp] (213,-294) -- (195,-313.2) (186,-322.8) -- (168,-342);
 % outer-boundary
-\path[fill=none,draw=sdcolor4,line width=1.125bp] (-129,271) ellipse [x radius=130,y radius=105];
+\path[fill=none,draw=sdcolor5,line width=1.125bp] (-129,271) ellipse [x radius=130,y radius=105];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-194,271) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-194,271) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-129,271) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-129,271) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-64,271) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-64,271) ellipse [x radius=4,y radius=4];
 % outer-boundary
-\path[fill=none,draw=sdcolor4,line width=1.125bp] (-129,-11.5) ellipse [x radius=130,y radius=105];
+\path[fill=none,draw=sdcolor5,line width=1.125bp] (-129,-11.5) ellipse [x radius=130,y radius=105];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-194,-11.5) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-194,-11.5) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-129,-11.5) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-129,-11.5) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-64,-11.5) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-64,-11.5) ellipse [x radius=4,y radius=4];
 % outer-boundary
-\path[fill=none,draw=sdcolor4,line width=1.125bp] (-129,-294) ellipse [x radius=130,y radius=105];
+\path[fill=none,draw=sdcolor5,line width=1.125bp] (-129,-294) ellipse [x radius=130,y radius=105];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-194,-294) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-194,-294) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-129,-294) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-129,-294) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor5,draw=none,line width=0bp] (-64,-294) ellipse [x radius=4,y radius=4];
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-129,399.75) {Factor 1: half twist supported on arc (1,2)};
+\path[fill=sdcolor6,draw=none,line width=0bp] (-64,-294) ellipse [x radius=4,y radius=4];
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-129,399.75) {Factor 1: half twist supported on arc (1,2)};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (123,327) {1};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (123,209) {2};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (168,327) {2};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (168,209) {1};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (213,327) {3};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (213,209) {3};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (168,399.75) {Corresponding crossing: +1};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-129,117.25) {Factor 2: half twist supported on arc (2,3)};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (168,399.75) {Corresponding crossing: +1};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-129,117.25) {Factor 2: half twist supported on arc (2,3)};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (123,44.5) {1};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (123,-73.5) {1};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (168,44.5) {2};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (168,-73.5) {3};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (213,44.5) {3};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (213,-73.5) {2};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (168,117.25) {Corresponding crossing: +2};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-129,-165.25) {Reference cuts C; image of product still to supply};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (168,117.25) {Corresponding crossing: +2};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-129,-165.25) {Reference cuts C; image of product still to supply};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (123,-238) {1};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (123,-356) {2};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (168,-238) {2};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (168,-356) {3};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (213,-238) {3};
 \node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (213,-356) {1};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (168,-165.25) {Stacked crossings, read top to bottom};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (168,-165.25) {Stacked crossings, read top to bottom};
 \end{tikzpicture}
 \endgroup

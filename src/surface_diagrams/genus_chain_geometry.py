@@ -11,9 +11,9 @@ def smooth_chain_constraints(surface,coordinates,triangles,boundary,centers,hr,h
     spacing=surface.handle_spacing
     rx,hy=surface.width/2,surface.height/2
     vy=1 if surface.view_vertical=='above' else -1
-    mirror=-vy
-    radius=hr+spacing*.09
-    ry=min(hy*.58,spacing*.30)
+    mirror=vy
+    radius=hr+spacing*.035
+    ry=min(hy*.34,spacing*.17)
     grid_radius=hr+spacing*.10
     vertices=set(v for t in triangles for v in t)
     edges={tuple(sorted((a,t[(i+1)%3]))) for t in triangles for i,a in enumerate(t)}
@@ -34,7 +34,7 @@ def smooth_chain_constraints(surface,coordinates,triangles,boundary,centers,hr,h
         right=rx if i==surface.genus else centers[i]-hr
         a,b=boundary[by_point[left,0.]],boundary[by_point[right,0.]]
         width=b[0]-a[0]
-        for sheet,sign in (('front',vy),('back',-vy)):
+        for sheet,sign in (('front',-vy),('back',vy)):
             lift=sign*min(hy*.24,width*.32)
             odd[i,sheet]=(a,(a[0]+width/3,a[1]+lift),(b[0]-width/3,b[1]+lift),b)
 
