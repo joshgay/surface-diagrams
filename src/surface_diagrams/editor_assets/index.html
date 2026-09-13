@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Surface diagrams editor</title><link rel="stylesheet" href="/editor.css"><script src="/editor.js" defer></script></head>
+<body>
+<header class="topbar"><div class="brand"><span class="brand-mark">S</span><div>Surface diagrams<small>LOCAL EDITOR</small></div></div>
+<label class="title-label"><span class="sr-only">Document title</span><input id="title" aria-label="Document title" maxlength="120"></label>
+<nav aria-label="Document actions"><button id="open">Open JSON</button><button id="save">Save JSON</button><button id="undo" disabled>Undo</button><button id="redo" disabled>Redo</button>
+<select id="export-kind" aria-label="Export format"><option value="svg">SVG</option><option value="tikz">TikZ</option><option value="python">Python</option></select><button id="export" class="primary" disabled>Export</button></nav></header>
+<input type="file" id="file" accept=".json,application/json" hidden>
+<main>
+<aside class="inspector" aria-label="Diagram settings">
+<div class="section-heading">DOCUMENT <span id="saved-state">Unsaved</span></div>
+<div class="switcher"><button id="new-planar" aria-pressed="true">Planar surface</button><button id="new-braid" aria-pressed="false">Braid</button></div>
+<section id="planar-settings">
+<h2>Surface</h2><div class="two"><label>Width<input id="width" type="number" min="20" max="5000"></label><label>Height<input id="height" type="number" min="20" max="5000"></label></div>
+<label>Row pattern <span class="muted">P = point, B = boundary</span><input id="pattern" maxlength="32" spellcheck="false"></label><button id="rebuild-row">Rebuild row</button>
+<div class="two"><label>Spacing<input id="spacing" type="number" min="10" max="300" value="80"></label><label>Boundary appearance<select id="boundary-shape"><option value="dot">Gray dots</option><option value="circle">Open circles</option></select></label></div>
+<label class="check"><input id="guides" type="checkbox">Numbered cut guides</label><label class="check"><input id="intersections" type="checkbox">Allow intersecting curves</label>
+<p id="overlay-warning" class="note" hidden>Overlay mode draws curves independently. Their intersections are not certified.</p>
+<details><summary>Object positions and radii</summary><div id="objects"></div></details>
+<h2>Curves <span id="curve-count"></span></h2><div id="curve-list" class="item-list"></div>
+<section id="curve-editor" hidden><div class="two"><label>Stable curve ID<input id="curve-id" maxlength="40"></label><label>Color<input id="curve-color" type="color"></label></div>
+<div id="arc-fields"><div class="two"><label>Start endpoint<input id="curve-start" type="number" min="0"></label><label>End endpoint<input id="curve-end" type="number" min="0"></label></div>
+<label>Initial direction<select id="curve-direction"><option value="default">Default</option><option value="up">Above</option><option value="down">Below</option></select></label>
+<div class="two"><label>Start rim<select id="start-side"><option value="">Facing route</option><option value="left">Left</option><option value="right">Right</option></select></label><label>End rim<select id="end-side"><option value="">Facing route</option><option value="left">Left</option><option value="right">Right</option></select></label></div></div>
+<label id="loop-fields" class="check"><input id="loop-up" type="checkbox">Start above the axis</label>
+<label>Ordered cut visits<input id="curve-cuts" placeholder="e.g. 0, 4" spellcheck="false"></label><p class="note">Order is retained exactly. Nothing is cancelled or simplified.</p><button id="delete-curve" class="danger">Delete curve</button></section>
+</section>
+<section id="braid-settings" hidden><h2>Braid word</h2><div class="two"><label>Strands<input id="strands" type="number" min="1" max="32"></label><label>Traversal<select id="braid-direction"><option value="bottom-to-top">Bottom to top</option><option value="top-to-bottom">Top to bottom</option></select></label></div>
+<label>Signed generators<textarea id="word" rows="3" spellcheck="false" placeholder="1, -2, 3"></textarea></label>
+<div class="two"><label>Strand spacing<input id="braid-spacing" type="number" min="5" max="300"></label><label>Crossing height<input id="braid-step" type="number" min="5" max="300"></label></div>
+<p class="note">Positive i means upper-left over upper-right. Reversing traversal does not mirror crossing signs.</p>
+<div class="two"><label>Append generator<input id="generator" type="number" value="1"></label><button id="append-generator">Append</button></div>
+<h2>Crossing inspector</h2><div id="crossing-list" class="item-list"></div><p id="strand-transport" class="note"></p>
+<div class="button-row"><button id="crossing-up">Earlier</button><button id="crossing-down">Later</button><button id="invert-crossing">Flip sign</button><button id="delete-crossing" class="danger">Delete</button></div>
+</section>
+<h2>Labels</h2><div id="label-list" class="item-list"></div><section id="label-editor" hidden><label>Label text<input id="label-text" maxlength="120"></label><div class="two"><label>Size<input id="label-size" type="number" min="1" max="48"></label><label>Color<input id="label-color" type="color"></label></div><div class="two"><label>X<input id="label-x" type="number"></label><label>Y<input id="label-y" type="number"></label></div><button id="delete-label" class="danger">Delete label</button></section>
+<details><summary>Drawing style</summary><div class="two"><label>Curve width<input id="curve-width" type="number" min="0.1" max="40" step="0.1"></label><label>Point radius<input id="point-radius" type="number" min="0.1" max="100" step="0.5"></label></div><label class="check"><input id="outline" type="checkbox">Show outer outline</label></details>
+<details><summary>Editable recipe</summary><pre id="recipe"></pre></details>
+</aside>
+<section class="workspace" aria-label="Drawing workspace">
+<div class="workspace-toolbar"><div class="button-row" role="toolbar" aria-label="Editing tools"><button data-tool="select" aria-pressed="true">Select / move</button><button data-tool="arc">Draw arc</button><button data-tool="loop">Draw loop</button><button data-tool="label">Add label</button><button id="finish-loop" hidden>Finish loop</button><button id="cancel-tool" hidden>Cancel</button></div><div class="button-row"><button id="zoom-out" aria-label="Zoom out">−</button><span id="zoom">100%</span><button id="zoom-in" aria-label="Zoom in">+</button><button id="fit">Fit</button></div></div>
+<div class="instruction" id="instruction">Select a curve to edit it. Drag a point along the axis; drag a label freely.</div>
+<div id="error" role="alert" hidden></div><div id="viewport"><div id="paper"><div id="drawing"></div></div></div>
+<footer><span id="status" role="status" aria-live="polite">Connecting to the local renderer...</span><span>SVG + TikZ · No external services</span></footer>
+</section>
+</main>
+</body></html>

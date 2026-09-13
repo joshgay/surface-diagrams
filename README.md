@@ -12,7 +12,7 @@ groups and other relevant low dimensional geometry and topology. SVG and TikZ ou
 for arbitrary enlarging without losing sharpness.
 
 This is extremely experimental for now. It is based on older code I wrote a while ago,
-but this is the alpha version, 0.1.0a2. Python 3.9+; no runtime dependencies.
+but this is the alpha version, 0.1.0a3. Python 3.9+; no runtime dependencies.
 I will finish editing this readme when the software is in a more finished state. For now
 what is here may be wrong or not yet implemented.
 
@@ -57,6 +57,22 @@ save_svg(surface, "my-surface.svg", scale=2)
 ```
 
 ![Default planar surface](examples/output/01-thesis-default.svg)
+
+## Edit diagrams in a browser
+
+After installing the package, run:
+
+```sh
+surface-diagrams-editor
+# Equivalently: python -m surface_diagrams.editor
+```
+
+The local editor supports planar arcs and loops, horizontal point/boundary rows,
+signed braid words, labels, undo/redo, and editable JSON documents. Download SVG,
+TikZ, or a reproducible Python script using the existing geometry engine. No
+Godot, JavaScript build step, cloud service, or extra runtime dependency is needed.
+See the [editor guide and limitations](docs/EDITOR.md). This is an experimental
+first release; browser visual/interaction acceptance remains pending.
 
 ## Adjust the appearance
 

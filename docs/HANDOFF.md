@@ -1,5 +1,22 @@
 # Handoff: surface-diagrams
 
+## Local browser editor, September 13
+
+Added an immutable version-1 `DiagramDocument` JSON recipe API and a dependency-
+free, loopback-only browser editor. The editor supports horizontal planar point/
+boundary rows, arc/loop itineraries, signed braid words, transported strand IDs,
+labels, whole-recipe undo/redo, JSON open/save, and SVG/TikZ/reproducible-Python
+downloads. All geometry remains in the existing library. See [EDITOR.md](EDITOR.md)
+for usage, schema limits, security boundaries, and the manual acceptance checklist.
+
+The original 171 Python tests plus 36 document/HTTP tests pass (207 total), as do
+8 JavaScript controller tests using a minimal DOM double. Both document
+kinds reproduce exact SVG/TikZ output when their generated Python is run. The
+hosted browser could not open the local URL (`ERR_BLOCKED_BY_CLIENT`), so visual,
+pointer, and file-dialog testing remains pending. Do not describe this as a
+visually verified or release-ready editor. No Godot or Tiny Bubbles Lab deployment
+is included in this contribution.
+
 ## Ordered factor/action diagrams, September 13
 
 New presentation APIs: `FactorPanel` stores a distinct factor ID, support panel,

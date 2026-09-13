@@ -16,3 +16,6 @@ __all__ += ["MarkedArc"]
 
 from .factorizations import FactorPanel, FactorizationDiagram
 __all__ += ["FactorPanel", "FactorizationDiagram"]
+
+from .documents import DiagramDocument
+__all__ += ["DiagramDocument"]
