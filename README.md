@@ -246,7 +246,7 @@ numbered horizontal guides. Circle outlines use `outline_color` and
 
 See the [circle gallery](examples/output/circles-gallery.svg) and
 [geometry and limitations](docs/circular-boundaries.md). Circular-hole export
-currently supports SVG; its TikZ support is deferred to P7. Curves on general
+supports SVG and TikZ with transparent hole clipping. Curves on general
 nonhorizontal arrangements are a later stage.
 
 ## TikZ and LaTeX
@@ -303,12 +303,12 @@ higher-genus surfaces.
 Implemented: planar surfaces, row/custom positioning, adjustable dots/colors,
 minimal arcs/loops, noncrossing multicurves, coordinate guides, higher genus,
 all fixed boundary slots and left/right/top-bottom paired boundaries, circular
-planar holes with rim-ended SVG arcs, SVG, TikZ,
+planar holes with rim-ended arcs, SVG, TikZ,
 a LaTeX inclusion companion, and a small command-line entry point.
 
 Later: standard chain curves on higher-genus surfaces, marked points on them,
 Type II boundaries inside handle holes or at front/back locations, asymmetric
-layouts, and TikZ support for circular planar holes. PNG/PDF
+layouts. PNG/PDF
 export is not built in; SVGs can be converted externally when needed.
 
 `model.py` holds planar inputs/styles and `curves.py` plans planar routes.

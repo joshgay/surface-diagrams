@@ -3,6 +3,20 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Current checkpoint: September 13, 4:15 continuation
+
+The one-time continuation automation is paused. Endpoint commit a76f1c7 passed
+remote CI; legend commit 1d8deaa was still queued at this run's start.
+Circular planar boundaries now export to TikZ using transparent even-odd stroke
+clipping, including Figure panels. The main LaTeX gallery includes all hole
+scenarios. Tutorial generation now writes eleven TikZ pictures plus a compilable
+`examples/output/tutorial/tutorial-gallery.tex`; CI compiles this document too.
+All 140 tests and all 14 tutorial Python blocks pass locally. TeX compilation
+is delegated to CI because no TeX executable is installed locally.
+Next visual priorities: Type I/II cut-system bindings and accessible genus route
+locators, then richer supplied factor/action states. Do not redo endpoint controls
+or legends, which are complete. Calculation engines remain lower priority.
+
 ## Legend and intersecting-family update
 
 `PlanarDiagram(show_legend=True)` adds stable curve IDs and color swatches below
@@ -31,7 +45,7 @@ The earlier R0 exact-core gate is superseded. Keep the architectural separation
 but do not defer drawings while researching calculations.
 
 Tutorial: docs/TUTORIAL.md and browser edition docs/TUTORIAL.html. Run
-`python examples/tutorial.py` for eleven main SVGs, one detailed cut-disk SVG and ten TikZ counterparts.
+`python examples/tutorial.py` for eleven main SVGs, one detailed cut-disk SVG and eleven TikZ counterparts.
 The extra handle arc and `handle_style` constructor option have been removed.
 New presentation records: ColoredCurve, PlanarDiagram, BraidDiagram, Panel, Figure.
 Genus cut systems use numbered rainbow colors. Independent planar overlays are
@@ -42,7 +56,7 @@ opt-in and do not certify intersections; supplied states are not computed action
 44-unit inter-hole gap and roughly 43-unit opposite strip. The missing generated
 LaTeX gallery update was also fixed; GitHub run 34735538354 passed all jobs.
 
-The next batch changes the default to above/right, makes planar reference cuts
+The completed appearance batch changes the default to above/right, makes planar reference cuts
 straight symmetry-axis intervals, tightens even genus cuts and applies Richard's
 confirmed opposite visibility patterns (above view: odd solid below; even solid
 above). `PlanarSurface.with_cut_system()` supplies the standard colored intervals.
@@ -55,8 +69,7 @@ regenerated figures were visually inspected. CI now also
 regenerates genus and tutorial figures in its Python 3.12 job so stale outputs
 cannot be missed by the gallery-only generation step.
 
-**Next action after this batch: V1/V2.** Add left/right curved boundary anchors,
-improve family layouts/labels, then finish Type I/II cut bindings and make genus
+**Next action: V2/V3.** Finish Type I/II cut bindings and make genus
 route locators easier to select. Gentle top/bottom undulation remains a minor
 later refinement. Calculation engines remain behind requested visualizations.
 

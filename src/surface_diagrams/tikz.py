@@ -8,7 +8,7 @@ from .cut_diagrams import CutDiskDiagram
 from .genus_diagrams import GenusDiagram
 from .visuals import PlanarDiagram, BraidDiagram, Figure
 from .layout import layout
-from .model import Boundary, PlanarSurface, Style, _number
+from .model import PlanarSurface, Style, _number
 
 
 def _n(value):
@@ -72,12 +72,8 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
     _number(scale, "scale", positive=True)
     if not isinstance(title, str):
         raise TypeError("title must be a string")
-    if (isinstance(surface, PlanarSurface) and style.boundary_shape == 'circle'
-            and any(isinstance(p, Boundary) for p in surface.objects)):
-        raise NotImplementedError("circular planar boundaries currently support SVG only; TikZ support is planned for P7")
     drawing = layout(surface, style)
-    if any(e.role == 'inner-boundary-circle' for e in drawing.ellipses):
-        raise NotImplementedError('circular planar boundaries currently support SVG only, including inside Figures')
+    holes = tuple(e for e in drawing.ellipses if e.role == 'inner-boundary-circle')
     unit = .75 * scale
     colors = {}
 
@@ -100,11 +96,19 @@ def render_tikz(surface, *, style=None, scale=1, title="Surface diagram") -> str
     body = [f"\\path[use as bounding box] {frame};", f"\\clip {frame};"]
     if style.background is not None:
         body.append(f"\\fill[{color(style.background)}] {frame};")
+    if holes:
+        # Clip strokes only. Boundary rims and labels are drawn outside this scope.
+        # The even-odd rule leaves genuine transparent holes without white masks.
+        cutouts = ' '.join(f"{_point(e.x, e.y)} ellipse [x radius={_n(e.rx)},y radius={_n(e.ry)}]"
+                           for e in holes)
+        body.extend([r"\begin{scope}", f"\\clip[even odd rule] {frame} {cutouts};"])
     for path in drawing.paths:
         options = f"draw={color(path.stroke)},line width={length(path.stroke_width)}"
         if path.dashed:
             options += f",dash pattern=on {length(3)} off {length(3)}"
         body.extend([f"% {path.role}", f"\\draw[{options}] {_path(path.commands)};"])
+    if holes:
+        body.append(r"\end{scope}")
     for shape in drawing.ellipses:
         options = f"fill={color(shape.fill)},draw={color(shape.stroke)},line width={length(shape.stroke_width)}"
         body.extend([f"% {shape.role}",

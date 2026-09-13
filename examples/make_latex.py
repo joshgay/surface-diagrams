@@ -1,6 +1,6 @@
 """Generate supported gallery examples as TikZ and a compilable document.
 
-SVG-only circular-hole scenarios get labeled placeholders until P7.
+Circular-hole scenarios use transparent stroke clipping.
 
 Run from the repository root: python examples/make_latex.py
 Then change to examples/output and run: pdflatex latex-gallery.tex
@@ -9,7 +9,7 @@ from pathlib import Path
 import shutil
 
 from gallery import gallery_examples
-from surface_diagrams import Boundary, PlanarSurface, save_tikz
+from surface_diagrams import save_tikz
 from surface_diagrams.tikz import _text
 
 
@@ -23,12 +23,6 @@ def make_latex(destination=None):
              r"\usepackage{surface-diagrams}", r"\pagestyle{empty}", r"\begin{document}"]
     for category, examples in gallery_examples().items():
         for name, caption, surface, style in examples:
-            if (isinstance(surface, PlanarSurface) and style.boundary_shape == 'circle'
-                    and any(isinstance(p, Boundary) for p in surface.objects)):
-                lines.extend([r'\begin{center}', _text(caption)+r'\par',
-                              'SVG example available; circular-boundary TikZ support is planned for P7.',
-                              r'\end{center}',r'\clearpage'])
-                continue
             filename = f"{category}-{name}.tikz"
             save_tikz(surface, out/filename, style=style, title=caption)
             lines.extend([r"\begin{center}", r"\Large " + _text(caption) + r"\par\bigskip",

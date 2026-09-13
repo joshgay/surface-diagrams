@@ -83,13 +83,12 @@ class VisualsTest(unittest.TestCase):
         ET.fromstring(render_svg(figure))
         self.assertIn('braid-strand', render_tikz(figure))
 
-    def test_circle_panels_clip_in_svg_and_cannot_bypass_tikz_guard(self):
+    def test_circle_panels_clip_in_both_exports(self):
         circle = PlanarSurface.row('BP', spacing=60, height=140, margin=60).with_curves(Arc(1,2))
         figure = Figure(((Panel(circle, 'boundary to point', Style(boundary_shape='circle')),),))
         root = ET.fromstring(render_svg(figure))
         self.assertIsNotNone(root.find('.//{http://www.w3.org/2000/svg}clipPath'))
-        with self.assertRaises(NotImplementedError):
-            render_tikz(figure)
+        self.assertIn(r"\clip[even odd rule]", render_tikz(figure))
         with self.assertRaises(ValueError):
             Panel(circle, style=Style(background='#fff'))
 

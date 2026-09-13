@@ -70,8 +70,8 @@ attempting every future diagram family in one universal abstraction.
 
 ## What this tutorial delivery adds
 
-- Eleven main SVG tutorial figures, one detailed cut-disk SVG and ten TikZ counterparts; circular-hole
-  TikZ remains unsupported, and new TikZ outputs are not yet TeX-compiled here.
+- Eleven main SVG tutorial figures, one detailed cut-disk SVG and eleven TikZ counterparts; circular-hole
+  figures also export to TikZ; CI compiles both the main and tutorial galleries.
 - Optional planar ID/color legends and individual component panels alongside
   intersecting overlays are demonstrated in tutorial figures 04/05.
 - `ColoredCurve` and `PlanarDiagram`: disjoint colored families by default;

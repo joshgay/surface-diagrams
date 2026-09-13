@@ -83,19 +83,23 @@ def main(out=None):
     out = Path(out) if out else Path(__file__).parent/'output'/'tutorial'
     out.mkdir(parents=True, exist_ok=True)
     count = 0
+    tex = [r"\documentclass{article}", r"\usepackage{tikz,graphicx}",
+           r"\usepackage[margin=15mm]{geometry}", r"\begin{document}"]
     for name, diagram, style in examples():
         save_svg(diagram, out/(name+'.svg'), style=style, title=name)
-        # Real circular holes need SVG clipping; never emit misleading TikZ.
-        if name != '03-boundary-endpoints':
-            save_tikz(diagram, out/(name+'.tikz'), style=style, title=name)
+        save_tikz(diagram, out/(name+'.tikz'), style=style, title=name)
+        tex.extend([r"\begin{center}", r"\resizebox{0.9\linewidth}{!}{\input{"+name+r".tikz}}",
+                    r"\end{center}", r"\clearpage"])
         count += 1
+    tex.append(r"\end{document}")
+    (out/"tutorial-gallery.tex").write_text("\n".join(tex)+"\n", encoding="utf-8")
     torus = GenusSurface(1)
     atlas = CutAtlas.build(torus.cut_system())
     side = next(s for s in atlas.pairs if atlas.sides[s].id == atlas.sides[atlas.cross(Crossing(s)).side].id)
     loop = DiskRoute((Crossing(side,.37),), id='torus-loop')
     save_svg(torus.cut_system().diagram(loop), out/'09-torus-cut-disk-detail.svg',
              title='Full-resolution torus cut-disk diagnostic; zoom to read side labels')
-    print(f'Generated {count} SVG tutorial figures plus a detailed cut-disk SVG and {count-1} TikZ counterparts in {out.resolve()}')
+    print(f'Generated {count} SVG tutorial figures plus a detailed cut-disk SVG and {count} TikZ counterparts in {out.resolve()}')
 
 
 if __name__ == '__main__':

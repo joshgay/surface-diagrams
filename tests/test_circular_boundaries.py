@@ -162,16 +162,23 @@ class CircularBoundaryTest(unittest.TestCase):
         self.assertEqual(labels[1].x,10)
         self.assertGreater(labels[-2].y,25)
 
-    def test_tikz_deferral_is_explicit_and_does_not_overwrite(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp)/'saved.tikz'
-            path.write_text('keep existing file')
-            with self.assertRaisesRegex(NotImplementedError,'SVG only'):
-                save_tikz(self.row,path,style=self.style)
-            self.assertEqual(path.read_text(),'keep existing file')
-        # Empty disks have no unsupported circular geometry.
+    def test_tikz_hole_clipping_scope_and_transparency(self):
         from surface_diagrams import render_tikz
-        self.assertEqual(render_tikz(PlanarSurface(),style=self.style),render_tikz(PlanarSurface()))
+        s = self.row.with_curves(Arc(1,6,direction='up'))
+        for background in (None, '#abc'):
+            result = render_tikz(s, style=replace(self.style, background=background, show_guides=True))
+            self.assertIn(r'\clip[even odd rule]', result)
+            scope = result.index(r'\begin{scope}')
+            end = result.index(r'\end{scope}')
+            self.assertLess(scope, result.index('% arc'))
+            self.assertGreater(end, result.index('% arc'))
+            self.assertGreater(result.index('% inner-boundary-circle'), end)
+            self.assertEqual(result.count('fill=none'), 7)
+            self.assertEqual(result.count(r'\fill['), int(background is not None))
+            self.assertNotIn('FFFFFF', result)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = save_tikz(s, Path(tmp)/'holes.tikz', style=self.style)
+            self.assertEqual(path.read_text(), render_tikz(s,style=self.style))
 
 
 if __name__ == '__main__':

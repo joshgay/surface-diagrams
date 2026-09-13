@@ -54,8 +54,9 @@ empty disk, annulus, default row, mixed holes/points, dot comparison, straight
 and curved arcs in both directions, mixed endpoints, outer endpoints, closed
 curves, numbered guides, explicit radii, and colored backgrounds.
 
-Circular boundary diagrams currently export to SVG only. `render_tikz` and
-`save_tikz` explicitly raise `NotImplementedError` for a planar diagram containing
-circular holes; saving does not overwrite an existing file on this error.
-The LaTeX gallery gives a placeholder for those scenarios. Existing dot and
-genus export remains available. Extending all new TikZ geometry is P7.
+Circular boundary diagrams export to SVG and TikZ, including curved rim anchors,
+colored families, guides and mixed Figure panels. TikZ uses an even-odd clipping
+scope for path strokes, then draws rims and labels outside that scope. Holes
+remain transparent; no white masking disks are introduced. The LaTeX gallery
+now includes every circular-boundary scenario, and CI compiles the tutorial
+figures as well as the main gallery.

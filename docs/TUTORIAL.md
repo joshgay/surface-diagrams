@@ -14,9 +14,9 @@ python -m pip install -e .
 python examples/tutorial.py
 ```
 
-This produces eleven main SVG figures, a full-size cut-disk diagnostic, and ten TikZ counterparts in
+This produces eleven main SVG figures, a full-size cut-disk diagnostic, and eleven TikZ counterparts in
 [examples/output/tutorial](../examples/output/tutorial/). Open SVG files in a
-browser or vector editor. The circular-hole example is SVG-only for now.
+browser or vector editor. Circular-hole figures also export to TikZ.
 The [browser edition](TUTORIAL.html) contains the same instructions and figures.
 
 ```python
