@@ -328,7 +328,18 @@ for attachment in boundary_surface.boundary_anchors():
     print(attachment.id, attachment.point)
 attachment = boundary_surface.boundary_anchor(&quot;fixed-6&quot;, &quot;a&quot;)
 </code></pre>
-<p>These are exact drawing attachment points, ready for the reference-arc bindings.
+<p>Type I boundaries at the two outer ends now have a reference-arc drawing:</p>
+<pre><code class="language-python">end_bordered = GenusSurface(2, type_i=(TypeIBoundary(1), TypeIBoundary(6)))
+save_svg(end_bordered.with_reference_arcs(), &quot;end-boundary-reference.svg&quot;)
+save_tikz(end_bordered.with_reference_arcs(), &quot;end-boundary-reference.tikz&quot;)
+</code></pre>
+<p>The end members become two arcs from the rim&#39;s vertical-plane attachments to
+the neighboring genus cusp; internal chain members keep their IDs and colors.
+One end boundary also works. This is a supplied reference drawing, not a certified
+bordered <code>CutSystem</code> or a chart in which <code>DiskRoute</code> can yet be evaluated.
+Type I boundaries at genus cusps, Type II connections and marked-point spokes
+remain unsupported by <code>with_reference_arcs()</code>.</p>
+<p>These are exact drawing attachment points, ready for the remaining reference-arc bindings.
 The guide does not yet draw a full bordered cut system or place marked-point
 spokes. Those remain unfinished; <code>cut_system()</code> still rejects bordered surfaces.</p>
 <pre><code class="language-python">from surface_diagrams import TypeIBoundary, BoundaryPair

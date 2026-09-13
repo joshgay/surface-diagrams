@@ -10,6 +10,60 @@ from .disk_routes import DiskRoute, ItineraryError
 
 
 @dataclass(frozen=True)
+class BorderedReferenceDiagram:
+    """Supplied vertical-plane reference arcs for end Type I boundaries.
+
+    This presentation is independent of the certified closed-surface mesh;
+    it is not accepted as a CutSystem or as a DiskRoute chart binding.
+    """
+    surface: object
+
+    def drawing(self, style):
+        from dataclasses import replace
+        from .genus import GenusSurface
+        surface=self.surface
+        last=2*surface.genus+2
+        if surface.type_ii or any(b.slot not in (1,last) for b in surface.type_i):
+            raise NotImplementedError('reference arcs currently support Type I end boundaries only')
+        if surface.marks:
+            raise NotImplementedError('bordered marked-point reference arcs are not implemented yet')
+        outline=presentation(surface)
+        base=outline.drawing(style)
+        closed=GenusSurface(surface.genus,handle_spacing=surface.handle_spacing,
+            height=surface.height,view_vertical=surface.view_vertical,
+            view_horizontal=surface.view_horizontal)
+        reference=GenusDiagram(closed,show_cuts=True).drawing(style)
+        paths,texts=list(base.paths),[]
+        rims={rim.id:rim for rim in outline.rims}
+        vy=1 if surface.view_vertical=='above' else -1
+        for number in range(1,2*surface.genus+2):
+            color=RAINBOW[(number-1)%len(RAINBOW)]
+            boundary='fixed-1' if number==1 else f'fixed-{last}' if number==last-1 else None
+            if boundary in rims:
+                rim=rims[boundary]
+                far=outline.handles[1 if number==1 else -1]
+                cusp=far[0][1:] if number==1 else far[-1][-2:]
+                for sign,bank in ((-vy,'a' if vy>0 else 'b'),(vy,'b' if vy>0 else 'a')):
+                    start=surface.boundary_anchor(boundary,bank).point
+                    width=cusp[0]-start[0]
+                    lift=sign*min(surface.height*.12,abs(width)*.32)
+                    controls=(start,(start[0]+width/3,start[1]+lift),
+                              (cusp[0]-width/3,cusp[1]+lift),cusp)
+                    commands=(('M',*start),('C',*controls[1],*controls[2],*cusp))
+                    paths.append(Path(commands,color,style.curve_width,'boundary-reference-arc',sign==vy))
+                texts.append(Text((rim.x+cusp[0])/2,9*vy,str(number),color,10))
+            else:
+                layer=GenusDiagram(closed,(NamedCut(number),)).drawing(replace(style,curve_color=color))
+                paths.extend(p for p in layer.paths if p.role=='named-cut')
+                texts.extend(t for t in reference.texts if t.text==str(number))
+        return replace(base,paths=tuple(paths),texts=tuple(texts))
+
+    def _repr_svg_(self):
+        from .svg import render_svg
+        return render_svg(self)
+
+
+@dataclass(frozen=True)
 class BoundaryGuide:
     """A visual inventory of actual vertical-plane rim attachments."""
     surface: object

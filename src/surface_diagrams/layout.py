@@ -15,8 +15,8 @@ def layout(surface: PlanarSurface, style: Style) -> Drawing:
         return surface.drawing(style)
     from .genus import GenusSurface, genus_layout
     from .cut_diagrams import CutDiskDiagram
-    from .genus_diagrams import GenusDiagram, BoundaryGuide
-    if isinstance(surface, (GenusDiagram, BoundaryGuide)):
+    from .genus_diagrams import GenusDiagram, BoundaryGuide, BorderedReferenceDiagram
+    if isinstance(surface, (GenusDiagram, BoundaryGuide, BorderedReferenceDiagram)):
         return surface.drawing(style)
     if isinstance(surface, CutDiskDiagram):
         return surface.drawing(style)

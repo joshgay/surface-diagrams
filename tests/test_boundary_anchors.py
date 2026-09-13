@@ -36,3 +36,23 @@ class BoundaryAnchorTests(unittest.TestCase):
         surface=GenusSurface(2,type_ii=(BoundaryPair('left'),),marks=('P',))
         with self.assertRaises(NotImplementedError): render_svg(surface.boundary_guide())
         with self.assertRaises(NotImplementedError): surface.cut_system()
+
+    def test_end_reference_arcs_meet_rims_and_cusps_in_all_views(self):
+        for vertical in ('above','below'):
+            for horizontal in ('left','right'):
+                surface=GenusSurface(2,type_i=(TypeIBoundary(1),TypeIBoundary(6)),
+                                    view_vertical=vertical,view_horizontal=horizontal)
+                d=layout(surface.with_reference_arcs(),Style())
+                arcs=[p for p in d.paths if p.role=='boundary-reference-arc']
+                self.assertEqual(len(arcs),4)
+                self.assertEqual(sum(p.dashed for p in arcs),2)
+                self.assertEqual({p.commands[0][1:] for p in arcs},
+                                 {a.point for a in surface.boundary_anchors()})
+                outline=presentation(surface)
+                self.assertEqual({p.commands[-1][-2:] for p in arcs},
+                    {outline.handles[1][0][1:],outline.handles[-1][-1][-2:]})
+                self.assertIn('boundary-reference-arc',render_tikz(surface.with_reference_arcs()))
+                with self.assertRaises(NotImplementedError): surface.cut_system()
+        for surface in (GenusSurface(type_i=(TypeIBoundary(2),)),
+                        GenusSurface(type_ii=(BoundaryPair('top'),))):
+            with self.assertRaises(NotImplementedError): render_svg(surface.with_reference_arcs())

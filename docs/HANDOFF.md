@@ -3,6 +3,17 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Type I end reference arcs
+
+`GenusSurface.with_reference_arcs()` draws the reference family for one or both
+Type I end boundaries. Each end member becomes two vertical-plane arcs joining
+actual rim anchors to the neighboring cusp; interior members retain their IDs,
+colors, and cusp-aligned visibility. Both exports and all four views are covered.
+This separate presentation API does not pretend to supply a certified bordered
+cellulation. Type I genus-cusp boundaries, Type II connections and marks remain
+explicitly unsupported. Tutorial figure 10 now shows the end reference family.
+The user's one-time 9:16 a.m. Eastern continuation is scheduled (COUNT=1).
+
 ## Boundary-plane endpoint bindings
 
 `GenusSurface.boundary_anchors()` returns exact rim/vertical-plane attachments

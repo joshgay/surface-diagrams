@@ -166,3 +166,7 @@ preserves supplied curve itineraries and the checked cellulation.
 Boundary-plane progress: exact named rim attachments and their labeled guide are
 implemented in all views. Next bind connecting reference arcs and marked-point
 spokes to those attachments, then complete the bordered cellulation.
+
+Type I end-boundary reference families are now drawn by `with_reference_arcs()`.
+Next extend to fixed boundaries at genus cusps, then Type II arcs and marks.
+The checked bordered mesh is still a separate unfinished requirement.
