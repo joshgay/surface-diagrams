@@ -3,6 +3,13 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Member selection for bordered factor panels
+
+`family.select(*numbers)` isolates reference members while retaining geometry,
+colors and surface marks; `family.member_numbers` lists available IDs. Empty
+selection keeps the bare surface and marks. Tutorial figure 14 shows vertical
+factor-support panels on a bordered genus surface. Actions are not computed.
+
 ## Explicit marked-point plane bindings
 
 `with_reference_arcs(mark_positions={"P": (x,y), ...})` now places all named

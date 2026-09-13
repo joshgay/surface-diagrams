@@ -14,7 +14,7 @@ python -m pip install -e .
 python examples/tutorial.py
 ```
 
-This produces thirteen main SVG figures, a full-size cut-disk diagnostic, and thirteen TikZ counterparts in
+This produces fourteen main SVG figures, a full-size cut-disk diagnostic, and fourteen TikZ counterparts in
 [examples/output/tutorial](../examples/output/tutorial/). Open SVG files in a
 browser or vector editor. Circular-hole figures also export to TikZ.
 The [browser edition](TUTORIAL.html) contains the same instructions and figures.
@@ -431,6 +431,27 @@ marks and spokes. Invalid positions raise an explanation rather than moving
 marks automatically. Colors and spoke numbers follow `surface.marks` order,
 independently of dictionary order. The supplied drawing still does not provide a
 certified marked bordered cellulation.
+
+Use `.select(...)` to isolate existing reference members for factor panels:
+
+```python
+family = end_bordered.with_reference_arcs()
+factor_panels = Figure((
+    (Panel(family.select(2), "Factor 1: positive twist on member 2"),),
+    (Panel(family.select(4), "Factor 2: positive twist on member 4"),),
+    (Panel(family, "Reference family; action images not supplied"),),
+))
+save_svg(factor_panels, "bordered-factor-panels.svg")
+```
+
+![Vertical factor panels on a bordered surface](../examples/output/tutorial/14-bordered-factor-panels.svg)
+
+`family.member_numbers` lists the available member numbers. Selection preserves
+geometry, colors and all marked points. An opened odd member includes both of its
+boundary arcs; an even member is its closed wrap. Boundary and marked spokes
+retain their later numbers. An empty selection leaves the surface and marks.
+This draws supplied support curves and labels; it does not apply the factors or
+check their product.
 
 These are exact drawing attachment points, ready for the remaining reference-arc bindings.
 The guide does not yet draw a full bordered cut system or place marked-point

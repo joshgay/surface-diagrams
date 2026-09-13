@@ -19,6 +19,20 @@ class BorderedReferenceDiagram:
     surface: object
     pair_bank: str = "a"
     mark_positions: tuple = ()
+    selection: tuple = None
+
+    @property
+    def member_numbers(self):
+        return tuple(range(1,2*self.surface.genus+2+2*len(self.surface.type_ii)+len(self.surface.marks)))
+
+    def select(self, *numbers):
+        """Isolate numbered members without rerouting or reassigning colors."""
+        from dataclasses import replace
+        if any(type(n) is not int or n not in self.member_numbers for n in numbers):
+            raise ValueError('selected reference member number is outside this family')
+        if len(set(numbers))!=len(numbers):
+            raise ValueError('selected reference member numbers must be distinct')
+        return replace(self,selection=tuple(numbers))
 
     def drawing(self, style):
         from dataclasses import replace
@@ -55,8 +69,11 @@ class BorderedReferenceDiagram:
             return far[0][1:] if slot%2==0 else far[-1][-2:]
 
         members={}
+        member_labels={}
+        mark_labels=[]
         for number in range(1,2*surface.genus+2):
             begin=len(paths)
+            label_begin=len(texts)
             color=RAINBOW[(number-1)%len(RAINBOW)]
             if number%2:
                 # The corridor member joins consecutive vertical-plane slots.
@@ -102,6 +119,7 @@ class BorderedReferenceDiagram:
                 _append_paths(paths,pieces,color,style.curve_width,'named-cut')
                 texts.append(Text(center,ry+9,str(number),color,10))
             members[number]=tuple(paths[begin:])
+            member_labels[number]=tuple(texts[label_begin:])
         chain=tuple(p for p in paths if p.role in ('named-cut','boundary-reference-arc'))
         for index,rim in enumerate(r for r in outline.rims if r.role=='type-ii-boundary'):
             start=surface.boundary_anchor(rim.id,self.pair_bank).point
@@ -131,6 +149,8 @@ class BorderedReferenceDiagram:
             color=RAINBOW[(number-1)%len(RAINBOW)]
             paths.append(Path(commands,color,style.curve_width,'boundary-reference-spoke',dashed))
             texts.append(Text(start[0]+8,(start[1]+end[1])/2,str(number),color,9))
+            members[number]=(paths[-1],)
+            member_labels[number]=(texts[-1],)
         ellipses=list(base.ellipses)
         if positions:
             from .model import _number
@@ -178,7 +198,15 @@ class BorderedReferenceDiagram:
                 paths.append(Path((('M',*start),('L',*end)),color,style.curve_width,'mark-reference-spoke',dashed))
                 ellipses.append(Ellipse(*start,radius,radius,style.marked_point_color,'none',0,'marked-point'))
                 texts.append(Text(start[0]+8,start[1]+3,name,style.marked_point_color,9))
+                mark_labels.append(texts[-1])
                 texts.append(Text(start[0]+8,(start[1]+end[1])/2,str(number),color,9))
+                members[number]=(paths[-1],)
+                member_labels[number]=(texts[-1],)
+        if self.selection is not None:
+            if any(number not in members for number in self.selection):
+                raise ValueError('selected reference member is not available')
+            paths=list(base.paths)+[path for number in self.selection for path in members[number]]
+            texts=mark_labels+[label for number in self.selection for label in member_labels[number]]
         return replace(base,paths=tuple(paths),texts=tuple(texts),ellipses=tuple(ellipses))
 
 

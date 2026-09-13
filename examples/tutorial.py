@@ -91,6 +91,12 @@ def examples():
     marked = GenusSurface(2,type_i=(TypeIBoundary(6),),marks=('P','Q'))
     yield '13-bordered-marked-reference', marked.with_reference_arcs(
         mark_positions={'P':(-35,30),'Q':(35,-30)}), Style()
+    family = GenusSurface(2,type_i=(TypeIBoundary(6),)).with_reference_arcs()
+    yield '14-bordered-factor-panels', Figure((
+        (Panel(family.select(2), 'Factor 1: positive twist supported on member 2'),),
+        (Panel(family.select(4), 'Factor 2: positive twist supported on member 4'),),
+        (Panel(family, 'Reference family; action images are not computed'),),
+    )), Style()
 
 
 def main(out=None):

@@ -166,3 +166,21 @@ class BoundaryAnchorTests(unittest.TestCase):
         pair=GenusSurface(2,type_ii=(BoundaryPair('top'),),marks=('P',))
         with self.assertRaises(ValueError):
             render_svg(pair.with_reference_arcs(mark_positions={'P':(-22.,30.)}))
+
+    def test_member_selection_keeps_geometry_colors_and_marks(self):
+        from surface_diagrams.visuals import RAINBOW
+        family=GenusSurface(2,type_i=(TypeIBoundary(6),),marks=('P',)).with_reference_arcs(
+            mark_positions={'P':(-35,30)})
+        full=layout(family,Style())
+        self.assertEqual(family.member_numbers,(1,2,3,4,5,6))
+        selected=layout(family.select(2),Style())
+        self.assertEqual([p for p in selected.paths if p.role=='named-cut'],
+                         [p for p in full.paths if p.role=='named-cut' and p.stroke==RAINBOW[1]])
+        self.assertEqual(selected.ellipses,full.ellipses)
+        self.assertEqual({t.text for t in selected.texts},{'P','2'})
+        spoke=layout(family.select(6),Style())
+        self.assertEqual(sum(p.role=='mark-reference-spoke' for p in spoke.paths),1)
+        empty=layout(family.select(),Style())
+        self.assertFalse(any('reference' in p.role or p.role=='named-cut' for p in empty.paths))
+        for numbers in ((0,),(7,),(True,),(2,2)):
+            with self.assertRaises(ValueError): family.select(*numbers)
