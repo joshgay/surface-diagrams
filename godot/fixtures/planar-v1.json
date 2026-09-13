@@ -1,0 +1,20 @@
+{
+  "format": "surface-diagrams",
+  "version": 1,
+  "kind": "planar",
+  "title": "Generic planar import fixture",
+  "surface": {
+    "width": 400,
+    "height": 210,
+    "objects": [
+      {"id": "p1", "kind": "point", "x": -120},
+      {"id": "p2", "kind": "point", "x": -40},
+      {"id": "p3", "kind": "point", "x": 40},
+      {"id": "p4", "kind": "point", "x": 120}
+    ]
+  },
+  "curves": [{"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": []}],
+  "labels": [{"id": "label1", "text": "Generic fixture", "x": 0, "y": -70}],
+  "allow_intersections": false
+}
+

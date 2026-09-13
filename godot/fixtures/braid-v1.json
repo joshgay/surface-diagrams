@@ -1,0 +1,12 @@
+{
+  "format": "surface-diagrams",
+  "version": 1,
+  "kind": "braid",
+  "title": "Generic six-strand import fixture",
+  "braid": {
+    "strands": 6,
+    "word": [1, -2, 3, -4, 5],
+    "direction": "bottom-to-top"
+  },
+  "labels": []
+}

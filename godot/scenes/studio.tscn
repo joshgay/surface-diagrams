@@ -1,0 +1,49 @@
+[gd_scene format=3]
+
+[node name="Studio" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Column" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Margin/Column"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.08, 0.35, 0.30, 1)
+theme_override_font_sizes/font_size = 28
+text = "Surface Diagrams Studio"
+
+[node name="Status" type="Label" parent="Margin/Column"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.3, 0.28, 1)
+text = "Godot development branch. Workspace scaffold, not a functioning editor yet."
+
+[node name="Workspace" type="PanelContainer" parent="Margin/Column"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Center" type="CenterContainer" parent="Margin/Column/Workspace"]
+layout_mode = 2
+
+[node name="NextStep" type="Label" parent="Margin/Column/Workspace/Center"]
+layout_mode = 2
+text = "First slice: open a diagram, inspect its stable IDs, and save it without data loss.\nSee godot/STATE.md for current implementation status."
+horizontal_alignment = 1
+
