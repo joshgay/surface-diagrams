@@ -22,9 +22,9 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-90.2,-77.30770432) .. controls (-90.2,-71.80770432) and (-89.496,-65.649897984) .. (-83.16,-65.63073792) .. controls (-27.72,-65.46308736) and (27.72,-65.46308736) .. (83.16,-65.63073792) .. controls (89.496,-65.649897984) and (90.2,-71.80770432) .. (90.2,-77.30770432);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (134.2,77.30770432) .. controls (134.2,51.80770432) and (143,27.5) .. (156.2,27.5);
+\draw[draw=sdcolor0,line width=1.125bp] (134.2,77.30770432) .. controls (134.2,51.80770432) and (180.675,27.5) .. (193.875,27.5);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (134.2,-77.30770432) .. controls (134.2,-51.80770432) and (143,-27.5) .. (156.2,-27.5);
+\draw[draw=sdcolor0,line width=1.125bp] (134.2,-77.30770432) .. controls (134.2,-51.80770432) and (180.675,-27.5) .. (193.875,-27.5);
 % handle
 \draw[draw=sdcolor0,line width=1.125bp] (-143,-2.86) .. controls (-133.1,20.02) and (-86.9,20.02) .. (-77,-2.86);
 % handle
@@ -62,8 +62,8 @@
 % type-ii-boundary
 \draw[draw=sdcolor0,line width=0.7875bp,dash pattern=on 2.25bp off 2.25bp] (90.2,-77.30770432) .. controls (90.2,-74.2701381959) and (100.049735504,-71.80770432) .. (112.2,-71.80770432) .. controls (124.350264496,-71.80770432) and (134.2,-74.2701381959) .. (134.2,-77.30770432);
 % type-i-boundary
-\draw[draw=sdcolor0,line width=1.125bp] (156.2,-27.5) .. controls (159.996957655,-27.5) and (163.075,-15.1878306203) .. (163.075,0) .. controls (163.075,15.1878306203) and (159.996957655,27.5) .. (156.2,27.5);
+\draw[draw=sdcolor0,line width=1.125bp] (193.875,-27.5) .. controls (197.671957655,-27.5) and (200.75,-15.1878306203) .. (200.75,0) .. controls (200.75,15.1878306203) and (197.671957655,27.5) .. (193.875,27.5);
 % type-i-boundary
-\draw[draw=sdcolor0,line width=1.125bp] (156.2,-27.5) .. controls (152.403042345,-27.5) and (149.325,-15.1878306203) .. (149.325,0) .. controls (149.325,15.1878306203) and (152.403042345,27.5) .. (156.2,27.5);
+\draw[draw=sdcolor0,line width=1.125bp] (193.875,-27.5) .. controls (190.078042345,-27.5) and (187,-15.1878306203) .. (187,0) .. controls (187,15.1878306203) and (190.078042345,27.5) .. (193.875,27.5);
 \end{tikzpicture}
 \endgroup

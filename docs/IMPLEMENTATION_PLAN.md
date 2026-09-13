@@ -11,6 +11,25 @@ Read the [tutorial](TUTORIAL.md), [architecture](ARCHITECTURE.md),
 [P0-P8 visual plan](archive/IMPLEMENTATION_PLAN-visual-cycle-2026-09-12.md) preserves
 reference-specific acceptance criteria. Preserve all original reference SVGs.
 
+## Surface spacing guideline (Richard's latest refinement)
+
+Use roughly comparable visible widths for the strips between consecutive genus
+holes, between a hole and the outer end, and between holes and the top/bottom
+surface edges. Boundary openings should have a comparable visual scale. Exact
+equality is unnecessary; avoid a squeezed strip next to an otherwise roomy
+surface. In particular, a Type I end rim must not be pulled inward by an adjacent
+top/bottom collar. Measure the strip from the rim's inner edge to the nearest
+hole, and compare it with the inter-hole gap and opposite end clearance.
+
+Immediate work: correct both ends and verify all four viewing directions,
+including the current four-view gallery fixture, mixed boundaries and changed
+proportions. Preserve boundary IDs, actual contour attachments and transparency.
+A gently undulating top/bottom contour that follows the genus holes is a desired
+minor refinement, explicitly lower priority than spacing, endpoint controls and
+cut-system drawings. No exact scalloping amplitude is prescribed now.
+
+After this correction continue V1-V3 visual work; calculation engines remain later.
+
 ## User-facing priorities
 
 | Use case | Visual deliverable first | Calculation deliverable later |

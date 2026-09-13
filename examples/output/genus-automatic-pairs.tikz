@@ -6,9 +6,9 @@
 \path[use as bounding box] (-167.25,-77.56007913) rectangle (167.25,77.56007913);
 \clip (-167.25,-77.56007913) rectangle (167.25,77.56007913);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-123.75,0) .. controls (-123.75,18) and (-101.75,36.99757913) .. (-101.75,53.99757913);
+\draw[draw=sdcolor0,line width=1.125bp] (-132,0) .. controls (-132,18) and (-101.75,36.99757913) .. (-101.75,53.99757913);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-123.75,0) .. controls (-123.75,-18) and (-101.75,-36.99757913) .. (-101.75,-53.99757913);
+\draw[draw=sdcolor0,line width=1.125bp] (-132,0) .. controls (-132,-18) and (-101.75,-36.99757913) .. (-101.75,-53.99757913);
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-63.25,53.99757913) .. controls (-63.25,49.18507913) and (-62.634,43.776153146) .. (-57.09,43.75888913) .. controls (-55.6966666667,43.75455029) and (-54.3033333333,43.75037029) .. (-52.91,43.74634913) .. controls (-47.366,43.730349146) and (-46.75,48.94384913) .. (-46.75,53.75634913);
 % surface-outline
@@ -22,9 +22,9 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (46.75,-53.75634913) .. controls (46.75,-48.94384913) and (47.366,-43.730349146) .. (52.91,-43.74634913) .. controls (54.3033333333,-43.75037029) and (55.6966666667,-43.75455029) .. (57.09,-43.75888913) .. controls (62.634,-43.776153146) and (63.25,-49.18507913) .. (63.25,-53.99757913);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (101.75,53.99757913) .. controls (101.75,36.99757913) and (123.75,18) .. (123.75,0);
+\draw[draw=sdcolor0,line width=1.125bp] (101.75,53.99757913) .. controls (101.75,36.99757913) and (132,18) .. (132,0);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (101.75,-53.99757913) .. controls (101.75,-36.99757913) and (123.75,-18) .. (123.75,0);
+\draw[draw=sdcolor0,line width=1.125bp] (101.75,-53.99757913) .. controls (101.75,-36.99757913) and (132,-18) .. (132,0);
 % handle
 \draw[draw=sdcolor0,line width=1.125bp] (-88,2.2) .. controls (-78.1,-15.4) and (-31.9,-15.4) .. (-22,2.2);
 % handle

@@ -139,6 +139,28 @@ class GenusTest(unittest.TestCase):
         self.assertGreater(left.y-left.radius,20)
         self.assertGreater(rims['pair-4-upper'].x-rims['pair-3-upper'].x,200)
 
+    def test_end_rims_keep_a_balanced_strip_in_all_views(self):
+        for genus, spacing, height in ((2,110,150), (3,110,150), (5,145,180)):
+            for end in ('left','right'):
+                slot = 1 if end == 'left' else 2*genus+2
+                other = 'right' if end == 'left' else 'left'
+                surface = GenusSurface(genus, handle_spacing=spacing, height=height,
+                    type_i=(TypeIBoundary(slot),),
+                    type_ii=(BoundaryPair(other),BoundaryPair(),BoundaryPair()))
+                for vertical in ('above','below'):
+                    for horizontal in ('left','right'):
+                        p = presentation(replace(surface,view_vertical=vertical,view_horizontal=horizontal))
+                        rim = next(r for r in p.rims if r.id == f'fixed-{slot}')
+                        inter = p.handles[2][0][1]-p.handles[0][-1][-2]
+                        gap = (rim.x-rim.depth-p.handles[-2][-1][-2] if end == 'right'
+                               else p.handles[0][0][1]-rim.x-rim.depth)
+                        self.assertGreaterEqual(gap, .95*inter)
+                        self.assertLessEqual(gap, 1.5*inter)
+                        drawing = p.drawing(Style())
+                        self.assertLess(rim.extents[0],drawing.width/2)
+                        for anchor in rim.anchors:
+                            self.assertTrue(any(anchor in (c[0][1:],c[-1][-2:]) for c in p.contours))
+
     def test_d3_end_contours_join_directly_to_top_rims(self):
         p = presentation(GenusSurface(3,type_i=(TypeIBoundary(8),),type_ii=(BoundaryPair(),)*6))
         end = next(r for r in p.rims if r.id == 'fixed-8')

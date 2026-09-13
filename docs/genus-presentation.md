@@ -71,3 +71,12 @@ The result is presentation geometry only. It is not yet a topological
 cellulation, cut-system certificate, or genus curve router. Those are later
 stages in the implementation plan. The existing SVG and TikZ writers consume
 the same M/C paths, so this stage required no new exporter logic.
+
+## Balanced end clearance
+
+Default strips of surface between holes, end rims and outer edges should have
+comparable visual widths. A direct end-to-collar contour must retain an end gap
+at least as wide as the ordinary inter-hole strip, accounting for the rim's
+horizontal depth. This applies symmetrically to Type I end boundaries and to
+undecorated direct ends, and is independent of which rim half faces the viewer.
+Gentle top/bottom undulation is a later, minor appearance refinement.

@@ -177,6 +177,18 @@ def presentation(surface):
             end_x["left"] = a-ra-spacing*.20
         if direct_ends["right"]:
             end_x["right"] = b+rb+spacing*.20
+    # Direct collar joins used to pull the end inside the normal body margin.
+    # Retain a surface strip comparable to the gap between adjacent openings.
+    # The rim's inner half projects inward by radius/4; clearance is measured
+    # from that edge, not from its center. Closed-surface geometry is unchanged.
+    half_hole = spacing*.30
+    strip = spacing-2*half_hole
+    first_hole = left+spacing*.5-half_hole
+    last_hole = right-spacing*.5+half_hole
+    if direct_ends['left']:
+        end_x['left'] = min(end_x['left'], first_hole-strip-lr*.25)
+    if direct_ends['right']:
+        end_x['right'] = max(end_x['right'], last_hole+strip+rr*.25)
     for region, chain, transform, tangent, normal in (
         ("left", left_chain, lambda u,v: (-v,u), (0,1), (-1,0)),
         ("top", top_chain, lambda u,v: (u,v), (1,0), (0,1)),

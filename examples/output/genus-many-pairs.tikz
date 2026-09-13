@@ -6,9 +6,9 @@
 \path[use as bounding box] (-314.75,-68.75) rectangle (314.75,68.75);
 \clip (-314.75,-68.75) rectangle (314.75,68.75);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-239.6,0) .. controls (-239.6,18) and (-207.6,30.04150257) .. (-207.6,47.04150257);
+\draw[draw=sdcolor0,line width=1.125bp] (-272,0) .. controls (-272,18) and (-207.6,30.04150257) .. (-207.6,47.04150257);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (-239.6,0) .. controls (-239.6,-18) and (-207.6,-30.04150257) .. (-207.6,-47.04150257);
+\draw[draw=sdcolor0,line width=1.125bp] (-272,0) .. controls (-272,-18) and (-207.6,-30.04150257) .. (-207.6,-47.04150257);
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (-195.6,47.04150257) .. controls (-195.6,45.54150257) and (-195.408,43.888747034) .. (-193.68,43.88491217) .. controls (-172.08,43.83697637) and (-150.48,43.79705957) .. (-128.88,43.76516177) .. controls (-127.152,43.762609946) and (-126.96,45.38516177) .. (-126.96,46.88516177);
 % surface-outline
@@ -30,9 +30,9 @@
 % surface-outline
 \draw[draw=sdcolor0,line width=1.125bp] (126.96,-46.88516177) .. controls (126.96,-45.38516177) and (127.152,-43.762609946) .. (128.88,-43.76516177) .. controls (150.48,-43.79705957) and (172.08,-43.83697637) .. (193.68,-43.88491217) .. controls (195.408,-43.888747034) and (195.6,-45.54150257) .. (195.6,-47.04150257);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (207.6,47.04150257) .. controls (207.6,30.04150257) and (239.6,18) .. (239.6,0);
+\draw[draw=sdcolor0,line width=1.125bp] (207.6,47.04150257) .. controls (207.6,30.04150257) and (272,18) .. (272,0);
 % surface-outline
-\draw[draw=sdcolor0,line width=1.125bp] (207.6,-47.04150257) .. controls (207.6,-30.04150257) and (239.6,-18) .. (239.6,0);
+\draw[draw=sdcolor0,line width=1.125bp] (207.6,-47.04150257) .. controls (207.6,-30.04150257) and (272,-18) .. (272,0);
 % handle
 \draw[draw=sdcolor0,line width=1.125bp] (-208,2.2) .. controls (-193.6,-15.4) and (-126.4,-15.4) .. (-112,2.2);
 % handle
