@@ -29,13 +29,17 @@ def examples():
     )), Style()
     points = PlanarSurface.row('PPP', spacing=65, height=210, margin=65)
     cuts = tuple(ColoredCurve(f'c{i}', Arc(i-1,i), RAINBOW[i-1]) for i in range(1,5))
-    yield '04-rainbow-planar-cuts', PlanarDiagram(points, cuts), guides
+    yield '04-rainbow-planar-cuts', PlanarDiagram(points, cuts, show_legend=True), guides
+    family = (ColoredCurve('a', Arc(1,4), RAINBOW[0]),
+              ColoredCurve('b', Arc(3,6), RAINBOW[4]))
+    individual = Figure(tuple((Panel(PlanarDiagram(row, (curve,)),
+                                    f'Curve {curve.id}: same route and color'),) for curve in family))
     yield '05-intersecting-families', Figure((
-        (Panel(PlanarDiagram(row, (ColoredCurve('a',Arc(1,4),RAINBOW[0]),
-                                   ColoredCurve('b',Arc(3,6),RAINBOW[4])), True),
-               'Two intersecting arcs; colors retain their identities'),),
-        (Panel(PlanarDiagram(points, cuts+(ColoredCurve('twist-support',Loop((1,3)), '#222222'),), True),
-               'Reference cuts plus a twist-support curve (no action computed)'),),
+        (Panel(PlanarDiagram(row, family, True, show_legend=True), 'Intersecting family'),
+         Panel(individual, 'Inspect each component')),
+        (Panel(PlanarDiagram(points, cuts+(ColoredCurve('twist-support',Loop((1,3)), '#222222'),),
+                             True, show_legend=True),
+               'Reference cuts and twist support (no action computed)'),),
     )), Style()
     yield '06-factorization-and-braids', Figure((
         (Panel(points.with_curves(Arc(1,2)), 'Factor 1: half twist supported on arc (1,2)'),

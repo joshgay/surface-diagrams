@@ -10,45 +10,101 @@
 \definecolor{sdcolor6}{HTML}{000000}
 \definecolor{sdcolor7}{HTML}{006FFF}
 \begin{tikzpicture}[x=0.75bp,y=0.75bp,line cap=round,line join=round]
-\path[use as bounding box] (-222.25,-282.5) rectangle (222.25,282.5);
-\clip (-222.25,-282.5) rectangle (222.25,282.5);
+\path[use as bounding box] (-456.5,-498.25) rectangle (456.5,498.25);
+\clip (-456.5,-498.25) rectangle (456.5,498.25);
 % arc
-\draw[draw=sdcolor0,line width=1.5bp] (-137.5,129.75) arc[start angle=180,end angle=0,x radius=82.5,y radius=37.2816455696];
+\draw[draw=sdcolor0,line width=1.5bp] (-371.75,204.75) arc[start angle=180,end angle=0,x radius=82.5,y radius=37.2816455696];
 % arc
-\draw[draw=sdcolor1,line width=1.5bp] (-27.5,129.75) arc[start angle=180,end angle=0,x radius=82.5,y radius=37.2816455696];
+\draw[draw=sdcolor1,line width=1.5bp] (-261.75,204.75) arc[start angle=180,end angle=0,x radius=82.5,y radius=37.2816455696];
+% curve-legend
+\draw[draw=sdcolor0,line width=1.5bp] (-264.25,69) -- (-242.25,69);
+% curve-legend
+\draw[draw=sdcolor1,line width=1.5bp] (-264.25,51) -- (-242.25,51);
 % arc
-\draw[draw=sdcolor0,line width=1.5bp] (-130,-152.75) -- (-65,-152.75);
+\draw[draw=sdcolor0,line width=1.5bp] (84.75,310.5) arc[start angle=180,end angle=0,x radius=82.5,y radius=37.2816455696];
 % arc
-\draw[draw=sdcolor2,line width=1.5bp] (-65,-152.75) -- (0,-152.75);
+\draw[draw=sdcolor1,line width=1.5bp] (194.75,28) arc[start angle=180,end angle=0,x radius=82.5,y radius=37.2816455696];
 % arc
-\draw[draw=sdcolor3,line width=1.5bp] (0,-152.75) -- (65,-152.75);
+\draw[draw=sdcolor0,line width=1.5bp] (-364.25,-266.5) -- (-299.25,-266.5);
 % arc
-\draw[draw=sdcolor4,line width=1.5bp] (65,-152.75) -- (130,-152.75);
+\draw[draw=sdcolor2,line width=1.5bp] (-299.25,-266.5) -- (-234.25,-266.5);
+% arc
+\draw[draw=sdcolor3,line width=1.5bp] (-234.25,-266.5) -- (-169.25,-266.5);
+% arc
+\draw[draw=sdcolor4,line width=1.5bp] (-169.25,-266.5) -- (-104.25,-266.5);
 % closed-curve
-\draw[draw=sdcolor5,line width=1.5bp] (-32.5,-152.75) arc[start angle=180,end angle=0,x radius=66,y radius=45.3115384615] arc[start angle=0,end angle=-180,x radius=66,y radius=45.3115384615] -- cycle;
+\draw[draw=sdcolor5,line width=1.5bp] (-266.75,-266.5) arc[start angle=180,end angle=0,x radius=66,y radius=45.3115384615] arc[start angle=0,end angle=-180,x radius=66,y radius=45.3115384615] -- cycle;
+% curve-legend
+\draw[draw=sdcolor0,line width=1.5bp] (-324.25,-402.25) -- (-302.25,-402.25);
+% curve-legend
+\draw[draw=sdcolor2,line width=1.5bp] (-324.25,-420.25) -- (-302.25,-420.25);
+% curve-legend
+\draw[draw=sdcolor3,line width=1.5bp] (-324.25,-438.25) -- (-302.25,-438.25);
+% curve-legend
+\draw[draw=sdcolor4,line width=1.5bp] (-324.25,-456.25) -- (-302.25,-456.25);
+% curve-legend
+\draw[draw=sdcolor5,line width=1.5bp] (-324.25,-474.25) -- (-302.25,-474.25);
 % outer-boundary
-\path[fill=none,draw=sdcolor6,line width=1.125bp] (0,129.75) ellipse [x radius=197.5,y radius=105];
+\path[fill=none,draw=sdcolor6,line width=1.125bp] (-234.25,204.75) ellipse [x radius=197.5,y radius=105];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (-137.5,129.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (-371.75,204.75) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (-82.5,129.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (-316.75,204.75) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (-27.5,129.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (-261.75,204.75) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (27.5,129.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (-206.75,204.75) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (82.5,129.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (-151.75,204.75) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (137.5,129.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (-96.75,204.75) ellipse [x radius=4,y radius=4];
 % outer-boundary
-\path[fill=none,draw=sdcolor6,line width=1.125bp] (0,-152.75) ellipse [x radius=130,y radius=105];
+\path[fill=none,draw=sdcolor6,line width=1.125bp] (222.25,310.5) ellipse [x radius=197.5,y radius=105];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (-65,-152.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (84.75,310.5) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (0,-152.75) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor7,draw=none,line width=0bp] (139.75,310.5) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor7,draw=none,line width=0bp] (65,-152.75) ellipse [x radius=4,y radius=4];
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (0,258.5) {Two intersecting arcs; colors retain their identities};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (0,-24) {Reference cuts plus a twist-support curve (no action computed)};
+\path[fill=sdcolor7,draw=none,line width=0bp] (194.75,310.5) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (249.75,310.5) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (304.75,310.5) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (359.75,310.5) ellipse [x radius=4,y radius=4];
+% outer-boundary
+\path[fill=none,draw=sdcolor6,line width=1.125bp] (222.25,28) ellipse [x radius=197.5,y radius=105];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (84.75,28) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (139.75,28) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (194.75,28) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (249.75,28) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (304.75,28) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (359.75,28) ellipse [x radius=4,y radius=4];
+% outer-boundary
+\path[fill=none,draw=sdcolor6,line width=1.125bp] (-234.25,-266.5) ellipse [x radius=130,y radius=105];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (-299.25,-266.5) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (-234.25,-266.5) ellipse [x radius=4,y radius=4];
+% marked-point
+\path[fill=sdcolor7,draw=none,line width=0bp] (-169.25,-266.5) ellipse [x radius=4,y radius=4];
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor0,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,66) {a};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,48) {b};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-234.25,474.25) {Intersecting family};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (222.25,439.25) {Curve a: same route and color};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (222.25,156.75) {Curve b: same route and color};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (222.25,474.25) {Inspect each component};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor0,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,-405.25) {c1};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,-423.25) {c2};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,-441.25) {c3};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,-459.25) {c4};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor5,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-210.25,-477.25) {twist-support};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor6,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (-234.25,-137.75) {Reference cuts and twist support (no action computed)};
 \end{tikzpicture}
 \endgroup

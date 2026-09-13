@@ -11,32 +11,44 @@
 \definecolor{sdcolor7}{HTML}{777777}
 \definecolor{sdcolor8}{HTML}{333333}
 \begin{tikzpicture}[x=0.75bp,y=0.75bp,line cap=round,line join=round]
-\path[use as bounding box] (-142.75,-117.75) rectangle (142.75,117.75);
-\clip (-142.75,-117.75) rectangle (142.75,117.75);
+\path[use as bounding box] (-142.75,-159.75) rectangle (142.75,159.75);
+\clip (-142.75,-159.75) rectangle (142.75,159.75);
 % axis
-\draw[draw=sdcolor0,line width=0.45bp,dash pattern=on 2.25bp off 2.25bp] (-130,0) -- (130,0);
+\draw[draw=sdcolor0,line width=0.45bp,dash pattern=on 2.25bp off 2.25bp] (-130,42) -- (130,42);
 % arc
-\draw[draw=sdcolor1,line width=1.5bp] (-130,0) -- (-65,0);
+\draw[draw=sdcolor1,line width=1.5bp] (-130,42) -- (-65,42);
 % arc
-\draw[draw=sdcolor2,line width=1.5bp] (-65,0) -- (0,0);
+\draw[draw=sdcolor2,line width=1.5bp] (-65,42) -- (0,42);
 % arc
-\draw[draw=sdcolor3,line width=1.5bp] (0,0) -- (65,0);
+\draw[draw=sdcolor3,line width=1.5bp] (0,42) -- (65,42);
 % arc
-\draw[draw=sdcolor4,line width=1.5bp] (65,0) -- (130,0);
+\draw[draw=sdcolor4,line width=1.5bp] (65,42) -- (130,42);
+% curve-legend
+\draw[draw=sdcolor1,line width=1.5bp] (-35,-93.75) -- (-13,-93.75);
+% curve-legend
+\draw[draw=sdcolor2,line width=1.5bp] (-35,-111.75) -- (-13,-111.75);
+% curve-legend
+\draw[draw=sdcolor3,line width=1.5bp] (-35,-129.75) -- (-13,-129.75);
+% curve-legend
+\draw[draw=sdcolor4,line width=1.5bp] (-35,-147.75) -- (-13,-147.75);
 % outer-boundary
-\path[fill=none,draw=sdcolor5,line width=1.125bp] (0,0) ellipse [x radius=130,y radius=105];
+\path[fill=none,draw=sdcolor5,line width=1.125bp] (0,42) ellipse [x radius=130,y radius=105];
 % marked-point
-\path[fill=sdcolor6,draw=none,line width=0bp] (-65,0) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (-65,42) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor6,draw=none,line width=0bp] (0,0) ellipse [x radius=4,y radius=4];
+\path[fill=sdcolor6,draw=none,line width=0bp] (0,42) ellipse [x radius=4,y radius=4];
 % marked-point
-\path[fill=sdcolor6,draw=none,line width=0bp] (65,0) ellipse [x radius=4,y radius=4];
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (-97.5,-12) {0};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (-32.5,-12) {1};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (32.5,-12) {2};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (97.5,-12) {3};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor8,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (-65,10) {1};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor8,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (0,10) {2};
-\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor8,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (65,10) {3};
+\path[fill=sdcolor6,draw=none,line width=0bp] (65,42) ellipse [x radius=4,y radius=4];
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (-97.5,30) {0};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (-32.5,30) {1};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (32.5,30) {2};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor7,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (97.5,30) {3};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor8,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (-65,52) {1};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor8,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (0,52) {2};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor8,font=\rmfamily\fontsize{6.75bp}{8.1bp}\selectfont] at (65,52) {3};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor1,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (24,-96.75) {c1};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor2,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (24,-114.75) {c2};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor3,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (24,-132.75) {c3};
+\node[anchor=base,inner sep=0pt,outer sep=0pt,text=sdcolor4,font=\rmfamily\fontsize{7.5bp}{9bp}\selectfont] at (24,-150.75) {c4};
 \end{tikzpicture}
 \endgroup

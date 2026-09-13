@@ -72,6 +72,8 @@ attempting every future diagram family in one universal abstraction.
 
 - Eleven main SVG tutorial figures, one detailed cut-disk SVG and ten TikZ counterparts; circular-hole
   TikZ remains unsupported, and new TikZ outputs are not yet TeX-compiled here.
+- Optional planar ID/color legends and individual component panels alongside
+  intersecting overlays are demonstrated in tutorial figures 04/05.
 - `ColoredCurve` and `PlanarDiagram`: disjoint colored families by default;
   independently routed overlays with explicit `allow_intersections=True`.
 - `BraidDiagram`: signed crossings with transparent underpass gaps and persistent

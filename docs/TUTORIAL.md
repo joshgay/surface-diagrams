@@ -150,7 +150,7 @@ cuts = tuple(
     ColoredCurve(f"c{i}", Arc(i-1, i), RAINBOW[i-1])
     for i in range(1, 5)
 )
-reference = PlanarDiagram(points, cuts)
+reference = PlanarDiagram(points, cuts, show_legend=True)
 save_svg(reference, "rainbow-cuts.svg", style=Style(show_guides=True))
 ```
 
@@ -159,8 +159,11 @@ save_svg(reference, "rainbow-cuts.svg", style=Style(show_guides=True))
 These are straight consecutive segments on the symmetry axis: only c1 starts
 at the left outer boundary; c2 joins point 1 to point 2, c3 joins point 2
 to point 3, and c4 joins point 3 to the right boundary. They occupy the same intervals used as the horizontal curve guides.
-For the standard colors and IDs, the shorter equivalent is
+For the standard colors and IDs without a legend, the shorter form is
 `reference = points.with_cut_system()`.
+`show_legend=True` places the existing IDs and color swatches below the surface.
+Keep the same records or preserve their ID/color pairs when drawing image states;
+reordering records changes legend order but does not reassign colors.
 Colors identify the cuts, not twist signs. This planar drawing does not itself
 run the abstract cut-system validator or prove that its stabilizer is trivial.
 
@@ -178,7 +181,7 @@ explicit overlay option when you intend intersections:
 intersecting = PlanarDiagram(surface, (
     ColoredCurve("a", Arc(1, 4), RAINBOW[0]),
     ColoredCurve("b", Arc(3, 6), RAINBOW[4]),
-), allow_intersections=True)
+), allow_intersections=True, show_legend=True)
 save_svg(intersecting, "intersecting.svg")
 
 support = ColoredCurve("twist-support", Loop((1, 3)), "#222222")
@@ -190,7 +193,11 @@ save_svg(PlanarDiagram(points, cuts + (support,), allow_intersections=True),
 
 Each curve is routed independently in overlay mode. The renderer retains its
 individual obstacle checks but does not certify intersections between layers.
-Inspect for coincident pieces or unintended extra crossings. Crossings of curves
+Inspect for coincident pieces or unintended extra crossings. The figure also
+shows each component separately, using the same `ColoredCurve` records. This
+makes an obscured portion visible without offsetting it or changing its route.
+Build those panels with `Panel(PlanarDiagram(surface, (curve,)), curve.id)` for
+each `curve` in `intersecting.curves`, then arrange them with `Figure`. Crossings of curves
 on the surface carry no braid over/under information.
 
 A loop picture describes the **support curve** of a Dehn twist. It does not

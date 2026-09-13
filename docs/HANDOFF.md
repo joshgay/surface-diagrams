@@ -3,6 +3,15 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Legend and intersecting-family update
+
+`PlanarDiagram(show_legend=True)` adds stable curve IDs and color swatches below
+the surface, in SVG and TikZ. Tutorial figures 04/05 use it; figure 05 also shows
+individual components beside the overlay, preserving their supplied routes.
+No intersection certification or automatic curve offsetting is implied.
+Validation: 140 tests pass; all 14 tutorial blocks run; browser images load.
+Remote run 34737479779 for the preceding endpoint commit was still queued.
+
 ## Latest visual update
 
 Planar circular boundaries now support exact left/right curved arc endpoints via

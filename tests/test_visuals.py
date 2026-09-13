@@ -31,6 +31,29 @@ class VisualsTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             PlanarDiagram(self.surface, (curves[0], curves[0]))
 
+    def test_legends_preserve_curve_identity_geometry_and_export(self):
+        curves = (ColoredCurve('reference <a>', Arc(1,3), RAINBOW[0]),
+                  ColoredCurve('image & b', Arc(2,4), RAINBOW[4]))
+        plain = PlanarDiagram(self.surface, curves, True)
+        original = layout(plain, Style())
+        d = layout(replace(plain, show_legend=True), Style())
+        self.assertEqual([(t.text,t.color) for t in d.texts], [(c.id,c.color) for c in curves])
+        self.assertGreater(d.height, original.height)
+        paths = [p for p in d.paths if p.role == 'arc']
+        for before, after in zip(original.paths, paths):
+            self.assertEqual(before.commands[0][1], after.commands[0][1])
+            self.assertEqual(before.commands[1][1:6], after.commands[1][1:6])
+        self.assertEqual(len([p for p in d.paths if p.role == 'curve-legend']), 2)
+        reverse = layout(replace(plain, curves=curves[::-1], show_legend=True), Style())
+        self.assertEqual([(t.text,t.color) for t in reverse.texts], [(c.id,c.color) for c in curves[::-1]])
+        root = ET.fromstring(render_svg(replace(plain, show_legend=True)))
+        self.assertIn('reference <a>', [t.text for t in root.iter()])
+        self.assertIn('curve-legend', render_tikz(replace(plain, show_legend=True)))
+        self.assertEqual(layout(PlanarDiagram(self.surface, show_legend=True), Style()),
+                         layout(PlanarDiagram(self.surface), Style()))
+        with self.assertRaises(ValueError):
+            PlanarDiagram(self.surface, show_legend='yes')
+
     def test_braid_sign_changes_underpass_and_strand_transport(self):
         for word, under in (((1,), 1), ((-1,), 0)):
             d = layout(BraidDiagram(3, word), Style())

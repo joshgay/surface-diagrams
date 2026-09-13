@@ -35,10 +35,12 @@ class PlanarDiagram:
     intersections but does not certify their number, transversality, or isotopy.
     It can also produce coincident portions: inspect the result. Each individual
     curve still receives the existing containment and obstacle checks.
+    show_legend=True lists stable curve IDs with their colors below the surface.
     """
     surface: PlanarSurface
     curves: tuple = ()
     allow_intersections: bool = False
+    show_legend: bool = False
 
     def __post_init__(self):
         if not isinstance(self.surface, PlanarSurface) or self.surface.curves:
@@ -48,6 +50,8 @@ class PlanarDiagram:
             raise TypeError('curves must contain ColoredCurve records')
         if len({c.id for c in self.curves}) != len(self.curves):
             raise ValueError('curve IDs must be distinct within a panel')
+        if not isinstance(self.show_legend, bool):
+            raise ValueError('show_legend must be boolean')
         if not isinstance(self.allow_intersections, bool):
             raise ValueError('allow_intersections must be boolean')
 
@@ -58,14 +62,31 @@ class PlanarDiagram:
             colors = iter(c.color for c in self.curves)
             paths = tuple(replace(p, stroke=next(colors)) if p.role in ('arc', 'closed-curve') else p
                           for p in drawing.paths)
-            return replace(drawing, paths=paths)
+            return self._legend(replace(drawing, paths=paths), style)
         base = layout(self.surface, style)
         paths = list(base.paths)
         for curve in self.curves:
             layer = layout(self.surface.with_curves(curve.curve),
                            replace(style, curve_color=curve.color, show_guides=False))
             paths.extend(layer.paths)
-        return replace(base, paths=tuple(paths))
+        return self._legend(replace(base, paths=tuple(paths)), style)
+
+    def _legend(self, drawing, style):
+        if not self.show_legend or not self.curves:
+            return drawing
+        # Reserve space below the surface; labels never cover curves or guides.
+        legend_width = max(len(c.id) for c in self.curves)*10+50
+        width = max(drawing.width, legend_width+24)
+        extra = 18*len(self.curves)+12
+        moved = _shift(drawing, 0, extra/2)
+        paths, texts = list(moved.paths), list(moved.texts)
+        for i, curve in enumerate(self.curves):
+            y = -drawing.height/2+extra/2-18*(i+1)
+            paths.append(Path((('M', -legend_width/2, y), ('L', -legend_width/2+22, y)),
+                              curve.color, style.curve_width, 'curve-legend'))
+            # Center the label in the remaining space, matching SVG and TikZ text.
+            texts.append(Text(24, y-3, curve.id, curve.color, 10))
+        return Drawing(width, drawing.height+extra, moved.ellipses, tuple(paths), tuple(texts))
 
     def _repr_svg_(self):
         from .svg import render_svg

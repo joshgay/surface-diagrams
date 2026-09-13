@@ -136,15 +136,18 @@ cuts = tuple(
     ColoredCurve(f&quot;c{i}&quot;, Arc(i-1, i), RAINBOW[i-1])
     for i in range(1, 5)
 )
-reference = PlanarDiagram(points, cuts)
+reference = PlanarDiagram(points, cuts, show_legend=True)
 save_svg(reference, &quot;rainbow-cuts.svg&quot;, style=Style(show_guides=True))
 </code></pre>
 <p><img src="../examples/output/tutorial/04-rainbow-planar-cuts.svg" alt="Rainbow reference cuts along the symmetry axis"></p>
 <p>These are straight consecutive segments on the symmetry axis: only c1 starts
 at the left outer boundary; c2 joins point 1 to point 2, c3 joins point 2
 to point 3, and c4 joins point 3 to the right boundary. They occupy the same intervals used as the horizontal curve guides.
-For the standard colors and IDs, the shorter equivalent is
+For the standard colors and IDs without a legend, the shorter form is
 <code>reference = points.with_cut_system()</code>.
+<code>show_legend=True</code> places the existing IDs and color swatches below the surface.
+Keep the same records or preserve their ID/color pairs when drawing image states;
+reordering records changes legend order but does not reassign colors.
 Colors identify the cuts, not twist signs. This planar drawing does not itself
 run the abstract cut-system validator or prove that its stabilizer is trivial.</p>
 <p><code>PlanarDiagram</code> routes the curves together as a disjoint family by default.
@@ -157,7 +160,7 @@ explicit overlay option when you intend intersections:</p>
 <pre><code class="language-python">intersecting = PlanarDiagram(surface, (
     ColoredCurve(&quot;a&quot;, Arc(1, 4), RAINBOW[0]),
     ColoredCurve(&quot;b&quot;, Arc(3, 6), RAINBOW[4]),
-), allow_intersections=True)
+), allow_intersections=True, show_legend=True)
 save_svg(intersecting, &quot;intersecting.svg&quot;)
 
 support = ColoredCurve(&quot;twist-support&quot;, Loop((1, 3)), &quot;#222222&quot;)
@@ -167,7 +170,11 @@ save_svg(PlanarDiagram(points, cuts + (support,), allow_intersections=True),
 <p><img src="../examples/output/tutorial/05-intersecting-families.svg" alt="Intersecting arcs and reference cuts crossed by a twist-support curve"></p>
 <p>Each curve is routed independently in overlay mode. The renderer retains its
 individual obstacle checks but does not certify intersections between layers.
-Inspect for coincident pieces or unintended extra crossings. Crossings of curves
+Inspect for coincident pieces or unintended extra crossings. The figure also
+shows each component separately, using the same <code>ColoredCurve</code> records. This
+makes an obscured portion visible without offsetting it or changing its route.
+Build those panels with <code>Panel(PlanarDiagram(surface, (curve,)), curve.id)</code> for
+each <code>curve</code> in <code>intersecting.curves</code>, then arrange them with <code>Figure</code>. Crossings of curves
 on the surface carry no braid over/under information.</p>
 <p>A loop picture describes the <strong>support curve</strong> of a Dehn twist. It does not
 specify the sign or exponent, and it does not apply the twist to anything.
