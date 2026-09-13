@@ -97,10 +97,14 @@ class GenusSurface:
         if len({b.slot for b in self.type_i}) != len(self.type_i):
             raise ValueError("a fixed slot can have at most one boundary")
 
-    def with_reference_arcs(self, *, pair_bank="a"):
+    def with_reference_arcs(self, *, pair_bank="a", mark_positions=None):
         """Draw Type I and top/bottom Type II reference arcs (presentation only)."""
         from .genus_diagrams import BorderedReferenceDiagram
-        return BorderedReferenceDiagram(self,pair_bank)
+        from collections.abc import Mapping
+        if mark_positions is not None and not isinstance(mark_positions,Mapping):
+            raise TypeError('mark_positions must map mark IDs to (x,y) points')
+        positions=() if mark_positions is None else tuple((name,tuple(point)) for name,point in mark_positions.items())
+        return BorderedReferenceDiagram(self,pair_bank,positions)
 
     def boundary_anchors(self):
         """Exact vertical-plane attachments, keyed by boundary ID and bank a/b."""

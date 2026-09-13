@@ -14,7 +14,7 @@ python -m pip install -e .
 python examples/tutorial.py
 ```
 
-This produces twelve main SVG figures, a full-size cut-disk diagnostic, and twelve TikZ counterparts in
+This produces thirteen main SVG figures, a full-size cut-disk diagnostic, and thirteen TikZ counterparts in
 [examples/output/tutorial](../examples/output/tutorial/). Open SVG files in a
 browser or vector editor. Circular-hole figures also export to TikZ.
 The [browser edition](TUTORIAL.html) contains the same instructions and figures.
@@ -404,11 +404,33 @@ order. One Type II pair at each side is supported too, using its inner bank `a`.
 Its curved spoke joins the midpoint of the upper/lower outer corridor member;
 the curve starts tangent to the inward direction so it stays away from the collar.
 Side-pair bank `b`, multiple pairs on the same side, a Type I end rim combined
-with side pairs, and marked-point spokes remain unsupported. The reference
+with side pairs, remain unsupported. The reference
 drawing is independent of the closed-surface mesh, including at the taller
 height used by side pairs.
 
 ![Type I reference arcs and Type II vertical-plane spokes](../examples/output/tutorial/12-bordered-reference-families.svg)
+
+Marked points can be placed explicitly in the clear upper/lower parts of the
+vertical plane. The positions belong to this supplied reference drawing; they
+do not replace the automatic positions in the separate mesh-based API.
+
+```python
+marked_border = GenusSurface(2, type_i=(TypeIBoundary(6),), marks=("P", "Q"))
+marked_reference = marked_border.with_reference_arcs(
+    mark_positions={"P": (-35, 30), "Q": (35, -30)}
+)
+save_svg(marked_reference, "bordered-marked-reference.svg")
+```
+
+![Explicit marked points and vertical-plane reference spokes](../examples/output/tutorial/13-bordered-marked-reference.svg)
+
+Supply every surface mark ID exactly once. Each vertical spoke reaches the first
+reference member toward the symmetry axis. Marks must stay above/below the hole
+and rim band, inside the main body's upper/lower contour, and clear of other
+marks and spokes. Invalid positions raise an explanation rather than moving
+marks automatically. Colors and spoke numbers follow `surface.marks` order,
+independently of dictionary order. The supplied drawing still does not provide a
+certified marked bordered cellulation.
 
 These are exact drawing attachment points, ready for the remaining reference-arc bindings.
 The guide does not yet draw a full bordered cut system or place marked-point

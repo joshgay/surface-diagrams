@@ -3,6 +3,17 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Explicit marked-point plane bindings
+
+`with_reference_arcs(mark_positions={"P": (x,y), ...})` now places all named
+surface marks explicitly in clear upper/lower vertical-plane bands and connects
+them inward to the first chain member. IDs and spoke colors follow surface.marks
+order. Missing/extra IDs, invalid bands, overlapping marks, marks on reference
+curves and spokes crossing another spoke are rejected. Existing automatic
+mesh-based mark positions are unchanged. Figure 13 demonstrates this API.
+There are now thirteen main tutorial SVG/TikZ figures plus the disk diagnostic.
+The certified marked bordered mesh remains unfinished.
+
 ## Side Type II spokes and independent presentation geometry
 
 Standard side pairs now connect their inner a anchors to the midpoint of the

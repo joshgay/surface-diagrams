@@ -88,6 +88,9 @@ def examples():
         (Panel(GenusSurface(2,type_ii=(BoundaryPair('left'),BoundaryPair('top'))).with_reference_arcs(),
                'Type II side and top/bottom pairs: inner-bank spokes'),),
     )), Style()
+    marked = GenusSurface(2,type_i=(TypeIBoundary(6),),marks=('P','Q'))
+    yield '13-bordered-marked-reference', marked.with_reference_arcs(
+        mark_positions={'P':(-35,30),'Q':(35,-30)}), Style()
 
 
 def main(out=None):

@@ -148,3 +148,21 @@ class BoundaryAnchorTests(unittest.TestCase):
         surface=GenusSurface(2,type_ii=(BoundaryPair('left'),))
         with patch('surface_diagrams.genus_diagrams.genus_binding',side_effect=AssertionError('mesh requested')):
             self.assertIn('boundary-reference-spoke',render_svg(surface.with_reference_arcs()))
+
+    def test_explicit_plane_marks_keep_ids_and_make_vertical_spokes(self):
+        surface=GenusSurface(2,type_i=(TypeIBoundary(6),),marks=('P','Q'))
+        positions={'Q':(35.,-30.),'P':(-35.,30.)}
+        d=layout(surface.with_reference_arcs(mark_positions=positions),Style())
+        marks=[e for e in d.ellipses if e.role=='marked-point']
+        self.assertEqual([(e.x,e.y) for e in marks],[positions['P'],positions['Q']])
+        spokes=[p for p in d.paths if p.role=='mark-reference-spoke']
+        self.assertEqual(len(spokes),2)
+        for p in spokes: self.assertAlmostEqual(p.commands[0][1],p.commands[1][1])
+        self.assertIn('mark-reference-spoke',render_tikz(surface.with_reference_arcs(mark_positions=positions)))
+        with self.assertRaises(ValueError): render_svg(surface.with_reference_arcs())
+        for points in ({'P':(-35.,0.),'Q':(35.,30.)},
+                       {'P':(-35.,30.),'Q':(-35.,30.)}):
+            with self.assertRaises(ValueError): render_svg(surface.with_reference_arcs(mark_positions=points))
+        pair=GenusSurface(2,type_ii=(BoundaryPair('top'),),marks=('P',))
+        with self.assertRaises(ValueError):
+            render_svg(pair.with_reference_arcs(mark_positions={'P':(-22.,30.)}))

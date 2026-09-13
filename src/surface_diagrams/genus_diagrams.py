@@ -18,6 +18,7 @@ class BorderedReferenceDiagram:
     """
     surface: object
     pair_bank: str = "a"
+    mark_positions: tuple = ()
 
     def drawing(self, style):
         from dataclasses import replace
@@ -32,8 +33,9 @@ class BorderedReferenceDiagram:
             raise NotImplementedError('combined Type I end rims and side Type II spokes need separate binding')
         if self.pair_bank not in ('a','b'):
             raise ValueError("pair_bank must be 'a' or 'b'")
-        if surface.marks:
-            raise NotImplementedError('bordered marked-point reference arcs are not implemented yet')
+        positions=dict(self.mark_positions)
+        if set(positions)!=set(surface.marks):
+            raise ValueError('provide mark_positions for exactly the surface mark IDs')
         outline=presentation(surface)
         base=outline.drawing(style)
         paths,texts=list(base.paths),[]
@@ -129,11 +131,82 @@ class BorderedReferenceDiagram:
             color=RAINBOW[(number-1)%len(RAINBOW)]
             paths.append(Path(commands,color,style.curve_width,'boundary-reference-spoke',dashed))
             texts.append(Text(start[0]+8,(start[1]+end[1])/2,str(number),color,9))
-        return replace(base,paths=tuple(paths),texts=tuple(texts))
+        ellipses=list(base.ellipses)
+        if positions:
+            from .model import _number
+            from math import hypot
+            radius=style.marked_point_radius
+            hole_height=max(abs(value) for path in outline.handles for command in path for value in command[2::2])
+            for rim in outline.rims:
+                if rim.role=='type-i-boundary' and rim.id not in ('fixed-1',f'fixed-{last}'):
+                    hole_height=max(hole_height,rim.radius)
+            for point in positions.values():
+                if len(point)!=2: raise ValueError('mark position must contain x and y')
+                for value in point: _number(value,'mark coordinate')
+            for name,point in positions.items():
+                x,y=point
+                if not (abs(x)<surface.genus*surface.handle_spacing/2-radius
+                        and hole_height+radius+style.curve_width<abs(y)
+                        <surface.height*.44*.99-radius-style.outline_width/2):
+                    raise ItineraryError('mark must lie in the clear upper or lower vertical-plane band')
+                for other,q in positions.items():
+                    if other!=name and hypot(x-q[0],y-q[1])<=2*radius:
+                        raise ItineraryError('marked points overlap; separate their positions')
+                for path in paths:
+                    if path.role not in ('named-cut','boundary-reference-arc','boundary-reference-spoke'): continue
+                    if any(_segment_distance(point,a,b)<=radius+path.stroke_width/2+error
+                           for a,b,error in _path_segments(path.commands)):
+                        raise ItineraryError('marked point overlaps an existing reference curve or spoke')
+            count=sum(r.role=='type-ii-boundary' for r in outline.rims)
+            for index,name in enumerate(surface.marks):
+                start=positions[name]
+                hits=[(abs(start[1]-point[1]),point,path.dashed) for path in chain
+                      for point in _vertical_hits(path.commands,start[0])
+                      if start[1]*(start[1]-point[1])>1e-8]
+                if not hits: raise ItineraryError('marked-point spoke misses the reference chain')
+                _,end,dashed=min(hits,key=lambda item:item[0])
+                if any(other!=name and _segment_distance(q,start,end)<=radius+style.curve_width/2
+                       for other,q in positions.items()):
+                    raise ItineraryError('marked-point spoke meets another mark; separate their positions')
+                for path in paths:
+                    if path.role not in ('boundary-reference-spoke','mark-reference-spoke'): continue
+                    if any(min(start[1],end[1])+1e-8<hit[1]<max(start[1],end[1])-1e-8
+                           for hit in _vertical_hits(path.commands,start[0])):
+                        raise ItineraryError('marked-point spoke crosses an existing spoke; change mark position')
+                number=last+count+index
+                color=RAINBOW[(number-1)%len(RAINBOW)]
+                paths.append(Path((('M',*start),('L',*end)),color,style.curve_width,'mark-reference-spoke',dashed))
+                ellipses.append(Ellipse(*start,radius,radius,style.marked_point_color,'none',0,'marked-point'))
+                texts.append(Text(start[0]+8,start[1]+3,name,style.marked_point_color,9))
+                texts.append(Text(start[0]+8,(start[1]+end[1])/2,str(number),color,9))
+        return replace(base,paths=tuple(paths),texts=tuple(texts),ellipses=tuple(ellipses))
+
 
     def _repr_svg_(self):
         from .svg import render_svg
         return render_svg(self)
+
+
+def _path_segments(commands):
+    """Line approximation with a conservative cubic interpolation error bound."""
+    from math import hypot
+    point=None
+    for command in commands:
+        if command[0]=='M': point=command[1:]; continue
+        end=command[-2:]
+        if command[0]=='L':
+            yield point,end,0.
+        elif command[0]=='C':
+            curve=(point,command[1:3],command[3:5],end)
+            bound=6*max(hypot(*(curve[i+2][j]-2*curve[i+1][j]+curve[i][j] for j in (0,1))) for i in (0,1))
+            previous=point
+            for i in range(1,33):
+                current=cubic_point(curve,i/32)
+                yield previous,current,bound/(8*32**2)
+                previous=current
+        else:
+            raise ItineraryError('unsupported reference geometry')
+        point=end
 
 
 def _ellipse_reference(center,rx,ry):
