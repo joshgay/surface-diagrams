@@ -23,6 +23,9 @@ def examples():
                'Left/right rim endpoints: outer-to-hole and hole-to-point', Style(boundary_shape='circle', show_guides=True)),),
         (Panel(PlanarSurface.row('BB', spacing=100, height=140, margin=65).with_curves(Arc(1,2)),
                'Boundary-to-boundary: a straight arc joins facing rims', Style(boundary_shape='circle')),),
+        (Panel(PlanarSurface.row('BB', spacing=100, height=220, margin=70).with_curves(
+                   Arc(1,2,direction='up',start_side='left',end_side='right')),
+               'Curved arc: explicit left start rim and right end rim', Style(boundary_shape='circle')),),
     )), Style()
     points = PlanarSurface.row('PPP', spacing=65, height=210, margin=65)
     cuts = tuple(ColoredCurve(f'c{i}', Arc(i-1,i), RAINBOW[i-1]) for i in range(1,5))

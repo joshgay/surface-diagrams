@@ -30,10 +30,16 @@ The router includes physical radii in cut-interval spacing and checks analytical
 clearance against unrelated objects. Outline thickness contributes to circular
 boundary clearance and containment. Impossible or overly crowded inputs raise
 an error rather than silently drawing through another hole. The existing
-noncrossing contract is preserved; intersecting daisy overlays come in P5.
+noncrossing contract is preserved; use `PlanarDiagram(..., allow_intersections=True)`
+for separately routed intersecting overlays.
 
-An analytical ellipse/circle intersection trims the first and last route
-segments. SVG endpoint-form arc flags preserve the original ellipse center.
+Curved and straight arcs meet exact left/right rim positions. By default the
+rim faces the first/last route segment. `Arc(..., start_side="left",
+end_side="right")` chooses explicitly; either option can be omitted. These
+options apply only to circular inner boundaries. The router checks clearance
+against the endpoint hole as well: an outward-facing curved anchor may require
+more height, and an outward-facing straight segment cannot cross its own hole.
+
 An even-odd clipping path excludes all hole interiors from curve strokes and
 guide strokes, including rounded caps. There are no white masking disks.
 The clip identifier is derived deterministically from geometry and title.

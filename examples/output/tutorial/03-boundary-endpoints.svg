@@ -1,12 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 378 465" width="378" height="465" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 378 757.5" width="378" height="757.5" role="img">
 <title>03-boundary-endpoints</title>
-<defs><clipPath id="sd-d72f266e0e884bb08b66" clipPathUnits="userSpaceOnUse"><path d="M 0 465 L 378 465 L 378 0 L 0 0 Z  M 79.5 137.75 A 12 12 0 1 1 103.5 137.75 A 12 12 0 1 1 79.5 137.75 Z  M 274.5 137.75 A 12 12 0 1 1 298.5 137.75 A 12 12 0 1 1 274.5 137.75 Z  M 127 370.25 A 12 12 0 1 1 151 370.25 A 12 12 0 1 1 127 370.25 Z  M 227 370.25 A 12 12 0 1 1 251 370.25 A 12 12 0 1 1 227 370.25 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="axis" d="M 26.5 137.75 L 351.5 137.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-d72f266e0e884bb08b66)"/>
-<path class="arc" d="M 26.5 137.75 L 79.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d72f266e0e884bb08b66)"/>
-<path class="arc" d="M 103.5 137.75 L 156.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d72f266e0e884bb08b66)"/>
-<path class="arc" d="M 221.5 137.75 L 274.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d72f266e0e884bb08b66)"/>
-<path class="arc" d="M 298.5 137.75 L 351.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d72f266e0e884bb08b66)"/>
-<path class="arc" d="M 151 370.25 L 227 370.25" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d72f266e0e884bb08b66)"/>
+<defs><clipPath id="sd-2bae29663fc0d8e4de5d" clipPathUnits="userSpaceOnUse"><path d="M 0 757.5 L 378 757.5 L 378 0 L 0 0 Z  M 79.5 137.75 A 12 12 0 1 1 103.5 137.75 A 12 12 0 1 1 79.5 137.75 Z  M 274.5 137.75 A 12 12 0 1 1 298.5 137.75 A 12 12 0 1 1 274.5 137.75 Z  M 127 370.25 A 12 12 0 1 1 151 370.25 A 12 12 0 1 1 127 370.25 Z  M 227 370.25 A 12 12 0 1 1 251 370.25 A 12 12 0 1 1 227 370.25 Z  M 127 622.75 A 12 12 0 1 1 151 622.75 A 12 12 0 1 1 127 622.75 Z  M 227 622.75 A 12 12 0 1 1 251 622.75 A 12 12 0 1 1 227 622.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="axis" d="M 26.5 137.75 L 351.5 137.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
+<path class="arc" d="M 26.5 137.75 L 79.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
+<path class="arc" d="M 103.5 137.75 L 156.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
+<path class="arc" d="M 221.5 137.75 L 274.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
+<path class="arc" d="M 298.5 137.75 L 351.5 137.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
+<path class="arc" d="M 151 370.25 L 227 370.25" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
+<path class="arc" d="M 127 622.75 A 62 48.3083333333 0 0 1 251 622.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-2bae29663fc0d8e4de5d)"/>
 <ellipse class="outer-boundary" cx="189" cy="137.75" rx="162.5" ry="90" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="91.5" cy="137.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="marked-point" cx="156.5" cy="137.75" r="4" fill="#006fff"/>
@@ -15,6 +16,9 @@
 <ellipse class="outer-boundary" cx="189" cy="370.25" rx="115" ry="70" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="139" cy="370.25" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="239" cy="370.25" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<ellipse class="outer-boundary" cx="189" cy="622.75" rx="120" ry="110" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="139" cy="622.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
+<circle class="inner-boundary-circle" cx="239" cy="622.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <text x="53" y="149.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">0</text>
 <text x="130" y="149.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">1</text>
 <text x="189" y="149.75" fill="#777777" font-size="9" font-family="serif" text-anchor="middle">2</text>
@@ -26,4 +30,5 @@
 <text x="286.5" y="118.75" fill="#333333" font-size="9" font-family="serif" text-anchor="middle">4</text>
 <text x="189" y="24" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Left/right rim endpoints: outer-to-hole and hole-to-point</text>
 <text x="189" y="276.5" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Boundary-to-boundary: a straight arc joins facing rims</text>
+<text x="189" y="489" fill="#000000" font-size="10" font-family="serif" text-anchor="middle">Curved arc: explicit left start rim and right end rim</text>
 </svg>

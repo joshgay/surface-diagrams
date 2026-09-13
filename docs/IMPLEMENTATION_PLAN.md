@@ -82,11 +82,13 @@ attempting every future diagram family in one universal abstraction.
   option and gallery example are removed.
 
 Current limitations are explicit: overlay mode does not certify pairwise
-intersections and may produce coincident pieces; curved circular-boundary arcs
-still land where the old ellipse trimming meets the rim; Type I/II route bindings
+intersections and may produce coincident pieces; Type I/II route bindings
 are unsupported. Mesh side IDs remain technical and chart-dependent. Automatic
 mapping-class action, Hurwitz transformations, homology and signature engines
 are not implemented by these presentation features.
+
+Curved circular-boundary arcs now use exact left/right rim anchors, with optional
+`start_side` and `end_side` controls and analytical endpoint-hole clearance checks.
 
 ## Endpoint and identity requirements
 

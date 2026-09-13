@@ -37,15 +37,22 @@ class Arc:
     draws consecutive endpoints or outer-boundary-to-object arcs straight.
     Explicit direction="up"/"down" always curves. The legacy fourth positional
     argument and start_up=True/False keyword still select explicit up/down.
+    Circular inner boundaries use left/right rim endpoints facing the route;
+    start_side and end_side can explicitly select "left" or "right".
     """
     start: int
     end: int
     cuts: tuple = ()
     start_up: Optional[bool] = None
     direction: str = "default"
+    start_side: Optional[str] = None
+    end_side: Optional[str] = None
 
     def __post_init__(self):
         _validate_common(self)
+        for side in (self.start_side, self.end_side):
+            if side not in (None, 'left', 'right'):
+                raise ValueError("endpoint side must be 'left', 'right', or None")
         if self.direction not in ("default", "up", "down"):
             raise ValueError("direction must be 'default', 'up', or 'down'")
         if self.start_up is not None and not isinstance(self.start_up, bool):
@@ -157,6 +164,17 @@ def route(surface, style, *, max_states=20000):
         style.boundary_radius if type(p).__name__ == "Boundary" else style.marked_point_radius
     ) for p in objects] + [0]
     groups, fixed, edges, owners = {}, {}, [], []
+    anchors = {}
+    def endpoint_position(endpoint, side, target, node):
+        circular = (style.boundary_shape == 'circle' and 1 <= endpoint <= n
+                    and type(objects[endpoint-1]).__name__ == 'Boundary')
+        if side is not None and not circular:
+            raise ValueError("endpoint sides require a circular inner boundary")
+        if not circular:
+            return xs[endpoint]
+        anchors[node] = endpoint
+        sign = (1 if target > xs[endpoint] else -1) if side is None else (1 if side == 'right' else -1)
+        return xs[endpoint] + sign*radii[endpoint]
     node_count = 0
     for owner, curve in enumerate(surface.curves):
         if any(cut > n for cut in curve.cuts):
@@ -165,12 +183,16 @@ def route(surface, style, *, max_states=20000):
             raise ValueError(f"arc endpoints must lie in 0..{n+1}")
         nodes = []
         if isinstance(curve, Arc):
-            fixed[node_count] = xs[curve.start]; nodes.append(node_count); node_count += 1
+            target = (xs[curve.cuts[0]] + xs[curve.cuts[0]+1])/2 if curve.cuts else xs[curve.end]
+            fixed[node_count] = endpoint_position(curve.start, curve.start_side, target, node_count)
+            nodes.append(node_count); node_count += 1
         for cut in curve.cuts:
             groups.setdefault(cut, []).append(node_count)
             nodes.append(node_count); node_count += 1
         if isinstance(curve, Arc):
-            fixed[node_count] = xs[curve.end]; nodes.append(node_count); node_count += 1
+            target = (xs[curve.cuts[-1]] + xs[curve.cuts[-1]+1])/2 if curve.cuts else xs[curve.start]
+            fixed[node_count] = endpoint_position(curve.end, curve.end_side, target, node_count)
+            nodes.append(node_count); node_count += 1
         pairs = list(zip(nodes, nodes[1:]))
         if isinstance(curve, Loop):
             pairs.append((nodes[-1], nodes[0]))
@@ -222,7 +244,11 @@ def route(surface, style, *, max_states=20000):
     # Protect unrelated dots using the analytic minimum distance from an
     # axis point to a half ellipse (a quadratic in cos(theta)).
     for segment in segments:
-        for point, dot_radius in zip(objects, radii[1:-1]):
+        for endpoint, (point, dot_radius) in enumerate(zip(objects, radii[1:-1]), 1):
+            if endpoint in (anchors.get(segment.start_node), anchors.get(segment.end_node)):
+                if _axis_distance(segment, point.x) < dot_radius - 1e-8:
+                    raise RoutingError("arc enters its endpoint boundary; choose the facing side or increase ellipse height")
+                continue
             if point.x in (segment.start, segment.end):
                 continue
             rim_width = style.outline_width if style.boundary_shape == 'circle' and type(point).__name__ == 'Boundary' else 0
@@ -281,15 +307,10 @@ def curve_primitives(surface, style):
     paths = []
     for owner, curve in enumerate(surface.curves):
         pieces = [p for p in segments if p.owner == owner]
-        start_trim = _rim_parameter(pieces[0], rim_radius(curve.start)) if isinstance(curve, Arc) else 0.
-        end_trim = _rim_parameter(pieces[-1], rim_radius(curve.end)) if isinstance(curve, Arc) else 0.
-        if len(pieces) == 1 and start_trim+end_trim >= 1:
-            raise RoutingError("boundary circles leave no arc segment between their rims")
-        start = pieces[0].point(start_trim) if start_trim else (pieces[0].start, 0)
+        start = (pieces[0].start, 0)
         commands = [("M", *start)]
-        for index, p in enumerate(pieces):
-            trim = end_trim if index == len(pieces)-1 else 0.
-            end = p.point(1-trim) if trim else (p.end, 0)
+        for p in pieces:
+            end = (p.end, 0)
             if p.straight:
                 commands.append(("L", *end))
                 continue

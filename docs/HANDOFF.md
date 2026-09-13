@@ -3,6 +3,14 @@
 Read [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) first. It is the controlling
 roadmap for the new work. This file is the short, frequently updated checkpoint.
 
+## Latest visual update
+
+Planar circular boundaries now support exact left/right curved arc endpoints via
+`Arc.start_side` and `Arc.end_side`; omitted sides face the route. Invalid endpoint
+hole crossings are rejected analytically. Tutorial figure 03 demonstrates explicit
+outward-facing endpoints. All 139 tests and 14 tutorial Python blocks pass;
+browser checks show all eleven images loading without page overflow. Continue with intersecting-family layouts and visual IDs.
+
 ## Resume here
 
 **Visualization first: follow V0-V4, then C1-C4 in IMPLEMENTATION_PLAN.md.**

@@ -9,8 +9,8 @@
 <text x="520" y="80" font-family="serif" font-size="14">2. An annulus with an arc joining its boundaries</text>
 <svg x="520" y="92" width="460" height="177" viewBox="0 0 85.5 105.5">
 <title>An annulus with an arc joining its boundaries</title>
-<defs><clipPath id="sd-adba06e5483de978e819" clipPathUnits="userSpaceOnUse"><path d="M 0 105.5 L 85.5 105.5 L 85.5 0 L 0 0 Z  M 30.75 52.75 A 12 12 0 1 1 54.75 52.75 A 12 12 0 1 1 30.75 52.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="arc" d="M 12.75 52.75 L 30.75 52.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-adba06e5483de978e819)"/>
+<defs><clipPath id="sd-57d7816bccb07fd32469" clipPathUnits="userSpaceOnUse"><path d="M 0 105.5 L 85.5 105.5 L 85.5 0 L 0 0 Z  M 30.75 52.75 A 12 12 0 1 1 54.75 52.75 A 12 12 0 1 1 30.75 52.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 12.75 52.75 L 30.75 52.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-57d7816bccb07fd32469)"/>
 <ellipse class="outer-boundary" cx="42.75" cy="52.75" rx="30" ry="40" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="42.75" cy="52.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 </svg>
@@ -47,8 +47,8 @@
 <text x="520" y="540" font-family="serif" font-size="14">6. A straight arc joins two circle rims</text>
 <svg x="520" y="552" width="460" height="177" viewBox="0 0 420.5 235.5">
 <title>A straight arc joins two circle rims</title>
-<defs><clipPath id="sd-c401b717db1f63311c58" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="arc" d="M 139.75 117.75 L 170.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-c401b717db1f63311c58)"/>
+<defs><clipPath id="sd-c375531d54211aa6d455" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 139.75 117.75 L 170.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-c375531d54211aa6d455)"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
@@ -60,8 +60,8 @@
 <text x="20" y="770" font-family="serif" font-size="14">7. An arc above the row ends on the rims</text>
 <svg x="20" y="782" width="460" height="177" viewBox="0 0 420.5 235.5">
 <title>An arc above the row ends on the rims</title>
-<defs><clipPath id="sd-9aa4d41cd8f9a00b6ccc" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="arc" d="M 75.2272162365 106.008475409 A 137.5 62.1360759494 0 0 1 345.272783764 106.008475409" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-9aa4d41cd8f9a00b6ccc)"/>
+<defs><clipPath id="sd-3f522e0946fd6fec0464" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 84.75 117.75 A 125.5 56.7132911392 0 0 1 335.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-3f522e0946fd6fec0464)"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
@@ -73,8 +73,8 @@
 <text x="520" y="770" font-family="serif" font-size="14">8. A reversed arc below the row</text>
 <svg x="520" y="782" width="460" height="177" viewBox="0 0 420.5 235.5">
 <title>A reversed arc below the row</title>
-<defs><clipPath id="sd-b561547d8c7008cf8d78" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="arc" d="M 345.272783764 129.491524591 A 137.5 62.1360759494 0 0 1 75.2272162365 129.491524591" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-b561547d8c7008cf8d78)"/>
+<defs><clipPath id="sd-39b050129ecb06be7877" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 335.75 117.75 A 125.5 56.7132911392 0 0 1 84.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-39b050129ecb06be7877)"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
@@ -86,8 +86,8 @@
 <text x="20" y="1000" font-family="serif" font-size="14">9. An arc from a hole to a marked point</text>
 <svg x="20" y="1012" width="460" height="177" viewBox="0 0 310.5 205.5">
 <title>An arc from a hole to a marked point</title>
-<defs><clipPath id="sd-968c089f1c75ab4a355a" clipPathUnits="userSpaceOnUse"><path d="M 0 205.5 L 310.5 205.5 L 310.5 0 L 0 0 Z  M 60.75 102.75 A 12 12 0 1 1 84.75 102.75 A 12 12 0 1 1 60.75 102.75 Z  M 170.75 102.75 A 12 12 0 1 1 194.75 102.75 A 12 12 0 1 1 170.75 102.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="arc" d="M 75.6521346035 91.1062199118 A 82.5 44.2894736842 0 0 1 237.75 102.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-968c089f1c75ab4a355a)"/>
+<defs><clipPath id="sd-59f13cf33e46f12c43d1" clipPathUnits="userSpaceOnUse"><path d="M 0 205.5 L 310.5 205.5 L 310.5 0 L 0 0 Z  M 60.75 102.75 A 12 12 0 1 1 84.75 102.75 A 12 12 0 1 1 60.75 102.75 Z  M 170.75 102.75 A 12 12 0 1 1 194.75 102.75 A 12 12 0 1 1 170.75 102.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 84.75 102.75 A 76.5 41.0684210526 0 0 1 237.75 102.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-59f13cf33e46f12c43d1)"/>
 <ellipse class="outer-boundary" cx="155.25" cy="102.75" rx="142.5" ry="90" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="102.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="marked-point" cx="127.75" cy="102.75" r="4" fill="#006fff"/>
@@ -97,8 +97,8 @@
 <text x="520" y="1000" font-family="serif" font-size="14">10. An arc from the outer boundary to a hole</text>
 <svg x="520" y="1012" width="460" height="177" viewBox="0 0 420.5 235.5">
 <title>An arc from the outer boundary to a hole</title>
-<defs><clipPath id="sd-901a7f851be16c486dcd" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="arc" d="M 12.75 117.75 L 60.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-901a7f851be16c486dcd)"/>
+<defs><clipPath id="sd-d4dc4ce83070b077bad3" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="arc" d="M 12.75 117.75 L 60.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d4dc4ce83070b077bad3)"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
@@ -123,9 +123,9 @@
 <text x="520" y="1230" font-family="serif" font-size="14">12. Numbered horizontal guides with a cut-crossing arc</text>
 <svg x="520" y="1242" width="460" height="177" viewBox="0 0 420.5 235.5">
 <title>Numbered horizontal guides with a cut-crossing arc</title>
-<defs><clipPath id="sd-427504090dcc7de1e346" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-427504090dcc7de1e346)"/>
-<path class="arc" d="M 134.281928732 127.816474409 A 41.25 18.6408227848 0 0 0 210.25 117.75 A 41.25 18.6408227848 0 0 1 286.218071268 107.683525591" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-427504090dcc7de1e346)"/>
+<defs><clipPath id="sd-f8f5c8d41be17ff2d8eb" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-f8f5c8d41be17ff2d8eb)"/>
+<path class="arc" d="M 139.75 117.75 A 35.25 15.9294303797 0 0 0 210.25 117.75 A 35.25 15.9294303797 0 0 1 280.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-f8f5c8d41be17ff2d8eb)"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
@@ -159,10 +159,10 @@
 <svg x="520" y="1472" width="460" height="177" viewBox="0 0 420.5 235.5">
 <title>Transparent holes on a colored background</title>
 <rect width="100%" height="100%" fill="#e9f4fa"/>
-<defs><clipPath id="sd-d8f07f65d17d66f4aa5c" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
-<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-d8f07f65d17d66f4aa5c)"/>
-<path class="arc" d="M 139.75 117.75 L 170.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d8f07f65d17d66f4aa5c)"/>
-<path class="closed-curve" d="M 210.25 117.75 A 86.75 39.2022151899 0 0 1 383.75 117.75 A 86.75 39.2022151899 0 0 1 210.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-d8f07f65d17d66f4aa5c)"/>
+<defs><clipPath id="sd-72fa8fbc11d459fd4377" clipPathUnits="userSpaceOnUse"><path d="M 0 235.5 L 420.5 235.5 L 420.5 0 L 0 0 Z  M 60.75 117.75 A 12 12 0 1 1 84.75 117.75 A 12 12 0 1 1 60.75 117.75 Z  M 115.75 117.75 A 12 12 0 1 1 139.75 117.75 A 12 12 0 1 1 115.75 117.75 Z  M 170.75 117.75 A 12 12 0 1 1 194.75 117.75 A 12 12 0 1 1 170.75 117.75 Z  M 225.75 117.75 A 12 12 0 1 1 249.75 117.75 A 12 12 0 1 1 225.75 117.75 Z  M 280.75 117.75 A 12 12 0 1 1 304.75 117.75 A 12 12 0 1 1 280.75 117.75 Z  M 335.75 117.75 A 12 12 0 1 1 359.75 117.75 A 12 12 0 1 1 335.75 117.75 Z " clip-rule="evenodd" fill-rule="evenodd"/></clipPath></defs>
+<path class="axis" d="M 12.75 117.75 L 407.75 117.75" fill="none" stroke="#aaaaaa" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3" clip-path="url(#sd-72fa8fbc11d459fd4377)"/>
+<path class="arc" d="M 139.75 117.75 L 170.75 117.75" fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-72fa8fbc11d459fd4377)"/>
+<path class="closed-curve" d="M 210.25 117.75 A 86.75 39.2022151899 0 0 1 383.75 117.75 A 86.75 39.2022151899 0 0 1 210.25 117.75 Z " fill="none" stroke="#ff00d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#sd-72fa8fbc11d459fd4377)"/>
 <ellipse class="outer-boundary" cx="210.25" cy="117.75" rx="197.5" ry="105" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="72.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>
 <circle class="inner-boundary-circle" cx="127.75" cy="117.75" r="12" fill="none" stroke="#000000" stroke-width="1.5"/>

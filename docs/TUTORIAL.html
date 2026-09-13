@@ -123,11 +123,12 @@ save_svg(example, &quot;boundary-arcs.svg&quot;, style=Style(boundary_shape=&quo
 rim for marked point 2. Boundary 4 behaves symmetrically. On a <code>BB</code> row,
 <code>Arc(1, 2)</code> joins the right rim of the left boundary to the left rim of the right
 boundary. These are the standard left/right attachments requested for cut systems.</p>
-<p><strong>Current limitation:</strong> curved arcs aimed at a circular boundary are trimmed at
-their first geometric rim intersection; that need not be the leftmost or
-rightmost point. Explicit left/right anchors for curved arcs are a priority
-feature, with arbitrary-angle anchors reserved for nonstandard configurations.
-Do not interpret an automatic rim landing as a specified notch or fixed endpoint.</p>
+<p>Curved arcs also meet the leftmost/rightmost rim, choosing the side facing the
+first or last route segment. Set <code>start_side=&quot;left&quot;</code> or <code>end_side=&quot;right&quot;</code> to
+choose explicitly, for example <code>Arc(1, 2, direction=&quot;up&quot;, start_side=&quot;left&quot;, end_side=&quot;right&quot;)</code> on a sufficiently tall <code>BB</code> surface. These options require
+circular inner boundaries. An arc that enters its endpoint hole is rejected;
+choose the facing rim or increase the height. A rim side is a drawing anchor,
+not a notch or an assertion about allowed boundary isotopies.</p>
 <h2>6. Draw a rainbow reference cut system</h2>
 <p>Give each cut a stable ID and color. Keep both when supplying its image later.</p>
 <pre><code class="language-python">points = PlanarSurface.row(&quot;PPP&quot;, spacing=65, height=210, margin=65)
@@ -415,7 +416,7 @@ must be stated with their assumptions. None of these are implemented by this tut
 </thead>
 <tbody><tr>
 <td>First</td>
-<td>Explicit left/right curved boundary endpoints, stronger intersecting-family layouts, stable visual IDs and rainbow legends</td>
+<td>Stronger intersecting-family layouts, stable visual IDs and rainbow legends</td>
 </tr>
 <tr>
 <td>Next</td>

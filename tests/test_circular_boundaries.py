@@ -80,6 +80,35 @@ class CircularBoundaryTest(unittest.TestCase):
             commands = next(p for p in layout(s.with_curves(Arc(a,b)),self.style).paths if p.role == 'arc').commands
             self.assertEqual(commands,(('M',expected[0],0),('L',expected[1],0)))
 
+    def test_curved_rim_sides_and_clearance(self):
+        surface = PlanarSurface((Boundary(-50, radius=8), Boundary(50, radius=17)),
+                                width=240, height=220)
+        for direction in ('up', 'down'):
+            for a, b, expected in ((1, 2, (-42, 33)), (2, 1, (33, -42))):
+                pieces = route(surface.with_curves(Arc(a, b, direction=direction)), self.style)
+                self.assertEqual((pieces[0].start, pieces[-1].end), expected)
+            pieces = route(surface.with_curves(Arc(1, 2, direction=direction,
+                           start_side='left', end_side='right')), self.style)
+            self.assertEqual((pieces[0].start, pieces[-1].end), (-58, 67))
+            # Independently check the entire route, including both endpoint holes.
+            for i in range(1001):
+                x, y = pieces[0].point(i/1000)
+                for boundary in surface.objects:
+                    self.assertGreaterEqual(math.hypot(x-boundary.x, y), boundary.radius-1e-8)
+        with self.assertRaisesRegex(RoutingError, 'endpoint boundary'):
+            route(surface.with_curves(Arc(1, 2, direction='up', start_side='left')),
+                  replace(self.style, curve_height=.05))
+        with self.assertRaisesRegex(RoutingError, 'endpoint boundary'):
+            route(surface.with_curves(Arc(1, 2, start_side='left')), self.style)
+        for endpoint, shape in ((0, 'circle'), (1, 'dot')):
+            with self.assertRaisesRegex(ValueError, 'circular inner boundary'):
+                route(surface.with_curves(Arc(endpoint, 2, start_side='left')),
+                      replace(self.style, boundary_shape=shape))
+        with self.assertRaisesRegex(ValueError, 'circular inner boundary'):
+            route(PlanarSurface.row('PP').with_curves(Arc(1, 2, end_side='right')), self.style)
+        with self.assertRaisesRegex(ValueError, 'endpoint side'):
+            Arc(1, 2, start_side='top')
+
     def test_cut_crossings_and_loops_retain_their_itineraries(self):
         for curve in (Arc(2,5,(3,),False),Loop((1,4))):
             s = self.row.with_curves(curve)

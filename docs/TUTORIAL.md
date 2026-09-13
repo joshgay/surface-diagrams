@@ -131,11 +131,14 @@ rim for marked point 2. Boundary 4 behaves symmetrically. On a `BB` row,
 `Arc(1, 2)` joins the right rim of the left boundary to the left rim of the right
 boundary. These are the standard left/right attachments requested for cut systems.
 
-**Current limitation:** curved arcs aimed at a circular boundary are trimmed at
-their first geometric rim intersection; that need not be the leftmost or
-rightmost point. Explicit left/right anchors for curved arcs are a priority
-feature, with arbitrary-angle anchors reserved for nonstandard configurations.
-Do not interpret an automatic rim landing as a specified notch or fixed endpoint.
+Curved arcs also meet the leftmost/rightmost rim, choosing the side facing the
+first or last route segment. Set `start_side="left"` or `end_side="right"` to
+choose explicitly, for example `Arc(1, 2, direction="up", start_side="left",
+end_side="right")` on a sufficiently tall `BB` surface. These options require
+circular inner boundaries. An arc that enters its endpoint hole is rejected;
+choose the facing rim or increase the height. A rim side is a drawing anchor,
+not a notch or an assertion about allowed boundary isotopies.
+
 
 ## 6. Draw a rainbow reference cut system
 
@@ -444,7 +447,7 @@ must be stated with their assumptions. None of these are implemented by this tut
 
 | Priority | Deliverable |
 | --- | --- |
-| First | Explicit left/right curved boundary endpoints, stronger intersecting-family layouts, stable visual IDs and rainbow legends |
+| First | Stronger intersecting-family layouts, stable visual IDs and rainbow legends |
 | Next | Finish standard Type I/II cut-system and route drawings; easier route locators and input previews |
 | Next | Refine thesis-style vertical factor/action rows and braid correspondences; supplied Hurwitz/substitution sequences |
 | Next | Complete exports and requested additional diagram-family visualizations with supplied data |
