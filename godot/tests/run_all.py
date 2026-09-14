@@ -1,0 +1,52 @@
+"""Run the reproducible Godot/Python checks from the repository root."""
+from pathlib import Path
+import argparse
+import os
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+PROJECT = ROOT / "godot"
+
+
+def run(command, expected=0):
+    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+    output = (result.stdout + result.stderr).strip()
+    if output:
+        print(output)
+    if result.returncode != expected:
+        raise SystemExit(f"expected exit {expected}, got {result.returncode}: {' '.join(map(str, command))}")
+    return output
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--godot", default=os.environ.get("GODOT4", "godot"),
+                        help="Godot 4.7.2 standard executable (or GODOT4)")
+    args = parser.parse_args()
+    version = run([args.godot, "--version"])
+    if not version.startswith("4.7.2.stable.official.ed1daf0bf"):
+        raise SystemExit("expected official Godot 4.7.2 build ed1daf0bf, got " + version)
+    run([args.godot, "--headless", "--path", str(PROJECT), "--editor", "--quit"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/run_tests.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/ui_smoke.gd"])
+    failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",
+                   "res://tests/run_tests.gd", "--", "--self-test-failure"], expected=1)
+    if "intentional harness failure" not in failure:
+        raise SystemExit("failure harness returned 1 without reporting its assertion")
+    run([args.godot, "--headless", "--path", str(PROJECT), "--quit-after", "3"])
+
+    # The existing Python implementation independently checks both shared
+    # fixture recipes and publication SVG generation.
+    sys.path.insert(0, str(ROOT / "src"))
+    from surface_diagrams import DiagramDocument
+    for fixture in sorted((PROJECT / "fixtures").glob("*.json")):
+        document = DiagramDocument.from_json(fixture.read_text(encoding="utf-8"))
+        if not document.render_svg().startswith("<svg"):
+            raise SystemExit(f"Python renderer failed for {fixture}")
+        print(f"Python accepted {fixture.name} and rendered SVG")
+    print("ALL CHECKS PASSED")
+
+
+if __name__ == "__main__":
+    main()
