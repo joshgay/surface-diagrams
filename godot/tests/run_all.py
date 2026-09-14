@@ -16,6 +16,10 @@ def run(command, expected=0):
         print(output)
     if result.returncode != expected:
         raise SystemExit(f"expected exit {expected}, got {result.returncode}: {' '.join(map(str, command))}")
+    if expected == 0 and any(line.startswith("ERROR:") or "SCRIPT ERROR:" in line
+                             for line in output.splitlines()):
+        raise SystemExit("Godot reported a runtime/script error despite exit 0: " +
+                         " ".join(map(str, command)))
     return output
 
 

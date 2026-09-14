@@ -6,15 +6,20 @@ transformations, and connect planar drawings with exploratory surface views.
 The Python drawing library remains the authority for its supported certified
 geometry and publication SVG/TikZ outputs.
 
-**Status:** the working viewer slice loads either bundled planar/braid JSON
+**Status:** the first editor slice loads either bundled planar/braid JSON
 fixture, draws an explicitly schematic native preview, and highlights stable
-objects, curves, labels, and crossing indices selected in its inspector. It
-lists strand transport, exposes normalized source, pans/zooms without changing
-records, and opens/saves bounded JSON. A fixed local bridge validates the same
-record with the Python library and makes its exact publication SVG and TikZ
-available through explicit export buttons. Bridge failure is visible and never
-falls back to a purported exact result. It is not yet an editor. Do not confuse
-it with the already implemented
+objects, curves, labels, and crossing indices selected in its inspector. In a
+planar document, drag a point or label to preview a move. Release commits only
+after record and Python geometry validation; a rejected move restores the last
+accepted record. Undo/redo buttons and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, or Ctrl+Y
+restore exact serialized states. The braid view remains inspection-only.
+
+The Studio lists strand transport, exposes normalized source, pans/zooms without
+changing records, and opens/saves bounded JSON. A fixed local bridge validates
+the same record with the Python library and makes its exact publication SVG and
+TikZ available through explicit export buttons. Bridge failure is visible and
+never falls back to a purported exact result. Do not confuse this early editor
+with the more complete
 [local browser editor](../docs/EDITOR.md), which runs without Godot.
 
 Import `project.godot` using Godot 4.7.2 stable. The exact runtime, checksum, and

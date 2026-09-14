@@ -4,7 +4,7 @@
 - Starting parent: `4bd028e4052e34de429c60502e24e6686c9c2d09`, the browser-editor
   contribution on `codex/ordered-factorizations`.
 - Date: 2026-09-13 (America/Denver).
-- Current milestone: **M0 complete; M1 in progress**.
+- Current milestone: **M0 and M1 complete; M2 in progress**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
 ## New functionality in this checkpoint
@@ -33,6 +33,17 @@
 - Added stable inspector selection and schematic highlighting for objects,
   curves, labels, and exact braid crossing indices. Selection is view state and
   does not alter the normalized mathematical record.
+- Added the first actual planar editing slice. Direct canvas hit-testing selects
+  points and labels; pointer motion creates a separate translucent preview;
+  release proposes an immutable replacement record. Points must remain strictly
+  inside the ellipse and between their existing neighbors, so endpoint/cut
+  numbering cannot change accidentally. Escape cancels a draft.
+- Added a bounded command history with exact serialized before/after states,
+  Undo/Redo controls, and standard keyboard shortcuts. Candidate edits pass both
+  strict record normalization and the Python geometry bridge before entering
+  history. Rejected schema, order, or geometry changes preserve the last
+  accepted document and do not consume an undo step. Camera state survives
+  accepted edits and history navigation.
 
 The inherited Python library/browser editor are not new Godot contributions.
 
@@ -45,17 +56,23 @@ See `RUNTIME.md` for official sources and commands.
 
 - Godot headless editor import completed without parse errors.
 - Main project ran for three headless frames without script/runtime errors.
-- Godot tests: **49 assertions passed**. Covered fixtures/defaults, immutable
+- The aggregate runner now treats Godot `ERROR:` or `SCRIPT ERROR:` diagnostics
+  as failures even when the engine process itself exits zero.
+- Godot tests: **65 assertions passed**. Covered fixtures/defaults, immutable
   records, save/reopen, duplicate JSON keys (including escaped spelling), future
   versions, unknown fields, duplicate IDs, object order, curve minimality,
   empty/exact braid words, strand transport, camera separation, scene load, and
   scene instantiation. New bridge checks cover fixed planar/braid rendering,
   non-mutation, record-to-row identity, successful Godot SVG decoding, and the
   explicit unavailable state when the configured Python executable is missing.
-- Headless UI smoke: **17 assertions passed**. The live scene opened the planar
-  fixture, switched to braid data, populated both inspectors, retained records
-  through navigation and selection, exported exact cached SVG and TikZ, and
-  preserved the current document after a rejected open.
+  Editing checks cover immutable proposals, neighbor and ellipse rejection,
+  geometry rejection, exact undo/redo, redo invalidation, label commands,
+  save/reopen, draft separation, and cancellation.
+- Headless UI smoke: **30 assertions passed**. The live scene opened both
+  fixtures, edited a point and label through canvas hit-testing, preserved IDs,
+  endpoints and cuts, retained camera state, rejected a cross-neighbor drag,
+  restored exact source through Undo/Redo, exported exact SVG/TikZ, and preserved
+  the current document after a rejected open.
 - Independent Python bridge contract: **2 tests passed**. Outputs for both
   fixtures matched the library byte-for-byte and repeated deterministically;
   invalid versioned data failed without leaving SVG or TikZ output files.
@@ -66,10 +83,11 @@ See `RUNTIME.md` for official sources and commands.
 
 ## Known limitations
 
-This is a viewer, not an editor. Native curve drawing and selection overlays are
-explicitly schematic; publication/certified geometry still belongs to the Python
-renderer and the new bridge preserves that boundary. It has no point/label
-dragging, curve construction, undo stack, playback, factor workspace, or 3D
+This is an early planar point/label editor and a braid viewer. Native curve
+drawing, edit previews, and selection overlays are explicitly schematic;
+publication/certified geometry still belongs to the Python renderer and bridge.
+There is no row reindexing workflow, cut picker, curve creation/inspector,
+recoverable invalid draft, braid editing/playback, factor workspace, or 3D
 surface view yet. The source-checkout bridge currently requires a compatible
 Python executable and this repository's package source; packaged operation has
 not been designed or claimed.
@@ -86,11 +104,12 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Begin M2 with command-based point movement and exact undo/redo: constrain a drag
-between neighboring objects, keep the preview separate until acceptance, reject
-order violations without changing the document, and prove undo/save/reopen
-restore the exact recipe. A later display-enabled pass must still inspect the
-complete UI, selection overlays, pointer gestures, and file dialogs.
+Continue M2 with ordered cut picking and a curve inspector: create a generic
+multi-curve drawing, make itinerary edits explicit commands, preserve the exact
+supplied cut sequence without simplification, show Python routing errors without
+replacing the accepted state, and prove edit/save/reopen plus undo/redo against
+the publication exports. A later display-enabled pass must still inspect the
+complete UI, preview/selection overlays, pointer gestures, and file dialogs.
 
 Update this checkpoint after every meaningful implementation commit with actual
 changes, tests, remaining failures, and the next concrete task. Work on generic

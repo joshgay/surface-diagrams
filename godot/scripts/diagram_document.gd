@@ -64,6 +64,33 @@ func save_path(path: String) -> String:
 	file.store_string(to_json())
 	return ""
 
+func with_object_x(id: String, x: float) -> Dictionary:
+	if _data.kind != "planar":
+		return _failure("Only planar documents contain movable objects")
+	if not is_finite(x):
+		return _failure("Object x must be finite")
+	var candidate := to_dict()
+	for index in candidate.surface.objects.size():
+		if candidate.surface.objects[index].id == id:
+			if is_equal_approx(candidate.surface.objects[index].x, x):
+				return _failure("Object %s has not moved" % id)
+			candidate.surface.objects[index].x = x
+			return DiagramDocument.parse(JSON.stringify(candidate))
+	return _failure("Unknown object ID: " + id)
+
+func with_label_position(id: String, position: Vector2) -> Dictionary:
+	if not is_finite(position.x) or not is_finite(position.y):
+		return _failure("Label position must be finite")
+	var candidate := to_dict()
+	for index in candidate.labels.size():
+		if candidate.labels[index].id == id:
+			if is_equal_approx(candidate.labels[index].x, position.x) and is_equal_approx(candidate.labels[index].y, position.y):
+				return _failure("Label %s has not moved" % id)
+			candidate.labels[index].x = position.x
+			candidate.labels[index].y = position.y
+			return DiagramDocument.parse(JSON.stringify(candidate))
+	return _failure("Unknown label ID: " + id)
+
 func summary_rows() -> Array[String]:
 	var rows: Array[String] = []
 	for record in inspector_records():
@@ -199,6 +226,7 @@ static func _planar(raw: Dictionary, style: Dictionary) -> Dictionary:
 		ids[object.id] = true
 		if object.kind not in ["point", "boundary"]: return _failure("Object kind must be point or boundary")
 		if not _number_between(object.x, -10000.0, 10000.0) or not _number_between(object.get("y", 0), 0.0, 0.0): return _failure("Planar objects must be bounded and on y=0")
+		if absf(float(object.x)) >= float(surface.width) / 2.0: return _failure("Every planar object must remain strictly inside the outer ellipse")
 		if float(object.x) <= previous_x: return _failure("Objects must remain strictly left-to-right; reordering would renumber endpoints and cuts")
 		previous_x = float(object.x)
 		var radius = object.get("radius", null)

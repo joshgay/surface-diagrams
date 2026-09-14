@@ -1,6 +1,11 @@
 class_name DiagramCanvas
 extends Control
 
+signal record_selected(record: Dictionary)
+signal edit_commit_requested(kind: String, id: String, position: Vector2)
+signal edit_preview_changed(valid: bool, message: String)
+signal edit_rejected(message: String)
+
 var document: DiagramDocument
 var zoom := 1.0
 var pan := Vector2.ZERO
@@ -8,12 +13,26 @@ var dragging := false
 var drag_start := Vector2.ZERO
 var pan_start := Vector2.ZERO
 var selected_record: Dictionary = {}
+var edit_dragging := false
+var edit_drag_start := Vector2.ZERO
+var edit_drag_moved := false
+var preview_record: Dictionary = {}
+var preview_position := Vector2.ZERO
+var preview_valid := false
+var preview_error := ""
 
 func set_document(value: DiagramDocument) -> void:
 	document = value
 	zoom = 1.0
 	pan = Vector2.ZERO
 	selected_record = {}
+	cancel_edit_preview()
+	queue_redraw()
+
+func update_document(value: DiagramDocument, selection: Dictionary = {}) -> void:
+	document = value
+	selected_record = selection.duplicate(true)
+	cancel_edit_preview()
 	queue_redraw()
 
 func select_record(record: Dictionary) -> void:
@@ -31,13 +50,91 @@ func _gui_input(event: InputEvent) -> void:
 			zoom_at(event.position, 1.12)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
 			zoom_at(event.position, 1.0 / 1.12)
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				begin_edit_drag(event.position)
+			elif edit_dragging:
+				finish_edit_drag(event.position)
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
 			dragging = event.pressed
 			drag_start = event.position
 			pan_start = pan
-	elif event is InputEventMouseMotion and dragging:
-		pan = pan_start + event.position - drag_start
-		queue_redraw()
+	elif event is InputEventMouseMotion:
+		if edit_dragging:
+			update_edit_drag(event.position)
+		elif dragging:
+			pan = pan_start + event.position - drag_start
+			queue_redraw()
+	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and edit_dragging:
+		cancel_edit_preview()
+		edit_rejected.emit("Edit cancelled; the accepted record was not changed")
+
+func begin_edit_drag(screen_position: Vector2) -> bool:
+	if document == null or document.data.kind != "planar":
+		return false
+	var record := _hit_planar_record(screen_position)
+	if record.is_empty():
+		return false
+	select_record(record)
+	record_selected.emit(record.duplicate(true))
+	preview_record = record.duplicate(true)
+	preview_position = _record_position(record)
+	preview_valid = true
+	preview_error = ""
+	edit_dragging = true
+	edit_drag_start = screen_position
+	edit_drag_moved = false
+	if is_inside_tree():
+		grab_focus()
+	queue_redraw()
+	return true
+
+func update_edit_drag(screen_position: Vector2) -> Dictionary:
+	if not edit_dragging:
+		return {"ok": false, "error": "No edit drag is active"}
+	edit_drag_moved = edit_drag_moved or screen_position.distance_to(edit_drag_start) >= 2.0
+	var frame := _planar_frame(document.data)
+	var world := _world(screen_position, frame)
+	if preview_record.kind == "object":
+		preview_position = Vector2(world.x, 0.0)
+		var limits := _object_x_limits(preview_record.id)
+		preview_valid = world.x > limits.x and world.x < limits.y
+		preview_error = "" if preview_valid else "Object %s must remain strictly between x=%s and x=%s; endpoint/cut numbers were not changed" % [preview_record.id, limits.x, limits.y]
+	else:
+		preview_position = world
+		preview_valid = absf(world.x) <= 10000.0 and absf(world.y) <= 10000.0
+		preview_error = "" if preview_valid else "Label coordinates must remain within -10000..10000"
+	edit_preview_changed.emit(preview_valid, preview_error)
+	queue_redraw()
+	return {"ok": preview_valid, "error": preview_error, "position": preview_position}
+
+func finish_edit_drag(screen_position: Vector2) -> void:
+	if not edit_dragging:
+		return
+	var update := update_edit_drag(screen_position)
+	var should_commit: bool = edit_drag_moved and bool(update.ok)
+	var rejection := preview_error
+	var record := preview_record.duplicate(true)
+	var position := preview_position
+	cancel_edit_preview()
+	if should_commit:
+		edit_commit_requested.emit(record.kind, record.id, position)
+	elif not rejection.is_empty():
+		edit_rejected.emit(rejection)
+
+func cancel_edit_preview() -> void:
+	edit_dragging = false
+	edit_drag_moved = false
+	preview_record = {}
+	preview_position = Vector2.ZERO
+	preview_valid = false
+	preview_error = ""
+	queue_redraw()
+
+func screen_position_for_record(record: Dictionary) -> Vector2:
+	if document == null or document.data.kind != "planar":
+		return Vector2.INF
+	return _screen(_record_position(record), _planar_frame(document.data))
 
 func zoom_at(point: Vector2, factor: float) -> void:
 	var old := zoom
@@ -62,9 +159,57 @@ func _frame(width: float, height: float) -> Dictionary:
 func _screen(point: Vector2, frame: Dictionary) -> Vector2:
 	return frame.origin + Vector2(point.x, -point.y) * frame.scale
 
+func _world(point: Vector2, frame: Dictionary) -> Vector2:
+	var offset: Vector2 = (point - frame.origin) / frame.scale
+	return Vector2(offset.x, -offset.y)
+
+func _planar_frame(data: Dictionary) -> Dictionary:
+	return _frame(data.surface.width, data.surface.height + 70.0)
+
+func _record_position(record: Dictionary) -> Vector2:
+	if document == null or document.data.kind != "planar":
+		return Vector2.INF
+	if record.kind == "object":
+		for object in document.data.surface.objects:
+			if object.id == record.id:
+				return Vector2(object.x, 0.0)
+	elif record.kind == "label":
+		for label in document.data.labels:
+			if label.id == record.id:
+				return Vector2(label.x, label.y)
+	return Vector2.INF
+
+func _hit_planar_record(screen_position: Vector2) -> Dictionary:
+	var best: Dictionary = {}
+	var best_distance := 20.0
+	for record in document.inspector_records():
+		if record.kind not in ["object", "label"]:
+			continue
+		var at := screen_position_for_record(record)
+		var distance := at.distance_to(screen_position)
+		if record.kind == "label":
+			var label: Dictionary = document.data.labels[record.index]
+			var text_width := ThemeDB.fallback_font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, int(label.size)).x
+			if absf(at.x - screen_position.x) <= text_width / 2.0 + 8.0 and absf(at.y - screen_position.y) <= float(label.size) + 8.0:
+				distance = 0.0
+		if distance < best_distance:
+			best = record.duplicate(true)
+			best_distance = distance
+	return best
+
+func _object_x_limits(id: String) -> Vector2:
+	var data := document.data
+	var objects: Array = data.surface.objects
+	for index in objects.size():
+		if objects[index].id == id:
+			var left: float = -data.surface.width / 2.0 if index == 0 else objects[index - 1].x
+			var right: float = data.surface.width / 2.0 if index == objects.size() - 1 else objects[index + 1].x
+			return Vector2(left, right)
+	return Vector2.INF
+
 func _draw_planar(data: Dictionary) -> void:
 	var surface: Dictionary = data.surface
-	var frame := _frame(surface.width, surface.height + 70.0)
+	var frame := _planar_frame(data)
 	var origin: Vector2 = frame.origin
 	var scale: float = frame.scale
 	var style: Dictionary = data.style
@@ -103,7 +248,26 @@ func _draw_planar(data: Dictionary) -> void:
 		if selected_record.get("kind", "") == "label" and selected_record.get("id", "") == label.id:
 			var text_size := ThemeDB.fallback_font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, int(label.size))
 			draw_rect(Rect2(label_at - Vector2(text_size.x / 2.0 + 5.0, text_size.y), text_size + Vector2(10, 7)), Color("#f2a900"), false, 2.0)
-	_draw_centered("Native schematic preview. JSON records are authoritative.", Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
+	_draw_edit_preview(frame, data)
+	_draw_centered("Drag a point or label to propose an edit. Release validates before commit.", Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
+
+func _draw_edit_preview(frame: Dictionary, data: Dictionary) -> void:
+	if preview_record.is_empty():
+		return
+	var original := _screen(_record_position(preview_record), frame)
+	var proposed := _screen(preview_position, frame)
+	var preview_color := Color("#167464") if preview_valid else Color("#a54439")
+	draw_dashed_line(original, proposed, preview_color, 2.0, 6.0, true)
+	if preview_record.kind == "object":
+		var object: Dictionary = data.surface.objects[preview_record.index]
+		var fill := Color(data.style.boundary_color if object.kind == "boundary" else data.style.marked_point_color)
+		fill.a = 0.45
+		draw_circle(proposed, 7.0, fill)
+		draw_arc(proposed, 11.0, 0.0, TAU, 32, preview_color, 3.0, true)
+	else:
+		var label: Dictionary = data.labels[preview_record.index]
+		_draw_centered(label.text, proposed, Color(preview_color, 0.7), int(label.size))
+	_draw_centered("preview", proposed + Vector2(0, -16), preview_color, 11)
 
 func _draw_curve(curve: Dictionary, endpoint_x: Array[float], frame: Dictionary, style: Dictionary, selected: bool = false) -> void:
 	var points := PackedVector2Array()
