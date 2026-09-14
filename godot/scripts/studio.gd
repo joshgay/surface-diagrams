@@ -14,6 +14,7 @@ var svg_button: Button
 var tikz_button: Button
 var undo_button: Button
 var redo_button: Button
+var curve_inspector: CurveInspector
 var geometry_result: Dictionary = {"ok": false, "error": "Not rendered", "svg": "", "tikz": ""}
 var export_kind := ""
 var history := DiagramEditHistory.new()
@@ -37,7 +38,7 @@ func _build_interface() -> void:
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 20)
 	root.add_theme_constant_override("separation", 12)
 	add_child(root)
-	var heading := HBoxContainer.new()
+	var heading := HFlowContainer.new()
 	root.add_child(heading)
 	var brand := Label.new()
 	brand.text = "Surface Diagrams Studio"
@@ -45,7 +46,7 @@ func _build_interface() -> void:
 	brand.add_theme_color_override("font_color", Color("#167464"))
 	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(brand)
-	for spec in [["Planar fixture", Callable(self, "_open_resource").bind("res://fixtures/planar-v1.json")], ["Braid fixture", Callable(self, "_open_resource").bind("res://fixtures/braid-v1.json")], ["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
+	for spec in [["Planar fixture", Callable(self, "_open_resource").bind("res://fixtures/planar-v1.json")], ["Multi-curve fixture", Callable(self, "_open_resource").bind("res://fixtures/multi-curve-v1.json")], ["Braid fixture", Callable(self, "_open_resource").bind("res://fixtures/braid-v1.json")], ["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
 		var button := Button.new()
 		button.text = spec[0]
 		button.pressed.connect(spec[1])
@@ -75,8 +76,12 @@ func _build_interface() -> void:
 	record_list.allow_reselect = true
 	record_list.item_selected.connect(_select_record)
 	inspector.add_child(record_list)
+	curve_inspector = CurveInspector.new()
+	curve_inspector.apply_requested.connect(_apply_curve_cuts)
+	curve_inspector.draft_changed.connect(_curve_draft_changed)
+	inspector.add_child(curve_inspector)
 	var source_button := Button.new()
-	source_button.text = "Show normalized source"
+	source_button.text = "Show accepted source"
 	source_button.pressed.connect(func(): source_view.visible = not source_view.visible)
 	inspector.add_child(source_button)
 	source_view = TextEdit.new()
@@ -127,6 +132,7 @@ func _build_interface() -> void:
 	canvas.edit_commit_requested.connect(_canvas_edit_commit)
 	canvas.edit_preview_changed.connect(_canvas_preview_changed)
 	canvas.edit_rejected.connect(_show_edit_error)
+	canvas.cut_picked.connect(curve_inspector.append_cut)
 	canvas_box.add_child(canvas)
 	geometry_label = Label.new()
 	geometry_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -176,6 +182,8 @@ func _show_save() -> void:
 			_show_edit_error(error)
 		else:
 			status_label.text = "JSON download requested. This browser record is not geometry-validated; validate with the Python library before publication."
+			if not curve_inspector.drafts.is_empty():
+				status_label.text += " Unapplied curve drafts are NOT in this download."
 		return
 	save_dialog.current_file = _safe_filename(document.data.title) + ".json"
 	save_dialog.popup_centered_ratio(0.8)
@@ -204,6 +212,7 @@ func _open_result(result: Dictionary, path: String) -> void:
 		status_label.add_theme_color_override("font_color", Color("#a54439"))
 		return
 	history.set_document(result.document)
+	curve_inspector.clear_drafts()
 	if browser_mode:
 		browser_drafts.button_pressed = false
 	_present_document(result.document, true)
@@ -240,6 +249,10 @@ func _present_document(value: DiagramDocument, reset_camera: bool,
 	if not selection.is_empty():
 		_select_matching_row(selection)
 	geometry_result = _render_geometry(document, rendered)
+	curve_inspector.inspect(document, selection)
+	_refresh_draft_markers()
+	if selection.get("kind", "") != "curve":
+		canvas.set_curve_draft("", [])
 	svg_button.disabled = not geometry_result.ok
 	tikz_button.disabled = not geometry_result.ok
 	if geometry_result.ok:
@@ -259,6 +272,8 @@ func _save_path(path: String) -> void:
 	if not path.to_lower().ends_with(".json"): path += ".json"
 	var error := document.save_path(path)
 	status_label.text = "Saved exact normalized recipe to " + path if error.is_empty() else error
+	if error.is_empty() and not curve_inspector.drafts.is_empty():
+		status_label.text += " Unapplied curve drafts remain in memory and are NOT in this file."
 	status_label.add_theme_color_override("font_color", Color("#415b55") if error.is_empty() else Color("#a54439"))
 
 func _save_export(path: String) -> void:
@@ -281,6 +296,9 @@ func _select_record(index: int) -> void:
 	if typeof(record) != TYPE_DICTIONARY:
 		return
 	canvas.select_record(record)
+	curve_inspector.inspect(document, record)
+	if record.kind != "curve":
+		canvas.set_curve_draft("", [])
 	var identity := ""
 	if not record.id.is_empty():
 		identity = " " + record.id
@@ -291,6 +309,8 @@ func _select_record(index: int) -> void:
 
 func _canvas_record_selected(record: Dictionary) -> void:
 	_select_matching_row(record)
+	curve_inspector.inspect(document, record)
+	canvas.set_curve_draft("", [])
 	status_label.text = "Selected %s %s. Drag to preview a move; release validates before the record changes." % [record.kind, record.id]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 
@@ -317,6 +337,32 @@ func _canvas_edit_commit(kind: String, id: String, position: Vector2) -> void:
 	if browser_mode:
 		status_label.text = result.label + " stored as an UNVALIDATED browser draft. IDs and order preserved; curve geometry was not checked."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
+
+func _curve_draft_changed(id: String, cuts: Array, message: String) -> void:
+	canvas.set_curve_draft(id, cuts)
+	_refresh_draft_markers()
+	if not id.is_empty():
+		status_label.text = "%s Draft cuts=%s" % [message, cuts]
+		status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _refresh_draft_markers() -> void:
+	for index in record_list.item_count:
+		var record: Dictionary = record_list.get_item_metadata(index)
+		var dirty: bool = record.kind == "curve" and curve_inspector.drafts.has(record.id)
+		record_list.set_item_text(index, record.label + (" [draft]" if dirty else ""))
+
+func _apply_curve_cuts(id: String, cuts: Array) -> void:
+	candidate_geometry = {}
+	var result := history.set_curve_cuts(id, cuts, _validate_candidate_geometry)
+	if not result.ok:
+		_show_edit_error("Itinerary rejected: " + result.error + ". Draft retained; accepted curve and undo history unchanged.")
+		return
+	curve_inspector.discard_draft(id)
+	_present_document(result.document, false, result.selection, candidate_geometry)
+	status_label.text = "Applied curve %s cuts exactly as supplied: %s. No visit was sorted, cancelled, or inferred." % [id, cuts]
+	if browser_mode:
+		status_label.text = "UNVALIDATED browser itinerary draft for %s: %s. Curve routing was NOT checked; publication exports remain disabled." % [id, cuts]
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
 
 func _validate_candidate_geometry(candidate: DiagramDocument) -> Dictionary:
 	if browser_mode:

@@ -30,6 +30,15 @@ func move_label(id: String, position: Vector2, validator: Callable = Callable())
 	return _validate_and_commit(proposal.document, validator, "Move label " + id,
 		{"kind": "label", "id": id})
 
+func set_curve_cuts(id: String, cuts: Array, validator: Callable = Callable()) -> Dictionary:
+	if current == null:
+		return _failure("No document is open")
+	var proposal := current.with_curve_cuts(id, cuts)
+	if not proposal.ok:
+		return proposal
+	return _validate_and_commit(proposal.document, validator, "Set cuts for curve " + id,
+		{"kind": "curve", "id": id})
+
 func can_undo() -> bool:
 	return not undo_stack.is_empty()
 

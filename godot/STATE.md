@@ -7,6 +7,49 @@
 - Current milestone: **M0 and M1 complete; M2 in progress**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
+## Latest increment: ordered curve editing
+
+Built on live fork head `b20e4831f202ebd4ad0063af79cc3f1a7da8025a`.
+The private Site was not redeployed or modified during this increment.
+
+- Added an original six-point, three-curve fixture and a multi-curve inspector
+  exposing stable IDs, exact endpoints, orientation, and accepted/draft cuts.
+- Numbered inspector buttons and canvas ticks/labels append literal cut visits.
+  Repeated visits are retained; schema-invalid and Python-unroutable sequences
+  are rejected, not simplified. Cut picking chooses the nearest target and
+  ignores exact ties. Drafts stop at 64 visits without truncating earlier input.
+- Added immutable itinerary proposals and one-command Apply/Undo/Redo. Desktop
+  Apply uses the same Python adapter as point/label edits. Rejection preserves
+  the accepted source, undo/redo stacks, and publication outputs. Save/reopen,
+  undo, and redo recover byte-identical SVG/TikZ for the accepted fixture edits.
+- Drafts are retained per stable curve ID across selection changes and edits to
+  another curve, with `[draft]` markers and explicit Reset. Save warns that it
+  writes only accepted records. This is session recovery, not disk persistence:
+  opening a new valid document or closing Studio still discards those drafts.
+- Browser controller tests cover opt-in itinerary changes and retain explicit
+  UNVALIDATED status and disabled exact exports. No desktop validation was
+  weakened and no browser geometry certificate was invented.
+- Wrapped the growing fixture toolbar and cut action controls. This is tested
+  scene construction, not proof of responsive or visual acceptance.
+- Bounded aggregate subprocess checks to 120 seconds so a runtime failure
+  cannot hang indefinitely; added independent mocked runner contract tests.
+
+Runtime remains `4.7.2.stable.official.ed1daf0bf`.
+Checks actually run: **97 model/controller assertions**, **55 desktop scene
+assertions**, **25 web-mode controller assertions**, **3 Python bridge tests**
+(including multi-curve and edited/rejected itineraries), **3 runner contract
+tests**, **13 existing browser-adapter/loader tests**, and the intentional
+exit-1 harness. Full inherited regressions: **207 Python tests** and **8 browser
+editor tests** passed. Godot import/startup completed without final diagnostics.
+
+During development, the runner caught an array-formatting error in the inspector;
+an explicit type fixed a later draft-marker parse error. Both were corrected
+before the final successful checks. The new fixture and its `[0, 6]` edit were
+rasterized from exact library SVG and visually inspected: six blue marks and
+three magenta curves retained identity and the explicit itinerary change. This
+does not verify native UI layout, draft overlays, or actual pointer gestures.
+No display server or Xvfb is available; full visual acceptance remains pending.
+
 ## Foreground web proof of concept
 
 Josh explicitly approved pursuing a private ChatGPT Site. Deployment succeeded:
@@ -68,7 +111,7 @@ adapter. Do not silently upgrade unvalidated drafts into certified geometry.
 The core M2 next task below still applies to scheduled branch development;
 this Site approval does not authorize automatic scheduled deployments.
 
-## New functionality in this checkpoint
+## Earlier implemented functionality
 
 - Selected and verified the standard GDScript Godot 4.7.2 stable runtime.
 - Added an independent, bounded `DiagramDocument` record model for the shared
@@ -119,7 +162,7 @@ See `RUNTIME.md` for official sources and commands.
 - Main project ran for three headless frames without script/runtime errors.
 - The aggregate runner now treats Godot `ERROR:` or `SCRIPT ERROR:` diagnostics
   as failures even when the engine process itself exits zero.
-- Godot tests: **65 assertions passed**. Covered fixtures/defaults, immutable
+- Godot tests: **97 assertions passed**. Covered fixtures/defaults, immutable
   records, save/reopen, duplicate JSON keys (including escaped spelling), future
   versions, unknown fields, duplicate IDs, object order, curve minimality,
   empty/exact braid words, strand transport, camera separation, scene load, and
@@ -129,12 +172,12 @@ See `RUNTIME.md` for official sources and commands.
   Editing checks cover immutable proposals, neighbor and ellipse rejection,
   geometry rejection, exact undo/redo, redo invalidation, label commands,
   save/reopen, draft separation, and cancellation.
-- Headless UI smoke: **30 assertions passed**. The live scene opened both
+- Headless UI smoke: **55 assertions passed**. The live scene opened the
   fixtures, edited a point and label through canvas hit-testing, preserved IDs,
   endpoints and cuts, retained camera state, rejected a cross-neighbor drag,
   restored exact source through Undo/Redo, exported exact SVG/TikZ, and preserved
   the current document after a rejected open.
-- Independent Python bridge contract: **2 tests passed**. Outputs for both
+- Independent Python bridge contract: **3 tests passed**. Outputs for all three
   fixtures matched the library byte-for-byte and repeated deterministically;
   invalid versioned data failed without leaving SVG or TikZ output files.
 - Intentional harness failure reported `FAILED: 1 of 1 assertions` and exited 1.
@@ -144,11 +187,11 @@ See `RUNTIME.md` for official sources and commands.
 
 ## Known limitations
 
-This is an early planar point/label editor and a braid viewer. Native curve
+This is a planar point/label and curve-itinerary editor and a braid viewer. Native curve
 drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
-There is no row reindexing workflow, cut picker, curve creation/inspector,
-recoverable invalid draft, braid editing/playback, factor workspace, or 3D
+There is no row reindexing workflow, arbitrary curve creation, persistent draft
+recovery, unsaved-change confirmation, braid editing/playback, factor workspace, or 3D
 surface view yet. The source-checkout bridge currently requires a compatible
 Python executable and this repository's package source; packaged desktop
 operation has not been designed or claimed. The separate browser proof of
@@ -166,12 +209,13 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Continue M2 with ordered cut picking and a curve inspector: create a generic
-multi-curve drawing, make itinerary edits explicit commands, preserve the exact
-supplied cut sequence without simplification, show Python routing errors without
-replacing the accepted state, and prove edit/save/reopen plus undo/redo against
-the publication exports. A later display-enabled pass must still inspect the
-complete UI, preview/selection overlays, pointer gestures, and file dialogs.
+Continue M2 with unsaved-change safeguards: detect accepted-record changes and
+unapplied curve drafts before opening a file/fixture or closing Studio, offer
+explicit cancel/discard choices, and add a bounded versioned recovery envelope
+separate from mathematical JSON so rejected drafts can survive a restart. Prove
+that cancellation and failed imports preserve both history and every draft.
+Row reindexing and arbitrary curve creation remain later M2 work. A display-enabled
+pass must still inspect UI layout, overlays, gestures, and file dialogs.
 
 Update this checkpoint after every meaningful implementation commit with actual
 changes, tests, remaining failures, and the next concrete task. Work on generic

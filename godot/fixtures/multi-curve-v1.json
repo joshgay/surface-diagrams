@@ -1,0 +1,27 @@
+{
+  "format": "surface-diagrams",
+  "version": 1,
+  "kind": "planar",
+  "title": "Generic multi-curve editing fixture",
+  "surface": {
+    "width": 440,
+    "height": 240,
+    "objects": [
+      {"id": "p1", "kind": "point", "x": -150},
+      {"id": "p2", "kind": "point", "x": -90},
+      {"id": "p3", "kind": "point", "x": -30},
+      {"id": "p4", "kind": "point", "x": 30},
+      {"id": "p5", "kind": "point", "x": 90},
+      {"id": "p6", "kind": "point", "x": 150}
+    ]
+  },
+  "curves": [
+    {"id": "left", "kind": "arc", "start": 1, "end": 2, "cuts": []},
+    {"id": "editable", "kind": "arc", "start": 3, "end": 4, "cuts": [0], "direction": "up"},
+    {"id": "right", "kind": "arc", "start": 5, "end": 6, "cuts": [], "direction": "down"}
+  ],
+  "labels": [
+    {"id": "caption", "text": "Generic multi-curve edit study", "x": 0, "y": -85}
+  ],
+  "allow_intersections": false
+}

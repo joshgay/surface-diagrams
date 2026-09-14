@@ -91,6 +91,18 @@ func with_label_position(id: String, position: Vector2) -> Dictionary:
 			return DiagramDocument.parse(JSON.stringify(candidate))
 	return _failure("Unknown label ID: " + id)
 
+func with_curve_cuts(id: String, cuts: Array) -> Dictionary:
+	if _data.kind != "planar":
+		return _failure("Only planar documents contain editable curve itineraries")
+	var candidate := to_dict()
+	for index in candidate.curves.size():
+		if candidate.curves[index].id == id:
+			if candidate.curves[index].cuts == cuts:
+				return _failure("Curve %s already has that exact cut itinerary" % id)
+			candidate.curves[index].cuts = cuts.duplicate(true)
+			return DiagramDocument.parse(JSON.stringify(candidate))
+	return _failure("Unknown curve ID: " + id)
+
 func summary_rows() -> Array[String]:
 	var rows: Array[String] = []
 	for record in inspector_records():

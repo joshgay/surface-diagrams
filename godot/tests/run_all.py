@@ -10,7 +10,10 @@ PROJECT = ROOT / "godot"
 
 
 def run(command, expected=0):
-    result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+    try:
+        result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        raise SystemExit("Check exceeded 120 seconds: " + " ".join(map(str, command)))
     output = (result.stdout + result.stderr).strip()
     if output:
         print(output)
@@ -44,6 +47,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--quit-after", "3"])
 
     run([sys.executable, str(PROJECT / "tests" / "test_geometry_bridge.py")])
+    run([sys.executable, str(PROJECT / "tests" / "test_run_all.py")])
 
     # The existing Python implementation independently checks both shared
     # fixture recipes and publication SVG generation.

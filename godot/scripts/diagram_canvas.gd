@@ -5,6 +5,7 @@ signal record_selected(record: Dictionary)
 signal edit_commit_requested(kind: String, id: String, position: Vector2)
 signal edit_preview_changed(valid: bool, message: String)
 signal edit_rejected(message: String)
+signal cut_picked(cut: int)
 
 var document: DiagramDocument
 var zoom := 1.0
@@ -20,12 +21,15 @@ var preview_record: Dictionary = {}
 var preview_position := Vector2.ZERO
 var preview_valid := false
 var preview_error := ""
+var curve_draft_id := ""
+var curve_draft_cuts: Array = []
 
 func set_document(value: DiagramDocument) -> void:
 	document = value
 	zoom = 1.0
 	pan = Vector2.ZERO
 	selected_record = {}
+	set_curve_draft("", [])
 	cancel_edit_preview()
 	queue_redraw()
 
@@ -37,6 +41,11 @@ func update_document(value: DiagramDocument, selection: Dictionary = {}) -> void
 
 func select_record(record: Dictionary) -> void:
 	selected_record = record.duplicate(true)
+	queue_redraw()
+
+func set_curve_draft(id: String, cuts: Array) -> void:
+	curve_draft_id = id
+	curve_draft_cuts = cuts.duplicate(true)
 	queue_redraw()
 
 func fit_view() -> void:
@@ -52,7 +61,10 @@ func _gui_input(event: InputEvent) -> void:
 			zoom_at(event.position, 1.0 / 1.12)
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				begin_edit_drag(event.position)
+				if not begin_edit_drag(event.position) and selected_record.get("kind", "") == "curve":
+					var cut := _hit_cut(event.position)
+					if cut >= 0:
+						cut_picked.emit(cut)
 			elif edit_dragging:
 				finish_edit_drag(event.position)
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
@@ -136,6 +148,19 @@ func screen_position_for_record(record: Dictionary) -> Vector2:
 		return Vector2.INF
 	return _screen(_record_position(record), _planar_frame(document.data))
 
+func screen_position_for_cut(cut: int) -> Vector2:
+	if document == null or document.data.kind != "planar":
+		return Vector2.INF
+	var data := document.data
+	if cut < 0 or cut > data.surface.objects.size():
+		return Vector2.INF
+	var endpoint_x: Array[float] = [-data.surface.width / 2.0]
+	for object in data.surface.objects:
+		endpoint_x.append(object.x)
+	endpoint_x.append(data.surface.width / 2.0)
+	var x: float = (endpoint_x[cut] + endpoint_x[cut + 1]) / 2.0
+	return _screen(Vector2(x, 0), _planar_frame(data))
+
 func zoom_at(point: Vector2, factor: float) -> void:
 	var old := zoom
 	zoom = clampf(zoom * factor, 0.25, 4.0)
@@ -207,6 +232,23 @@ func _object_x_limits(id: String) -> Vector2:
 			return Vector2(left, right)
 	return Vector2.INF
 
+func _hit_cut(screen_position: Vector2) -> int:
+	if document == null or document.data.kind != "planar":
+		return -1
+	var data := document.data
+	var closest := -1
+	var distance := 16.0
+	for cut in data.surface.objects.size() + 1:
+		var tick := screen_position_for_cut(cut)
+		# The numbered label and its axis tick are both usable targets.
+		var candidate := minf(tick.distance_to(screen_position), (tick + Vector2(0, 35)).distance_to(screen_position))
+		if is_equal_approx(candidate, distance):
+			closest = -1
+		elif candidate < distance:
+			closest = cut
+			distance = candidate
+	return closest
+
 func _draw_planar(data: Dictionary) -> void:
 	var surface: Dictionary = data.surface
 	var frame := _planar_frame(data)
@@ -242,6 +284,13 @@ func _draw_planar(data: Dictionary) -> void:
 		var at := _screen(Vector2(x, 0), frame)
 		draw_line(at + Vector2(0, -4), at + Vector2(0, 4), Color("#9aaba6"), 1.0)
 		_draw_centered("c%d" % cut, at + Vector2(0, 35), Color("#6b7b78"), 11)
+		if curve_draft_id == selected_record.get("id", "") and cut in curve_draft_cuts:
+			draw_arc(at, 10.0, 0.0, TAU, 24, Color("#f2a900"), 2.0, true)
+			var visits: Array[String] = []
+			for visit in curve_draft_cuts.size():
+				if curve_draft_cuts[visit] == cut:
+					visits.append(str(visit + 1))
+			_draw_centered(",".join(visits), at + Vector2(0, -32), Color("#b26b00"), 10)
 	for label in data.labels:
 		var label_at := _screen(Vector2(label.x, label.y), frame)
 		_draw_centered(label.text, label_at, Color(label.color), int(label.size))

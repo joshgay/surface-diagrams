@@ -6,7 +6,7 @@ transformations, and connect planar drawings with exploratory surface views.
 The Python drawing library remains the authority for its supported certified
 geometry and publication SVG/TikZ outputs.
 
-**Status:** the first editor slice loads either bundled planar/braid JSON
+**Status:** the editor loads bundled planar, multi-curve, and braid JSON
 fixture, draws an explicitly schematic native preview, and highlights stable
 objects, curves, labels, and crossing indices selected in its inspector. In a
 desktop planar document, drag a point or label to preview a move. Release commits only
@@ -34,6 +34,35 @@ branch and automation boundaries. **No pull request until Josh approves.**
 
 The fixtures are original generic examples in the browser editor's version-1
 JSON format. They are not a mathematical relation or Richard's type (6,7) data.
+
+## Ordered curve itinerary editing
+
+Open **Multi-curve fixture**, then select a curve in the record list. Its
+inspector shows the persistent ID, exact endpoints/orientation, and accepted
+cut visits. Append visits by clicking numbered `c0`...`cn` buttons, canvas ticks,
+or cut labels, in the intended order. Repeated visits remain repeated. **Remove
+last**, **Clear**, and **Reset** edit or discard the draft explicitly. Drafts
+are limited to 64 visits and marked `[draft]` in the record list.
+
+**Apply exact cuts** submits one undoable command. On desktop, both record
+validation and the Python geometry renderer must accept it. A rejected route
+leaves the accepted recipe, history, SVG, and TikZ untouched. The draft stays
+available when switching between curve and object selections; another curve's
+accepted edit does not delete it. Save JSON writes only the accepted recipe and
+warns when unapplied drafts are excluded. Drafts are currently session-only:
+opening another valid file/fixture or closing the application discards them.
+Unsaved-change confirmation and persistent draft recovery are still pending.
+
+Example: select `editable` in the six-point fixture. Its initial itinerary is
+`[0]`. Appending `c5` proposes `[0, 5]`, which the Python noncrossing router
+rejects. Remove that visit and append `c6`: `[0, 6]` is accepted. Undo, redo, and
+save/reopen reproduce byte-identical library SVG/TikZ for the accepted states.
+No automatic cancellation, sorting, endpoint renumbering, or guessed route is
+used. Native canvas curves and draft visit markers remain schematic.
+
+The browser-specific controller retains its explicit unvalidated opt-in and
+disabled exact exports. These branch changes have **not** been deployed to the
+private Site; the existing Site is an earlier proof-of-concept snapshot.
 
 ## Private browser proof of concept
 
