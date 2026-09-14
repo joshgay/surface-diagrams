@@ -45,3 +45,24 @@ godot --headless --path godot --script res://tests/run_tests.gd -- --self-test-f
 Engine caches (`.godot/`), exported builds, and test output are ignored. Project
 configuration, scenes, scripts, fixtures, and relevant generated UID files are
 committed. No engine binary or export template is committed.
+
+## Web export dependency
+
+The matching official `Godot_v4.7.2-stable_export_templates.tpz` from the same
+release was downloaded and checked against the release asset SHA-256:
+
+```
+f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
+```
+
+Only `web_nothreads_release.zip`, `web_nothreads_debug.zip`, and `version.txt`
+are needed for this slice. On Linux install them under
+`~/.local/share/godot/export_templates/4.7.2.stable/`. The web preset disables
+threads and extensions and retains Compatibility rendering. The export helper
+fails if the exact engine version or expected loader expression changes.
+
+The official exported engine is 39,514,754 bytes; deterministic gzip reduces it
+to 10,054,758 bytes in this environment. This compression preserves all engine
+bytes and is required because Sites rejected the raw source object as too large.
+Godot export and Node WebAssembly compilation succeeded; neither substitutes for
+executing the full application with WebGL in a real browser.

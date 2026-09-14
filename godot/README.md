@@ -9,7 +9,7 @@ geometry and publication SVG/TikZ outputs.
 **Status:** the first editor slice loads either bundled planar/braid JSON
 fixture, draws an explicitly schematic native preview, and highlights stable
 objects, curves, labels, and crossing indices selected in its inspector. In a
-planar document, drag a point or label to preview a move. Release commits only
+desktop planar document, drag a point or label to preview a move. Release commits only
 after record and Python geometry validation; a rejected move restores the last
 accepted record. Undo/redo buttons and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, or Ctrl+Y
 restore exact serialized states. The braid view remains inspection-only.
@@ -34,3 +34,37 @@ branch and automation boundaries. **No pull request until Josh approves.**
 
 The fixtures are original generic examples in the browser editor's version-1
 JSON format. They are not a mathematical relation or Richard's type (6,7) data.
+
+## Private browser proof of concept
+
+Josh authorized a private ChatGPT Site proof of concept on 2026-09-14:
+<https://surface-diagrams-studio.joshgay.chatgpt.site>.
+
+This is the Godot application exported to WebAssembly, not the separate Python
+browser editor. It opens the two fixtures, inspects records, pans/zooms, imports
+bounded local JSON and downloads normalized JSON. Browsers cannot run the local
+Python process bridge. Exact SVG/TikZ exports stay disabled. Experimental
+point/label editing requires explicit opt-in and preserves record constraints
+and exact undo/redo, but **does not validate curve geometry**. Downloaded files
+are named `*-unvalidated.json`; the existing schema is not silently extended.
+Validate those records using the Python library before publication.
+
+Use a desktop browser with WebGL 2, WebAssembly, Web Crypto and gzip
+DecompressionStream support. Real browser startup, pointer/touch input, layout,
+and upload/download dialogs still need visual acceptance. There is no automatic
+browser persistence: explicitly download JSON before closing or opening another
+fixture. User diagrams are not uploaded to a server.
+
+With the pinned engine and matching templates installed:
+
+```
+python3 godot/web/build_web.py --godot /path/to/godot --output godot/builds/web
+```
+
+The helper exports into a temporary directory, validates outputs, then copies
+them to the requested static directory. It compresses the engine with
+deterministic gzip; the browser verifies exact size and SHA-256 before supplying
+an `application/wasm` response to Godot. A guarded one-expression adjustment to
+the generated loader selects this path. No engine binary, cache, generated Site
+assets, or Site credentials belong in this GitHub branch. The Site source
+repository separately owns its static output and `.openai/hosting.json`.

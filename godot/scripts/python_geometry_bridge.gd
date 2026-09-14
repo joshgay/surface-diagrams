@@ -4,6 +4,8 @@ extends RefCounted
 const MAX_RENDER_BYTES := 4 * 1024 * 1024
 
 static func render(document: DiagramDocument) -> Dictionary:
+	if OS.has_feature("web"):
+		return _failure("This browser proof of concept has no Python runtime. Geometry validation and publication exports are disabled.")
 	var cache_dir := ProjectSettings.globalize_path("user://geometry-preview")
 	var directory_error := DirAccess.make_dir_recursive_absolute(cache_dir)
 	if directory_error != OK and directory_error != ERR_ALREADY_EXISTS:

@@ -3,9 +3,70 @@
 - Branch: `joshgay/surface-diagrams:codex/godot-studio`.
 - Starting parent: `4bd028e4052e34de429c60502e24e6686c9c2d09`, the browser-editor
   contribution on `codex/ordered-factorizations`.
-- Date: 2026-09-13 (America/Denver).
+- Checkpoint date: 2026-09-14 UTC.
 - Current milestone: **M0 and M1 complete; M2 in progress**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
+
+## Foreground web proof of concept
+
+Josh explicitly approved pursuing a private ChatGPT Site. Deployment succeeded:
+<https://surface-diagrams-studio.joshgay.chatgpt.site>. This is **not full browser
+acceptance or completion of M2**. The desktop path remains geometry-validated.
+
+New browser-specific functionality:
+
+- A single-threaded Web export preset, trusted HTML shell, explicit loading and
+  failure states, and a reproducible export helper pinned to the official
+  `4.7.2.stable.official.ed1daf0bf` engine.
+- Local file selection with fatal UTF-8 decoding and a 256 KiB bound before
+  reading; Godot then applies its strict versioned record validation. No
+  imported scripts/resources execute. Browser JSON downloads preserve exact
+  normalized records, use `-unvalidated.json` filenames, and revoke object URLs.
+- Web startup never invokes `OS.execute`. Publication SVG/TikZ remains disabled.
+  The initial mode is a viewer; explicit opt-in enables unvalidated point/label
+  drafts with the existing neighbor/ellipse constraints and exact undo/redo.
+  Geometry validation is never represented as successful in this mode. Opening
+  another document resets the opt-in; failed opens preserve the active record.
+- The initial Sites source push rejected the raw 39,514,754-byte engine as too
+  large. Deterministic gzip reduced it to 10,054,758 bytes. The loader bounds
+  decompression, checks the original size and SHA-256, then returns an
+  `application/wasm` response. A guarded expression replacement in the generated
+  Godot loader selects this path; neither engine bytes nor mathematical records
+  are changed. No binaries/build products were added to the GitHub branch.
+
+Checks actually run for this slice:
+
+- Matching official export templates downloaded and SHA-256 verified (RUNTIME.md).
+- Aggregate checks passed: 65 existing Godot model assertions, 30 existing
+  desktop scene assertions, **19 new web-mode controller assertions**, **6 new
+  mocked-DOM file adapter tests**, **7 new compressed-loader tests**, 2 Python
+  bridge tests, fixture rendering, and the intentional exit-1 failure harness.
+- Full inherited regressions: 207 Python tests and 8 browser-editor tests passed.
+- The real Godot Web export succeeded. Generated JavaScript passed syntax
+  checks. The actual compressed engine was decoded through the new loader,
+  SHA-256 verified, and compiled by Node's WebAssembly runtime (337 imports).
+- Sites source push, archive save, and owner-private deployment succeeded.
+  Authenticated HTTP checks returned 200 for HTML, JS, PCK and compressed WASM.
+  Downloaded JS/PCK/compressed-WASM SHA-256 matched local artifacts byte-for-byte.
+  Reported types were text/html, text/javascript, application/octet-stream and
+  application/wasm respectively. The compressed asset remains gzip bytes; the
+  custom loader explicitly decodes them rather than trusting that MIME type.
+- Initial network attempts timed out; ordinary retries succeeded. The raw-file
+  size rejection is resolved by compression, not by changing providers/access.
+
+Remaining browser limitations: no exact dynamic geometry validation/export, no
+automatic local persistence or unsaved-change confirmation, and no real-browser
+WebGL/startup/input/touch/file-dialog/resize acceptance. The current managed
+preview does not support this buildless static project; the cloud browser may
+not navigate live Sites URLs. Native headless tests and Node compilation are
+not visual or browser-runtime verification. Desktop-browser use is the target
+for the proof of concept; mobile usability is not claimed.
+
+The foreground web next task is a permitted real-browser startup/edit/undo/
+download/reopen acceptance pass, then a narrow browser-safe exact geometry
+adapter. Do not silently upgrade unvalidated drafts into certified geometry.
+The core M2 next task below still applies to scheduled branch development;
+this Site approval does not authorize automatic scheduled deployments.
 
 ## New functionality in this checkpoint
 
@@ -89,8 +150,9 @@ publication/certified geometry still belongs to the Python renderer and bridge.
 There is no row reindexing workflow, cut picker, curve creation/inspector,
 recoverable invalid draft, braid editing/playback, factor workspace, or 3D
 surface view yet. The source-checkout bridge currently requires a compatible
-Python executable and this repository's package source; packaged operation has
-not been designed or claimed.
+Python executable and this repository's package source; packaged desktop
+operation has not been designed or claimed. The separate browser proof of
+concept and its deliberately unavailable geometry bridge are described above.
 
 Actual rendered visual acceptance remains unavailable in this environment. There
 is no display server. Installing Xvfb failed because the sandbox blocked apt's

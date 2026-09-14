@@ -11,6 +11,11 @@ This subtree belongs to Josh Gay's long-running Godot project in
 - **Do not open a pull request for this branch.** Josh will explicitly decide
   when it is ready. Do not merge, release, deploy a website, publish a download,
   send email, or modify the separate `codex/ordered-factorizations` branch.
+  Exception: Josh explicitly approved a private ChatGPT Sites web proof of
+  concept in the foreground conversation on 2026-09-14. Its source adapter and
+  export preset belong here; the separate Site owns its hosting manifest/output.
+  This does not authorize scheduled deployments, another hosting provider,
+  public sharing, a PR, or replacing the desktop geometry validator.
 - Keep Godot-specific implementation, fixtures, docs, and tests under `godot/`.
   Prefer an adapter here over changing the Python library's public API. A truly
   necessary shared-code fix must be small, tested, documented, and stay on this
@@ -29,4 +34,3 @@ This subtree belongs to Josh Gay's long-running Godot project in
 - Use configured tools and ordinary dependency installation only. Do not work
   around authentication, approval, hosting, or browser permission restrictions.
   No paid services, new external accounts, or runtime telemetry are needed.
-

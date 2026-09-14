@@ -18,9 +18,14 @@ var geometry_result: Dictionary = {"ok": false, "error": "Not rendered", "svg": 
 var export_kind := ""
 var history := DiagramEditHistory.new()
 var candidate_geometry: Dictionary = {}
+var browser_mode := OS.has_feature("web")
+var browser_drafts: CheckButton
+var upload_callback: JavaScriptObject
 
 func _ready() -> void:
 	_build_interface()
+	if browser_mode and OS.has_feature("web"):
+		upload_callback = JavaScriptBridge.create_callback(_browser_file_received)
 	_open_resource("res://fixtures/planar-v1.json")
 
 func _build_interface() -> void:
@@ -45,6 +50,11 @@ func _build_interface() -> void:
 		button.text = spec[0]
 		button.pressed.connect(spec[1])
 		heading.add_child(button)
+	if browser_mode:
+		browser_drafts = CheckButton.new()
+		browser_drafts.text = "Enable unvalidated browser draft editing (no geometry certification or publication export)"
+		browser_drafts.tooltip_text = "Only record, neighbor, and ellipse constraints run in this prototype. Downloaded JSON must be validated by the Python library before publication."
+		root.add_child(browser_drafts)
 	var split := HSplitContainer.new()
 	split.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(split)
@@ -145,10 +155,28 @@ func _build_interface() -> void:
 	add_child(export_dialog)
 
 func _show_open() -> void:
+	if browser_mode:
+		var files = JavaScriptBridge.get_interface("SurfaceStudioFiles") if OS.has_feature("web") else null
+		if files == null:
+			_show_edit_error("Browser upload adapter unavailable. The current record is unchanged.")
+		else:
+			files.open(upload_callback)
+		return
 	open_dialog.popup_centered_ratio(0.8)
 
 func _show_save() -> void:
 	if document == null: return
+	if browser_mode:
+		var files = JavaScriptBridge.get_interface("SurfaceStudioFiles") if OS.has_feature("web") else null
+		if files == null:
+			_show_edit_error("Browser download adapter unavailable.")
+			return
+		var error: String = files.download(document.to_json(), _safe_filename(document.data.title) + "-unvalidated.json")
+		if not error.is_empty():
+			_show_edit_error(error)
+		else:
+			status_label.text = "JSON download requested. This browser record is not geometry-validated; validate with the Python library before publication."
+		return
 	save_dialog.current_file = _safe_filename(document.data.title) + ".json"
 	save_dialog.popup_centered_ratio(0.8)
 
@@ -176,10 +204,25 @@ func _open_result(result: Dictionary, path: String) -> void:
 		status_label.add_theme_color_override("font_color", Color("#a54439"))
 		return
 	history.set_document(result.document)
+	if browser_mode:
+		browser_drafts.button_pressed = false
 	_present_document(result.document, true)
 	var mode := "Editable planar record" if document.data.kind == "planar" else "Braid viewer"
 	status_label.text = "%s opened from %s. %s; publication geometry remains the Python library's result." % [document.data.kind.capitalize(), path, mode]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
+	if browser_mode:
+		status_label.text = "Browser proof of concept: inspect records, or explicitly enable unvalidated draft editing. No geometry certification. Save JSON downloads a local file; this site does not upload your data to a server."
+
+func _browser_file_received(arguments: Array) -> void:
+	if arguments.size() != 2:
+		_show_edit_error("Invalid browser upload response; current record unchanged.")
+		return
+	var source := str(arguments[0])
+	var error := str(arguments[1])
+	if not error.is_empty():
+		_show_edit_error(error)
+	elif not source.is_empty():
+		_open_result(DiagramDocument.parse(source), "browser file")
 
 func _present_document(value: DiagramDocument, reset_camera: bool,
 		selection: Dictionary = {}, rendered: Dictionary = {}) -> void:
@@ -196,7 +239,7 @@ func _present_document(value: DiagramDocument, reset_camera: bool,
 		canvas.update_document(document, selection)
 	if not selection.is_empty():
 		_select_matching_row(selection)
-	geometry_result = rendered if rendered.get("ok", false) else PythonGeometryBridge.render(document)
+	geometry_result = _render_geometry(document, rendered)
 	svg_button.disabled = not geometry_result.ok
 	tikz_button.disabled = not geometry_result.ok
 	if geometry_result.ok:
@@ -206,6 +249,11 @@ func _present_document(value: DiagramDocument, reset_camera: bool,
 		geometry_label.text = "Exact Python geometry unavailable: " + geometry_result.error
 		geometry_label.add_theme_color_override("font_color", Color("#a54439"))
 	_update_history_buttons()
+
+func _render_geometry(value: DiagramDocument, rendered: Dictionary = {}) -> Dictionary:
+	if browser_mode:
+		return {"ok": false, "error": "Browser prototype: record validation only. No curve routing checks or certified SVG/TikZ exports.", "svg": "", "tikz": ""}
+	return rendered if rendered.get("ok", false) else PythonGeometryBridge.render(value)
 
 func _save_path(path: String) -> void:
 	if not path.to_lower().ends_with(".json"): path += ".json"
@@ -266,9 +314,17 @@ func _canvas_edit_commit(kind: String, id: String, position: Vector2) -> void:
 		return
 	_present_document(result.document, false, result.selection, candidate_geometry)
 	status_label.text = "%s accepted. IDs, horizontal order, endpoints, cuts, and curve itineraries were preserved." % result.label
+	if browser_mode:
+		status_label.text = result.label + " stored as an UNVALIDATED browser draft. IDs and order preserved; curve geometry was not checked."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
 
 func _validate_candidate_geometry(candidate: DiagramDocument) -> Dictionary:
+	if browser_mode:
+		if not browser_drafts.button_pressed:
+			return {"ok": false, "error": "Enable unvalidated browser draft editing to experiment. Python geometry is unavailable in this prototype"}
+		# Explicit opt-in is essential: schema acceptance is NOT geometry acceptance.
+		# No successful geometry_result is fabricated, and exports remain disabled.
+		return {"ok": true, "geometry_validated": false}
 	candidate_geometry = PythonGeometryBridge.render(candidate)
 	return candidate_geometry
 

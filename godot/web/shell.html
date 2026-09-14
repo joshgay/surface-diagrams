@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surface Diagrams Studio</title>
+  <style>
+    html,body { margin:0; width:100%; height:100%; background:#f3f6f2; font:16px/1.5 system-ui,sans-serif; color:#243e38; }
+    #canvas { display:block; width:100%; height:100%; touch-action:none; }
+    #loading { position:fixed; inset:0; display:grid; place-content:center; padding:24px; background:#f3f6f2; }
+    #loading[hidden] { display:none; }
+    h1 { font-size:24px; margin:0 0 12px; }
+    p { max-width:48ch; }
+    a { color:#167464; }
+  </style>
+  $GODOT_HEAD_INCLUDE
+</head>
+<body>
+  <canvas id="canvas" tabindex="0" aria-label="Surface Diagrams Studio schematic editing canvas">Your browser must support WebAssembly and WebGL 2.</canvas>
+  <section id="loading" aria-live="polite">
+    <h1>Surface Diagrams Studio</h1>
+    <p id="load-status">Loading the Godot browser prototype. The compressed engine is approximately 10 MB.</p>
+    <p>Experimental point and label editing is opt-in. This prototype does not validate curve geometry or export publication figures.</p>
+    <a href="https://godotengine.org/license/" target="_blank" rel="noopener">Godot engine license</a>
+  </section>
+  <script src="$GODOT_URL"></script>
+  <script>
+    const config = $GODOT_CONFIG;
+    const status = document.getElementById('load-status');
+    let loaded = false;
+    window.SurfaceStudioLoadStatus = {
+      fail(error) { status.textContent = 'Could not start Studio: ' + (error.message || String(error)); }
+    };
+    const missing = Engine.getMissingFeatures({threads:false});
+    if (missing.length) {
+      window.SurfaceStudioLoadStatus.fail('Required browser features: ' + missing.join(', '));
+    } else {
+      const engine = new Engine(config);
+      engine.startGame({canvas:document.getElementById('canvas')}).then(() => {
+        loaded = true;
+        document.getElementById('loading').hidden = true;
+      }).catch(window.SurfaceStudioLoadStatus.fail);
+      setTimeout(() => {
+        if (!loaded && status.textContent.startsWith('Loading')) status.textContent = 'Startup is taking longer than expected. If it does not finish, reload and report your browser and the visible error.';
+      }, 60000);
+    }
+  </script>
+</body>
+</html>
