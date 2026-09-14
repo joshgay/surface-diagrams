@@ -8,6 +8,12 @@ var status_label: Label
 var source_view: TextEdit
 var open_dialog: FileDialog
 var save_dialog: FileDialog
+var export_dialog: FileDialog
+var geometry_label: Label
+var svg_button: Button
+var tikz_button: Button
+var geometry_result: Dictionary = {"ok": false, "error": "Not rendered", "svg": "", "tikz": ""}
+var export_kind := ""
 
 func _ready() -> void:
 	_build_interface()
@@ -53,6 +59,7 @@ func _build_interface() -> void:
 	record_list = ItemList.new()
 	record_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	record_list.allow_reselect = true
+	record_list.item_selected.connect(_select_record)
 	inspector.add_child(record_list)
 	var source_button := Button.new()
 	source_button.text = "Show normalized source"
@@ -73,13 +80,28 @@ func _build_interface() -> void:
 	canvas_tools.add_child(fit_button)
 	var camera_note := Label.new()
 	camera_note.text = "Mouse wheel: zoom   Middle drag: pan"
+	camera_note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	camera_note.add_theme_color_override("font_color", Color("#6b7b78"))
 	canvas_tools.add_child(camera_note)
+	svg_button = Button.new()
+	svg_button.text = "Export exact SVG"
+	svg_button.disabled = true
+	svg_button.pressed.connect(Callable(self, "_show_export").bind("svg"))
+	canvas_tools.add_child(svg_button)
+	tikz_button = Button.new()
+	tikz_button.text = "Export exact TikZ"
+	tikz_button.disabled = true
+	tikz_button.pressed.connect(Callable(self, "_show_export").bind("tikz"))
+	canvas_tools.add_child(tikz_button)
 	canvas = DiagramCanvas.new()
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	canvas_box.add_child(canvas)
+	geometry_label = Label.new()
+	geometry_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	geometry_label.add_theme_color_override("font_color", Color("#6b7b78"))
+	canvas_box.add_child(geometry_label)
 	status_label = Label.new()
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
@@ -96,6 +118,11 @@ func _build_interface() -> void:
 	save_dialog.add_filter("*.json", "Surface diagram JSON")
 	save_dialog.file_selected.connect(_save_path)
 	add_child(save_dialog)
+	export_dialog = FileDialog.new()
+	export_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	export_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	export_dialog.file_selected.connect(_save_export)
+	add_child(export_dialog)
 
 func _show_open() -> void:
 	open_dialog.popup_centered_ratio(0.8)
@@ -104,6 +131,18 @@ func _show_save() -> void:
 	if document == null: return
 	save_dialog.current_file = _safe_filename(document.data.title) + ".json"
 	save_dialog.popup_centered_ratio(0.8)
+
+func _show_export(kind: String) -> void:
+	if document == null or not geometry_result.ok:
+		return
+	export_kind = kind
+	export_dialog.clear_filters()
+	if kind == "svg":
+		export_dialog.add_filter("*.svg", "Scalable Vector Graphics")
+	else:
+		export_dialog.add_filter("*.tikz", "TikZ source")
+	export_dialog.current_file = _safe_filename(document.data.title) + (".svg" if kind == "svg" else ".tikz")
+	export_dialog.popup_centered_ratio(0.8)
 
 func _open_resource(path: String) -> void:
 	_open_result(DiagramDocument.load_path(path), path)
@@ -119,9 +158,20 @@ func _open_result(result: Dictionary, path: String) -> void:
 	document = result.document
 	title_label.text = document.data.title
 	record_list.clear()
-	for row in document.summary_rows(): record_list.add_item(row)
+	for record in document.inspector_records():
+		record_list.add_item(record.label)
+		record_list.set_item_metadata(record_list.item_count - 1, record)
 	source_view.text = document.to_json()
 	canvas.set_document(document)
+	geometry_result = PythonGeometryBridge.render(document)
+	svg_button.disabled = not geometry_result.ok
+	tikz_button.disabled = not geometry_result.ok
+	if geometry_result.ok:
+		geometry_label.text = "Python library accepted this recipe. Exact publication SVG and TikZ are ready to export; the interactive canvas remains schematic."
+		geometry_label.add_theme_color_override("font_color", Color("#167464"))
+	else:
+		geometry_label.text = "Exact Python geometry unavailable: " + geometry_result.error
+		geometry_label.add_theme_color_override("font_color", Color("#a54439"))
 	status_label.text = "%s opened from %s. Viewer only: this native preview is schematic and does not certify geometry or an algebraic relation." % [document.data.kind.capitalize(), path]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 
@@ -130,6 +180,34 @@ func _save_path(path: String) -> void:
 	var error := document.save_path(path)
 	status_label.text = "Saved exact normalized recipe to " + path if error.is_empty() else error
 	status_label.add_theme_color_override("font_color", Color("#415b55") if error.is_empty() else Color("#a54439"))
+
+func _save_export(path: String) -> void:
+	if not geometry_result.ok or export_kind not in ["svg", "tikz"]:
+		return
+	var extension := ".svg" if export_kind == "svg" else ".tikz"
+	if not path.to_lower().ends_with(extension):
+		path += extension
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		status_label.text = "Could not write " + path
+		status_label.add_theme_color_override("font_color", Color("#a54439"))
+		return
+	file.store_string(geometry_result[export_kind])
+	status_label.text = "Exported exact Python-library %s to %s" % [export_kind.to_upper(), path]
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _select_record(index: int) -> void:
+	var record = record_list.get_item_metadata(index)
+	if typeof(record) != TYPE_DICTIONARY:
+		return
+	canvas.select_record(record)
+	var identity := ""
+	if not record.id.is_empty():
+		identity = " " + record.id
+	elif record.index >= 0:
+		identity = " %d" % (record.index + 1)
+	status_label.text = "Selected %s%s. Selection changes the view only; the mathematical record is unchanged." % [record.kind, identity]
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
 
 func _safe_filename(value: String) -> String:
 	var result := ""

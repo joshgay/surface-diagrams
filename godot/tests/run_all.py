@@ -36,6 +36,8 @@ def main():
         raise SystemExit("failure harness returned 1 without reporting its assertion")
     run([args.godot, "--headless", "--path", str(PROJECT), "--quit-after", "3"])
 
+    run([sys.executable, str(PROJECT / "tests" / "test_geometry_bridge.py")])
+
     # The existing Python implementation independently checks both shared
     # fixture recipes and publication SVG generation.
     sys.path.insert(0, str(ROOT / "src"))

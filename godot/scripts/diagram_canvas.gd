@@ -7,11 +7,17 @@ var pan := Vector2.ZERO
 var dragging := false
 var drag_start := Vector2.ZERO
 var pan_start := Vector2.ZERO
+var selected_record: Dictionary = {}
 
 func set_document(value: DiagramDocument) -> void:
 	document = value
 	zoom = 1.0
 	pan = Vector2.ZERO
+	selected_record = {}
+	queue_redraw()
+
+func select_record(record: Dictionary) -> void:
+	selected_record = record.duplicate(true)
 	queue_redraw()
 
 func fit_view() -> void:
@@ -68,8 +74,10 @@ func _draw_planar(data: Dictionary) -> void:
 	for object in surface.objects: endpoint_x.append(object.x)
 	endpoint_x.append(surface.width / 2.0)
 	draw_line(_screen(Vector2(endpoint_x[0], 0), frame), _screen(Vector2(endpoint_x[-1], 0), frame), Color("#d9e2dc"), 1.0)
-	for curve in data.curves:
-		_draw_curve(curve, endpoint_x, frame, style)
+	for index in data.curves.size():
+		var curve: Dictionary = data.curves[index]
+		_draw_curve(curve, endpoint_x, frame, style,
+			selected_record.get("kind", "") == "curve" and selected_record.get("id", "") == curve.id)
 	for index in surface.objects.size():
 		var object: Dictionary = surface.objects[index]
 		var radius: float = object.radius if object.radius != null else (style.boundary_radius if object.kind == "boundary" else style.marked_point_radius)
@@ -78,6 +86,8 @@ func _draw_planar(data: Dictionary) -> void:
 			draw_arc(center, radius * scale, 0.0, TAU, 32, Color(style.boundary_color), maxf(1.0, 1.5 * scale), true)
 		else:
 			draw_circle(center, maxf(3.0, radius * scale), Color(style.boundary_color if object.kind == "boundary" else style.marked_point_color))
+		if selected_record.get("kind", "") == "object" and selected_record.get("id", "") == object.id:
+			draw_arc(center, maxf(9.0, radius * scale + 6.0), 0.0, TAU, 40, Color("#f2a900"), 3.0, true)
 		_draw_centered(object.id, center + Vector2(0, 23), Color("#203634"), 13)
 	for index in endpoint_x.size():
 		var at := _screen(Vector2(endpoint_x[index], 0), frame)
@@ -88,10 +98,14 @@ func _draw_planar(data: Dictionary) -> void:
 		draw_line(at + Vector2(0, -4), at + Vector2(0, 4), Color("#9aaba6"), 1.0)
 		_draw_centered("c%d" % cut, at + Vector2(0, 35), Color("#6b7b78"), 11)
 	for label in data.labels:
-		_draw_centered(label.text, _screen(Vector2(label.x, label.y), frame), Color(label.color), int(label.size))
+		var label_at := _screen(Vector2(label.x, label.y), frame)
+		_draw_centered(label.text, label_at, Color(label.color), int(label.size))
+		if selected_record.get("kind", "") == "label" and selected_record.get("id", "") == label.id:
+			var text_size := ThemeDB.fallback_font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, int(label.size))
+			draw_rect(Rect2(label_at - Vector2(text_size.x / 2.0 + 5.0, text_size.y), text_size + Vector2(10, 7)), Color("#f2a900"), false, 2.0)
 	_draw_centered("Native schematic preview. JSON records are authoritative.", Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
 
-func _draw_curve(curve: Dictionary, endpoint_x: Array[float], frame: Dictionary, style: Dictionary) -> void:
+func _draw_curve(curve: Dictionary, endpoint_x: Array[float], frame: Dictionary, style: Dictionary, selected: bool = false) -> void:
 	var points := PackedVector2Array()
 	var up: bool = (curve.get("direction", "default") != "down") if curve.kind == "arc" else curve.get("start_up", true)
 	if curve.kind == "arc":
@@ -109,6 +123,8 @@ func _draw_curve(curve: Dictionary, endpoint_x: Array[float], frame: Dictionary,
 	elif points.size() > 1:
 		points.append(points[0])
 	if points.size() >= 2:
+		if selected:
+			draw_polyline(points, Color("#f2a900"), maxf(7.0, style.curve_width * frame.scale + 6.0), true)
 		draw_polyline(points, Color(curve.color), maxf(2.0, style.curve_width * frame.scale), true)
 
 func _draw_braid(data: Dictionary) -> void:
@@ -141,7 +157,7 @@ func _draw_braid(data: Dictionary) -> void:
 		else:
 			over_slot = left if bottom_up else left + 1
 		var over_id: int = order[over_slot]
-		overlays.append({"a": points[over_id][-2], "b": points[over_id][-1], "color": Color(colors[over_id % colors.size()])})
+		overlays.append({"a": points[over_id][-2], "b": points[over_id][-1], "color": Color(colors[over_id % colors.size()]), "index": step})
 		order = next_order
 	if braid.word.is_empty():
 		for identity in braid.strands:
@@ -151,6 +167,9 @@ func _draw_braid(data: Dictionary) -> void:
 	for crossing in overlays:
 		var middle: Vector2 = (crossing.a + crossing.b) / 2.0
 		var direction: Vector2 = (crossing.b - crossing.a).normalized() * 11.0
+		if selected_record.get("kind", "") == "crossing" and selected_record.get("index", -1) == crossing.index:
+			draw_circle(middle, 17.0, Color("#fff4cf"))
+			draw_arc(middle, 17.0, 0.0, TAU, 32, Color("#f2a900"), 3.0, true)
 		draw_line(middle - direction, middle + direction, Color("#ffffff"), 9.0, true)
 		draw_line(middle - direction, middle + direction, crossing.color, 4.0, true)
 	for identity in braid.strands:

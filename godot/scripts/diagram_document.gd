@@ -66,17 +66,28 @@ func save_path(path: String) -> String:
 
 func summary_rows() -> Array[String]:
 	var rows: Array[String] = []
+	for record in inspector_records():
+		rows.append(record.label)
+	return rows
+
+func inspector_records() -> Array[Dictionary]:
+	var records: Array[Dictionary] = []
 	if _data.kind == "planar":
 		for index in _data.surface.objects.size():
 			var object: Dictionary = _data.surface.objects[index]
-			rows.append("Object %d  %s  %s  x=%s" % [index + 1, object.id, object.kind, object.x])
-		for curve in _data.curves:
+			records.append({"kind": "object", "id": object.id, "index": index,
+				"label": "Object %d  %s  %s  x=%s" % [index + 1, object.id, object.kind, object.x]})
+		for index in _data.curves.size():
+			var curve: Dictionary = _data.curves[index]
 			if curve.kind == "arc":
-				rows.append("Arc  %s  %d -> %d  cuts=%s" % [curve.id, curve.start, curve.end, curve.cuts])
+				records.append({"kind": "curve", "id": curve.id, "index": index,
+					"label": "Arc  %s  %d -> %d  cuts=%s" % [curve.id, curve.start, curve.end, curve.cuts]})
 			else:
-				rows.append("Loop  %s  cuts=%s" % [curve.id, curve.cuts])
+				records.append({"kind": "curve", "id": curve.id, "index": index,
+					"label": "Loop  %s  cuts=%s" % [curve.id, curve.cuts]})
 	else:
-		rows.append("%d strands  %d crossings" % [_data.braid.strands, _data.braid.word.size()])
+		records.append({"kind": "braid", "id": "", "index": -1,
+			"label": "%d strands  %d crossings" % [_data.braid.strands, _data.braid.word.size()]})
 		var order: Array = range(1, _data.braid.strands + 1)
 		for index in _data.braid.word.size():
 			var generator: int = _data.braid.word[index]
@@ -85,10 +96,13 @@ func summary_rows() -> Array[String]:
 			var swap = order[left]
 			order[left] = order[left + 1]
 			order[left + 1] = swap
-			rows.append("%d. %s%d  entry %s  exit %s" % [index + 1, "+" if generator > 0 else "", generator, before, order])
-	for label in _data.labels:
-		rows.append("Label  %s  %s" % [label.id, label.text])
-	return rows
+			records.append({"kind": "crossing", "id": "", "index": index,
+				"label": "%d. %s%d  entry %s  exit %s" % [index + 1, "+" if generator > 0 else "", generator, before, order]})
+	for index in _data.labels.size():
+		var label: Dictionary = _data.labels[index]
+		records.append({"kind": "label", "id": label.id, "index": index,
+			"label": "Label  %s  %s" % [label.id, label.text]})
+	return records
 
 static func _normalize(raw: Dictionary) -> Dictionary:
 	var check := _keys(raw, ["format", "version", "kind", "title", "style", "labels", "surface", "curves", "allow_intersections", "braid"], ["format", "version", "kind"], "document")
