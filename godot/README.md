@@ -21,6 +21,12 @@ versioned JSON and offers exact desktop Python SVG/TikZ export, without computin
 missing states or claiming a verified action. See [FACTOR_WORKSPACE.md](FACTOR_WORKSPACE.md)
 for the generic fixture, schema, import controls and explicit limitations.
 
+**Exploratory 3D** opens a linked generic oriented-disk view. Stable point,
+boundary and curve IDs synchronize between the supplied 2D recipe and supplied
+3D coordinates, with orbit/zoom, picking, hide/isolate and orientation labels.
+It is deliberately not certified geometry or a computed lift. See
+[SURFACE_VIEW.md](SURFACE_VIEW.md) for its bounded schema and limitations.
+
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
 current stable-ID selection, and unapplied curve drafts are also checkpointed in

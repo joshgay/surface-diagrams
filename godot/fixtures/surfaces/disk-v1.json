@@ -1,0 +1,45 @@
+{
+  "format": "surface-diagrams-surface-view",
+  "version": 1,
+  "title": "Generic oriented disk with one supplied exploratory lift",
+  "status": "exploratory-supplied-geometry",
+  "planar": {
+    "format": "surface-diagrams",
+    "version": 1,
+    "kind": "planar",
+    "title": "Generic linked disk diagram",
+    "surface": {
+      "width": 400,
+      "height": 210,
+      "objects": [
+        {"id": "p1", "kind": "point", "x": -120},
+        {"id": "p2", "kind": "point", "x": -40},
+        {"id": "p3", "kind": "point", "x": 40},
+        {"id": "b1", "kind": "boundary", "x": 120}
+      ]
+    },
+    "curves": [
+      {"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": [], "color": "#ff00d4"}
+    ],
+    "labels": []
+  },
+  "surface": {
+    "kind": "disk",
+    "radius": 3.0,
+    "thickness": 0.12,
+    "color": "#d9e7e2",
+    "orientation": "front-is-positive-z"
+  },
+  "objects": [
+    {"id": "p1", "position": [-1.8, 0.0, 0.12]},
+    {"id": "p2", "position": [-0.6, 0.0, 0.12]},
+    {"id": "p3", "position": [0.6, 0.0, 0.12]},
+    {"id": "b1", "position": [1.8, 0.0, 0.12]}
+  ],
+  "curves": [
+    {"id": "arc1", "closed": false, "points": [
+      [-1.8, 0.0, 0.12], [-1.4, 0.65, 0.2], [-0.6, 0.9, 0.24],
+      [0.1, 0.65, 0.2], [0.6, 0.0, 0.12]
+    ]}
+  ]
+}

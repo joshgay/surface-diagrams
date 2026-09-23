@@ -48,6 +48,7 @@ var compact_layout := false
 var showing_records := false
 var move_button: CheckButton
 var factor_view: FactorWorkspaceView
+var surface_view: SurfaceWorkspaceView
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -91,6 +92,10 @@ func _build_interface() -> void:
 	factors_button.text = "Factor workspace"
 	factors_button.pressed.connect(_show_factor_workspace)
 	file_tools.add_child(factors_button)
+	var surface_button := Button.new()
+	surface_button.text = "Exploratory 3D"
+	surface_button.pressed.connect(_show_surface_workspace)
+	file_tools.add_child(surface_button)
 	for spec in [["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
 		var button := Button.new()
 		button.text = spec[0]
@@ -330,6 +335,19 @@ func _show_factor_workspace() -> void:
 		factor_view.import_source(FileAccess.get_file_as_string("res://fixtures/workspaces/grouped-v1.json"))
 	workspace_root.hide()
 	factor_view.show()
+
+func _show_surface_workspace() -> void:
+	canvas.cancel_touch_gesture()
+	if surface_view == null:
+		surface_view = SurfaceWorkspaceView.new()
+		surface_view.browser_mode = browser_mode
+		add_child(surface_view)
+		surface_view.closed.connect(func():
+			surface_view.hide()
+			workspace_root.show())
+		surface_view.import_source(FileAccess.get_file_as_string(SurfaceWorkspaceView.FIXTURE))
+	workspace_root.hide()
+	surface_view.show()
 
 func _popup_fitted(dialog: Window, desired: Vector2i) -> void:
 	var available := Vector2i(get_viewport_rect().size) - Vector2i(24, 24)
@@ -867,7 +885,7 @@ func _notification(what: int) -> void:
 		_request_close()
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if factor_view != null and factor_view.visible: return
+	if (factor_view != null and factor_view.visible) or (surface_view != null and surface_view.visible): return
 	if not event is InputEventKey:
 		return
 	var key_event := event as InputEventKey

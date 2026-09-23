@@ -196,7 +196,6 @@ func _touch_tap(point: Vector2) -> void:
 			cut_picked.emit(cut)
 
 func begin_edit_drag(screen_position: Vector2) -> bool:
-	if read_only: return false
 	if document == null or document.data.kind != "planar":
 		return false
 	var record := _hit_planar_record(screen_position)
@@ -204,6 +203,9 @@ func begin_edit_drag(screen_position: Vector2) -> bool:
 		return false
 	select_record(record)
 	record_selected.emit(record.duplicate(true))
+	# Read-only linked/support views still need mouse selection, but never create
+	# a drag preview or edit command. Returning true means the click was handled.
+	if read_only: return true
 	preview_record = record.duplicate(true)
 	preview_position = _record_position(record)
 	preview_valid = true

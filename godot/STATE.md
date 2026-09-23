@@ -7,10 +7,61 @@
 - Current milestone: **M0 and M1 complete; M2 programmable work complete,
   with display-enabled visual acceptance still pending; M3 interaction and
   playback implemented, visual acceptance pending; M4 programmable acceptance
-  implemented, display-enabled visual acceptance pending**.
+  implemented, display-enabled visual acceptance pending; M5 first linked
+  exploratory surface slice implemented, visual acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: synchronized factor timeline
+## Latest increment: linked exploratory 3D disk
+
+Built from live fork head `d592987550f45e68482f66898cab8ac9028ae376`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added a bounded version-1 `surface-diagrams-surface-view` data model. It embeds
+  a fully validated planar `DiagramDocument`, then requires one supplied 3D
+  coordinate/polyline for every planar object/curve in the same stable-ID order.
+  Version 1 accepts only an oriented generic disk. Arc endpoints must equal the
+  supplied coordinates of their linked internal objects; loops must close.
+  Future/unknown fields, scripts/resources, partial/reordered IDs, unsafe
+  coordinates and unlabeled geometry status fail instead of being repaired.
+- Added a responsive linked 2D/3D workspace with two-way stable-ID selection,
+  projection-based 3D picking, orbit/zoom/fit, hide/isolate/show-all, and visible
+  `+x`, `+y`, `front +z` orientation labels. Blue `#006fff` points, gray
+  `#8b8b8b` boundaries and magenta `#ff00d4` curve polylines are retained.
+  Read-only 2D views now support mouse selection without starting edit previews.
+- Added the original generic oriented-disk fixture. Its five-point `arc1`
+  polyline is drawn literally. It is prominently labeled supplied exploratory
+  geometry, not a computed lift, certified route, equivalence, or completion of
+  the Python library's unfinished bordered mesh. The planar record remains the
+  publication authority; no 3D export was added.
+- Camera, selection, label visibility and hidden IDs remain view state. Tests
+  confirm camera motion and visibility changes leave the mathematical JSON
+  byte-identical. Opening/closing the workspace preserves the main editor's
+  unsaved record and undo history. See `SURFACE_VIEW.md`.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
+  30 mobile, 71 factor-workspace and **54 new surface-view assertions**, 539
+  total. Surface coverage includes schema bounds, ID/order/color preservation,
+  literal vertex count, camera separation, two-way selection, actual 3D picking,
+  hide/isolate/show-all, orientation visibility, failed-import preservation,
+  phone/desktop layouts, hidden-editor undo isolation and main-scene return.
+- 6 Python factor-adapter, 3 geometry-bridge, 3 runner-contract and 13 browser
+  adapter/loader tests. The deliberate harness failure exited 1. Editor import,
+  three-frame launch and existing fixture renders passed.
+- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
+- Static Web export rebuilt successfully and its pack contains the surface
+  fixture and compiled 3D classes. No Site deployment or binary publication
+  occurred.
+
+No controller/test failure remains. A direct SubViewport screenshot attempt
+failed because the headless dummy renderer returns no texture, consistent with
+the recorded display limitation. Therefore mesh construction, camera projection
+and picking are tested, but actual desktop/mobile/WebGL appearance is not
+visually accepted. Version 1 is a disk with supplied polylines, not a higher-
+genus surface, depth-aware curve router, surface action, or 3D editor.
+
+## Earlier increment: synchronized factor timeline
 
 Built from live fork head `939ae2e4235df3c8411fb2059c250948f30542f1`
 in an isolated worktree under the exclusive Studio lock.
@@ -467,7 +518,8 @@ with signed braid-word editing, crossing picking, and a fractional braid timelin
 drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
 There is now a read-only supplied factor workspace with a shared deterministic
-timeline and exact desktop export, but no 3D surface view yet.
+timeline and exact desktop export, plus a linked exploratory generic-disk 3D
+view. The 3D view is not a certified higher-genus mesh or curve router.
 Desktop recovery is
 bounded and tested, but browser persistence remains deliberately absent. The
 source-checkout bridge currently requires a compatible
@@ -487,11 +539,11 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Begin M5 with a bounded, versioned generic surface-view record and an honestly
-labeled exploratory 3D view. Use stable IDs shared with a supplied 2D fixture,
-then add orbit/zoom, picking, hide/isolate and orientation labels. Camera and
-visibility remain view state. Start with unambiguous generic geometry and do not
-claim the exploratory mesh is the library's unfinished certified bordered mesh.
+Begin M6 with a bounded, versioned supplied-walkthrough record containing named
+steps, complete before/after mathematical data, selected stable IDs, operation
+labels, and explicit verification/provenance status. Add deterministic forward
+and reverse scrubbing without deriving missing states or claiming that playback
+proves equivalence. Start with a generic example independent of research data.
 A display-enabled pass still needs to inspect native controls, crossing gaps,
 M2 forms and dialogs, and recovery before visual acceptance can be claimed.
 

@@ -94,7 +94,7 @@ func _run() -> void:
 	_check(view.factor_index == 2 and view.selector.selected == 2 and view.braid_canvas.selected_record.index == 3, "braid picking synchronizes factor selection")
 	_check(view.support_canvas.document.to_json() == workspace.diagram("rightArc").to_json() and view.after_canvas.document.to_json() == workspace.diagram("leftArc").to_json(), "support and after-state follow factor selection")
 	var point := view.support_canvas.screen_position_for_record(view.support_canvas.document.inspector_records()[0])
-	_check(not view.support_canvas.begin_edit_drag(point), "read-only supplied support cannot be dragged into an uncommitted preview")
+	_check(view.support_canvas.begin_edit_drag(point) and not view.support_canvas.edit_dragging, "read-only supplied support can be selected but not dragged into an edit preview")
 	var accepted := view.workspace.to_json()
 	var accepted_position: float = view.timeline_position
 	_check(not view.import_source("{}") and view.workspace.to_json() == accepted and view.factor_index == 2 and view.timeline_position == accepted_position, "failed import preserves workspace, selection and timeline")
