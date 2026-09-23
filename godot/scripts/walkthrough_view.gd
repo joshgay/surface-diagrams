@@ -46,6 +46,7 @@ var publication: Dictionary = {}
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	set_accessibility_name("Supplied transformation walkthrough")
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
@@ -71,12 +72,15 @@ func _ready() -> void:
 	source.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	source.virtual_keyboard_enabled = true
 	source.visible = false
+	source.set_accessibility_name("Walkthrough JSON source")
+	source.set_accessibility_description("Bounded supplied source. Editing this field does not alter the loaded walkthrough until Import pasted JSON is activated.")
 	body.add_child(source)
 	selector = OptionButton.new()
 	selector.custom_minimum_size.y = 44
 	selector.fit_to_longest_item = false
 	selector.clip_text = true
 	selector.item_selected.connect(func(index: int): set_timeline_position(float(index)))
+	selector.set_accessibility_name("Selected walkthrough step")
 	body.add_child(selector)
 	var playback := HFlowContainer.new()
 	body.add_child(playback)
@@ -85,25 +89,30 @@ func _ready() -> void:
 	direction_option.add_item("Play reverse")
 	direction_option.custom_minimum_size.y = 44
 	direction_option.item_selected.connect(func(index: int): set_play_direction(1 if index == 0 else -1))
+	direction_option.set_accessibility_name("Walkthrough playback direction")
 	playback.add_child(direction_option)
 	presentation_option = OptionButton.new()
 	presentation_option.add_item("Braid bottom to top")
 	presentation_option.add_item("Braid top to bottom")
 	presentation_option.custom_minimum_size.y = 44
 	presentation_option.item_selected.connect(func(index: int): set_braid_presentation("bottom-to-top" if index == 0 else "top-to-bottom"))
+	presentation_option.set_accessibility_name("Braid presentation direction")
 	playback.add_child(presentation_option)
-	_button(playback, "|<", _start)
+	_button(playback, "Start", _start)
 	_button(playback, "Previous", _previous)
 	play_button = _button(playback, "Play forward", toggle_play)
 	_button(playback, "Next", _next)
-	_button(playback, ">|", _end)
+	_button(playback, "End", _end)
 	timeline = HSlider.new()
 	timeline.step = 0.001
 	timeline.custom_minimum_size.y = 44
 	timeline.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	timeline.value_changed.connect(func(value: float): set_timeline_position(value))
+	timeline.set_accessibility_name("Walkthrough playback position")
+	timeline.set_accessibility_description("View-only position between complete supplied endpoint records.")
 	body.add_child(timeline)
 	timeline_label = _label(body, "Timeline is view state.")
+	_label(body, "Keyboard: Left/Right step, Home/End jump, Space plays or pauses, R reverses playback, B changes braid presentation, Escape returns to the editor.")
 	verification = _label(body, "")
 	verification.add_theme_color_override("font_color", Color("#a06a1a"))
 	details = _label(body, "")
@@ -111,6 +120,7 @@ func _ready() -> void:
 	selected_list.custom_minimum_size.y = 84
 	selected_list.allow_reselect = true
 	selected_list.item_selected.connect(_selected_row)
+	selected_list.set_accessibility_name("Stable records selected by this supplied step")
 	body.add_child(selected_list)
 	grid = GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -118,9 +128,11 @@ func _ready() -> void:
 	var before_column := _column("Complete supplied before-state")
 	before_label = _label(before_column, "")
 	before_canvas = _canvas(before_column)
+	before_canvas.set_accessibility_name("Complete supplied before-state diagram")
 	var after_column := _column("Complete supplied after-state")
 	after_label = _label(after_column, "")
 	after_canvas = _canvas(after_column)
+	after_canvas.set_accessibility_name("Complete supplied after-state diagram")
 	cover_panel = VBoxContainer.new()
 	cover_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cover_panel.visible = false
@@ -133,10 +145,13 @@ func _ready() -> void:
 	var cover_before_column := _cover_column("Complete supplied exploratory before-view")
 	cover_before_label = _label(cover_before_column, "")
 	cover_before_view = _surface_view(cover_before_column)
+	cover_before_view.set_accessibility_name("Complete supplied exploratory before-view")
 	var cover_after_column := _cover_column("Complete supplied exploratory after-view")
 	cover_after_label = _label(cover_after_column, "")
 	cover_after_view = _surface_view(cover_after_column)
+	cover_after_view.set_accessibility_name("Complete supplied exploratory after-view")
 	status = _label(body, "")
+	status.set_accessibility_name("Walkthrough status")
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	open_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -164,6 +179,7 @@ func _button(parent: Node, caption: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.custom_minimum_size.y = 44
+	button.set_accessibility_name(caption)
 	button.pressed.connect(action)
 	parent.add_child(button)
 	return button
@@ -209,6 +225,46 @@ func _surface_view(parent: Node) -> ExploratorySurface3D:
 func _responsive() -> void:
 	if grid != null: grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
 	if cover_grid != null: cover_grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
+
+func focus_entry() -> void:
+	if selector != null and selector.item_count > 0:
+		selector.grab_focus()
+
+func handle_keyboard(event: InputEventKey) -> bool:
+	if not event.pressed or event.echo:
+		return false
+	if event.keycode == KEY_ESCAPE:
+		_close()
+		return true
+	if _text_entry_focused():
+		return false
+	match event.keycode:
+		KEY_LEFT:
+			_previous()
+		KEY_RIGHT:
+			_next()
+		KEY_HOME:
+			_start()
+		KEY_END:
+			_end()
+		KEY_SPACE:
+			toggle_play()
+		KEY_R:
+			set_play_direction(-play_direction)
+		KEY_B:
+			if document != null and document.kind() == "braid":
+				set_braid_presentation("top-to-bottom" if braid_presentation == "bottom-to-top" else "bottom-to-top")
+		_:
+			return false
+	return true
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if visible and event is InputEventKey and handle_keyboard(event):
+		get_viewport().set_input_as_handled()
+
+func _text_entry_focused() -> bool:
+	var focused := get_viewport().gui_get_focus_owner()
+	return focused is LineEdit or focused is TextEdit or (focused != null and focused.get_parent() is SpinBox)
 
 func open_path(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)

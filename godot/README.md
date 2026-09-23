@@ -53,6 +53,13 @@ and never falls back to a purported exact result. Do not confuse this early
 editor with the more complete
 [local browser editor](../docs/EDITOR.md), which runs without Godot.
 
+The editor and all three secondary workspaces also have an explicit pointer-free
+path: predictable entry/return focus, named controls, keyboard record selection,
+camera control, factor/walkthrough stepping and playback, and 3D visibility
+actions. These commands are view state and never edit mathematical JSON. See
+[ACCESSIBILITY.md](ACCESSIBILITY.md) for the exact shortcuts and current
+screen-reader/visual-acceptance limits.
+
 Import `project.godot` using Godot 4.7.2 stable. The exact runtime, checksum, and
 commands are in [RUNTIME.md](RUNTIME.md). Use GDScript and the Compatibility
 renderer; no .NET or external assets are required.

@@ -11,69 +11,58 @@
   exploratory surface slice implemented, visual acceptance pending; M6 supplied
   planar, signed-braid, and explicitly linked exploratory surface walkthrough
   slices implemented, visual acceptance pending; M7 first reproducible
-  walkthrough-publication slice implemented, visual acceptance pending**.
+  walkthrough-publication and keyboard-access slices implemented, visual and
+  assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: deterministic walkthrough publication bundles
+## Latest increment: keyboard-complete navigation and named controls
 
-Built from live fork head `6a7b59cb60974710435e5b51ffe80434c8aa2e25`
+Built from live fork head `ef11b682e041240a274961c7c9aa7287d27ec9e8`
 in an isolated worktree under the exclusive Studio lock.
 
-- Added a fixed desktop Python adapter that builds one deterministic ZIP from an
-  accepted planar or braid walkthrough. It reparses every complete supplied 2D
-  document through the repository's `DiagramDocument` and writes exact SVG,
-  TikZ, editable Python, and normalized document JSON alongside the exact
-  normalized walkthrough source.
-- Added a version-1 manifest that preserves document and step order, stable
-  object/curve/label or strand IDs, literal braid blocks, selected records,
-  provenance, and recorded verification. Every artifact includes its byte count
-  and SHA-256 digest. Sorted paths and fixed ZIP metadata make repeated exports
-  from the same normalized record byte-identical.
-- Supplied exploratory 3D surface records remain in `walkthrough.json` and are
-  listed under `excluded_exploratory_surface_views`. No separate mesh, 3D curve,
-  screenshot, or purported certified surface geometry is emitted. Export does
-  not compute a cover lift or promote imported verification metadata.
-- Added the desktop **Export publication bundle** workflow with atomic accepted
-  state: a failed walkthrough import preserves the prior tested bundle. The
-  browser control remains disabled because local Python geometry is unavailable;
-  it cannot write a fallback or claim an exact publication result.
-- Documented the archive layout, 256 KiB input/64 MiB output bounds, fixed
-  command boundary, browser limitation, and independent CLI reproduction in
-  `PUBLICATION.md`.
+- Added pointer-free diagram pan, zoom, fit, and exact inspector-order record
+  selection. Selection, camera, playback, and visibility remain view state and
+  leave the accepted mathematical JSON byte-identical.
+- Added keyboard stepping, boundary jumps, play/pause, and presentation controls
+  to factor and walkthrough workspaces. Added keyboard stable-ID selection,
+  hide/isolate/show-all, orbit, zoom, and fit to the exploratory surface view.
+- Added Ctrl/Cmd workspace shortcuts, predictable initial workspace focus, and
+  Escape return that restores the prior editor focus when it is still valid.
+  Text-entry controls retain ordinary editing keys instead of firing workspace
+  shortcuts.
+- Added explicit accessibility names and descriptions for primary lists,
+  selectors, timelines, source fields, diagram canvases, status regions, and 3D
+  views. Replaced symbolic start/end button captions with literal labels and
+  documented every shortcut plus the remaining acceptance limits in
+  `ACCESSIBILITY.md`.
 
 Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
 
 - Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
   30 mobile, 71 factor-workspace, 54 surface-view, 79 planar-walkthrough, 54
-  signed-braid walkthrough, 52 cover-link walkthrough, and **35 new publication
-  assertions**, 759 total. New coverage opens the ZIP through Godot, verifies
-  source and manifest equality, validates artifact sizes and hashes, checks exact
-  stable IDs and literal braid blocks, proves byte-deterministic rebuilding,
-  confirms failed-import preservation, saves the identical prepared bundle, and
-  ensures browser mode creates no file.
-- **6 new independent Python bundle tests** cover all three walkthrough fixture
-  kinds, exact library output equality, deterministic ZIP bytes, generated
-  Python reproduction, stable references, 3D exclusion, wrapper rejection, and
-  failure-without-output. The 6 factor-adapter, 3 geometry-bridge, 3
-  runner-contract, and 13 browser adapter/loader tests also passed. The
-  intentional harness failure exited 1.
-- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
-- Editor import, three-frame launch, and static Web export passed. The Web pack
-  contains the disabled publication controller but excludes the local Python
-  adapter as intended. No Site deployment, download publication, or release
-  occurred.
+  signed-braid walkthrough, 52 cover-link walkthrough, 35 publication, and
+  **40 new keyboard/accessibility assertions**, 799 total. New coverage uses no
+  pointer to navigate every workspace, verifies focus entry/return and named
+  controls, checks 3D keyboard camera/visibility state, and proves source
+  immutability at 320, 390, and 1280 pixel widths.
+- The complete pinned-runtime runner passed, including 13 browser adapter/loader
+  tests, 18 independent Python bridge/adapter/runner tests, and the intentional
+  harness failure exiting 1.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Editor import, three-frame launch, and static Web export passed. No Site
+  deployment, download publication, or release occurred.
 
-No controller/test failure remains. Display-enabled desktop/mobile/WebGL visual
-acceptance remains unavailable, so the new button, file dialog, focus behavior,
-and saved-archive workflow have not been visually accepted. Exact publication
-is desktop-only and still depends on a working Python environment containing
-the repository library; packaged desktop operation has not been independently
-accepted outside a source checkout.
+No controller/test failure remains. Headless controller checks do not establish
+screen-reader interoperability, visible focus clarity, keyboard behavior in an
+actual WebGL browser, or physical-phone usability. Display-enabled desktop,
+mobile, and browser acceptance therefore remains pending. Exact publication is
+desktop-only and packaged operation outside a source checkout is still pending.
 
-**Next specific task:** add keyboard-complete navigation and explicit accessible
-names/focus order for the editor and all secondary workspaces, then test the
-demo workflow without pointer input at desktop and phone widths. This addresses
-the next M7 usability gate without changing mathematical records.
+**Next specific task:** add a deterministic end-to-end demo script and review
+checklist that exercises edit, undo, walkthrough, and publication workflows,
+then run it in a display-enabled desktop/WebGL environment with visible-focus,
+screen-reader, and physical-phone acceptance recorded separately.
 
 ## Earlier increment: explicit supplied planar-to-surface endpoint links
 

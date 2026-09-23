@@ -34,6 +34,11 @@ var touch_start := Vector2.ZERO
 var touch_moved := false
 var multi_touch := false
 
+func _ready() -> void:
+	focus_mode = Control.FOCUS_ALL
+	set_accessibility_name("Diagram canvas")
+	set_accessibility_description("Arrow keys pan, plus and minus zoom, Home fits, and left or right bracket selects the previous or next stable record.")
+
 func set_document(value: DiagramDocument) -> void:
 	cancel_touch_gesture()
 	document = value
@@ -79,6 +84,9 @@ func fit_view() -> void:
 	queue_redraw()
 
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventKey and handle_keyboard(event):
+		accept_event()
+		return
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
 		_handle_touch(event)
 		accept_event()
@@ -112,9 +120,57 @@ func _gui_input(event: InputEvent) -> void:
 		elif dragging:
 			pan = pan_start + event.position - drag_start
 			queue_redraw()
-	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and edit_dragging:
+
+func handle_keyboard(event: InputEventKey) -> bool:
+	if not event.pressed or event.echo:
+		return false
+	if event.keycode == KEY_ESCAPE and edit_dragging:
 		cancel_edit_preview()
 		edit_rejected.emit("Edit cancelled; the accepted record was not changed")
+		return true
+	match event.keycode:
+		KEY_LEFT:
+			pan.x += 32.0
+		KEY_RIGHT:
+			pan.x -= 32.0
+		KEY_UP:
+			pan.y += 32.0
+		KEY_DOWN:
+			pan.y -= 32.0
+		KEY_EQUAL, KEY_KP_ADD:
+			zoom_at(size / 2.0, 1.12)
+			return true
+		KEY_MINUS, KEY_KP_SUBTRACT:
+			zoom_at(size / 2.0, 1.0 / 1.12)
+			return true
+		KEY_HOME:
+			fit_view()
+			return true
+		KEY_BRACKETLEFT:
+			return _select_relative_record(-1)
+		KEY_BRACKETRIGHT:
+			return _select_relative_record(1)
+		_:
+			return false
+	queue_redraw()
+	return true
+
+func _select_relative_record(delta: int) -> bool:
+	if document == null:
+		return false
+	var records := document.inspector_records()
+	if records.is_empty():
+		return false
+	var current := -1
+	for index in records.size():
+		var record: Dictionary = records[index]
+		if record.get("kind", "") == selected_record.get("kind", "") and record.get("id", "") == selected_record.get("id", "") and record.get("index", -1) == selected_record.get("index", -1):
+			current = index
+			break
+	var next := posmod(current + delta, records.size())
+	select_record(records[next])
+	record_selected.emit(records[next].duplicate(true))
+	return true
 
 func cancel_touch_gesture() -> void:
 	touches.clear()

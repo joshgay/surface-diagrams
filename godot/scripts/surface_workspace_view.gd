@@ -17,6 +17,7 @@ var selected_id := ""
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	set_accessibility_name("Exploratory surface workspace")
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
@@ -44,11 +45,14 @@ func _ready() -> void:
 	source.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	source.virtual_keyboard_enabled = true
 	source.visible = false
+	source.set_accessibility_name("Exploratory surface JSON source")
+	source.set_accessibility_description("Bounded supplied coordinates. Editing this field does not alter the loaded view until Import pasted JSON is activated.")
 	body.add_child(source)
 	record_list = ItemList.new()
 	record_list.custom_minimum_size.y = 120
 	record_list.add_theme_constant_override("v_separation", 20)
 	record_list.item_selected.connect(_list_selected)
+	record_list.set_accessibility_name("Linked stable records")
 	body.add_child(record_list)
 	var visibility_tools := HFlowContainer.new()
 	body.add_child(visibility_tools)
@@ -66,13 +70,17 @@ func _ready() -> void:
 	canvas_2d.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas_2d.record_selected.connect(_record_selected)
 	two_d.add_child(canvas_2d)
+	canvas_2d.set_accessibility_name("Linked two dimensional recipe")
 	var three_d := _column("Exploratory supplied 3D view")
 	surface_3d = ExploratorySurface3D.new()
 	surface_3d.custom_minimum_size.y = 380
 	surface_3d.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	surface_3d.record_picked.connect(_record_selected)
 	three_d.add_child(surface_3d)
+	surface_3d.set_accessibility_name("Linked exploratory three dimensional view")
 	status = _label(body, "")
+	status.set_accessibility_name("Exploratory surface status")
+	_label(body, "Keyboard: Up/Down select a stable record, Home selects the first, F fits 3D, H hides, I isolates, A shows all, Escape returns to the editor.")
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	open_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -87,6 +95,7 @@ func _button(parent: Node, caption: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.custom_minimum_size.y = 44
+	button.set_accessibility_name(caption)
 	button.pressed.connect(action)
 	parent.add_child(button)
 	return button
@@ -107,6 +116,56 @@ func _column(caption: String) -> VBoxContainer:
 
 func _responsive() -> void:
 	if grid != null: grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
+
+func focus_entry() -> void:
+	if record_list != null:
+		record_list.grab_focus()
+
+func handle_keyboard(event: InputEventKey) -> bool:
+	if not event.pressed or event.echo:
+		return false
+	if event.keycode == KEY_ESCAPE:
+		closed.emit()
+		return true
+	if _text_entry_focused():
+		return false
+	match event.keycode:
+		KEY_UP:
+			_select_relative(-1)
+		KEY_DOWN:
+			_select_relative(1)
+		KEY_HOME:
+			_select_index(0)
+		KEY_F:
+			surface_3d.fit_view()
+		KEY_H:
+			_hide_selected()
+		KEY_I:
+			_isolate_selected()
+		KEY_A:
+			_show_all()
+		_:
+			return false
+	return true
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if visible and event is InputEventKey and handle_keyboard(event):
+		get_viewport().set_input_as_handled()
+
+func _text_entry_focused() -> bool:
+	var focused := get_viewport().gui_get_focus_owner()
+	return focused is LineEdit or focused is TextEdit or (focused != null and focused.get_parent() is SpinBox)
+
+func _select_relative(delta: int) -> void:
+	if record_list.item_count == 0: return
+	var selected := record_list.get_selected_items()
+	var current := selected[0] if not selected.is_empty() else (-1 if delta > 0 else 0)
+	_select_index(posmod(current + delta, record_list.item_count))
+
+func _select_index(index: int) -> void:
+	if index < 0 or index >= record_list.item_count: return
+	record_list.select(index)
+	_list_selected(index)
 
 func open_path(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)

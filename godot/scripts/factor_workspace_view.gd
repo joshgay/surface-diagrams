@@ -32,6 +32,7 @@ var timeline_label: Label
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	set_accessibility_name("Factor sequence workspace")
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
@@ -54,12 +55,15 @@ func _ready() -> void:
 	source.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	source.virtual_keyboard_enabled = true
 	source.visible = false
+	source.set_accessibility_name("Factor workspace JSON source")
+	source.set_accessibility_description("Bounded imported source. Editing this field does not alter the loaded workspace until Import pasted JSON is activated.")
 	body.add_child(source)
 	selector = OptionButton.new()
 	selector.custom_minimum_size.y = 44
 	selector.fit_to_longest_item = false
 	selector.clip_text = true
 	selector.item_selected.connect(select_factor)
+	selector.set_accessibility_name("Selected factor")
 	body.add_child(selector)
 	var timeline_tools := HFlowContainer.new()
 	body.add_child(timeline_tools)
@@ -68,35 +72,44 @@ func _ready() -> void:
 	direction_option.add_item("Top to bottom")
 	direction_option.custom_minimum_size.y = 44
 	direction_option.item_selected.connect(_direction_selected)
+	direction_option.set_accessibility_name("Braid presentation direction")
 	timeline_tools.add_child(direction_option)
-	_button(timeline_tools, "|<", _start)
+	_button(timeline_tools, "Start", _start)
 	_button(timeline_tools, "Previous factor", _previous)
 	play_button = _button(timeline_tools, "Play factors", toggle_play)
 	_button(timeline_tools, "Next factor", _next)
-	_button(timeline_tools, ">|", _end)
+	_button(timeline_tools, "End", _end)
 	timeline = HSlider.new()
 	timeline.step = 0.001
 	timeline.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	timeline.custom_minimum_size.y = 44
 	timeline.value_changed.connect(_timeline_changed)
+	timeline.set_accessibility_name("Factor playback position")
+	timeline.set_accessibility_description("View-only position through the supplied factor sequence and literal braid blocks.")
 	body.add_child(timeline)
 	timeline_label = _label(body, "Timeline is view state. Supplied planar states switch at factor boundaries; they are not interpolated or computed.")
+	_label(body, "Keyboard: Left/Right step, Home/End jump, Space plays or pauses, D changes braid presentation, Escape returns to the editor.")
 	details = _label(body, "")
 	grid = GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(grid)
 	var supports := _column("Support")
 	support_canvas = _canvas(supports)
+	support_canvas.set_accessibility_name("Selected factor support diagram")
 	var states := _column("Supplied states")
 	before_label = _label(states, "")
 	before_canvas = _canvas(states)
+	before_canvas.set_accessibility_name("Supplied factor before-state diagram")
 	after_label = _label(states, "")
 	after_canvas = _canvas(states)
+	after_canvas.set_accessibility_name("Supplied factor after-state diagram")
 	var braids := _column("Continuous supplied braid")
 	braid_canvas = _canvas(braids)
+	braid_canvas.set_accessibility_name("Continuous supplied factor braid")
 	braid_canvas.custom_minimum_size.y = 360
 	braid_canvas.record_selected.connect(_crossing_selected)
 	message = _label(body, "")
+	message.set_accessibility_name("Factor workspace status")
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	open_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -117,6 +130,7 @@ func _button(parent: Node, caption: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.custom_minimum_size.y = 44
+	button.set_accessibility_name(caption)
 	button.pressed.connect(action)
 	parent.add_child(button)
 	return button
@@ -142,6 +156,43 @@ func _canvas(parent: Node) -> DiagramCanvas:
 	canvas.read_only = true
 	parent.add_child(canvas)
 	return canvas
+
+func focus_entry() -> void:
+	if selector != null and selector.visible and selector.item_count > 0:
+		selector.grab_focus()
+
+func handle_keyboard(event: InputEventKey) -> bool:
+	if not event.pressed or event.echo:
+		return false
+	if event.keycode == KEY_ESCAPE:
+		_close()
+		return true
+	if _text_entry_focused():
+		return false
+	match event.keycode:
+		KEY_LEFT:
+			_previous()
+		KEY_RIGHT:
+			_next()
+		KEY_HOME:
+			_start()
+		KEY_END:
+			_end()
+		KEY_SPACE:
+			toggle_play()
+		KEY_D:
+			set_direction("top-to-bottom" if direction == "bottom-to-top" else "bottom-to-top")
+		_:
+			return false
+	return true
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if visible and event is InputEventKey and handle_keyboard(event):
+		get_viewport().set_input_as_handled()
+
+func _text_entry_focused() -> bool:
+	var focused := get_viewport().gui_get_focus_owner()
+	return focused is LineEdit or focused is TextEdit or (focused != null and focused.get_parent() is SpinBox)
 
 func _responsive() -> void:
 	# Use the available viewport, not a temporarily expanded container minimum.

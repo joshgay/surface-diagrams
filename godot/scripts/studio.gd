@@ -50,6 +50,7 @@ var move_button: CheckButton
 var factor_view: FactorWorkspaceView
 var surface_view: SurfaceWorkspaceView
 var walkthrough_view: WalkthroughView
+var workspace_focus_before_overlay: Control
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -140,6 +141,8 @@ func _build_interface() -> void:
 	record_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	record_list.allow_reselect = true
 	record_list.item_selected.connect(_select_record)
+	record_list.set_accessibility_name("Mathematical records")
+	record_list.set_accessibility_description("Stable objects, curves, labels, or braid records in supplied order.")
 	inspector.add_child(record_list)
 	row_reindex_panel = HFlowContainer.new()
 	row_reindex_panel.visible = false
@@ -177,6 +180,8 @@ func _build_interface() -> void:
 	source_view.editable = false
 	source_view.visible = false
 	source_view.custom_minimum_size.y = 220
+	source_view.set_accessibility_name("Accepted normalized JSON source")
+	source_view.set_accessibility_description("Read-only accepted mathematical record. Camera and playback state are excluded.")
 	inspector.add_child(source_view)
 	canvas_box = VBoxContainer.new()
 	canvas_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -236,6 +241,7 @@ func _build_interface() -> void:
 	canvas.edit_rejected.connect(_show_edit_error)
 	canvas.cut_picked.connect(_cut_picked)
 	canvas_box.add_child(canvas)
+	canvas.set_accessibility_name("Editable diagram canvas")
 	geometry_label = Label.new()
 	geometry_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	geometry_label.add_theme_color_override("font_color", Color("#6b7b78"))
@@ -244,6 +250,7 @@ func _build_interface() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_label.max_lines_visible = 2
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
+	status_label.set_accessibility_name("Studio status")
 	root.add_child(status_label)
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -311,7 +318,7 @@ func _sync_viewport() -> void:
 	inspector_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL if compact_layout else Control.SIZE_FILL
 	mobile_tabs.visible = compact_layout
 	_show_mobile_panel(showing_records)
-	camera_note.text = "Drag to pan. Pinch or +/- to zoom. Enable Move points to drag a point." if compact_layout else "Touch: drag to pan, pinch to zoom. Mouse: left drag to edit, wheel to zoom, middle drag to pan."
+	camera_note.text = "Drag to pan. Pinch or +/- to zoom. Keyboard: arrows pan, +/- zoom, Home fits, brackets select records." if compact_layout else "Touch: drag to pan, pinch to zoom. Mouse: left drag to edit, wheel to zoom, middle drag to pan. Keyboard: arrows pan, +/- zoom, Home fits, brackets select records."
 	geometry_label.visible = not compact_layout
 	reindex_preview.custom_minimum_size = Vector2(minf(720, logical_size.x - 56), minf(340, logical_size.y * 0.35))
 	canvas.cancel_touch_gesture()
@@ -326,42 +333,58 @@ func _show_factor_workspace() -> void:
 	# A separate read-only workspace leaves accepted edits, drafts and recovery
 	# untouched. Returning to the editor restores the exact current workspace.
 	canvas.cancel_touch_gesture()
+	workspace_focus_before_overlay = get_viewport().gui_get_focus_owner()
 	if factor_view == null:
 		factor_view = FactorWorkspaceView.new()
 		factor_view.browser_mode = browser_mode
 		add_child(factor_view)
 		factor_view.closed.connect(func():
 			factor_view.hide()
-			workspace_root.show())
+			workspace_root.show()
+			_restore_editor_focus())
 		factor_view.import_source(FileAccess.get_file_as_string("res://fixtures/workspaces/grouped-v1.json"))
 	workspace_root.hide()
 	factor_view.show()
+	factor_view.call_deferred("focus_entry")
 
 func _show_surface_workspace() -> void:
 	canvas.cancel_touch_gesture()
+	workspace_focus_before_overlay = get_viewport().gui_get_focus_owner()
 	if surface_view == null:
 		surface_view = SurfaceWorkspaceView.new()
 		surface_view.browser_mode = browser_mode
 		add_child(surface_view)
 		surface_view.closed.connect(func():
 			surface_view.hide()
-			workspace_root.show())
+			workspace_root.show()
+			_restore_editor_focus())
 		surface_view.import_source(FileAccess.get_file_as_string(SurfaceWorkspaceView.FIXTURE))
 	workspace_root.hide()
 	surface_view.show()
+	surface_view.call_deferred("focus_entry")
 
 func _show_walkthrough() -> void:
 	canvas.cancel_touch_gesture()
+	workspace_focus_before_overlay = get_viewport().gui_get_focus_owner()
 	if walkthrough_view == null:
 		walkthrough_view = WalkthroughView.new()
 		walkthrough_view.browser_mode = browser_mode
 		add_child(walkthrough_view)
 		walkthrough_view.closed.connect(func():
 			walkthrough_view.hide()
-			workspace_root.show())
+			workspace_root.show()
+			_restore_editor_focus())
 		walkthrough_view.import_source(FileAccess.get_file_as_string(WalkthroughView.FIXTURE))
 	workspace_root.hide()
 	walkthrough_view.show()
+	walkthrough_view.call_deferred("focus_entry")
+
+func _restore_editor_focus() -> void:
+	if workspace_focus_before_overlay != null and is_instance_valid(workspace_focus_before_overlay) and workspace_focus_before_overlay.is_visible_in_tree():
+		workspace_focus_before_overlay.grab_focus()
+	elif record_list != null:
+		record_list.grab_focus()
+	workspace_focus_before_overlay = null
 
 func _popup_fitted(dialog: Window, desired: Vector2i) -> void:
 	var available := Vector2i(get_viewport_rect().size) - Vector2i(24, 24)
@@ -906,6 +929,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if not key_event.pressed or key_event.echo:
 		return
 	var command: bool = key_event.ctrl_pressed or key_event.meta_pressed
+	if _text_entry_focused() and not command:
+		return
 	if command and key_event.keycode == KEY_Z:
 		if key_event.shift_pressed:
 			_redo()
@@ -915,6 +940,25 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	elif command and key_event.keycode == KEY_Y:
 		_redo()
 		get_viewport().set_input_as_handled()
+	elif command and key_event.keycode == KEY_O:
+		_show_open()
+		get_viewport().set_input_as_handled()
+	elif command and key_event.keycode == KEY_S:
+		_show_save()
+		get_viewport().set_input_as_handled()
+	elif command and key_event.keycode == KEY_1:
+		_show_factor_workspace()
+		get_viewport().set_input_as_handled()
+	elif command and key_event.keycode == KEY_2:
+		_show_surface_workspace()
+		get_viewport().set_input_as_handled()
+	elif command and key_event.keycode == KEY_3:
+		_show_walkthrough()
+		get_viewport().set_input_as_handled()
+
+func _text_entry_focused() -> bool:
+	var focused := get_viewport().gui_get_focus_owner()
+	return focused is LineEdit or focused is TextEdit or (focused != null and focused.get_parent() is SpinBox)
 
 func _safe_filename(value: String) -> String:
 	var result := ""

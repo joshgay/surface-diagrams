@@ -27,6 +27,8 @@ func _ready() -> void:
 	stretch = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
+	set_accessibility_name("Exploratory three dimensional surface view")
+	set_accessibility_description("Arrow keys orbit, plus and minus zoom, and Home restores the fitted camera. This view uses supplied exploratory coordinates.")
 	viewport_3d = SubViewport.new()
 	viewport_3d.own_world_3d = true
 	viewport_3d.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -197,6 +199,9 @@ func pick_at(screen_position: Vector2, threshold: float = 22.0) -> Dictionary:
 	return result
 
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventKey and handle_keyboard(event):
+		accept_event()
+		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed: zoom(0.9)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed: zoom(1.0 / 0.9)
@@ -222,6 +227,28 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventScreenDrag:
 		drag_moved = drag_moved or event.position.distance_to(drag_start) >= 3.0
 		orbit(event.relative)
+
+func handle_keyboard(event: InputEventKey) -> bool:
+	if not event.pressed or event.echo:
+		return false
+	match event.keycode:
+		KEY_LEFT:
+			orbit(Vector2(-18.0, 0.0))
+		KEY_RIGHT:
+			orbit(Vector2(18.0, 0.0))
+		KEY_UP:
+			orbit(Vector2(0.0, -18.0))
+		KEY_DOWN:
+			orbit(Vector2(0.0, 18.0))
+		KEY_EQUAL, KEY_KP_ADD:
+			zoom(0.9)
+		KEY_MINUS, KEY_KP_SUBTRACT:
+			zoom(1.0 / 0.9)
+		KEY_HOME:
+			fit_view()
+		_:
+			return false
+	return true
 
 func _update_camera() -> void:
 	if camera == null: return
