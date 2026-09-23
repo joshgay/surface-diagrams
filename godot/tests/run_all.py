@@ -45,6 +45,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_braid.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_cover.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_publication.gd"])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",
@@ -56,6 +57,7 @@ def main():
     run([sys.executable, str(PROJECT / "tests" / "test_geometry_bridge.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_factor_workspace.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_run_all.py")])
+    run([sys.executable, str(PROJECT / "tests" / "test_walkthrough_bundle.py")])
 
     # The existing Python implementation independently checks both shared
     # fixture recipes and publication SVG generation.

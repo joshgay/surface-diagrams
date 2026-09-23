@@ -52,3 +52,12 @@ Verification and provenance are imported metadata. Studio displays them but
 does not promote a source assertion to an independent or machine check. Version
 1 does not compute a cover lift, certify the supplied exploratory geometry, or
 animate an intermediate surface state.
+
+On desktop, **Export publication bundle** invokes the fixed Python library
+adapter for every complete supplied 2D document. The deterministic ZIP includes
+the normalized walkthrough, exact SVG/TikZ, editable Python and normalized JSON
+per endpoint, plus a manifest with stable references, byte counts and SHA-256
+digests. Exploratory 3D records remain in the walkthrough source and are listed
+as excluded; they never become purported certified geometry. Browser builds
+keep this control disabled. See [PUBLICATION.md](PUBLICATION.md) for the exact
+archive layout and limits.

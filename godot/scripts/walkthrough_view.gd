@@ -40,6 +40,9 @@ var cover_status: Label
 var status: Label
 var open_dialog: FileDialog
 var save_dialog: FileDialog
+var publication_button: Button
+var publication_dialog: FileDialog
+var publication: Dictionary = {}
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -54,6 +57,8 @@ func _ready() -> void:
 	_button(tools, "Back to editor", _close)
 	_button(tools, "Open walkthrough", func(): open_dialog.popup_centered_ratio(0.85)).visible = not browser_mode
 	_button(tools, "Save walkthrough", func(): _choose_save()).visible = not browser_mode
+	publication_button = _button(tools, "Export publication bundle", _choose_publication)
+	publication_button.disabled = true
 	_button(tools, "JSON import / source", func(): source.visible = not source.visible)
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
 	_button(tools, "Generic planar", func(): import_source(FileAccess.get_file_as_string(PLANAR_FIXTURE)))
@@ -144,6 +149,12 @@ func _ready() -> void:
 	save_dialog.add_filter("*.json", "Walkthrough JSON")
 	save_dialog.file_selected.connect(save_path)
 	add_child(save_dialog)
+	publication_dialog = FileDialog.new()
+	publication_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	publication_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	publication_dialog.add_filter("*.zip", "Deterministic publication bundle")
+	publication_dialog.file_selected.connect(save_publication)
+	add_child(publication_dialog)
 	resized.connect(_responsive)
 	get_viewport().size_changed.connect(_responsive)
 	closed.connect(_stop_playback)
@@ -228,7 +239,10 @@ func import_source(text: String) -> bool:
 	timeline.max_value = document.to_dict().steps.size()
 	timeline.set_value_no_signal(0.0)
 	set_timeline_position(0.0, true)
-	status.text = "Loaded complete supplied endpoint records. Verification and provenance below are imported metadata, not Studio conclusions."
+	publication = WalkthroughPublicationBridge._failure("Browser: exact Python publication export unavailable.") if browser_mode else WalkthroughPublicationBridge.build(document)
+	publication_button.disabled = not publication.ok
+	status.text = ("Loaded complete supplied endpoints. Deterministic Python publication bundle ready; exploratory 3D data is recorded but excluded from certified geometry exports." if publication.ok
+		else "Loaded complete supplied endpoints. Publication unavailable: " + publication.error) + " Verification and provenance are imported metadata, not Studio conclusions."
 	return true
 
 func set_timeline_position(value: float, from_playback: bool = false) -> void:
@@ -376,6 +390,21 @@ func save_path(path: String) -> bool:
 	var error := document.save_path(path)
 	status.text = "Saved exact walkthrough record." if error.is_empty() else error
 	return error.is_empty()
+
+func _choose_publication() -> void:
+	if not publication.get("ok", false): return
+	publication_dialog.current_file = "walkthrough-publication.zip"
+	publication_dialog.popup_centered_ratio(0.85)
+
+func save_publication(path: String) -> bool:
+	if not publication.get("ok", false): return false
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		status.text = "Could not write publication bundle"
+		return false
+	file.store_buffer(publication.bundle)
+	status.text = "Saved deterministic publication bundle with exact Python SVG/TikZ/Python endpoint exports. Exploratory 3D data remains excluded from certified geometry output."
+	return true
 
 func _close() -> void:
 	closed.emit()

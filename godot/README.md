@@ -38,6 +38,10 @@ convention in both presentation directions. See
 Planar steps may also link exact complete endpoints to independently supplied
 exploratory 3D views. That comparison is explicitly labeled supplied and
 unverified; Studio neither computes nor implies a branched-cover lift.
+Desktop walkthroughs can export a deterministic review bundle containing the
+normalized record, exact Python-library SVG/TikZ and editable Python for every
+2D endpoint, plus checksums. Exploratory 3D data is explicitly excluded from
+certified geometry output. See [PUBLICATION.md](PUBLICATION.md).
 
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
