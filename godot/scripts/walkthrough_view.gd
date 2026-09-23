@@ -2,7 +2,9 @@ class_name WalkthroughView
 extends PanelContainer
 
 signal closed
-const FIXTURE := "res://fixtures/walkthroughs/point-and-label-v1.json"
+const PLANAR_FIXTURE := "res://fixtures/walkthroughs/point-and-label-v1.json"
+const BRAID_FIXTURE := "res://fixtures/walkthroughs/signed-braid-v1.json"
+const FIXTURE := PLANAR_FIXTURE
 const SECONDS_PER_STEP := 1.5
 
 var document: WalkthroughDocument
@@ -10,6 +12,7 @@ var timeline_position := 0.0
 var step_index := -1
 var playing := false
 var play_direction := 1
+var braid_presentation := "bottom-to-top"
 var browser_mode := OS.has_feature("web")
 var source: TextEdit
 var selector: OptionButton
@@ -17,6 +20,7 @@ var timeline: HSlider
 var timeline_label: Label
 var play_button: Button
 var direction_option: OptionButton
+var presentation_option: OptionButton
 var details: Label
 var verification: Label
 var selected_list: ItemList
@@ -44,7 +48,8 @@ func _ready() -> void:
 	_button(tools, "Save walkthrough", func(): _choose_save()).visible = not browser_mode
 	_button(tools, "JSON import / source", func(): source.visible = not source.visible)
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
-	_button(tools, "Generic example", func(): import_source(FileAccess.get_file_as_string(FIXTURE)))
+	_button(tools, "Generic planar", func(): import_source(FileAccess.get_file_as_string(PLANAR_FIXTURE)))
+	_button(tools, "Generic braid", func(): import_source(FileAccess.get_file_as_string(BRAID_FIXTURE)))
 	var warning := _label(body, "SUPPLIED WALKTHROUGH. Playback crossfades complete endpoint records only. It does not compute an intermediate state or prove that an operation preserves any mathematical property.")
 	warning.add_theme_color_override("font_color", Color("#a54439"))
 	source = TextEdit.new()
@@ -67,6 +72,12 @@ func _ready() -> void:
 	direction_option.custom_minimum_size.y = 44
 	direction_option.item_selected.connect(func(index: int): set_play_direction(1 if index == 0 else -1))
 	playback.add_child(direction_option)
+	presentation_option = OptionButton.new()
+	presentation_option.add_item("Braid bottom to top")
+	presentation_option.add_item("Braid top to bottom")
+	presentation_option.custom_minimum_size.y = 44
+	presentation_option.item_selected.connect(func(index: int): set_braid_presentation("bottom-to-top" if index == 0 else "top-to-bottom"))
+	playback.add_child(presentation_option)
 	_button(playback, "|<", _start)
 	_button(playback, "Previous", _previous)
 	play_button = _button(playback, "Play forward", toggle_play)
@@ -165,7 +176,10 @@ func import_source(text: String) -> bool:
 	step_index = -1
 	playing = false
 	play_direction = 1
+	braid_presentation = document.diagram(document.to_dict().initial_state).data.braid.direction if document.kind() == "braid" else "bottom-to-top"
 	direction_option.select(0)
+	presentation_option.visible = document.kind() == "braid"
+	presentation_option.select(0 if braid_presentation == "bottom-to-top" else 1)
 	play_button.text = "Play forward"
 	source.text = document.to_json()
 	selector.clear()
@@ -193,10 +207,17 @@ func set_timeline_position(value: float, from_playback: bool = false) -> void:
 		after_canvas.set_document(sample.after)
 	before_label.text = "%s: %s" % [step.before, sample.before.data.title]
 	after_label.text = "%s: %s" % [step.after, sample.after.data.title]
-	# This is a visual fade between two complete records. No interpolated record
-	# exists, is serialized, or is presented as a mathematical state.
-	before_canvas.modulate.a = 1.0 - 0.65 * sample.local
-	after_canvas.modulate.a = 0.35 + 0.65 * sample.local
+	if document.kind() == "braid":
+		var before_length: int = sample.before.data.braid.word.size()
+		before_canvas.set_braid_view(float(before_length), braid_presentation)
+		after_canvas.set_braid_view(before_length + sample.local * step.braid.word.size(), braid_presentation)
+		before_canvas.modulate.a = 1.0
+		after_canvas.modulate.a = 1.0
+	else:
+		# This is a visual fade between two complete records. No interpolated
+		# record exists, is serialized, or is presented as a mathematical state.
+		before_canvas.modulate.a = 1.0 - 0.65 * sample.local
+		after_canvas.modulate.a = 0.35 + 0.65 * sample.local
 	selected_list.clear()
 	for selected in step.selected:
 		selected_list.add_item("%s  %s" % [selected.kind, selected.id])
@@ -206,11 +227,17 @@ func set_timeline_position(value: float, from_playback: bool = false) -> void:
 		_select_record(step.selected[0])
 	verification.text = "Recorded verification: %s, authority: %s. Studio does not validate this claim. %s" % [step.verification.status, step.verification.authority, step.verification.note]
 	details.text = "%s\nOperation label: %s\nProvenance: %s, %s. %s" % [step.name, step.operation, step.provenance.kind, step.provenance.source, step.provenance.note]
-	timeline_label.text = "Step %d/%d, %.1f%% visual crossfade. Current supplied reference: %s. No intermediate mathematical record is computed." % [step_index + 1, document.to_dict().steps.size(), sample.local * 100.0, sample.current_reference]
+	if document.kind() == "braid":
+		details.text += "\nLiteral block %s. Supplied entry IDs %s; exit IDs %s. Positive means upper-left over upper-right in either presentation direction." % [step.braid.word, step.braid.entry_ids, step.braid.exit_ids]
+		timeline_label.text = "Step %d/%d, %.1f%% through the literal supplied braid block. The schematic prefix is view state; the complete before/after words remain unchanged." % [step_index + 1, document.to_dict().steps.size(), sample.local * 100.0]
+	else:
+		timeline_label.text = "Step %d/%d, %.1f%% visual crossfade. Current supplied reference: %s. No intermediate mathematical record is computed." % [step_index + 1, document.to_dict().steps.size(), sample.local * 100.0, sample.current_reference]
 
 func _record_selected(record: Dictionary) -> void:
 	if document == null or not record.has("kind") or not record.has("id"): return
-	_select_record({"kind": record.kind, "id": record.id})
+	var selected := {"kind": record.kind, "id": record.id}
+	if record.has("index"): selected.index = record.index
+	_select_record(selected)
 	details.text += "\nInspecting stable record %s:%s in both supplied endpoints." % [record.kind, record.id]
 
 func _selected_row(index: int) -> void:
@@ -218,8 +245,11 @@ func _selected_row(index: int) -> void:
 
 func _select_record(selected: Dictionary) -> void:
 	for canvas in [before_canvas, after_canvas]:
+		if selected.kind == "strand":
+			canvas.select_record(selected)
+			continue
 		for record in canvas.document.inspector_records():
-			if record.kind == selected.kind and record.id == selected.id:
+			if record.kind == selected.kind and record.id == selected.id and (not selected.has("index") or record.get("index", -1) == selected.index):
 				canvas.select_record(record)
 				break
 
@@ -229,6 +259,12 @@ func set_play_direction(direction: int) -> void:
 	direction_option.select(0 if direction == 1 else 1)
 	_stop_playback()
 	play_button.text = "Play forward" if direction == 1 else "Play reverse"
+
+func set_braid_presentation(value: String) -> void:
+	if document == null or document.kind() != "braid" or value not in ["bottom-to-top", "top-to-bottom"]: return
+	braid_presentation = value
+	presentation_option.select(0 if value == "bottom-to-top" else 1)
+	set_timeline_position(timeline_position, true)
 
 func toggle_play() -> void:
 	if document == null: return

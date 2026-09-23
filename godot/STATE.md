@@ -9,10 +9,59 @@
   playback implemented, visual acceptance pending; M4 programmable acceptance
   implemented, display-enabled visual acceptance pending; M5 first linked
   exploratory surface slice implemented, visual acceptance pending; M6 first
-  supplied planar walkthrough slice implemented, visual acceptance pending**.
+  supplied planar and signed-braid walkthrough slices implemented, visual
+  acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: explicit supplied planar walkthroughs
+## Latest increment: explicit supplied signed-braid walkthroughs
+
+Built from live fork head `13bbbc67e0d6218cf8b82c3bafa6bf57ec709d30`
+in an isolated worktree under the exclusive Studio lock.
+
+- Extended the bounded version-1 walkthrough format to homogeneous braid-state
+  chains. Each braid step requires a nonempty literal signed word plus complete
+  supplied entry and exit strand-ID orders. Import requires the after-state word
+  to equal the exact before-state word followed by that block, checks both
+  endpoint permutations, and independently transports the entry order through
+  the block. Nothing is reduced, cancelled, reordered, or sign-flipped.
+- Braid states must preserve strand count, spacing, colors, and their stored
+  presentation. Stable numeric strand identities can be selected across every
+  endpoint. Mixed planar/braid state sets, malformed permutations, missing or
+  executable fields, inconsistent prefixes, and unsupported generators fail
+  without replacing the accepted walkthrough.
+- Added fractional literal-block playback to the existing reversible viewer.
+  Both panels retain complete supplied records; the after panel schematically
+  reveals only the current block fraction. Bottom-to-top/top-to-bottom is
+  separate view state. Positive remains upper-left over upper-right in either
+  direction, and selected transported strands receive a persistent highlight.
+- Added an original three-step `[1, -2, 1]` generic fixture with independently
+  specified orders `[1,2,3]`, `[2,1,3]`, `[2,3,1]`, `[3,2,1]`. Every step is
+  visibly unverified and asserts no braid relation, equality, mapping-class
+  action, or connection to Richard's research data.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
+  30 mobile, 71 factor-workspace, 54 surface-view, 79 planar-walkthrough, and
+  **54 new signed-braid walkthrough assertions**, 672 total. New coverage
+  includes prefix and permutation rejection, literal multi-generator blocks,
+  independently expected strand orders, both physical presentation directions,
+  fractional positive/negative crossings, stable strand linkage, reverse replay,
+  failed-import preservation, and exact save/reopen.
+- 6 Python factor-adapter, 3 geometry-bridge, 3 runner-contract, and 13 browser
+  adapter/loader tests. The intentional harness failure exited 1. Editor import,
+  three-frame launch, and existing fixture renders passed.
+- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
+- Static Web export rebuilt successfully and contains the signed-braid fixture.
+  No Site deployment or binary publication occurred.
+
+No controller/test failure remains. Display-enabled visual acceptance remains
+unavailable, so native strand highlighting, fractional crossing gaps, mobile
+controls, and actual WebGL rendering are not visually accepted. The braid
+walkthrough validates literal combinatorial transport only; it does not prove
+that a supplied word equals another braid or induces any claimed surface action.
+
+## Earlier increment: explicit supplied planar walkthroughs
 
 Built from live fork head `ae2175c2f44a7e528cfa953982d9d53465f02515`
 in an isolated worktree under the exclusive Studio lock.
@@ -593,11 +642,10 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Extend M6 with a bounded signed-braid walkthrough variant. Require literal
-supplied words and endpoint strand orders, preserve transported strand IDs and
-the fixed positive-crossing convention, and link the existing braid timeline
-without interpreting the step name as an action or proof. Add an original
-generic fixture and deterministic forward/reverse record-level tests.
+Extend M6 with a bounded supplied-cover walkthrough that links complete planar
+steps to optional exploratory surface-view records by the same stable IDs.
+Require explicit provenance and verification on every linkage, reuse the
+generic disk data, and do not compute or imply a branched-cover lift.
 A display-enabled pass still needs to inspect native controls, crossing gaps,
 M2 forms and dialogs, and recovery before visual acceptance can be claimed.
 

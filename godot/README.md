@@ -30,8 +30,11 @@ It is deliberately not certified geometry or a computed lift. See
 **Walkthroughs** opens a reversible supplied-record viewer. Every step names
 complete before/after diagrams, stable selected IDs, an operation label,
 provenance, and a recorded verification status. Scrubbing or playback only
-crossfades the supplied endpoints; it does not compute an intermediate state or
-prove equivalence. See [WALKTHROUGHS.md](WALKTHROUGHS.md).
+crossfades planar endpoints or reveals a literal supplied braid block. It does
+not compute an intermediate record or prove equivalence. Signed-braid steps
+preserve exact word order, transported strand IDs, and the fixed physical sign
+convention in both presentation directions. See
+[WALKTHROUGHS.md](WALKTHROUGHS.md).
 
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the

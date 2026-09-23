@@ -1,0 +1,63 @@
+{
+  "format": "surface-diagrams-walkthrough",
+  "version": 1,
+  "title": "Generic supplied signed-braid walkthrough",
+  "documents": {
+    "empty": {
+      "format": "surface-diagrams", "version": 1, "kind": "braid",
+      "title": "Supplied empty prefix",
+      "braid": {"strands": 3, "word": [], "direction": "bottom-to-top"}
+    },
+    "positive": {
+      "format": "surface-diagrams", "version": 1, "kind": "braid",
+      "title": "Supplied prefix [1]",
+      "braid": {"strands": 3, "word": [1], "direction": "bottom-to-top"}
+    },
+    "mixed": {
+      "format": "surface-diagrams", "version": 1, "kind": "braid",
+      "title": "Supplied prefix [1, -2]",
+      "braid": {"strands": 3, "word": [1, -2], "direction": "bottom-to-top"}
+    },
+    "final": {
+      "format": "surface-diagrams", "version": 1, "kind": "braid",
+      "title": "Supplied prefix [1, -2, 1]",
+      "braid": {"strands": 3, "word": [1, -2, 1], "direction": "bottom-to-top"}
+    }
+  },
+  "initial_state": "empty",
+  "steps": [
+    {
+      "id": "positive-one",
+      "name": "Append the supplied positive generator",
+      "operation": "literal signed-word append",
+      "before": "empty",
+      "after": "positive",
+      "selected": [{"kind": "strand", "id": 1}, {"kind": "strand", "id": 2}],
+      "braid": {"word": [1], "entry_ids": [1, 2, 3], "exit_ids": [2, 1, 3]},
+      "provenance": {"kind": "original-generic-example", "source": "Surface Diagrams Studio generic fixture", "note": "The word and endpoint orders were authored directly for interface testing."},
+      "verification": {"status": "unverified", "authority": "none", "note": "Literal transport is checked; no braid equality or mapping-class claim is asserted."}
+    },
+    {
+      "id": "negative-two",
+      "name": "Append the supplied negative generator",
+      "operation": "literal signed-word append",
+      "before": "positive",
+      "after": "mixed",
+      "selected": [{"kind": "strand", "id": 1}, {"kind": "strand", "id": 3}],
+      "braid": {"word": [-2], "entry_ids": [2, 1, 3], "exit_ids": [2, 3, 1]},
+      "provenance": {"kind": "original-generic-example", "source": "Surface Diagrams Studio generic fixture", "note": "The word and endpoint orders were authored directly for interface testing."},
+      "verification": {"status": "unverified", "authority": "none", "note": "Literal transport is checked; no cancellation or simplification is performed."}
+    },
+    {
+      "id": "positive-one-again",
+      "name": "Append the final supplied positive generator",
+      "operation": "literal signed-word append",
+      "before": "mixed",
+      "after": "final",
+      "selected": [{"kind": "strand", "id": 2}, {"kind": "strand", "id": 3}],
+      "braid": {"word": [1], "entry_ids": [2, 3, 1], "exit_ids": [3, 2, 1]},
+      "provenance": {"kind": "original-generic-example", "source": "Surface Diagrams Studio generic fixture", "note": "The word and endpoint orders were authored directly for interface testing."},
+      "verification": {"status": "unverified", "authority": "none", "note": "The three-letter word is a generic playback example, not a claimed relation."}
+    }
+  ]
+}

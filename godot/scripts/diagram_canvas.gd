@@ -516,8 +516,12 @@ func _draw_braid(data: Dictionary) -> void:
 			draw_arc(middle, 17.0, 0.0, TAU, 32, Color("#f2a900"), 3.0, true)
 	for identity in braid.strands:
 		if points[identity].size() >= 2:
+			if selected_record.get("kind", "") == "strand" and selected_record.get("id", -1) == identity + 1:
+				draw_polyline(points[identity], Color("#f2a900"), 9.0, true)
 			draw_polyline(points[identity], Color(colors[identity % colors.size()]), 4.0, true)
 		else:
+			if selected_record.get("kind", "") == "strand" and selected_record.get("id", -1) == identity + 1:
+				draw_circle(points[identity][0], 8.0, Color("#f2a900"))
 			draw_circle(points[identity][0], 3.0, Color(colors[identity % colors.size()]))
 	for crossing in sample.crossings:
 		var start := _screen(crossing.a, frame)
