@@ -5,8 +5,10 @@ extends RefCounted
 # provenance, and verification are metadata; none of them execute an action.
 const FORMAT := "surface-diagrams-walkthrough"
 const MAX_DOCUMENTS := 65
+const MAX_SURFACE_VIEWS := 65
 const MAX_STEPS := 64
 const MAX_SELECTED := 64
+const COVER_STATUS := "supplied-exploratory-linkage"
 const VERIFICATION_STATUSES := ["unverified", "source-asserted", "independently-verified", "machine-verified"]
 const PROVENANCE_KINDS := ["original-generic-example", "supplied-record", "published-source"]
 var _data: Dictionary
@@ -23,8 +25,9 @@ static func parse(source: String) -> Dictionary:
 	if not DiagramDocument._duplicate_field(source).is_empty():
 		return DiagramDocument._failure("Duplicate walkthrough JSON field")
 	var raw = json.data
-	var fields := ["format", "version", "title", "documents", "initial_state", "steps"]
-	var check := DiagramDocument._keys(raw, fields, fields, "walkthrough")
+	var fields := ["format", "version", "title", "documents", "initial_state", "steps", "surface_views"]
+	var required := ["format", "version", "title", "documents", "initial_state", "steps"]
+	var check := DiagramDocument._keys(raw, fields, required, "walkthrough")
 	if not check.ok: return check
 	if raw.format != FORMAT or not DiagramDocument._integer(raw.version) or raw.version != 1:
 		return DiagramDocument._failure("Expected walkthrough version 1")
@@ -52,18 +55,33 @@ static func parse(source: String) -> Dictionary:
 			return DiagramDocument._failure("Every supplied state must preserve stable IDs, kinds, and order")
 		if document_kind == "braid" and not _same_braid_structure(initial, candidate):
 			return DiagramDocument._failure("Every braid state must preserve strands, spacing, colors, and stored presentation")
+	var normalized_surface_views := {}
+	if raw.has("surface_views"):
+		if document_kind != "planar":
+			return DiagramDocument._failure("Only planar walkthroughs can link supplied exploratory surface views")
+		if typeof(raw.surface_views) != TYPE_DICTIONARY or raw.surface_views.is_empty() or raw.surface_views.size() > MAX_SURFACE_VIEWS:
+			return DiagramDocument._failure("Walkthrough surface_views needs 1..65 named supplied views")
+		for id in raw.surface_views:
+			check = DiagramDocument._record_id(id, "surface-view reference")
+			if not check.ok: return check
+			var surface_result := SurfaceViewDocument.parse(JSON.stringify(raw.surface_views[id]))
+			if not surface_result.ok: return surface_result
+			normalized_surface_views[id] = surface_result.document.to_dict()
 	if typeof(raw.steps) != TYPE_ARRAY or raw.steps.is_empty() or raw.steps.size() > MAX_STEPS:
 		return DiagramDocument._failure("Walkthrough needs 1..64 supplied steps")
 	var normalized_steps: Array = []
 	var step_ids := {}
+	var referenced_surface_views := {}
 	var expected_before: String = raw.initial_state
 	for index in raw.steps.size():
 		var step = raw.steps[index]
 		fields = ["id", "name", "operation", "before", "after", "selected", "provenance", "verification"]
-		var required := fields.duplicate()
+		required = fields.duplicate()
 		if document_kind == "braid":
 			fields.append("braid")
 			required.append("braid")
+		else:
+			fields.append("cover")
 		check = DiagramDocument._keys(step, fields, required, "steps[%d]" % index)
 		if not check.ok: return check
 		check = DiagramDocument._record_id(step.id, "step ID")
@@ -92,10 +110,21 @@ static func parse(source: String) -> Dictionary:
 			var braid_result := _braid_step(step.braid, DiagramDocument.new(normalized_documents[step.before]), DiagramDocument.new(normalized_documents[step.after]))
 			if not braid_result.ok: return braid_result
 			normalized_step.braid = braid_result.value
+		elif step.has("cover"):
+			var cover_result := _cover_step(step.cover, normalized_surface_views,
+				DiagramDocument.new(normalized_documents[step.before]), DiagramDocument.new(normalized_documents[step.after]))
+			if not cover_result.ok: return cover_result
+			normalized_step.cover = cover_result.value
+			referenced_surface_views[cover_result.value.before_surface] = true
+			referenced_surface_views[cover_result.value.after_surface] = true
 		normalized_steps.append(normalized_step)
-	return {"ok": true, "document": WalkthroughDocument.new({"format": FORMAT,
+	if referenced_surface_views.size() != normalized_surface_views.size():
+		return DiagramDocument._failure("Every supplied surface view must be referenced by a cover linkage")
+	var normalized := {"format": FORMAT,
 		"version": 1, "title": raw.title, "documents": normalized_documents,
-		"initial_state": raw.initial_state, "steps": normalized_steps}), "error": ""}
+		"initial_state": raw.initial_state, "steps": normalized_steps}
+	if not normalized_surface_views.is_empty(): normalized.surface_views = normalized_surface_views
+	return {"ok": true, "document": WalkthroughDocument.new(normalized), "error": ""}
 
 static func _signature(document: DiagramDocument) -> Dictionary:
 	if document.data.kind == "braid":
@@ -166,6 +195,28 @@ static func _braid_step(value: Variant, before: DiagramDocument, after: DiagramD
 		return DiagramDocument._failure("Supplied exit_ids do not match literal strand transport")
 	return {"ok": true, "value": {"word": word, "entry_ids": entry_result.value, "exit_ids": exit_result.value}}
 
+static func _cover_step(value: Variant, surface_views: Dictionary, before: DiagramDocument, after: DiagramDocument) -> Dictionary:
+	var fields := ["before_surface", "after_surface", "status", "provenance", "verification"]
+	var check := DiagramDocument._keys(value, fields, fields, "cover linkage")
+	if not check.ok: return check
+	if value.status != COVER_STATUS:
+		return DiagramDocument._failure("Cover linkage must be labeled supplied-exploratory-linkage")
+	if typeof(value.before_surface) != TYPE_STRING or typeof(value.after_surface) != TYPE_STRING or not surface_views.has(value.before_surface) or not surface_views.has(value.after_surface):
+		return DiagramDocument._failure("Cover linkage must reference complete supplied surface views")
+	var before_surface := SurfaceViewDocument.new(surface_views[value.before_surface])
+	var after_surface := SurfaceViewDocument.new(surface_views[value.after_surface])
+	if before_surface.planar_document().to_json() != before.to_json():
+		return DiagramDocument._failure("Cover before surface must embed the exact supplied planar before-state")
+	if after_surface.planar_document().to_json() != after.to_json():
+		return DiagramDocument._failure("Cover after surface must embed the exact supplied planar after-state")
+	var provenance_result := _provenance(value.provenance)
+	if not provenance_result.ok: return provenance_result
+	var verification_result := _verification(value.verification)
+	if not verification_result.ok: return verification_result
+	return {"ok": true, "value": {"before_surface": value.before_surface,
+		"after_surface": value.after_surface, "status": COVER_STATUS,
+		"provenance": provenance_result.value, "verification": verification_result.value}}
+
 static func _strand_order(value: Variant, strands: int, where: String) -> Dictionary:
 	if typeof(value) != TYPE_ARRAY or value.size() != strands:
 		return DiagramDocument._failure(where + " must list every strand identity exactly once")
@@ -221,6 +272,9 @@ func save_path(path: String) -> String:
 
 func diagram(id: String) -> DiagramDocument:
 	return DiagramDocument.new(_data.documents[id]) if _data.documents.has(id) else null
+
+func surface_view(id: String) -> SurfaceViewDocument:
+	return SurfaceViewDocument.new(_data.surface_views[id]) if _data.has("surface_views") and _data.surface_views.has(id) else null
 
 func step(index: int) -> Dictionary:
 	return _data.steps[index].duplicate(true) if index >= 0 and index < _data.steps.size() else {}

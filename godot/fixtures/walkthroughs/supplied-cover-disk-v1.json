@@ -1,0 +1,178 @@
+{
+  "format": "surface-diagrams-walkthrough",
+  "version": 1,
+  "title": "Generic supplied disk endpoint linkage",
+  "documents": {
+    "disk_before": {
+      "format": "surface-diagrams",
+      "version": 1,
+      "kind": "planar",
+      "title": "Generic disk diagram before",
+      "surface": {
+        "width": 400,
+        "height": 210,
+        "objects": [
+          {"id": "p1", "kind": "point", "x": -120},
+          {"id": "p2", "kind": "point", "x": -40},
+          {"id": "p3", "kind": "point", "x": 40},
+          {"id": "b1", "kind": "boundary", "x": 120}
+        ]
+      },
+      "curves": [
+        {"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": [], "color": "#ff00d4"}
+      ],
+      "labels": []
+    },
+    "disk_after": {
+      "format": "surface-diagrams",
+      "version": 1,
+      "kind": "planar",
+      "title": "Generic disk diagram after",
+      "surface": {
+        "width": 400,
+        "height": 210,
+        "objects": [
+          {"id": "p1", "kind": "point", "x": -120},
+          {"id": "p2", "kind": "point", "x": -40},
+          {"id": "p3", "kind": "point", "x": 55},
+          {"id": "b1", "kind": "boundary", "x": 120}
+        ]
+      },
+      "curves": [
+        {"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": [], "color": "#ff00d4"}
+      ],
+      "labels": []
+    }
+  },
+  "surface_views": {
+    "surface_before": {
+      "format": "surface-diagrams-surface-view",
+      "version": 1,
+      "title": "Supplied exploratory disk before",
+      "status": "exploratory-supplied-geometry",
+      "planar": {
+        "format": "surface-diagrams",
+        "version": 1,
+        "kind": "planar",
+        "title": "Generic disk diagram before",
+        "surface": {
+          "width": 400,
+          "height": 210,
+          "objects": [
+            {"id": "p1", "kind": "point", "x": -120},
+            {"id": "p2", "kind": "point", "x": -40},
+            {"id": "p3", "kind": "point", "x": 40},
+            {"id": "b1", "kind": "boundary", "x": 120}
+          ]
+        },
+        "curves": [
+          {"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": [], "color": "#ff00d4"}
+        ],
+        "labels": []
+      },
+      "surface": {
+        "kind": "disk",
+        "radius": 3.0,
+        "thickness": 0.12,
+        "color": "#d9e7e2",
+        "orientation": "front-is-positive-z"
+      },
+      "objects": [
+        {"id": "p1", "position": [-1.8, 0.0, 0.12]},
+        {"id": "p2", "position": [-0.6, 0.0, 0.12]},
+        {"id": "p3", "position": [0.6, 0.0, 0.12]},
+        {"id": "b1", "position": [1.8, 0.0, 0.12]}
+      ],
+      "curves": [
+        {"id": "arc1", "closed": false, "points": [
+          [-1.8, 0.0, 0.12], [-1.4, 0.65, 0.2], [-0.6, 0.9, 0.24],
+          [0.1, 0.65, 0.2], [0.6, 0.0, 0.12]
+        ]}
+      ]
+    },
+    "surface_after": {
+      "format": "surface-diagrams-surface-view",
+      "version": 1,
+      "title": "Supplied exploratory disk after",
+      "status": "exploratory-supplied-geometry",
+      "planar": {
+        "format": "surface-diagrams",
+        "version": 1,
+        "kind": "planar",
+        "title": "Generic disk diagram after",
+        "surface": {
+          "width": 400,
+          "height": 210,
+          "objects": [
+            {"id": "p1", "kind": "point", "x": -120},
+            {"id": "p2", "kind": "point", "x": -40},
+            {"id": "p3", "kind": "point", "x": 55},
+            {"id": "b1", "kind": "boundary", "x": 120}
+          ]
+        },
+        "curves": [
+          {"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": [], "color": "#ff00d4"}
+        ],
+        "labels": []
+      },
+      "surface": {
+        "kind": "disk",
+        "radius": 3.0,
+        "thickness": 0.12,
+        "color": "#d9e7e2",
+        "orientation": "front-is-positive-z"
+      },
+      "objects": [
+        {"id": "p1", "position": [-1.8, 0.0, 0.12]},
+        {"id": "p2", "position": [-0.6, 0.0, 0.12]},
+        {"id": "p3", "position": [0.85, 0.2, 0.12]},
+        {"id": "b1", "position": [1.8, 0.0, 0.12]}
+      ],
+      "curves": [
+        {"id": "arc1", "closed": false, "points": [
+          [-1.8, 0.0, 0.12], [-1.35, 0.55, 0.18], [-0.55, 1.0, 0.28],
+          [0.2, 0.82, 0.2], [0.85, 0.2, 0.12]
+        ]}
+      ]
+    }
+  },
+  "initial_state": "disk_before",
+  "steps": [
+    {
+      "id": "supplied-disk-endpoints",
+      "name": "Compare supplied planar and exploratory endpoints",
+      "operation": "supplied endpoint replacement, not a computed lift",
+      "before": "disk_before",
+      "after": "disk_after",
+      "selected": [
+        {"kind": "object", "id": "p3"},
+        {"kind": "curve", "id": "arc1"}
+      ],
+      "provenance": {
+        "kind": "original-generic-example",
+        "source": "Surface Diagrams Studio generic fixture",
+        "note": "Both planar endpoints were supplied explicitly for interface testing."
+      },
+      "verification": {
+        "status": "unverified",
+        "authority": "none",
+        "note": "No isotopy, mapping-class action, or equality is asserted."
+      },
+      "cover": {
+        "before_surface": "surface_before",
+        "after_surface": "surface_after",
+        "status": "supplied-exploratory-linkage",
+        "provenance": {
+          "kind": "original-generic-example",
+          "source": "Surface Diagrams Studio generic fixture",
+          "note": "The two disk meshes and polylines are independently supplied endpoint views."
+        },
+        "verification": {
+          "status": "unverified",
+          "authority": "none",
+          "note": "No branched-cover lift is computed or verified."
+        }
+      }
+    }
+  ]
+}

@@ -8,12 +8,69 @@
   with display-enabled visual acceptance still pending; M3 interaction and
   playback implemented, visual acceptance pending; M4 programmable acceptance
   implemented, display-enabled visual acceptance pending; M5 first linked
-  exploratory surface slice implemented, visual acceptance pending; M6 first
-  supplied planar and signed-braid walkthrough slices implemented, visual
-  acceptance pending**.
+  exploratory surface slice implemented, visual acceptance pending; M6 supplied
+  planar, signed-braid, and explicitly linked exploratory surface walkthrough
+  slices implemented, visual acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: explicit supplied signed-braid walkthroughs
+## Latest increment: explicit supplied planar-to-surface endpoint links
+
+Built from live fork head `ae72ebd897ac929103aa616de85c5c7bf3fe2909`
+in an isolated worktree under the exclusive Studio lock.
+
+- Extended the bounded version-1 walkthrough format with optional planar-only
+  `surface_views` and per-step `cover` records. Each linked surface record must
+  independently pass the strict exploratory-surface parser and embed the exact
+  complete planar before/after document named by the step. Every surface view
+  must be referenced; missing endpoints are never carried forward or generated.
+- Each cover link requires its own provenance, verification, and literal
+  `supplied-exploratory-linkage` status. Braid walkthroughs reject this data.
+  Unknown fields, scripts/resources, mismatched planar records, orphan views,
+  invalid 3D endpoints, and future or promoted status claims fail without
+  replacing the accepted walkthrough.
+- The walkthrough viewer now presents both complete supplied 2D endpoints and
+  both complete supplied exploratory 3D endpoints. Stable object/curve
+  selection links all four views. The two cameras remain independent view
+  state. Scrubbing never interpolates a surface or creates an intermediate
+  mathematical record, and visible language states that no branched-cover lift
+  is computed or certified.
+- Added an original generic disk fixture with an explicit moved planar endpoint
+  and independently supplied 3D coordinates/polyline. Its verification remains
+  unverified and it asserts no isotopy, action, equality, cover lift, or
+  relationship to Richard's research construction.
+- Corrected the Studio README to describe the existing Site as public while
+  retaining the branch/Site separation and no-automatic-deployment boundary.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
+  30 mobile, 71 factor-workspace, 54 surface-view, 79 planar-walkthrough, 54
+  signed-braid walkthrough, and **52 new cover-link walkthrough assertions**,
+  724 total. New coverage includes exact embedded endpoint equality, defensive
+  copies, orphan/mismatch/executable-field rejection, linked 2D/3D selection,
+  independent cameras, noninterpolated surface endpoints, failed-import
+  preservation, exact save/reopen, and 320/390/1280-pixel layouts.
+- 6 Python factor-adapter, 3 geometry-bridge, 3 runner-contract, and 13 browser
+  adapter/loader tests. The intentional harness failure exited 1. Editor import,
+  three-frame launch, and existing fixture renders passed.
+- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
+- Static Web export rebuilt successfully and its pack contains the new fixture
+  plus compiled walkthrough/3D classes. No Site deployment or binary
+  publication occurred.
+
+No controller/test failure remains. Display-enabled desktop/mobile/WebGL visual
+acceptance remains unavailable, so the four-panel presentation, 3D selection,
+and physical-phone scrolling are not visually accepted. The linkage validates
+record identity only; it does not calculate a cover, lift a curve, or certify
+the supplied 3D geometry.
+
+**Next specific task:** start M7 with a reproducible walkthrough publication
+bundle containing normalized walkthrough JSON, exact Python-library SVG/TikZ
+for every planar endpoint, and a deterministic manifest of stable references
+and checksums. Exploratory 3D views must remain explicitly excluded from
+certified publication output.
+
+## Earlier increment: explicit supplied signed-braid walkthroughs
 
 Built from live fork head `13bbbc67e0d6218cf8b82c3bafa6bf57ec709d30`
 in an isolated worktree under the exclusive Studio lock.

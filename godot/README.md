@@ -35,6 +35,9 @@ not compute an intermediate record or prove equivalence. Signed-braid steps
 preserve exact word order, transported strand IDs, and the fixed physical sign
 convention in both presentation directions. See
 [WALKTHROUGHS.md](WALKTHROUGHS.md).
+Planar steps may also link exact complete endpoints to independently supplied
+exploratory 3D views. That comparison is explicitly labeled supplied and
+unverified; Studio neither computes nor implies a branched-cover lift.
 
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
@@ -112,12 +115,13 @@ retains drafts by curve ID. Browser use requires the existing unvalidated-edit
 opt-in and remains visibly UNVALIDATED.
 
 The browser-specific controller retains its explicit unvalidated opt-in and
-disabled exact exports. These branch changes have **not** been deployed to the
-private Site; the existing Site is an earlier proof-of-concept snapshot.
+disabled exact exports. Branch commits are not automatically deployed to the
+public Site; the Site source and each publication receipt remain separate.
 
-## Private browser proof of concept
+## Public browser proof of concept
 
-Josh authorized a private ChatGPT Site proof of concept on 2026-09-14:
+Josh authorized a ChatGPT Site proof of concept on 2026-09-14 and requested
+public access on 2026-09-23:
 <https://surface-diagrams-studio.joshgay.chatgpt.site>.
 
 This is the Godot application exported to WebAssembly, not the separate Python

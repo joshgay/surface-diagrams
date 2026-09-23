@@ -4,6 +4,7 @@ extends PanelContainer
 signal closed
 const PLANAR_FIXTURE := "res://fixtures/walkthroughs/point-and-label-v1.json"
 const BRAID_FIXTURE := "res://fixtures/walkthroughs/signed-braid-v1.json"
+const COVER_FIXTURE := "res://fixtures/walkthroughs/supplied-cover-disk-v1.json"
 const FIXTURE := PLANAR_FIXTURE
 const SECONDS_PER_STEP := 1.5
 
@@ -29,6 +30,13 @@ var after_canvas: DiagramCanvas
 var before_label: Label
 var after_label: Label
 var grid: GridContainer
+var cover_panel: VBoxContainer
+var cover_grid: GridContainer
+var cover_before_view: ExploratorySurface3D
+var cover_after_view: ExploratorySurface3D
+var cover_before_label: Label
+var cover_after_label: Label
+var cover_status: Label
 var status: Label
 var open_dialog: FileDialog
 var save_dialog: FileDialog
@@ -50,6 +58,7 @@ func _ready() -> void:
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
 	_button(tools, "Generic planar", func(): import_source(FileAccess.get_file_as_string(PLANAR_FIXTURE)))
 	_button(tools, "Generic braid", func(): import_source(FileAccess.get_file_as_string(BRAID_FIXTURE)))
+	_button(tools, "Generic supplied disk link", func(): import_source(FileAccess.get_file_as_string(COVER_FIXTURE)))
 	var warning := _label(body, "SUPPLIED WALKTHROUGH. Playback crossfades complete endpoint records only. It does not compute an intermediate state or prove that an operation preserves any mathematical property.")
 	warning.add_theme_color_override("font_color", Color("#a54439"))
 	source = TextEdit.new()
@@ -107,6 +116,21 @@ func _ready() -> void:
 	var after_column := _column("Complete supplied after-state")
 	after_label = _label(after_column, "")
 	after_canvas = _canvas(after_column)
+	cover_panel = VBoxContainer.new()
+	cover_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cover_panel.visible = false
+	body.add_child(cover_panel)
+	cover_status = _label(cover_panel, "")
+	cover_status.add_theme_color_override("font_color", Color("#a54439"))
+	cover_grid = GridContainer.new()
+	cover_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cover_panel.add_child(cover_grid)
+	var cover_before_column := _cover_column("Complete supplied exploratory before-view")
+	cover_before_label = _label(cover_before_column, "")
+	cover_before_view = _surface_view(cover_before_column)
+	var cover_after_column := _cover_column("Complete supplied exploratory after-view")
+	cover_after_label = _label(cover_after_column, "")
+	cover_after_view = _surface_view(cover_after_column)
 	status = _label(body, "")
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -156,8 +180,24 @@ func _canvas(parent: Node) -> DiagramCanvas:
 	parent.add_child(canvas)
 	return canvas
 
+func _cover_column(caption: String) -> VBoxContainer:
+	var column := VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cover_grid.add_child(column)
+	_label(column, caption)
+	return column
+
+func _surface_view(parent: Node) -> ExploratorySurface3D:
+	var view := ExploratorySurface3D.new()
+	view.custom_minimum_size.y = 330
+	view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	view.record_picked.connect(_record_selected)
+	parent.add_child(view)
+	return view
+
 func _responsive() -> void:
 	if grid != null: grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
+	if cover_grid != null: cover_grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
 
 func open_path(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
@@ -205,6 +245,7 @@ func set_timeline_position(value: float, from_playback: bool = false) -> void:
 	if changed:
 		before_canvas.set_document(sample.before)
 		after_canvas.set_document(sample.after)
+		_update_cover(step)
 	before_label.text = "%s: %s" % [step.before, sample.before.data.title]
 	after_label.text = "%s: %s" % [step.after, sample.after.data.title]
 	if document.kind() == "braid":
@@ -232,6 +273,23 @@ func set_timeline_position(value: float, from_playback: bool = false) -> void:
 		timeline_label.text = "Step %d/%d, %.1f%% through the literal supplied braid block. The schematic prefix is view state; the complete before/after words remain unchanged." % [step_index + 1, document.to_dict().steps.size(), sample.local * 100.0]
 	else:
 		timeline_label.text = "Step %d/%d, %.1f%% visual crossfade. Current supplied reference: %s. No intermediate mathematical record is computed." % [step_index + 1, document.to_dict().steps.size(), sample.local * 100.0, sample.current_reference]
+	if step.has("cover"):
+		details.text += "\nSurface linkage: %s. Provenance: %s, %s. Recorded verification: %s, %s. No cover lift is computed by Studio." % [step.cover.status, step.cover.provenance.kind, step.cover.provenance.source, step.cover.verification.status, step.cover.verification.authority]
+
+func _update_cover(step: Dictionary) -> void:
+	var has_cover: bool = step.has("cover")
+	cover_panel.visible = has_cover
+	if not has_cover:
+		cover_before_view.set_document(null)
+		cover_after_view.set_document(null)
+		return
+	var before_surface := document.surface_view(step.cover.before_surface)
+	var after_surface := document.surface_view(step.cover.after_surface)
+	cover_before_view.set_document(before_surface)
+	cover_after_view.set_document(after_surface)
+	cover_before_label.text = "%s: %s" % [step.cover.before_surface, before_surface.to_dict().title]
+	cover_after_label.text = "%s: %s" % [step.cover.after_surface, after_surface.to_dict().title]
+	cover_status.text = "SUPPLIED EXPLORATORY LINKAGE. These are complete endpoint views. Studio does not compute a branched-cover lift, interpolate surface geometry, or certify equivalence."
 
 func _record_selected(record: Dictionary) -> void:
 	if document == null or not record.has("kind") or not record.has("id"): return
@@ -252,6 +310,9 @@ func _select_record(selected: Dictionary) -> void:
 			if record.kind == selected.kind and record.id == selected.id and (not selected.has("index") or record.get("index", -1) == selected.index):
 				canvas.select_record(record)
 				break
+	if selected.kind in ["object", "curve"]:
+		for view in [cover_before_view, cover_after_view]:
+			if view != null and view.document != null: view.select_id(str(selected.id))
 
 func set_play_direction(direction: int) -> void:
 	if direction not in [-1, 1]: return
