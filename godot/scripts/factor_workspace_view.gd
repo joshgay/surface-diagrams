@@ -22,6 +22,13 @@ var open_dialog: FileDialog
 var rendered: Dictionary = {}
 var export_kind := ""
 var browser_mode := OS.has_feature("web")
+var timeline_position := 0.0
+var direction := ""
+var playing := false
+var timeline: HSlider
+var play_button: Button
+var direction_option: OptionButton
+var timeline_label: Label
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -33,7 +40,7 @@ func _ready() -> void:
 	scroll.add_child(body)
 	var tools := HFlowContainer.new()
 	body.add_child(tools)
-	_button(tools, "Back to editor", func(): closed.emit())
+	_button(tools, "Back to editor", _close)
 	_button(tools, "Open workspace", func(): open_dialog.popup_centered_ratio(0.85)).visible = not browser_mode
 	_button(tools, "JSON import / source", func(): source.visible = not source.visible)
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
@@ -54,6 +61,26 @@ func _ready() -> void:
 	selector.clip_text = true
 	selector.item_selected.connect(select_factor)
 	body.add_child(selector)
+	var timeline_tools := HFlowContainer.new()
+	body.add_child(timeline_tools)
+	direction_option = OptionButton.new()
+	direction_option.add_item("Bottom to top")
+	direction_option.add_item("Top to bottom")
+	direction_option.custom_minimum_size.y = 44
+	direction_option.item_selected.connect(_direction_selected)
+	timeline_tools.add_child(direction_option)
+	_button(timeline_tools, "|<", _start)
+	_button(timeline_tools, "Previous factor", _previous)
+	play_button = _button(timeline_tools, "Play factors", toggle_play)
+	_button(timeline_tools, "Next factor", _next)
+	_button(timeline_tools, ">|", _end)
+	timeline = HSlider.new()
+	timeline.step = 0.001
+	timeline.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	timeline.custom_minimum_size.y = 44
+	timeline.value_changed.connect(_timeline_changed)
+	body.add_child(timeline)
+	timeline_label = _label(body, "Timeline is view state. Supplied planar states switch at factor boundaries; they are not interpolated or computed.")
 	details = _label(body, "")
 	grid = GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -83,6 +110,7 @@ func _ready() -> void:
 	add_child(export_dialog)
 	resized.connect(_responsive)
 	get_viewport().size_changed.connect(_responsive)
+	closed.connect(_stop_playback)
 	_responsive()
 
 func _button(parent: Node, caption: String, action: Callable) -> Button:
@@ -133,11 +161,18 @@ func import_source(text: String) -> bool:
 		message.text = "Not opened: " + parsed.error + ". Current workspace unchanged."
 		return false
 	workspace = parsed.workspace
+	playing = false
+	play_button.text = "Play factors"
+	timeline_position = 0.0
+	direction = workspace.to_dict().direction
+	direction_option.select(0 if direction == "bottom-to-top" else 1)
 	source.text = workspace.to_json()
 	selector.clear()
 	for factor in workspace.to_dict().factors:
 		selector.add_item("[%s]^%d | %s" % [factor.id, factor.exponent, factor.group])
 	braid_canvas.set_document(workspace.braid_document())
+	timeline.max_value = workspace.to_dict().factors.size()
+	timeline.set_value_no_signal(0.0)
 	# Empty sequences have no synthetic selected factor or supplied state.
 	factor_index = -1
 	for canvas in [support_canvas, before_canvas, after_canvas]: canvas.set_document(null)
@@ -145,11 +180,13 @@ func import_source(text: String) -> bool:
 	before_label.text = "Before: not supplied"
 	after_label.text = "After: not supplied"
 	if selector.item_count > 0:
-		select_factor(0)
-	elif workspace.to_dict().initial_state != null:
-		var initial: String = workspace.to_dict().initial_state
-		before_canvas.set_document(workspace.diagram(initial))
-		before_label.text = "Initial: " + initial + " (supplied; no factors)"
+		set_timeline_position(0.0)
+	else:
+		set_timeline_position(0.0)
+		if workspace.to_dict().initial_state != null:
+			var initial: String = workspace.to_dict().initial_state
+			before_canvas.set_document(workspace.diagram(initial))
+			before_label.text = "Initial: " + initial + " (supplied; no factors)"
 	rendered = {"ok": false, "error": "Browser: Python geometry and publication export unavailable."} if browser_mode else PythonGeometryBridge.render(workspace)
 	export_svg.disabled = not rendered.ok
 	export_tikz.disabled = not rendered.ok
@@ -157,28 +194,102 @@ func import_source(text: String) -> bool:
 	return true
 
 func select_factor(index: int) -> void:
-	if workspace == null: return
-	var focus := workspace.focus(index)
-	if focus.is_empty(): return
-	factor_index = index
-	selector.select(index)
-	support_canvas.set_document(workspace.diagram(focus.factor.support))
-	before_canvas.set_document(workspace.diagram(focus.before))
-	after_canvas.set_document(workspace.diagram(focus.after))
+	set_timeline_position(float(index))
+
+func set_timeline_position(value: float, from_playback: bool = false) -> void:
+	if workspace == null or not is_finite(value): return
+	if not from_playback:
+		playing = false
+		play_button.text = "Play factors"
+	var sample := FactorTimeline.sample(workspace, value, direction)
+	if not sample.ok: return
+	timeline_position = sample.position
+	timeline.set_value_no_signal(timeline_position)
+	braid_canvas.set_braid_view(sample.braid_time, direction)
+	if sample.factor_index < 0:
+		factor_index = -1
+		timeline_label.text = "Empty factor sequence. No factor or braid action is manufactured."
+		return
+	var focus: Dictionary = sample.focus
+	var changed: bool = sample.factor_index != factor_index
+	factor_index = sample.factor_index
+	selector.select(factor_index)
+	if changed:
+		support_canvas.set_document(workspace.diagram(focus.factor.support))
+		before_canvas.set_document(workspace.diagram(focus.before))
+		after_canvas.set_document(workspace.diagram(focus.after))
 	before_label.text = "Before: " + (str(focus.before) + " (supplied)" if focus.before != null else "NOT SUPPLIED; not inferred")
 	after_label.text = "After: " + (str(focus.after) + " (supplied)" if focus.after != null else "NOT SUPPLIED; not computed")
-	details.text = "%s\nApplication step %d: [%s]^%d. Literal word %s. Crossing interval [%d, %d). Entry IDs %s; exit IDs %s. %s" % [workspace.to_dict().title, index + 1, focus.factor.id, focus.factor.exponent, focus.factor.braid_word, focus.start, focus.end, focus.entry_ids, focus.exit_ids, "Explicit empty block; identities unchanged." if focus.start == focus.end else "Tap a braid crossing to select its factor."]
-	# Full braid stays visible. An empty block is selected in the factor list;
-	# it never borrows a neighboring crossing to manufacture a selection.
-	braid_canvas.select_record({} if focus.start == focus.end else {"kind": "crossing", "index": focus.start})
+	var progress: float = sample.local * 100.0
+	timeline_label.text = "Factor %d/%d, %.1f%% through its supplied braid block. Global braid position %.3f. Planar states are the factor's supplied endpoints, not an animation result." % [factor_index + 1, workspace.to_dict().factors.size(), progress, sample.braid_time]
+	details.text = "%s\nApplication step %d: [%s]^%d. Literal word %s. Crossing interval [%d, %d). Entry IDs %s; exit IDs %s. %s" % [workspace.to_dict().title, factor_index + 1, focus.factor.id, focus.factor.exponent, focus.factor.braid_word, focus.start, focus.end, focus.entry_ids, focus.exit_ids, "Explicit empty block; identities unchanged during this timed stage." if focus.start == focus.end else "Tap a braid crossing to select its factor and exact local position."]
+	var crossing := -1
+	if focus.end > focus.start and sample.local > 0.0:
+		crossing = mini(ceili(sample.braid_time) - 1, focus.end - 1)
+	braid_canvas.select_record({} if crossing < 0 else {"kind": "crossing", "index": crossing})
 
 func _crossing_selected(record: Dictionary) -> void:
 	if workspace == null or record.get("kind", "") != "crossing": return
 	var index: int = record.index
 	var factor := workspace.factor_for_crossing(index)
 	if factor >= 0:
-		select_factor(factor)
+		var focus := workspace.focus(factor)
+		var local := (float(index - focus.start) + 0.5) / maxf(1.0, focus.end - focus.start)
+		set_timeline_position(factor + local)
 		braid_canvas.select_record(record)
+
+func set_direction(value: String) -> void:
+	if workspace == null or value not in ["bottom-to-top", "top-to-bottom"]: return
+	direction = value
+	direction_option.select(0 if direction == "bottom-to-top" else 1)
+	set_timeline_position(timeline_position, true)
+
+func toggle_play() -> void:
+	if workspace == null or workspace.to_dict().factors.is_empty(): return
+	if playing:
+		playing = false
+	else:
+		if timeline_position >= workspace.to_dict().factors.size(): set_timeline_position(0.0, true)
+		playing = true
+	play_button.text = "Pause" if playing else "Play factors"
+
+func advance(delta: float) -> void:
+	if not playing or workspace == null or not is_finite(delta) or delta <= 0.0: return
+	set_timeline_position(FactorTimeline.advance(workspace, timeline_position, delta), true)
+	if timeline_position >= workspace.to_dict().factors.size():
+		playing = false
+		play_button.text = "Play factors"
+
+func _process(delta: float) -> void:
+	advance(delta)
+
+func _direction_selected(index: int) -> void:
+	set_direction("bottom-to-top" if index == 0 else "top-to-bottom")
+
+func _timeline_changed(value: float) -> void:
+	set_timeline_position(value)
+
+func _start() -> void: set_timeline_position(0.0)
+
+func _previous() -> void:
+	var sample := FactorTimeline.sample(workspace, timeline_position, direction)
+	if not sample.ok or sample.factor_index < 0: return
+	set_timeline_position(float(sample.factor_index if sample.local > 0.0 else maxi(0, sample.factor_index - 1)))
+
+func _next() -> void:
+	var sample := FactorTimeline.sample(workspace, timeline_position, direction)
+	if not sample.ok or sample.factor_index < 0: return
+	set_timeline_position(float(mini(workspace.to_dict().factors.size(), sample.factor_index + 1)))
+
+func _end() -> void:
+	if workspace != null: set_timeline_position(float(workspace.to_dict().factors.size()))
+
+func _close() -> void:
+	closed.emit()
+
+func _stop_playback() -> void:
+	playing = false
+	play_button.text = "Play factors"
 
 func _choose_export(kind: String) -> void:
 	if not rendered.get("ok", false): return

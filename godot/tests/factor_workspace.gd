@@ -28,6 +28,20 @@ func _run() -> void:
 	_check(workspace.factor_for_crossing(0) == 0 and workspace.factor_for_crossing(1) == 2 and workspace.factor_for_crossing(3) == 2 and workspace.factor_for_crossing(4) == -1, "crossing maps to literal factor; empty block consumes none")
 	_check(workspace.focus(-1).is_empty() and workspace.focus(3).is_empty(), "out-of-range focus rejected")
 	_check(workspace.complete_states(), "all generic storyboard states supplied")
+	var at_half := FactorTimeline.sample(workspace, 0.5, "bottom-to-top")
+	_check(at_half.ok and at_half.factor_index == 0 and is_equal_approx(at_half.braid_time, 0.5) and at_half.braid.crossings[0].fraction == 0.5, "factor timeline fractionally reveals first supplied block")
+	var empty_half := FactorTimeline.sample(workspace, 1.5, "bottom-to-top")
+	_check(empty_half.factor_index == 1 and empty_half.focus.start == empty_half.focus.end and empty_half.braid_time == 1.0 and empty_half.braid.paths == FactorTimeline.sample(workspace, 1.9).braid.paths, "empty factor owns a timed stage without moving strands")
+	var tall_half := FactorTimeline.sample(workspace, 2.5, "bottom-to-top")
+	_check(tall_half.factor_index == 2 and is_equal_approx(tall_half.braid_time, 2.5) and tall_half.braid.crossings.size() == 3, "multi-crossing block maps local fraction to its literal crossing interval")
+	var reversed := FactorTimeline.sample(workspace, 2.5, "top-to-bottom")
+	_check(reversed.factor_index == tall_half.factor_index and reversed.braid_time == tall_half.braid_time and reversed.braid.direction == "top-to-bottom", "presentation direction does not reverse factor or word time")
+	_check(FactorTimeline.sample(workspace, INF).ok == false and FactorTimeline.sample(null, 0).ok == false, "nonfinite time and missing workspace rejected")
+	_check(FactorTimeline.advance(workspace, 0.0, 0.3) == 0.5 and FactorTimeline.advance(workspace, 0.0, 1.2) == 2.0, "advance accounts for nonempty and explicit empty stage durations")
+	var partitioned := 0.0
+	for delta in [0.07, 0.13, 0.31, 0.49, 0.2]: partitioned = FactorTimeline.advance(workspace, partitioned, delta)
+	_check(is_equal_approx(partitioned, FactorTimeline.advance(workspace, 0.0, 1.2)), "unequal frame partitions reach same factor boundary")
+	_check(FactorTimeline.advance(workspace, 0.4, -1.0) == 0.4 and FactorTimeline.advance(workspace, 0.4, NAN) == 0.4, "invalid elapsed time cannot change view state")
 	for invalid in ["{}", "[]", source.replace('"version": 1', '"version": 99'), source.replace('"version": 1,', '"version": 1, "version": 1,'), source + "x", " ".repeat(256 * 1024 + 1)]:
 		_check(not FactorWorkspace.parse(invalid).ok, "reject invalid syntax/version/duplicate/oversize")
 	for mutation in ["id", "exponent", "group", "support", "braid_word", "after", "strands", "documents", "initial_state", "unknown", "too_many", "word_limit", "script"]:
@@ -61,6 +75,19 @@ func _run() -> void:
 	root.add_child(view)
 	await process_frame
 	_check(view.import_source(source) and view.factor_index == 0 and not view.export_svg.disabled, "live desktop viewer imports and enables validated export")
+	view.set_timeline_position(0.5)
+	_check(view.factor_index == 0 and is_equal_approx(view.timeline_position, 0.5) and is_equal_approx(view.braid_canvas.braid_playhead, 0.5) and "50.0%" in view.timeline_label.text, "scrub synchronizes factor, details and fractional braid")
+	view.toggle_play()
+	view.advance(0.3)
+	_check(view.factor_index == 1 and view.timeline_position == 1.0 and view.playing, "playback reaches empty factor as an explicit selected stage")
+	view.advance(0.3)
+	_check(view.factor_index == 1 and is_equal_approx(view.timeline_position, 1.5) and view.braid_canvas.braid_playhead == 1.0 and view.braid_canvas.selected_record.is_empty(), "empty factor consumes playback time without crossing selection")
+	view.set_direction("top-to-bottom")
+	_check(view.direction == "top-to-bottom" and view.factor_index == 1 and view.timeline_position == 1.5 and view.braid_canvas.braid_presentation == "top-to-bottom", "direction change preserves common factor position")
+	view._next()
+	_check(view.factor_index == 2 and view.timeline_position == 2.0 and not view.playing, "next selects exact next factor boundary and pauses")
+	view._previous()
+	_check(view.factor_index == 1 and view.timeline_position == 1.0, "previous selects exact prior factor")
 	view.select_factor(1)
 	_check(view.braid_canvas.selected_record.is_empty() and "empty block" in view.details.text, "empty block visibly selected without synthetic crossing")
 	view._crossing_selected({"kind": "crossing", "index": 3})
@@ -69,13 +96,16 @@ func _run() -> void:
 	var point := view.support_canvas.screen_position_for_record(view.support_canvas.document.inspector_records()[0])
 	_check(not view.support_canvas.begin_edit_drag(point), "read-only supplied support cannot be dragged into an uncommitted preview")
 	var accepted := view.workspace.to_json()
-	_check(not view.import_source("{}") and view.workspace.to_json() == accepted and view.factor_index == 2, "failed import preserves workspace and selection")
+	var accepted_position: float = view.timeline_position
+	_check(not view.import_source("{}") and view.workspace.to_json() == accepted and view.factor_index == 2 and view.timeline_position == accepted_position, "failed import preserves workspace, selection and timeline")
 	view.export_kind = "svg"
 	_check(view.save_export("user://factor-test.svg") and FileAccess.get_file_as_string("user://factor-test.svg") == first.svg, "export save writes exact accepted SVG")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://factor-test.svg"))
 	_check(view.import_source(partial_workspace.to_json()) and view.export_svg.disabled, "incomplete supplied states display but publication is unavailable")
 	view.select_factor(1)
 	_check(view.before_canvas.document == null and "NOT SUPPLIED" in view.before_label.text, "missing state view is absent and honestly labeled")
+	view.set_timeline_position(1.75)
+	_check(view.before_canvas.document == null and view.after_canvas.document != null and view.braid_canvas.braid_playhead == 1.0, "partial state gap stays absent throughout empty-stage playback")
 	view.browser_mode = true
 	_check(view.import_source(source) and view.export_svg.disabled and "Browser" in view.message.text, "browser never claims local Python validation")
 	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(1280, 800)]:
@@ -116,7 +146,8 @@ func _run() -> void:
 	for frame in 4: await process_frame
 	_check(studio.factor_view.grid.columns == 1 and studio.factor_view.grid.get_global_rect().end.x <= 391, "factor workspace fits actual phone-sized main scene")
 	studio.factor_view.closed.emit()
-	_check(studio.workspace_root.visible and not studio.factor_view.visible and studio.document.to_json() == editor_source and studio.history.undo_stack.size() == 1, "return to editor preserves unsaved accepted document and undo history")
+	_check(studio.workspace_root.visible and not studio.factor_view.visible and not studio.factor_view.playing and studio.document.to_json() == editor_source and studio.history.undo_stack.size() == 1, "return to editor stops factor playback and preserves unsaved document plus undo history")
+	_check(studio.factor_view.workspace.to_json() == original, "all factor timeline interaction leaves the mathematical envelope byte-identical")
 	studio.queue_free()
 	await process_frame
 	print("Factor workspace: %d assertions, %d failures" % [assertions, failures])

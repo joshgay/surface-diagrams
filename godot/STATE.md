@@ -6,11 +6,53 @@
 - Checkpoint date: 2026-09-23 UTC.
 - Current milestone: **M0 and M1 complete; M2 programmable work complete,
   with display-enabled visual acceptance still pending; M3 interaction and
-  playback implemented, visual acceptance pending; M4 first import/view/export
-  slice implemented, shared factor playback still pending**.
+  playback implemented, visual acceptance pending; M4 programmable acceptance
+  implemented, display-enabled visual acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: supplied factor workspace
+## Latest increment: synchronized factor timeline
+
+Built from live fork head `939ae2e4235df3c8411fb2059c250948f30542f1`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added a pure factor timeline whose position is view state, never mathematical
+  data. Each supplied factor owns one stage. A nonempty stage maps its local
+  fraction into that factor's exact global crossing interval. Multi-crossing
+  blocks receive proportional playback time. An explicit empty block receives
+  one timed hold with identical entering/exiting strand IDs instead of vanishing.
+- Added start/end, previous/next, play/pause, scrub and presentation-direction
+  controls to the linked factor workspace. Factor selection, support, supplied
+  before/after panels, continuous braid prefix, crossing highlight and literal
+  ID details now share one position. Clicking a crossing selects its factor and
+  local position. Changing direction cannot reverse the factor or word order.
+- Missing states stay absent throughout playback. Supplied planar states switch
+  only at factor boundaries and are labeled as endpoints, not interpolated or
+  computed animation results. Closing the viewer stops playback and preserves
+  the main editor's unsaved record and undo history. All timeline interaction
+  leaves the factor-workspace JSON byte-identical.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
+  30 mobile and **71 factor-workspace assertions**, 485 total. New coverage
+  includes fractional and multi-crossing blocks, empty-stage holds, unequal
+  frame partitions, invalid elapsed times, both presentation directions,
+  scrub/play/step/crossing synchronization, missing-state gaps, close behavior,
+  mathematical-record immutability and the phone-width main scene.
+- 6 Python factor-adapter, 3 geometry-bridge, 3 runner-contract and 13 browser
+  adapter/loader tests. The deliberate harness failure still exited 1. Editor
+  import, a three-frame launch and the three existing Python fixture renders
+  passed.
+- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
+- The static Web export rebuilt successfully and contained the new compiled
+  timeline. No Site deployment, binary publication or hosting write occurred.
+
+No test failures remain. Display-enabled control/animation inspection and an
+actual Android/iOS browser pass are unavailable, so M4 visual acceptance is not
+claimed. The factor workspace remains read-only and is not in recovery. It
+supports planar supplied panels, not genus-surface records.
+
+## Earlier increment: supplied factor workspace
 
 Built from live fork head `08ef1f7b3c375df7718eacac0b4db362d973e7e4` in an
 isolated worktree under the exclusive Studio lock.
@@ -424,8 +466,8 @@ This is a planar point/label, curve-itinerary, row, and curve-creation editor
 with signed braid-word editing, crossing picking, and a fractional braid timeline. Native curve
 drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
-There is now a read-only supplied factor workspace with linked views and exact
-desktop export, but no shared factor playback or 3D surface view yet.
+There is now a read-only supplied factor workspace with a shared deterministic
+timeline and exact desktop export, but no 3D surface view yet.
 Desktop recovery is
 bounded and tested, but browser persistence remains deliberately absent. The
 source-checkout bridge currently requires a compatible
@@ -445,11 +487,11 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Add a factor-index timeline with previous/next and deterministic per-block
-fractional braid playback. Empty blocks must remain explicit selectable steps,
-and every support/state/braid view must follow the same selection without
-inserting or interpolating missing supplied states. Keep this view state outside
-the mathematical envelope and test both presentation directions.
+Begin M5 with a bounded, versioned generic surface-view record and an honestly
+labeled exploratory 3D view. Use stable IDs shared with a supplied 2D fixture,
+then add orbit/zoom, picking, hide/isolate and orientation labels. Camera and
+visibility remain view state. Start with unambiguous generic geometry and do not
+claim the exploratory mesh is the library's unfinished certified bordered mesh.
 A display-enabled pass still needs to inspect native controls, crossing gaps,
 M2 forms and dialogs, and recovery before visual acceptance can be claimed.
 
