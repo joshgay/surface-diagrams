@@ -72,6 +72,23 @@ save/reopen reproduce byte-identical library SVG/TikZ for the accepted states.
 No automatic cancellation, sorting, endpoint renumbering, or guessed route is
 used. Native canvas curves and draft visit markers remain schematic.
 
+## Explicit row reindexing
+
+Select a planar object to expose **Reindex one slot left/right**. Ordinary point
+dragging still stops at its neighbors. Reindexing is a separate, deliberately
+destructive transaction with a precise slot policy: the selected stable object
+record trades places with its adjacent record, fixed horizontal slot coordinates
+remain ordered, and literal curve endpoint/cut numbers do not change.
+
+Before anything is committed, Studio validates the complete candidate through
+the Python geometry bridge and opens a scrollable confirmation containing the
+old/new stable-ID order, both changed slots, every endpoint whose attached ID
+would change, and every cut visit whose left/right corridor would change. Cancel
+leaves the accepted recipe, undo/redo stacks, recovery checkpoint, and all curve
+drafts byte-for-byte unchanged. Confirmation creates one undoable command and
+retains drafts by curve ID. Browser use requires the existing unvalidated-edit
+opt-in and remains visibly UNVALIDATED.
+
 The browser-specific controller retains its explicit unvalidated opt-in and
 disabled exact exports. These branch changes have **not** been deployed to the
 private Site; the existing Site is an earlier proof-of-concept snapshot.

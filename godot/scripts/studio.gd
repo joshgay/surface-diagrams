@@ -29,6 +29,14 @@ var unsaved_dialog: ConfirmationDialog
 var recovery_dialog: ConfirmationDialog
 var startup_recovery: Dictionary = {}
 var recovery_error := ""
+var row_reindex_panel: HFlowContainer
+var row_reindex_label: Label
+var reindex_left_button: Button
+var reindex_right_button: Button
+var reindex_dialog: ConfirmationDialog
+var reindex_preview: TextEdit
+var pending_reindex: Dictionary = {}
+var pending_reindex_geometry: Dictionary = {}
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -86,6 +94,21 @@ func _build_interface() -> void:
 	record_list.allow_reselect = true
 	record_list.item_selected.connect(_select_record)
 	inspector.add_child(record_list)
+	row_reindex_panel = HFlowContainer.new()
+	row_reindex_panel.visible = false
+	inspector.add_child(row_reindex_panel)
+	row_reindex_label = Label.new()
+	row_reindex_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	row_reindex_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row_reindex_panel.add_child(row_reindex_label)
+	reindex_left_button = Button.new()
+	reindex_left_button.text = "Reindex one slot left"
+	reindex_left_button.pressed.connect(Callable(self, "_request_reindex").bind(-1))
+	row_reindex_panel.add_child(reindex_left_button)
+	reindex_right_button = Button.new()
+	reindex_right_button.text = "Reindex one slot right"
+	reindex_right_button.pressed.connect(Callable(self, "_request_reindex").bind(1))
+	row_reindex_panel.add_child(reindex_right_button)
 	curve_inspector = CurveInspector.new()
 	curve_inspector.apply_requested.connect(_apply_curve_cuts)
 	curve_inspector.draft_changed.connect(_curve_draft_changed)
@@ -183,6 +206,19 @@ func _build_interface() -> void:
 	recovery_dialog.confirmed.connect(_restore_startup_recovery)
 	recovery_dialog.canceled.connect(_discard_startup_recovery)
 	add_child(recovery_dialog)
+	reindex_dialog = ConfirmationDialog.new()
+	reindex_dialog.title = "Confirm explicit row reindex"
+	reindex_dialog.ok_button_text = "Apply validated reindex"
+	reindex_dialog.get_cancel_button().text = "Cancel"
+	reindex_dialog.dialog_text = "This moves stable object records between fixed numbered slots. Review every changed endpoint attachment and cut corridor below."
+	reindex_dialog.confirmed.connect(_confirm_reindex)
+	reindex_dialog.canceled.connect(_cancel_reindex)
+	reindex_preview = TextEdit.new()
+	reindex_preview.editable = false
+	reindex_preview.custom_minimum_size = Vector2(720, 340)
+	reindex_preview.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+	reindex_dialog.add_child(reindex_preview)
+	add_child(reindex_dialog)
 
 func _show_open() -> void:
 	if _request_before_destructive_action(Callable(self, "_show_open_after_guard"), "open another JSON file"):
@@ -287,6 +323,7 @@ func _present_document(value: DiagramDocument, reset_camera: bool,
 		_select_matching_row(selection)
 	geometry_result = _render_geometry(document, rendered)
 	curve_inspector.inspect(document, selection)
+	_refresh_reindex_controls(selection)
 	_refresh_draft_markers()
 	if selection.get("kind", "") != "curve":
 		canvas.set_curve_draft("", [])
@@ -338,6 +375,7 @@ func _select_record(index: int) -> void:
 		return
 	canvas.select_record(record)
 	curve_inspector.inspect(document, record)
+	_refresh_reindex_controls(record)
 	if record.kind != "curve":
 		canvas.set_curve_draft("", [])
 	var identity := ""
@@ -352,6 +390,7 @@ func _select_record(index: int) -> void:
 func _canvas_record_selected(record: Dictionary) -> void:
 	_select_matching_row(record)
 	curve_inspector.inspect(document, record)
+	_refresh_reindex_controls(record)
 	canvas.set_curve_draft("", [])
 	status_label.text = "Selected %s %s. Drag to preview a move; release validates before the record changes." % [record.kind, record.id]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
@@ -408,6 +447,77 @@ func _apply_curve_cuts(id: String, cuts: Array) -> void:
 	if browser_mode:
 		status_label.text = "UNVALIDATED browser itinerary draft for %s: %s. Curve routing was NOT checked; publication exports remain disabled." % [id, cuts]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
+
+func _refresh_reindex_controls(selection: Dictionary) -> void:
+	var editable: bool = document != null and document.data.kind == "planar" and selection.get("kind", "") == "object"
+	row_reindex_panel.visible = editable
+	if not editable:
+		return
+	var index := -1
+	var objects: Array = document.data.surface.objects
+	for candidate_index in objects.size():
+		if objects[candidate_index].id == selection.get("id", ""):
+			index = candidate_index
+			break
+	row_reindex_label.text = "Explicit row reindex for %s. Ordinary dragging still cannot cross a neighbor." % selection.get("id", "")
+	reindex_left_button.disabled = index <= 0
+	reindex_right_button.disabled = index < 0 or index >= objects.size() - 1
+
+func _request_reindex(offset: int) -> void:
+	if canvas.selected_record.get("kind", "") != "object":
+		_show_edit_error("Select a planar object before proposing a row reindex.")
+		return
+	var proposal := RowReindex.adjacent(document,
+		canvas.selected_record.get("id", ""), offset)
+	if not proposal.ok:
+		_show_edit_error("Reindex not proposed: " + proposal.error)
+		return
+	candidate_geometry = {}
+	var validation := _validate_candidate_geometry(proposal.document)
+	if not validation.get("ok", false):
+		_show_edit_error("Reindex rejected before confirmation: " + validation.get("error", "Candidate geometry failed") + ". The accepted row, history, recovery, and curve drafts are unchanged.")
+		return
+	proposal.before_source = document.to_json()
+	pending_reindex = proposal
+	pending_reindex_geometry = validation.duplicate(true)
+	reindex_preview.text = RowReindex.preview_text(proposal)
+	reindex_dialog.popup_centered(Vector2i(780, 520))
+	status_label.text = "Reindex candidate validated. Review the complete slot, endpoint, and cut impact list before applying."
+	if browser_mode:
+		status_label.text = "UNVALIDATED browser reindex proposal. Review every slot, endpoint, and cut impact before applying; Python geometry is unavailable."
+	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
+
+func _cancel_reindex() -> void:
+	reindex_dialog.hide()
+	pending_reindex.clear()
+	pending_reindex_geometry.clear()
+	status_label.text = "Cancelled row reindex. Accepted order, exact history, recovery, and all curve drafts were preserved."
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _confirm_reindex() -> void:
+	reindex_dialog.hide()
+	if pending_reindex.is_empty():
+		return
+	if document.to_json() != pending_reindex.before_source or history.current.to_json() != pending_reindex.before_source:
+		pending_reindex.clear()
+		pending_reindex_geometry.clear()
+		_show_edit_error("Reindex proposal became stale; no change was applied.")
+		return
+	var proposal := pending_reindex.duplicate(true)
+	var validated := pending_reindex_geometry.duplicate(true)
+	var result := history.reindex_objects(proposal.new_order, proposal.selected_id,
+		func(_candidate): return validated)
+	pending_reindex.clear()
+	pending_reindex_geometry.clear()
+	if not result.ok:
+		_show_edit_error("Reindex was not applied: " + result.error + ". Accepted order, history, recovery, and drafts are unchanged.")
+		return
+	_present_document(result.document, false, result.selection, validated)
+	status_label.text = "Applied the confirmed row order %s as one command. Stable IDs moved between fixed slots; literal endpoint/cut numbers stayed unchanged, with attachments and corridors changed exactly as previewed." % [proposal.new_order]
+	if browser_mode:
+		status_label.text = "Applied UNVALIDATED browser row order %s. Slot semantics are exact, but Python geometry was NOT checked." % [proposal.new_order]
+	status_label.add_theme_color_override("font_color", Color("#167464"))
 	_persist_recovery()
 
 func _validate_candidate_geometry(candidate: DiagramDocument) -> Dictionary:

@@ -47,6 +47,18 @@ func _run() -> void:
 	studio._show_save()
 	_check("unavailable" in studio.status_label.text, "missing download adapter is explicit")
 	studio._open_resource("res://fixtures/multi-curve-v1.json")
+	var multi_initial: String = studio.document.to_json()
+	studio.record_list.item_selected.emit(0)
+	studio._request_reindex(1)
+	_check(studio.pending_reindex.is_empty() and studio.document.to_json() == multi_initial, "browser reindex requires explicit unvalidated-edit opt in")
+	studio.browser_drafts.button_pressed = true
+	studio._request_reindex(1)
+	_check(not studio.pending_reindex.is_empty() and studio.document.to_json() == multi_initial, "browser reindex is still a non-mutating confirmation proposal")
+	studio._confirm_reindex()
+	_check(studio.document.data.surface.objects[0].id == "p2" and "UNVALIDATED" in studio.status_label.text and not studio.geometry_result.ok, "browser reindex remains explicitly unvalidated")
+	studio._undo()
+	_check(studio.document.to_json() == multi_initial, "browser reindex undo restores exact original order")
+	studio.browser_drafts.button_pressed = false
 	studio.record_list.item_selected.emit(7)
 	var multi_source: String = studio.document.to_json()
 	studio.curve_inspector.append_cut(5)

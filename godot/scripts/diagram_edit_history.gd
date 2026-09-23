@@ -39,6 +39,16 @@ func set_curve_cuts(id: String, cuts: Array, validator: Callable = Callable()) -
 	return _validate_and_commit(proposal.document, validator, "Set cuts for curve " + id,
 		{"kind": "curve", "id": id})
 
+func reindex_objects(ids: Array, selected_id: String,
+		validator: Callable = Callable()) -> Dictionary:
+	if current == null:
+		return _failure("No document is open")
+	var proposal := current.with_object_order(ids)
+	if not proposal.ok:
+		return proposal
+	return _validate_and_commit(proposal.document, validator,
+		"Reindex planar object row", {"kind": "object", "id": selected_id})
+
 func can_undo() -> bool:
 	return not undo_stack.is_empty()
 

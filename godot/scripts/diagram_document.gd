@@ -103,6 +103,35 @@ func with_curve_cuts(id: String, cuts: Array) -> Dictionary:
 			return DiagramDocument.parse(JSON.stringify(candidate))
 	return _failure("Unknown curve ID: " + id)
 
+func with_object_order(ids: Array) -> Dictionary:
+	if _data.kind != "planar":
+		return _failure("Only planar documents contain an object row")
+	var objects: Array = _data.surface.objects
+	if ids.size() != objects.size():
+		return _failure("Object order must contain every stable ID exactly once")
+	var by_id := {}
+	var old_order: Array = []
+	for object in objects:
+		by_id[object.id] = object
+		old_order.append(object.id)
+	var seen := {}
+	for id in ids:
+		if typeof(id) != TYPE_STRING or not by_id.has(id) or seen.has(id):
+			return _failure("Object order must contain every stable ID exactly once")
+		seen[id] = true
+	if ids == old_order:
+		return _failure("Object order has not changed")
+	var candidate := to_dict()
+	var reordered: Array = []
+	for index in ids.size():
+		var object: Dictionary = by_id[ids[index]].duplicate(true)
+		# Reindexing moves the stable record into a fixed numbered slot. Slot x
+		# coordinates remain ordered, and curve endpoint/cut numbers stay literal.
+		object.x = objects[index].x
+		reordered.append(object)
+	candidate.surface.objects = reordered
+	return DiagramDocument.parse(JSON.stringify(candidate))
+
 func summary_rows() -> Array[String]:
 	var rows: Array[String] = []
 	for record in inspector_records():
