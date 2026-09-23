@@ -39,6 +39,16 @@ func set_curve_cuts(id: String, cuts: Array, validator: Callable = Callable()) -
 	return _validate_and_commit(proposal.document, validator, "Set cuts for curve " + id,
 		{"kind": "curve", "id": id})
 
+func add_curve(curve: Dictionary, validator: Callable = Callable()) -> Dictionary:
+	if current == null:
+		return _failure("No document is open")
+	var proposal := current.with_added_curve(curve)
+	if not proposal.ok:
+		return proposal
+	var id: String = curve.get("id", "")
+	return _validate_and_commit(proposal.document, validator, "Create curve " + id,
+		{"kind": "curve", "id": id})
+
 func reindex_objects(ids: Array, selected_id: String,
 		validator: Callable = Callable()) -> Dictionary:
 	if current == null:

@@ -48,6 +48,16 @@ func _run() -> void:
 	_check("unavailable" in studio.status_label.text, "missing download adapter is explicit")
 	studio._open_resource("res://fixtures/multi-curve-v1.json")
 	var multi_initial: String = studio.document.to_json()
+	studio.curve_creator.start("arc")
+	studio.curve_creator._create()
+	_check(studio.document.to_json() == multi_initial and studio.curve_creator.active and not studio.history.can_undo(), "browser curve creation requires explicit unvalidated-edit opt in")
+	studio.browser_drafts.button_pressed = true
+	studio.curve_creator._create()
+	_check(studio.document.data.curves[-1].id == "arc1" and "UNVALIDATED" in studio.status_label.text and not studio.geometry_result.ok, "browser arc creation is explicitly unvalidated and never fabricates geometry")
+	_check(studio.history.undo_stack.size() == 1 and studio.document.data.curves[-1].start == 0 and studio.document.data.curves[-1].end == 7, "browser arc creation remains one exact command")
+	studio._undo()
+	_check(studio.document.to_json() == multi_initial, "browser curve creation undo restores exact original record")
+	studio.browser_drafts.button_pressed = false
 	studio.record_list.item_selected.emit(0)
 	studio._request_reindex(1)
 	_check(studio.pending_reindex.is_empty() and studio.document.to_json() == multi_initial, "browser reindex requires explicit unvalidated-edit opt in")

@@ -184,6 +184,77 @@ func _run() -> void:
 	_check(studio.document.to_json() == multi_after and studio.curve_inspector.drafts.is_empty(), "reopen keeps exact recipe with fresh session drafts")
 	_check(studio.geometry_result.svg == svg_after and studio.geometry_result.tikz == tikz_after, "save/reopen retains publication output exactly")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://ui-multi.json"))
+	studio.record_list.item_selected.emit(6)
+	studio.curve_inspector.append_cut(1)
+	var sibling_drafts: Dictionary = studio.curve_inspector.drafts.duplicate(true)
+	studio.curve_creator.start("arc")
+	_check(studio.curve_creator.active and studio.curve_creator.draft.start == 0 and studio.curve_creator.draft.end == 7, "live creator begins an in-memory arc draft with explicit outer endpoints")
+	_check(studio._has_unsaved_work(), "new-curve draft participates in unsaved-work protection")
+	studio.curve_creator.id_edit.text = "left"
+	studio.curve_creator._id_changed("left")
+	var creation_before: String = studio.document.to_json()
+	studio.curve_creator._create()
+	_check(studio.document.to_json() == creation_before and not studio.history.can_undo() and studio.curve_creator.active, "duplicate-ID schema rejection retains creation draft and accepted record")
+	_check("rejected" in studio.status_label.text and studio.curve_inspector.drafts == sibling_drafts, "schema rejection is visible and preserves every existing curve draft")
+	studio.curve_creator.id_edit.text = "narrowArc"
+	studio.curve_creator._id_changed("narrowArc")
+	studio.curve_creator.start_spin.value = 2
+	studio.curve_creator.end_spin.value = 5
+	studio.curve_creator._start_changed(2)
+	studio.curve_creator._end_changed(5)
+	var recovery_before_creation_failure: String = FileAccess.get_file_as_string(WorkspaceRecovery.PATH)
+	studio.curve_creator._create()
+	_check(studio.document.to_json() == creation_before and not studio.history.can_undo() and studio.curve_creator.draft.id == "narrowArc", "Python routing rejection leaves narrow arc input available")
+	_check(studio.curve_inspector.drafts == sibling_drafts and FileAccess.get_file_as_string(WorkspaceRecovery.PATH) == recovery_before_creation_failure, "routing rejection preserves other drafts and the last accepted recovery checkpoint")
+	studio.curve_creator.id_edit.text = "outerArc"
+	studio.curve_creator._id_changed("outerArc")
+	studio.curve_creator.start_spin.value = 0
+	studio.curve_creator.end_spin.value = 7
+	studio.curve_creator._start_changed(0)
+	studio.curve_creator._end_changed(7)
+	studio.curve_creator.direction_option.select(1)
+	studio.curve_creator._direction_changed(1)
+	studio.curve_creator._create()
+	var arc_created_source: String = studio.document.to_json()
+	_check(not studio.curve_creator.active and studio.document.data.curves[-1].id == "outerArc", "validated live arc creation appends the exact stable record")
+	_check(studio.document.data.curves[-1].direction == "up" and studio.document.data.curves[-1].color == "#ff00d4", "live arc keeps literal orientation and thesis magenta")
+	_check(studio.history.undo_stack.size() == 1 and studio.curve_inspector.drafts == sibling_drafts and studio.canvas.selected_record.id == "outerArc", "arc creation is one selected-ID command and preserves every sibling draft")
+	_check(studio.geometry_result.ok and studio.record_list.item_count == 11, "created arc receives exact geometry and a stable inspector row")
+	studio.curve_creator.start("loop")
+	studio.curve_creator.id_edit.text = "outerLoop"
+	studio.curve_creator._id_changed("outerLoop")
+	studio.curve_creator.append_cut(0)
+	studio.curve_creator.append_cut(6)
+	studio.curve_creator.start_up_check.button_pressed = false
+	studio.curve_creator._start_up_changed(false)
+	studio.curve_creator._create()
+	var curves_created_source: String = studio.document.to_json()
+	_check(studio.document.data.curves[-1].id == "outerLoop" and studio.document.data.curves[-1].cuts == [0, 6] and studio.document.data.curves[-1].start_up == false, "validated live loop preserves exact ordered visits and orientation")
+	_check(studio.history.undo_stack.size() == 2 and studio.curve_inspector.drafts == sibling_drafts and studio.geometry_result.ok, "loop creation is a second command without consuming other drafts")
+	var curves_created_svg: String = studio.geometry_result.svg
+	var curves_created_tikz: String = studio.geometry_result.tikz
+	var created_recovery := WorkspaceRecovery.load_file()
+	_check(created_recovery.ok and DiagramDocument.parse(created_recovery.history_state.current).document.to_json() == curves_created_source, "recovery checkpoint contains both newly accepted curves")
+	var creation_restarted = packed.instantiate()
+	root.add_child(creation_restarted)
+	await process_frame
+	_check(creation_restarted._restore_startup_recovery() and creation_restarted.document.to_json() == curves_created_source, "restart recovery reproduces newly created curves exactly")
+	_check(creation_restarted.geometry_result.svg == curves_created_svg and creation_restarted.geometry_result.tikz == curves_created_tikz, "recovered creation reproduces byte-identical publication exports")
+	creation_restarted.queue_free()
+	await process_frame
+	studio._undo()
+	_check(studio.document.to_json() == arc_created_source and studio.document.data.curves[-1].id == "outerArc", "one undo removes only the loop creation")
+	studio._undo()
+	_check(studio.document.to_json() == creation_before, "second undo removes only the arc creation")
+	studio._redo()
+	studio._redo()
+	_check(studio.document.to_json() == curves_created_source and studio.geometry_result.svg == curves_created_svg and studio.geometry_result.tikz == curves_created_tikz, "redo restores both creations and exact exports deterministically")
+	studio.curve_inspector.clear_drafts()
+	studio._save_path("user://ui-created-curves.json")
+	_check(DiagramDocument.load_path("user://ui-created-curves.json").document.to_json() == curves_created_source, "created arc and loop save as exact mathematical JSON")
+	studio._open_path("user://ui-created-curves.json")
+	_check(studio.document.to_json() == curves_created_source and studio.geometry_result.svg == curves_created_svg and studio.geometry_result.tikz == curves_created_tikz, "save and reopen reproduce both created curves and publication exports")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://ui-created-curves.json"))
 	studio._open_resource("res://fixtures/braid-v1.json")
 	await process_frame
 	_check(studio.document.data.kind == "braid", "braid fixture switches view")

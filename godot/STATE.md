@@ -4,10 +4,52 @@
 - Starting parent: `4bd028e4052e34de429c60502e24e6686c9c2d09`, the browser-editor
   contribution on `codex/ordered-factorizations`.
 - Checkpoint date: 2026-09-23 UTC.
-- Current milestone: **M0 and M1 complete; M2 in progress**.
+- Current milestone: **M0 and M1 complete; M2 programmable work complete,
+  with display-enabled visual acceptance still pending; M3 next**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: explicit slot-preserving row reindex
+## Latest increment: arbitrary arc and loop creation
+
+Built on live fork head `30a21aae75a9c5a593437f726907097122d88090`.
+The private Site was not redeployed or modified during this increment.
+
+- Added a dedicated planar curve-creation workspace. Arc drafts expose a new
+  validated stable ID, literal endpoints, `default`/`up`/`down` orientation,
+  both optional rim sides, exact magenta `#ff00d4`, and ordered cuts. Loop
+  drafts expose the same stable ID/color/cut guarantees and literal `start_up`.
+  Canvas cut picking is routed to the active creation draft without changing
+  the accepted record.
+- Strict version-1 parsing rejects unsafe/duplicate IDs, bad endpoints, invalid
+  loop parity, terminal/cyclic cancellations, nonminimal visits, and curve-limit
+  overflow without trimming or correcting input. The fixed Python bridge then
+  rejects geometrically unroutable candidates. Both rejection layers leave the
+  accepted source and history unchanged and keep the complete draft visible.
+- A successful creation appends the curve in supplied order as one command.
+  Undo/redo, stable-ID selection, existing per-curve drafts, desktop recovery,
+  save/reopen, and exact Python SVG/TikZ all preserve the literal record. Tests
+  cover a generic outer arc and outer loop together, plus a deliberately
+  unroutable narrow arc. Recovery and reopen reproduce byte-identical exports.
+- Browser creation requires the existing explicit unvalidated-edit opt-in,
+  remains labeled UNVALIDATED, creates no geometry result, and keeps publication
+  exports disabled. An uncommitted new-curve draft is intentionally in-memory
+  and guarded before open/close; accepted creations are covered by recovery.
+
+Runtime remains `4.7.2.stable.official.ed1daf0bf`; the official archive matches
+SHA-256 `cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4`.
+Checks actually run: **152 model/controller assertions**, **98 desktop scene
+assertions**, **34 web-mode controller assertions**, **3 Python bridge tests**,
+**3 runner contract tests**, **13 browser-adapter/loader tests**, and the
+intentional exit-1 harness. Full inherited regressions: **207 Python tests with
+324 subtests** and **8 browser-editor tests** passed. Godot editor import
+completed without final diagnostics, and the project started for three headless
+frames during the aggregate run.
+
+The created-curve SVG/TikZ comparisons exercise the actual Python renderer and
+are byte-for-byte checks across undo/redo, recovery, save, and reopen. They are
+not visual acceptance of the native form layout or canvas interaction; no
+display server is available.
+
+## Earlier increment: explicit slot-preserving row reindex
 
 Built on live fork head `17bc1b10d1d5daa20c514dd4311567e7d930ba4a`.
 The private Site was not redeployed or modified during this increment.
@@ -201,11 +243,11 @@ See `RUNTIME.md` for official sources and commands.
 
 ## Known limitations
 
-This is a planar point/label and curve-itinerary editor and a braid viewer. Native curve
-drawing, edit previews, and selection overlays are explicitly schematic;
+This is a planar point/label, curve-itinerary, row, and curve-creation editor and
+a braid viewer. Native curve drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
-There is no arbitrary curve creation, braid editing/playback, factor workspace,
-or 3D surface view yet. Desktop recovery is
+There is no braid editing/playback, factor workspace, or 3D surface view yet.
+Desktop recovery is
 bounded and tested, but browser persistence remains deliberately absent. The
 source-checkout bridge currently requires a compatible
 Python executable and this repository's package source; packaged desktop
@@ -224,14 +266,14 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Finish the remaining programmable M2 slice with explicit arbitrary curve
-creation. Build an in-memory arc/loop draft with a new validated stable ID,
-literal endpoint/orientation fields, and ordered cut visits; show schema and
-Python routing failures without altering the accepted record; and commit a
-successful creation as one undoable command while preserving every other draft.
-Save/reopen and recovery must reproduce the new curve and exact publication
-exports. A display-enabled pass must still inspect UI layout, overlays, gestures,
-dialogs, reindex preview, and the recovery prompt.
+Begin M3 with a bounded signed-braid-word editor and deterministic record-level
+timeline. Add insert, replace, and delete commands without reduction; retain
+stable crossing selection and independent transported strand identities; and
+make top-to-bottom versus bottom-to-top a presentation toggle that never
+reverses the word or changes a sign. Exact undo/redo and step/scrub endpoints
+must match independently computed strand orders. A display-enabled pass must
+still inspect the M2 form layout, overlays, gestures, dialogs, reindex preview,
+and recovery prompt.
 
 Update this checkpoint after every meaningful implementation commit with actual
 changes, tests, remaining failures, and the next concrete task. Work on generic

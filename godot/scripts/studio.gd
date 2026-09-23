@@ -15,6 +15,7 @@ var tikz_button: Button
 var undo_button: Button
 var redo_button: Button
 var curve_inspector: CurveInspector
+var curve_creator: CurveCreator
 var geometry_result: Dictionary = {"ok": false, "error": "Not rendered", "svg": "", "tikz": ""}
 var export_kind := ""
 var history := DiagramEditHistory.new()
@@ -113,6 +114,10 @@ func _build_interface() -> void:
 	curve_inspector.apply_requested.connect(_apply_curve_cuts)
 	curve_inspector.draft_changed.connect(_curve_draft_changed)
 	inspector.add_child(curve_inspector)
+	curve_creator = CurveCreator.new()
+	curve_creator.create_requested.connect(_create_curve)
+	curve_creator.draft_changed.connect(_creation_draft_changed)
+	inspector.add_child(curve_creator)
 	var source_button := Button.new()
 	source_button.text = "Show accepted source"
 	source_button.pressed.connect(func(): source_view.visible = not source_view.visible)
@@ -165,7 +170,7 @@ func _build_interface() -> void:
 	canvas.edit_commit_requested.connect(_canvas_edit_commit)
 	canvas.edit_preview_changed.connect(_canvas_preview_changed)
 	canvas.edit_rejected.connect(_show_edit_error)
-	canvas.cut_picked.connect(curve_inspector.append_cut)
+	canvas.cut_picked.connect(_cut_picked)
 	canvas_box.add_child(canvas)
 	geometry_label = Label.new()
 	geometry_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -247,7 +252,7 @@ func _show_save() -> void:
 		else:
 			status_label.text = "JSON download requested. This browser record is not geometry-validated; validate with the Python library before publication."
 			baseline_source = document.to_json()
-			if not curve_inspector.drafts.is_empty():
+			if not curve_inspector.drafts.is_empty() or curve_creator.active:
 				status_label.text += " Unapplied curve drafts are NOT in this download."
 		return
 	save_dialog.current_file = _safe_filename(document.data.title) + ".json"
@@ -283,6 +288,7 @@ func _open_result(result: Dictionary, path: String, clear_recovery: bool = true)
 		return
 	history.set_document(result.document)
 	curve_inspector.clear_drafts()
+	curve_creator.finish_success()
 	baseline_source = result.document.to_json()
 	if clear_recovery:
 		WorkspaceRecovery.clear_file()
@@ -323,6 +329,7 @@ func _present_document(value: DiagramDocument, reset_camera: bool,
 		_select_matching_row(selection)
 	geometry_result = _render_geometry(document, rendered)
 	curve_inspector.inspect(document, selection)
+	curve_creator.configure(document)
 	_refresh_reindex_controls(selection)
 	_refresh_draft_markers()
 	if selection.get("kind", "") != "curve":
@@ -348,7 +355,7 @@ func _save_path(path: String) -> void:
 	if error.is_empty():
 		baseline_source = document.to_json()
 	status_label.text = "Saved exact normalized recipe to " + path if error.is_empty() else error
-	if error.is_empty() and not curve_inspector.drafts.is_empty():
+	if error.is_empty() and (not curve_inspector.drafts.is_empty() or curve_creator.active):
 		status_label.text += " Unapplied curve drafts remain in memory and are NOT in this file."
 	status_label.add_theme_color_override("font_color", Color("#415b55") if error.is_empty() else Color("#a54439"))
 	if error.is_empty():
@@ -427,6 +434,36 @@ func _curve_draft_changed(id: String, cuts: Array, message: String) -> void:
 	if not id.is_empty():
 		status_label.text = "%s Draft cuts=%s" % [message, cuts]
 		status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
+
+func _cut_picked(cut: int) -> void:
+	if curve_creator.active:
+		curve_creator.append_cut(cut)
+	else:
+		curve_inspector.append_cut(cut)
+
+func _creation_draft_changed(is_active: bool, curve: Dictionary, message: String) -> void:
+	if is_active:
+		status_label.text = "%s New %s %s cuts=%s is an in-memory draft only." % [message, curve.get("kind", "curve"), curve.get("id", ""), curve.get("cuts", [])]
+		status_label.add_theme_color_override("font_color", Color("#415b55"))
+	elif not message.is_empty():
+		status_label.text = message + " The accepted record and other curve drafts are unchanged."
+		status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _create_curve(curve: Dictionary) -> void:
+	candidate_geometry = {}
+	var result := history.add_curve(curve, _validate_candidate_geometry)
+	if not result.ok:
+		var message: String = "Curve creation rejected: " + result.error + ". Draft retained; accepted record, history, and every other draft are unchanged."
+		curve_creator.show_rejection(message)
+		_show_edit_error(message)
+		return
+	curve_creator.finish_success()
+	_present_document(result.document, false, result.selection, candidate_geometry)
+	status_label.text = "Created %s %s as one validated command. Stable ID, literal endpoint/orientation fields, and ordered cut visits were preserved exactly." % [curve.get("kind", "curve"), curve.get("id", "")]
+	if browser_mode:
+		status_label.text = "Created UNVALIDATED browser %s %s as one command. Record schema passed, but Python routing was NOT checked." % [curve.get("kind", "curve"), curve.get("id", "")]
+	status_label.add_theme_color_override("font_color", Color("#167464"))
 	_persist_recovery()
 
 func _refresh_draft_markers() -> void:
@@ -569,7 +606,7 @@ func _update_history_buttons() -> void:
 func _has_unsaved_work() -> bool:
 	if document == null:
 		return false
-	return document.to_json() != baseline_source or not curve_inspector.drafts.is_empty()
+	return document.to_json() != baseline_source or not curve_inspector.drafts.is_empty() or curve_creator.active
 
 func _request_before_destructive_action(action: Callable, description: String) -> bool:
 	if not _has_unsaved_work():
@@ -582,6 +619,8 @@ func _request_before_destructive_action(action: Callable, description: String) -
 		parts.append("accepted record changes")
 	if not curve_inspector.drafts.is_empty():
 		parts.append("%d unapplied curve draft%s" % [curve_inspector.drafts.size(), "" if curve_inspector.drafts.size() == 1 else "s"])
+	if curve_creator.active:
+		parts.append("one unapplied new-curve draft")
 	unsaved_dialog.dialog_text = "The workspace has %s. Cancel to keep them, or discard them and %s." % [" and ".join(parts), description]
 	unsaved_dialog.popup_centered(Vector2i(560, 220))
 	status_label.text = "Waiting for an explicit cancel/discard choice; the current record, history, and drafts are unchanged."

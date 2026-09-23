@@ -232,6 +232,73 @@ func _run_tests() -> void:
 	cut_canvas._gui_input(cut_event)
 	_expect(picked == [6], "canvas emits cut picks in click order")
 	cut_canvas.free()
+	var outer_arc := {"id": "outerArc", "kind": "arc", "color": "#ff00d4",
+		"cuts": [], "start": 0, "end": 7, "direction": "up",
+		"start_side": null, "end_side": null}
+	var added_arc := multi.with_added_curve(outer_arc)
+	_expect(added_arc.ok and added_arc.document.data.curves.size() == 4, "new arc proposal appends one exact curve record")
+	_expect(added_arc.ok and added_arc.document.data.curves[3] == outer_arc, "new arc preserves stable ID, magenta color, endpoints, orientation, and literal cuts")
+	_expect(multi.to_json() == multi_source and multi.data.curves.size() == 3, "curve proposal does not mutate the accepted document")
+	var duplicate_arc := outer_arc.duplicate(true); duplicate_arc.id = "left"
+	_expect(not multi.with_added_curve(duplicate_arc).ok, "duplicate new stable curve ID is rejected")
+	var invalid_arc := outer_arc.duplicate(true); invalid_arc.id = "bad id"
+	_expect(not multi.with_added_curve(invalid_arc).ok, "unsafe new stable curve ID is rejected")
+	invalid_arc = outer_arc.duplicate(true); invalid_arc.end = 0
+	_expect(not multi.with_added_curve(invalid_arc).ok, "new arc with identical endpoints is rejected")
+	invalid_arc = outer_arc.duplicate(true); invalid_arc.cuts = [0]
+	_expect(not multi.with_added_curve(invalid_arc).ok, "new arc terminal cancellation is rejected without dropping the visit")
+	_expect(not braid.with_added_curve(outer_arc).ok, "braid records cannot create planar curves")
+	var creation_history := DiagramEditHistory.new()
+	creation_history.set_document(multi)
+	var narrow_arc := outer_arc.duplicate(true)
+	narrow_arc.id = "narrowArc"; narrow_arc.start = 2; narrow_arc.end = 5; narrow_arc.direction = "default"
+	var rejected_creation := creation_history.add_curve(narrow_arc, PythonGeometryBridge.render)
+	_expect(not rejected_creation.ok and creation_history.current.to_json() == multi_source and not creation_history.can_undo(), "Python routing rejection preserves accepted record and creation history")
+	var created_arc := creation_history.add_curve(outer_arc, PythonGeometryBridge.render)
+	_expect(created_arc.ok and creation_history.undo_stack.size() == 1 and created_arc.selection.id == "outerArc", "Python-accepted arc creation is one selected-ID command")
+	var created_arc_source: String = creation_history.current.to_json()
+	var created_arc_geometry := PythonGeometryBridge.render(creation_history.current)
+	_expect(created_arc_geometry.ok and created_arc_geometry.svg.begins_with("<svg") and "tikzpicture" in created_arc_geometry.tikz, "created arc has exact Python SVG and TikZ")
+	_expect(creation_history.undo().document.to_json() == multi_source, "curve creation undo restores exact prior recipe")
+	_expect(creation_history.redo().document.to_json() == created_arc_source, "curve creation redo restores exact appended recipe")
+	var creation_path := "user://created-curve-round-trip.json"
+	_expect(creation_history.current.save_path(creation_path).is_empty(), "created curve recipe saves")
+	var creation_reopen := DiagramDocument.load_path(creation_path)
+	var reopened_geometry := PythonGeometryBridge.render(creation_reopen.document) if creation_reopen.ok else {"ok": false}
+	_expect(creation_reopen.ok and creation_reopen.document.to_json() == created_arc_source, "created curve recipe reopens exactly")
+	_expect(reopened_geometry.ok and reopened_geometry.svg == created_arc_geometry.svg and reopened_geometry.tikz == created_arc_geometry.tikz, "save and reopen reproduce byte-identical publication exports")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(creation_path))
+	var outer_loop := {"id": "outerLoop", "kind": "loop", "color": "#ff00d4",
+		"cuts": [0, 6], "start_up": false}
+	var added_loop := multi.with_added_curve(outer_loop)
+	_expect(added_loop.ok and PythonGeometryBridge.render(added_loop.document).ok and added_loop.document.data.curves[3] == outer_loop, "new loop preserves stable ID, orientation, and ordered cuts through Python routing")
+	var creator := CurveCreator.new()
+	creator.configure(multi)
+	creator.start("arc")
+	_expect(creator.active and creator.draft.id == "arc1" and creator.draft.start == 0 and creator.draft.end == 7, "arc creator starts a bounded outer-endpoint draft with a fresh stable ID")
+	_expect(creator.draft.color == "#ff00d4" and creator.draft.has("start_side") and creator.draft.has("end_side"), "arc creator makes color and rim-side fields explicit")
+	creator.id_edit.text = "left"
+	creator._id_changed("left")
+	_expect("duplicate" in creator.warning_label.text.to_lower() and multi.to_json() == multi_source, "creator warns about duplicate ID without changing accepted data")
+	creator.id_edit.text = "arcFresh"
+	creator._id_changed("arcFresh")
+	creator.append_cut(0)
+	_expect(creator.draft.cuts == [0] and "terminal" in creator.warning_label.text.to_lower(), "creator retains an invalid literal cut and explains schema rejection")
+	creator._clear_cuts()
+	var emitted_specs: Array = []
+	creator.create_requested.connect(func(spec): emitted_specs.append(spec))
+	creator._create()
+	_expect(emitted_specs.size() == 1 and emitted_specs[0].id == "arcFresh" and emitted_specs[0].cuts == [], "creator emits an exact defensive creation proposal")
+	creator.start("loop")
+	creator.append_cut(0)
+	_expect("positive even" in creator.warning_label.text and creator.draft.cuts == [0], "loop creator retains incomplete ordered visit draft")
+	creator.append_cut(6)
+	creator.start_up_check.button_pressed = false
+	creator._start_up_changed(false)
+	_expect(creator.draft.cuts == [0, 6] and creator.draft.start_up == false and "strict schema" in creator.warning_label.text, "loop creator exposes exact orientation and an accepted-shape visit list")
+	creator.cancel()
+	_expect(not creator.active and creator.draft.is_empty(), "explicit cancel clears only the new-curve draft")
+	creator.free()
 	var reindex := RowReindex.adjacent(multi, "p1", 1)
 	_expect(reindex.ok and reindex.old_order == ["p1", "p2", "p3", "p4", "p5", "p6"] and reindex.new_order == ["p2", "p1", "p3", "p4", "p5", "p6"], "row reindex proposes one explicit adjacent stable-ID swap")
 	_expect(reindex.document.data.surface.objects[0].id == "p2" and reindex.document.data.surface.objects[0].x == -150.0 and reindex.document.data.surface.objects[1].id == "p1" and reindex.document.data.surface.objects[1].x == -90.0, "reindex moves identities between fixed ordered slots")

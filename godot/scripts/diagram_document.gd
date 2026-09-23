@@ -103,6 +103,18 @@ func with_curve_cuts(id: String, cuts: Array) -> Dictionary:
 			return DiagramDocument.parse(JSON.stringify(candidate))
 	return _failure("Unknown curve ID: " + id)
 
+func with_added_curve(curve: Dictionary) -> Dictionary:
+	if _data.kind != "planar":
+		return _failure("Only planar documents can create curves")
+	if typeof(curve) != TYPE_DICTIONARY:
+		return _failure("New curve must be an exact record object")
+	var candidate := to_dict()
+	candidate.curves.append(curve.duplicate(true))
+	# Strict parsing is the sole record gate. It checks the new stable ID,
+	# literal endpoints/orientation/cuts, curve limit, and every sibling record.
+	# Appending intentionally preserves the supplied curve order.
+	return DiagramDocument.parse(JSON.stringify(candidate))
+
 func with_object_order(ids: Array) -> Dictionary:
 	if _data.kind != "planar":
 		return _failure("Only planar documents contain an object row")
