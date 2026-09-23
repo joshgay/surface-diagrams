@@ -8,10 +8,64 @@
   with display-enabled visual acceptance still pending; M3 interaction and
   playback implemented, visual acceptance pending; M4 programmable acceptance
   implemented, display-enabled visual acceptance pending; M5 first linked
-  exploratory surface slice implemented, visual acceptance pending**.
+  exploratory surface slice implemented, visual acceptance pending; M6 first
+  supplied planar walkthrough slice implemented, visual acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: linked exploratory 3D disk
+## Latest increment: explicit supplied planar walkthroughs
+
+Built from live fork head `ae2175c2f44a7e528cfa953982d9d53465f02515`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added a bounded version-1 `surface-diagrams-walkthrough` model containing
+  complete named planar states and 1 to 64 ordered steps. Every step requires a
+  stable ID, name, operation label, before/after references, 1 to 64 selected
+  object/curve/label IDs, provenance, and verification metadata. All states must
+  preserve the same stable IDs, kinds, and order. Consecutive steps must share
+  an explicit state reference; missing states are never derived.
+- Added exact normalized save/reopen and strict rejection for future/unknown or
+  duplicate fields, scripts/resources, missing references, discontinuous chains,
+  reordered IDs, duplicate selections, and unsupported provenance/verification
+  values. Imported verification is displayed as record metadata and never
+  promoted into a Studio conclusion.
+- Added a responsive Walkthroughs workspace with forward/reverse play, scrub,
+  boundary step controls, linked stable-ID inspection, complete side-by-side
+  endpoints, and an explicit visual crossfade. No fractional mathematical state
+  exists or is serialized. Timeline, opacity, selection, and playback direction
+  remain view state, and opening/closing the viewer preserves the editor record
+  and undo history.
+- Added an original two-step point/label fixture. Both steps are visibly
+  unverified and make no isotopy, action, equality, or product-preservation
+  claim. This is generic interface data, not Richard's construction.
+- The aggregate run caught a landscape-phone height regression caused by the
+  extra toolbar button. Factor, surface, and walkthrough viewers now share one
+  compact Workspaces menu. The existing portrait, landscape, tablet, and desktop
+  controller checks pass again.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
+  30 mobile, 71 factor-workspace, 54 surface-view, and **79 new walkthrough
+  assertions**, 618 total. New coverage includes schema bounds, explicit chain
+  continuity, stable ID/kind/order preservation, defensive copies, exact save
+  and reopen, deterministic forward/reverse playback, unequal frame partitions,
+  endpoint-only crossfade, linked selection, failed-import preservation,
+  phone/desktop layouts, hidden-editor undo isolation, and close behavior.
+- 6 Python factor-adapter, 3 geometry-bridge, 3 runner-contract, and 13 browser
+  adapter/loader tests. The intentional harness failure exited 1. Editor import,
+  three-frame launch, and existing fixture renders passed.
+- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
+- Static Web export rebuilt successfully. Its pack contains the generic fixture
+  and all three compiled walkthrough classes. No Site deployment or binary
+  publication occurred.
+
+No controller/test failure remains. Display-enabled visual acceptance remains
+unavailable, so endpoint opacity, native controls, pointer behavior, and the
+mobile browser presentation have not been visually accepted. Version 1 supports
+complete planar endpoints only; it does not yet record signed-braid or cover
+walkthroughs, compute an operation, or certify the imported verification claim.
+
+## Earlier increment: linked exploratory 3D disk
 
 Built from live fork head `d592987550f45e68482f66898cab8ac9028ae376`
 in an isolated worktree under the exclusive Studio lock.
@@ -539,11 +593,11 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Begin M6 with a bounded, versioned supplied-walkthrough record containing named
-steps, complete before/after mathematical data, selected stable IDs, operation
-labels, and explicit verification/provenance status. Add deterministic forward
-and reverse scrubbing without deriving missing states or claiming that playback
-proves equivalence. Start with a generic example independent of research data.
+Extend M6 with a bounded signed-braid walkthrough variant. Require literal
+supplied words and endpoint strand orders, preserve transported strand IDs and
+the fixed positive-crossing convention, and link the existing braid timeline
+without interpreting the step name as an action or proof. Add an original
+generic fixture and deterministic forward/reverse record-level tests.
 A display-enabled pass still needs to inspect native controls, crossing gaps,
 M2 forms and dialogs, and recovery before visual acceptance can be claimed.
 

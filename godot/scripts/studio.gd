@@ -49,6 +49,7 @@ var showing_records := false
 var move_button: CheckButton
 var factor_view: FactorWorkspaceView
 var surface_view: SurfaceWorkspaceView
+var walkthrough_view: WalkthroughView
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -88,14 +89,14 @@ func _build_interface() -> void:
 		fixtures.get_popup().add_item(label)
 	fixtures.get_popup().index_pressed.connect(func(index: int): _open_resource(["res://fixtures/planar-v1.json", "res://fixtures/multi-curve-v1.json", "res://fixtures/braid-v1.json"][index]))
 	file_tools.add_child(fixtures)
-	var factors_button := Button.new()
-	factors_button.text = "Factor workspace"
-	factors_button.pressed.connect(_show_factor_workspace)
-	file_tools.add_child(factors_button)
-	var surface_button := Button.new()
-	surface_button.text = "Exploratory 3D"
-	surface_button.pressed.connect(_show_surface_workspace)
-	file_tools.add_child(surface_button)
+	var workspaces := MenuButton.new()
+	workspaces.text = "Workspaces"
+	workspaces.get_popup().add_theme_constant_override("v_separation", 20)
+	for label in ["Factor sequence", "Exploratory 3D", "Supplied walkthrough"]:
+		workspaces.get_popup().add_item(label)
+	workspaces.get_popup().index_pressed.connect(func(index: int):
+		[Callable(self, "_show_factor_workspace"), Callable(self, "_show_surface_workspace"), Callable(self, "_show_walkthrough")][index].call())
+	file_tools.add_child(workspaces)
 	for spec in [["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
 		var button := Button.new()
 		button.text = spec[0]
@@ -348,6 +349,19 @@ func _show_surface_workspace() -> void:
 		surface_view.import_source(FileAccess.get_file_as_string(SurfaceWorkspaceView.FIXTURE))
 	workspace_root.hide()
 	surface_view.show()
+
+func _show_walkthrough() -> void:
+	canvas.cancel_touch_gesture()
+	if walkthrough_view == null:
+		walkthrough_view = WalkthroughView.new()
+		walkthrough_view.browser_mode = browser_mode
+		add_child(walkthrough_view)
+		walkthrough_view.closed.connect(func():
+			walkthrough_view.hide()
+			workspace_root.show())
+		walkthrough_view.import_source(FileAccess.get_file_as_string(WalkthroughView.FIXTURE))
+	workspace_root.hide()
+	walkthrough_view.show()
 
 func _popup_fitted(dialog: Window, desired: Vector2i) -> void:
 	var available := Vector2i(get_viewport_rect().size) - Vector2i(24, 24)
@@ -885,7 +899,7 @@ func _notification(what: int) -> void:
 		_request_close()
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if (factor_view != null and factor_view.visible) or (surface_view != null and surface_view.visible): return
+	if (factor_view != null and factor_view.visible) or (surface_view != null and surface_view.visible) or (walkthrough_view != null and walkthrough_view.visible): return
 	if not event is InputEventKey:
 		return
 	var key_event := event as InputEventKey

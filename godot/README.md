@@ -27,6 +27,12 @@ boundary and curve IDs synchronize between the supplied 2D recipe and supplied
 It is deliberately not certified geometry or a computed lift. See
 [SURFACE_VIEW.md](SURFACE_VIEW.md) for its bounded schema and limitations.
 
+**Walkthroughs** opens a reversible supplied-record viewer. Every step names
+complete before/after diagrams, stable selected IDs, an operation label,
+provenance, and a recorded verification status. Scrubbing or playback only
+crossfades the supplied endpoints; it does not compute an intermediate state or
+prove equivalence. See [WALKTHROUGHS.md](WALKTHROUGHS.md).
+
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
 current stable-ID selection, and unapplied curve drafts are also checkpointed in

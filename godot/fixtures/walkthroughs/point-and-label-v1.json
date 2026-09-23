@@ -1,0 +1,66 @@
+{
+  "format": "surface-diagrams-walkthrough",
+  "version": 1,
+  "title": "Generic supplied point and label walkthrough",
+  "documents": {
+    "initial": {
+      "format": "surface-diagrams", "version": 1, "kind": "planar",
+      "title": "Initial supplied state",
+      "surface": {"width": 400, "height": 210, "objects": [
+        {"id": "p1", "kind": "point", "x": -120},
+        {"id": "p2", "kind": "point", "x": -40},
+        {"id": "p3", "kind": "point", "x": 40},
+        {"id": "p4", "kind": "point", "x": 120}
+      ]},
+      "curves": [{"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": []}],
+      "labels": [{"id": "caption", "text": "Generic supplied example", "x": 0, "y": -70}]
+    },
+    "point_moved": {
+      "format": "surface-diagrams", "version": 1, "kind": "planar",
+      "title": "Supplied state after point placement",
+      "surface": {"width": 400, "height": 210, "objects": [
+        {"id": "p1", "kind": "point", "x": -120},
+        {"id": "p2", "kind": "point", "x": -20},
+        {"id": "p3", "kind": "point", "x": 40},
+        {"id": "p4", "kind": "point", "x": 120}
+      ]},
+      "curves": [{"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": []}],
+      "labels": [{"id": "caption", "text": "Generic supplied example", "x": 0, "y": -70}]
+    },
+    "label_moved": {
+      "format": "surface-diagrams", "version": 1, "kind": "planar",
+      "title": "Supplied state after label placement",
+      "surface": {"width": 400, "height": 210, "objects": [
+        {"id": "p1", "kind": "point", "x": -120},
+        {"id": "p2", "kind": "point", "x": -20},
+        {"id": "p3", "kind": "point", "x": 40},
+        {"id": "p4", "kind": "point", "x": 120}
+      ]},
+      "curves": [{"id": "arc1", "kind": "arc", "start": 1, "end": 3, "cuts": []}],
+      "labels": [{"id": "caption", "text": "Generic supplied example", "x": 35, "y": -70}]
+    }
+  },
+  "initial_state": "initial",
+  "steps": [
+    {
+      "id": "place-point",
+      "name": "Place the second marked point",
+      "operation": "supplied point-coordinate update",
+      "before": "initial",
+      "after": "point_moved",
+      "selected": [{"kind": "object", "id": "p2"}],
+      "provenance": {"kind": "original-generic-example", "source": "Surface Diagrams Studio generic fixture", "note": "Both endpoint records were authored directly for interface testing."},
+      "verification": {"status": "unverified", "authority": "none", "note": "Playback displays supplied endpoints and does not establish an isotopy or other equivalence."}
+    },
+    {
+      "id": "place-caption",
+      "name": "Place the caption",
+      "operation": "supplied label-coordinate update",
+      "before": "point_moved",
+      "after": "label_moved",
+      "selected": [{"kind": "label", "id": "caption"}],
+      "provenance": {"kind": "original-generic-example", "source": "Surface Diagrams Studio generic fixture", "note": "Both endpoint records were authored directly for interface testing."},
+      "verification": {"status": "unverified", "authority": "none", "note": "This is a layout demonstration, not a mathematical transformation claim."}
+    }
+  ]
+}
