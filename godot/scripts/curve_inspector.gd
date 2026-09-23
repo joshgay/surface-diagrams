@@ -23,6 +23,7 @@ func _init() -> void:
 	add_theme_constant_override("separation", 5)
 	heading = Label.new()
 	heading.text = "Curve inspector"
+	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	heading.add_theme_font_size_override("font_size", 16)
 	heading.add_theme_color_override("font_color", Color("#167464"))
 	add_child(heading)
@@ -99,10 +100,11 @@ func _build_cut_buttons(count: int) -> void:
 	for child in cut_grid.get_children():
 		cut_grid.remove_child(child)
 		child.queue_free()
-	cut_grid.columns = mini(7, count)
+	cut_grid.columns = mini(5, count)
 	for cut in count:
 		var button := Button.new()
 		button.text = "c%d" % cut
+		button.custom_minimum_size = Vector2(44, 44)
 		button.tooltip_text = "Append cut %d to the itinerary" % cut
 		button.pressed.connect(append_cut.bind(cut))
 		cut_grid.add_child(button)

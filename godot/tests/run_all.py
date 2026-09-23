@@ -39,6 +39,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/ui_smoke.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/braid_interaction.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/web_mode_smoke.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/mobile_smoke.gd"])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",

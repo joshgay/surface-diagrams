@@ -178,10 +178,11 @@ func _build_cut_buttons(count: int) -> void:
 	for child in cut_grid.get_children():
 		cut_grid.remove_child(child)
 		child.queue_free()
-	cut_grid.columns = mini(7, count)
+	cut_grid.columns = mini(5, count)
 	for cut in count:
 		var button := Button.new()
 		button.text = "c%d" % cut
+		button.custom_minimum_size = Vector2(44, 44)
 		button.tooltip_text = "Append cut %d to the new curve" % cut
 		button.pressed.connect(append_cut.bind(cut))
 		cut_grid.add_child(button)

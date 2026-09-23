@@ -27,8 +27,14 @@ var pick_for_new_curve := false
 var braid_step := -1
 var braid_playhead := -1.0
 var braid_presentation := ""
+var touch_move_enabled := false
+var touches: Dictionary = {}
+var touch_start := Vector2.ZERO
+var touch_moved := false
+var multi_touch := false
 
 func set_document(value: DiagramDocument) -> void:
+	cancel_touch_gesture()
 	document = value
 	zoom = 1.0
 	pan = Vector2.ZERO
@@ -72,6 +78,14 @@ func fit_view() -> void:
 	queue_redraw()
 
 func _gui_input(event: InputEvent) -> void:
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		_handle_touch(event)
+		accept_event()
+		return
+	# Buttons still use Godot's normal emulated mouse taps. The canvas handles
+	# real touch events itself, so their emulated duplicate must not edit twice.
+	if (event is InputEventMouseButton or event is InputEventMouseMotion) and event.device == InputEvent.DEVICE_ID_EMULATION:
+		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			zoom_at(event.position, 1.12)
@@ -100,6 +114,85 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE and edit_dragging:
 		cancel_edit_preview()
 		edit_rejected.emit("Edit cancelled; the accepted record was not changed")
+
+func cancel_touch_gesture() -> void:
+	touches.clear()
+	multi_touch = false
+	touch_moved = false
+	cancel_edit_preview()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		cancel_touch_gesture()
+
+func _handle_touch(event: InputEvent) -> void:
+	if event is InputEventScreenTouch:
+		if event.canceled:
+			cancel_touch_gesture()
+			return
+		if event.pressed:
+			touches[event.index] = event.position
+			if touches.size() == 1:
+				touch_start = event.position
+				touch_moved = false
+				multi_touch = false
+				if touch_move_enabled:
+					begin_edit_drag(event.position)
+			else:
+				multi_touch = true
+				cancel_edit_preview()
+		elif touches.has(event.index):
+			if not multi_touch:
+				if edit_dragging and touch_moved:
+					finish_edit_drag(event.position)
+				elif not touch_moved:
+					cancel_edit_preview()
+					_touch_tap(event.position)
+				else:
+					cancel_edit_preview()
+			else:
+				cancel_edit_preview()
+			touches.erase(event.index)
+			if touches.is_empty():
+				multi_touch = false
+	elif event is InputEventScreenDrag and touches.has(event.index):
+		var previous: Vector2 = touches[event.index]
+		if touches.size() == 2:
+			var ids := touches.keys()
+			var old_center: Vector2 = (touches[ids[0]] + touches[ids[1]]) / 2.0
+			var old_distance: float = touches[ids[0]].distance_to(touches[ids[1]])
+			touches[event.index] = event.position
+			var new_center: Vector2 = (touches[ids[0]] + touches[ids[1]]) / 2.0
+			var new_distance: float = touches[ids[0]].distance_to(touches[ids[1]])
+			if old_distance >= 8.0 and new_distance >= 8.0:
+				zoom_at(old_center, new_distance / old_distance)
+			pan += new_center - old_center
+			queue_redraw()
+		else:
+			touches[event.index] = event.position
+			if not multi_touch:
+				touch_moved = touch_moved or event.position.distance_to(touch_start) >= 6.0
+				if edit_dragging:
+					if touch_moved:
+						update_edit_drag(event.position)
+				else:
+					pan += event.position - previous
+					queue_redraw()
+
+func _touch_tap(point: Vector2) -> void:
+	if document == null:
+		return
+	if document.data.kind == "braid":
+		select_braid_crossing(point)
+		return
+	var record := _hit_planar_record(point)
+	if not record.is_empty():
+		select_record(record)
+		record_selected.emit(record)
+	elif selected_record.get("kind", "") == "curve" or pick_for_new_curve:
+		var cut := _hit_cut(point)
+		if cut >= 0:
+			cut_picked.emit(cut)
 
 func begin_edit_drag(screen_position: Vector2) -> bool:
 	if document == null or document.data.kind != "planar":

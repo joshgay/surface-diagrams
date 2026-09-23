@@ -18,6 +18,8 @@ This subtree belongs to Josh Gay's long-running Godot project in
   foreground conversation on 2026-09-23; its access is now public. Neither
   authorization permits scheduled deployments, another hosting provider,
   a PR, or replacing the desktop geometry validator.
+  Josh's foreground mobile repair request on 2026-09-23 authorizes rebuilding
+  and publishing that same public Studio Site to deliver the repair.
 - Keep Godot-specific implementation, fixtures, docs, and tests under `godot/`.
   Prefer an adapter here over changing the Python library's public API. A truly
   necessary shared-code fix must be small, tested, documented, and stay on this

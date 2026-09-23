@@ -39,10 +39,20 @@ var reindex_dialog: ConfirmationDialog
 var reindex_preview: TextEdit
 var pending_reindex: Dictionary = {}
 var pending_reindex_geometry: Dictionary = {}
+var workspace_root: VBoxContainer
+var inspector_scroll: ScrollContainer
+var canvas_box: VBoxContainer
+var mobile_tabs: HBoxContainer
+var camera_note: Label
+var compact_layout := false
+var showing_records := false
+var move_button: CheckButton
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	_build_interface()
+	get_tree().root.size_changed.connect(_sync_viewport)
+	_sync_viewport()
 	if browser_mode and OS.has_feature("web"):
 		upload_callback = JavaScriptBridge.create_callback(_browser_file_received)
 	_open_result(DiagramDocument.load_path("res://fixtures/planar-v1.json"), "res://fixtures/planar-v1.json", false)
@@ -55,33 +65,55 @@ func _build_interface() -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 	var root := VBoxContainer.new()
-	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 20)
-	root.add_theme_constant_override("separation", 12)
+	workspace_root = root
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 12)
+	root.add_theme_constant_override("separation", 6)
 	add_child(root)
 	var heading := HFlowContainer.new()
 	root.add_child(heading)
 	var brand := Label.new()
 	brand.text = "Surface Diagrams Studio"
-	brand.add_theme_font_size_override("font_size", 24)
+	brand.add_theme_font_size_override("font_size", 20)
 	brand.add_theme_color_override("font_color", Color("#167464"))
 	brand.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(brand)
-	for spec in [["Planar fixture", Callable(self, "_open_resource").bind("res://fixtures/planar-v1.json")], ["Multi-curve fixture", Callable(self, "_open_resource").bind("res://fixtures/multi-curve-v1.json")], ["Braid fixture", Callable(self, "_open_resource").bind("res://fixtures/braid-v1.json")], ["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
+	var file_tools := HFlowContainer.new()
+	root.add_child(file_tools)
+	var fixtures := MenuButton.new()
+	fixtures.text = "Examples"
+	fixtures.get_popup().add_theme_constant_override("v_separation", 20)
+	for label in ["Planar", "Multi-curve", "Braid"]:
+		fixtures.get_popup().add_item(label)
+	fixtures.get_popup().index_pressed.connect(func(index: int): _open_resource(["res://fixtures/planar-v1.json", "res://fixtures/multi-curve-v1.json", "res://fixtures/braid-v1.json"][index]))
+	file_tools.add_child(fixtures)
+	for spec in [["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
 		var button := Button.new()
 		button.text = spec[0]
 		button.pressed.connect(spec[1])
-		heading.add_child(button)
+		file_tools.add_child(button)
 	if browser_mode:
 		browser_drafts = CheckButton.new()
-		browser_drafts.text = "Enable unvalidated browser draft editing (no geometry certification or publication export)"
+		browser_drafts.text = "Edit unvalidated drafts"
 		browser_drafts.tooltip_text = "Only record, neighbor, and ellipse constraints run in this prototype. Downloaded JSON must be validated by the Python library before publication."
-		root.add_child(browser_drafts)
-	var split := HSplitContainer.new()
+		file_tools.add_child(browser_drafts)
+	mobile_tabs = HBoxContainer.new()
+	root.add_child(mobile_tabs)
+	for tab in ["Diagram", "Records"]:
+		var button := Button.new()
+		button.text = tab
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_show_mobile_panel.bind(tab == "Records"))
+		mobile_tabs.add_child(button)
+	var split := HBoxContainer.new()
 	split.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(split)
 	var inspector := VBoxContainer.new()
-	inspector.custom_minimum_size.x = 340
-	split.add_child(inspector)
+	inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inspector_scroll = ScrollContainer.new()
+	inspector_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	inspector_scroll.custom_minimum_size.x = 340
+	split.add_child(inspector_scroll)
+	inspector_scroll.add_child(inspector)
 	title_label = Label.new()
 	title_label.add_theme_font_size_override("font_size", 18)
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -92,6 +124,8 @@ func _build_interface() -> void:
 	note.add_theme_color_override("font_color", Color("#6b7b78"))
 	inspector.add_child(note)
 	record_list = ItemList.new()
+	record_list.custom_minimum_size.y = 150
+	record_list.add_theme_constant_override("v_separation", 24)
 	record_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	record_list.allow_reselect = true
 	record_list.item_selected.connect(_select_record)
@@ -133,19 +167,30 @@ func _build_interface() -> void:
 	source_view.visible = false
 	source_view.custom_minimum_size.y = 220
 	inspector.add_child(source_view)
-	var canvas_box := VBoxContainer.new()
+	canvas_box = VBoxContainer.new()
+	canvas_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	split.add_child(canvas_box)
-	var canvas_tools := HBoxContainer.new()
+	var canvas_tools := HFlowContainer.new()
 	canvas_box.add_child(canvas_tools)
 	var fit_button := Button.new()
 	fit_button.text = "Fit"
 	fit_button.pressed.connect(func(): canvas.fit_view())
 	canvas_tools.add_child(fit_button)
-	var camera_note := Label.new()
-	camera_note.text = "Left drag: edit point/label   Wheel: zoom   Middle drag: pan"
+	for spec in [["-", 1.0 / 1.25], ["+", 1.25]]:
+		var zoom_button := Button.new()
+		zoom_button.text = spec[0]
+		zoom_button.custom_minimum_size.x = 44
+		zoom_button.pressed.connect(func(): canvas.zoom_at(canvas.size / 2.0, spec[1]))
+		canvas_tools.add_child(zoom_button)
+	move_button = CheckButton.new()
+	move_button.text = "Move points"
+	move_button.toggled.connect(func(enabled: bool): canvas.touch_move_enabled = enabled)
+	canvas_tools.add_child(move_button)
+	camera_note = Label.new()
+	camera_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	camera_note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	camera_note.add_theme_color_override("font_color", Color("#6b7b78"))
-	canvas_tools.add_child(camera_note)
+	canvas_box.add_child(camera_note)
 	undo_button = Button.new()
 	undo_button.text = "Undo"
 	undo_button.disabled = true
@@ -161,11 +206,13 @@ func _build_interface() -> void:
 	svg_button.disabled = true
 	svg_button.pressed.connect(Callable(self, "_show_export").bind("svg"))
 	canvas_tools.add_child(svg_button)
+	svg_button.visible = not browser_mode
 	tikz_button = Button.new()
 	tikz_button.text = "Export exact TikZ"
 	tikz_button.disabled = true
 	tikz_button.pressed.connect(Callable(self, "_show_export").bind("tikz"))
 	canvas_tools.add_child(tikz_button)
+	tikz_button.visible = not browser_mode
 	canvas = DiagramCanvas.new()
 	canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -184,6 +231,7 @@ func _build_interface() -> void:
 	canvas_box.add_child(geometry_label)
 	status_label = Label.new()
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status_label.max_lines_visible = 2
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 	root.add_child(status_label)
 	open_dialog = FileDialog.new()
@@ -230,6 +278,42 @@ func _build_interface() -> void:
 	reindex_preview.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	reindex_dialog.add_child(reindex_preview)
 	add_child(reindex_dialog)
+	_make_touch_targets(root)
+
+func _make_touch_targets(node: Node) -> void:
+	if node is BaseButton or node is SpinBox or node is LineEdit or node is HSlider:
+		node.custom_minimum_size.y = maxf(node.custom_minimum_size.y, 44.0)
+	for child in node.get_children():
+		_make_touch_targets(child)
+
+func _sync_viewport() -> void:
+	var logical_size: Vector2i = get_tree().root.size
+	if OS.has_feature("web"):
+		# Godot's Web buffer uses physical pixels. Lay out controls in CSS pixels.
+		logical_size = Vector2i(int(JavaScriptBridge.eval("window.innerWidth")), int(JavaScriptBridge.eval("window.innerHeight")))
+	if logical_size.x <= 0 or logical_size.y <= 0:
+		return
+	if get_tree().root.content_scale_size != logical_size:
+		get_tree().root.content_scale_size = logical_size
+	compact_layout = logical_size.x < 900
+	inspector_scroll.custom_minimum_size.x = 0 if compact_layout else 340
+	inspector_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL if compact_layout else Control.SIZE_FILL
+	mobile_tabs.visible = compact_layout
+	_show_mobile_panel(showing_records)
+	camera_note.text = "Drag to pan. Pinch or +/- to zoom. Enable Move points to drag a point." if compact_layout else "Touch: drag to pan, pinch to zoom. Mouse: left drag to edit, wheel to zoom, middle drag to pan."
+	geometry_label.visible = not compact_layout
+	reindex_preview.custom_minimum_size = Vector2(minf(720, logical_size.x - 56), minf(340, logical_size.y * 0.35))
+	canvas.cancel_touch_gesture()
+
+func _show_mobile_panel(records: bool) -> void:
+	showing_records = records
+	inspector_scroll.visible = not compact_layout or records
+	canvas_box.visible = not compact_layout or not records
+	canvas.cancel_touch_gesture()
+
+func _popup_fitted(dialog: Window, desired: Vector2i) -> void:
+	var available := Vector2i(get_viewport_rect().size) - Vector2i(24, 24)
+	dialog.popup_centered(Vector2i(mini(desired.x, available.x), mini(desired.y, available.y)))
 
 func _show_open() -> void:
 	if _request_before_destructive_action(Callable(self, "_show_open_after_guard"), "open another JSON file"):
@@ -557,7 +641,7 @@ func _request_reindex(offset: int) -> void:
 	pending_reindex = proposal
 	pending_reindex_geometry = validation.duplicate(true)
 	reindex_preview.text = RowReindex.preview_text(proposal)
-	reindex_dialog.popup_centered(Vector2i(780, 520))
+	_popup_fitted(reindex_dialog, Vector2i(780, 520))
 	status_label.text = "Reindex candidate validated. Review the complete slot, endpoint, and cut impact list before applying."
 	if browser_mode:
 		status_label.text = "UNVALIDATED browser reindex proposal. Review every slot, endpoint, and cut impact before applying; Python geometry is unavailable."
@@ -660,7 +744,7 @@ func _request_before_destructive_action(action: Callable, description: String) -
 	if curve_creator.active:
 		parts.append("one unapplied new-curve draft")
 	unsaved_dialog.dialog_text = "The workspace has %s. Cancel to keep them, or discard them and %s." % [" and ".join(parts), description]
-	unsaved_dialog.popup_centered(Vector2i(560, 220))
+	_popup_fitted(unsaved_dialog, Vector2i(560, 220))
 	status_label.text = "Waiting for an explicit cancel/discard choice; the current record, history, and drafts are unchanged."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
 	return false
@@ -717,7 +801,7 @@ func _offer_recovery() -> void:
 	var undo_count: int = recovered.history_state.undo.size()
 	var redo_count: int = recovered.history_state.redo.size()
 	recovery_dialog.dialog_text = "A bounded version-1 recovery record contains %d curve draft%s, %d undo step%s, and %d redo step%s. Restore it, or explicitly discard it." % [drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s"]
-	recovery_dialog.popup_centered(Vector2i(580, 230))
+	_popup_fitted(recovery_dialog, Vector2i(580, 230))
 	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
 

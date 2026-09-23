@@ -7,6 +7,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	root.size = Vector2i(1280, 800)
 	var loaded := DiagramDocument.load_path("res://fixtures/braid-v1.json")
 	_check(loaded.ok, "generic braid fixture loads")
 	if not loaded.ok:

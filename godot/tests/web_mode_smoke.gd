@@ -7,6 +7,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	root.size = Vector2i(1280, 800)
 	var studio = load("res://scenes/studio.tscn").instantiate()
 	# Exercises browser-specific controller paths in the native headless runtime.
 	# This does not claim to execute WebAssembly, DOM dialogs, or WebGL rendering.

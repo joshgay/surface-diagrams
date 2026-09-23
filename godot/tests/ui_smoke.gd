@@ -7,6 +7,8 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	# The dummy display defaults to 64x64; test an actual desktop workspace.
+	root.size = Vector2i(1280, 800)
 	WorkspaceRecovery.clear_file()
 	var packed := load("res://scenes/studio.tscn") as PackedScene
 	_check(packed != null, "studio scene loads")

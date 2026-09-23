@@ -9,7 +9,42 @@
   playback implemented, visual acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: crossing picking and fractional playback
+## Latest increment: mobile layout and touch controls
+
+Foreground repair requested by Josh, built from live fork head
+`716c5e3aa93efd2111540a80d6158836dd01cd3a`.
+
+- Replaced the fixed desktop presentation with logical CSS-pixel sizing on the
+  Web, a compact Examples menu, and a Diagram/Records switch below 900 pixels.
+  The records pane scrolls; toolbars wrap; controls and cut buttons have 44-pixel
+  minimum touch targets. Dialogs are fitted to the viewport. The desktop retains
+  simultaneous diagram and record panes. The Web shell enables the virtual
+  keyboard and prevents page-level overscroll from competing with the canvas.
+- Added direct touch handling: tap selects, one-finger drag pans, and two fingers
+  pan/zoom. Move points explicitly enables point/label dragging on touch. A
+  second finger, OS cancellation, lost focus, or a panel/viewport change cancels
+  the pending edit. Touch-generated mouse duplicates cannot commit twice.
+  All edits still use the existing record validation and undo controller;
+  browser drafts remain explicitly unvalidated.
+- Added phone/tablet/desktop layout and touch regression coverage. Tested
+  320x640, 390x844, 844x390, 768x1024, and 1280x800 logical viewports. Desktop
+  scene tests now explicitly create a desktop-sized window: the dummy headless
+  display's default 64x64 size is unsuitable for responsive UI tests.
+
+Runtime remains `4.7.2.stable.official.ed1daf0bf`. The aggregate passed 175 model,
+119 desktop scene, 49 braid interaction, 41 browser-mode, and 30 mobile
+controller assertions; 3 Python bridge, 3 runner-contract, and 13 browser
+adapter/loader tests; and the intentional exit-1 harness. Editor import, the
+three-frame headless project run, and all three Python fixture renders passed.
+The full inherited Python/browser-editor suites were not rerun because their
+shared code and the Python adapter are unchanged.
+Actual Android/iOS browser, keyboard, picker, and WebGL visual acceptance is
+still unavailable: the supported managed preview cannot run this static export.
+The public Site will be rebuilt from this source during the foreground repair;
+its deployment receipt belongs to the Site repository. Scheduled runs remain
+branch-only and must not redeploy automatically.
+
+## Earlier increment: crossing picking and fractional playback
 
 Built from live fork head `e325d02a501f57734302dcdc6a491c1a590b8caa`.
 Josh requested an immediate run and resumed hourly development. The existing
