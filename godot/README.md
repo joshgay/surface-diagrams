@@ -60,6 +60,13 @@ actions. These commands are view state and never edit mathematical JSON. See
 [ACCESSIBILITY.md](ACCESSIBILITY.md) for the exact shortcuts and current
 screen-reader/visual-acceptance limits.
 
+For release review, [DEMO_REVIEW.md](DEMO_REVIEW.md) defines one fixed
+end-to-end workflow spanning validated editing, exact undo/redo, factor and
+signed-braid inspection, linked exploratory records, and deterministic
+publication. Its runner executes twice and retains a receipt and bundle only
+when both runs are byte-identical. The visual, browser, phone, and screen-reader
+checklist remains separate from that automated evidence.
+
 Import `project.godot` using Godot 4.7.2 stable. The exact runtime, checksum, and
 commands are in [RUNTIME.md](RUNTIME.md). Use GDScript and the Compatibility
 renderer; no .NET or external assets are required.

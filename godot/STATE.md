@@ -11,46 +11,49 @@
   exploratory surface slice implemented, visual acceptance pending; M6 supplied
   planar, signed-braid, and explicitly linked exploratory surface walkthrough
   slices implemented, visual acceptance pending; M7 first reproducible
-  walkthrough-publication and keyboard-access slices implemented, visual and
-  assistive-technology acceptance pending**.
+  walkthrough-publication, keyboard-access, and deterministic demo-review
+  slices implemented; visual and assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: keyboard-complete navigation and named controls
+## Latest increment: deterministic end-to-end demo review
 
-Built from live fork head `ef11b682e041240a274961c7c9aa7287d27ec9e8`
+Built from live fork head `6afe04be1aae5b893c9ad1590d3f6569065d5013`
 in an isolated worktree under the exclusive Studio lock.
 
-- Added pointer-free diagram pan, zoom, fit, and exact inspector-order record
-  selection. Selection, camera, playback, and visibility remain view state and
-  leave the accepted mathematical JSON byte-identical.
-- Added keyboard stepping, boundary jumps, play/pause, and presentation controls
-  to factor and walkthrough workspaces. Added keyboard stable-ID selection,
-  hide/isolate/show-all, orbit, zoom, and fit to the exploratory surface view.
-- Added Ctrl/Cmd workspace shortcuts, predictable initial workspace focus, and
-  Escape return that restores the prior editor focus when it is still valid.
-  Text-entry controls retain ordinary editing keys instead of firing workspace
-  shortcuts.
-- Added explicit accessibility names and descriptions for primary lists,
-  selectors, timelines, source fields, diagram canvases, status regions, and 3D
-  views. Replaced symbolic start/end button captions with literal labels and
-  documented every shortcut plus the remaining acceptance limits in
-  `ACCESSIBILITY.md`.
+- Added a fixed generic review workflow that runs the real Studio controller,
+  Python geometry bridge, factor view, signed-braid walkthrough, linked
+  exploratory surface record, and publication adapter in one session.
+- The workflow validates a stable-ID point edit, byte-exact undo/redo, the third
+  supplied factor and its transported identities, the literal `[-2]` braid
+  block under independent reverse playback/presentation, and exact publication
+  of the supplied disk endpoints. It verifies that both exploratory 3D views are
+  named in the manifest but excluded from certified geometry artifacts.
+- Added a version-1 deterministic receipt containing exact-source and bundle
+  SHA-256 checksums, stable IDs, literal words, transported identities, output
+  size, endpoint order, and exclusions. It contains no timestamp, local path,
+  camera state, or promoted verification claim.
+- Added an operator wrapper that runs the entire workflow twice and retains the
+  receipt and ZIP only when both pairs are byte-identical. The CLI-only demo is
+  excluded from Web packaging.
+- Added `DEMO_REVIEW.md` with the reproducible command and a separate manual
+  checklist for desktop, WebGL, phones, screen readers, and mathematical review.
+  Headless receipt success is not used as visual or assistive-technology proof.
 
 Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
 
 - Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
   30 mobile, 71 factor-workspace, 54 surface-view, 79 planar-walkthrough, 54
-  signed-braid walkthrough, 52 cover-link walkthrough, 35 publication, and
-  **40 new keyboard/accessibility assertions**, 799 total. New coverage uses no
-  pointer to navigate every workspace, verifies focus entry/return and named
-  controls, checks 3D keyboard camera/visibility state, and proves source
-  immutability at 320, 390, and 1280 pixel widths.
+  signed-braid walkthrough, 52 cover-link walkthrough, 35 publication, 40
+  keyboard/accessibility, and **24 new end-to-end demo assertions**, 823 total.
+  Two complete runs produced identical receipt and ZIP bytes; the retained
+  7,447-byte ZIP checksum matched the receipt.
 - The complete pinned-runtime runner passed, including 13 browser adapter/loader
   tests, 18 independent Python bridge/adapter/runner tests, and the intentional
   harness failure exiting 1.
 - Full repository regression: **225 Python tests with 359 subtests** and **8
   browser-editor tests**.
-- Editor import, three-frame launch, and static Web export passed. No Site
+- Editor import, three-frame launch, and static Web export passed. Inspection of
+  the Web pack confirmed that the desktop demo runner was excluded. No Site
   deployment, download publication, or release occurred.
 
 No controller/test failure remains. Headless controller checks do not establish
@@ -59,10 +62,9 @@ actual WebGL browser, or physical-phone usability. Display-enabled desktop,
 mobile, and browser acceptance therefore remains pending. Exact publication is
 desktop-only and packaged operation outside a source checkout is still pending.
 
-**Next specific task:** add a deterministic end-to-end demo script and review
-checklist that exercises edit, undo, walkthrough, and publication workflows,
-then run it in a display-enabled desktop/WebGL environment with visible-focus,
-screen-reader, and physical-phone acceptance recorded separately.
+**Next specific task:** add and verify a portable Linux desktop export that runs
+outside a source checkout, with Python authority discovery and publication
+failure states tested from the packaged layout. Do not publish the binary.
 
 ## Earlier increment: explicit supplied planar-to-surface endpoint links
 

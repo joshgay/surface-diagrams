@@ -4,6 +4,7 @@ import argparse
 import os
 import subprocess
 import sys
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT = ROOT / "godot"
@@ -47,6 +48,11 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_cover.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_publication.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/keyboard_accessibility.gd"])
+    with tempfile.TemporaryDirectory(prefix="surface-studio-demo-") as directory:
+        run([sys.executable, str(PROJECT / "demo" / "run_demo.py"),
+             "--godot", args.godot,
+             "--receipt", str(Path(directory) / "receipt.json"),
+             "--bundle", str(Path(directory) / "bundle.zip")])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",
