@@ -14,8 +14,10 @@ This subtree belongs to Josh Gay's long-running Godot project in
   Exception: Josh explicitly approved a private ChatGPT Sites web proof of
   concept in the foreground conversation on 2026-09-14. Its source adapter and
   export preset belong here; the separate Site owns its hosting manifest/output.
-  This does not authorize scheduled deployments, another hosting provider,
-  public sharing, a PR, or replacing the desktop geometry validator.
+  Josh additionally requested public access for that existing Site in the
+  foreground conversation on 2026-09-23; its access is now public. Neither
+  authorization permits scheduled deployments, another hosting provider,
+  a PR, or replacing the desktop geometry validator.
 - Keep Godot-specific implementation, fixtures, docs, and tests under `godot/`.
   Prefer an adapter here over changing the Python library's public API. A truly
   necessary shared-code fix must be small, tested, documented, and stay on this

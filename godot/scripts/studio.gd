@@ -122,6 +122,7 @@ func _build_interface() -> void:
 	braid_editor = BraidEditor.new()
 	braid_editor.edit_requested.connect(_edit_braid_word)
 	braid_editor.view_changed.connect(_braid_view_changed)
+	braid_editor.selection_requested.connect(_braid_selection_requested)
 	inspector.add_child(braid_editor)
 	var source_button := Button.new()
 	source_button.text = "Show accepted source"
@@ -404,9 +405,12 @@ func _select_record(index: int) -> void:
 func _canvas_record_selected(record: Dictionary) -> void:
 	_select_matching_row(record)
 	curve_inspector.inspect(document, record)
+	braid_editor.inspect(record)
 	_refresh_reindex_controls(record)
 	canvas.set_curve_draft("", [])
 	status_label.text = "Selected %s %s. Drag to preview a move; release validates before the record changes." % [record.kind, record.id]
+	if record.kind == "crossing":
+		status_label.text = "Selected crossing %d. Its signed generator and transported strand IDs are shown in the inspector." % (record.index + 1)
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 	_persist_recovery()
 
@@ -478,8 +482,13 @@ func _create_curve(curve: Dictionary) -> void:
 	status_label.add_theme_color_override("font_color", Color("#167464"))
 	_persist_recovery()
 
-func _braid_view_changed(step: int, direction: String) -> void:
-	canvas.set_braid_view(step, direction)
+func _braid_view_changed(playhead: float, direction: String) -> void:
+	canvas.set_braid_view(playhead, direction)
+
+func _braid_selection_requested(index: int) -> void:
+	if document != null and document.data.kind == "braid":
+		_select_matching_row(document.inspector_records()[index + 1])
+		_select_record(index + 1)
 
 func _edit_braid_word(action: String, index: int, generator: int) -> void:
 	candidate_geometry = {}

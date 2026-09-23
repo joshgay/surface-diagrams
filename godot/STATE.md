@@ -5,10 +5,55 @@
   contribution on `codex/ordered-factorizations`.
 - Checkpoint date: 2026-09-23 UTC.
 - Current milestone: **M0 and M1 complete; M2 programmable work complete,
-  with display-enabled visual acceptance still pending; M3 in progress**.
+  with display-enabled visual acceptance still pending; M3 interaction and
+  playback implemented, visual acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: signed braid word and step timeline
+## Latest increment: crossing picking and fractional playback
+
+Built from live fork head `e325d02a501f57734302dcdc6a491c1a590b8caa`.
+Josh requested an immediate run and resumed hourly development. The existing
+Studio Site's access was changed to public and verified through Sites. It still
+serves the previously deployed browser proof of concept (version 1), not this
+new branch build: <https://surface-diagrams-studio.joshgay.chatgpt.site>.
+
+- Replaced discrete-only playback with a pure fractional crossing sampler.
+  Integer times reproduce independently checked strand configurations; partial
+  times reveal the next crossing without changing the exact signed word.
+  The canvas, hit testing, and inspector share transported strand identities and
+  the same physical over/under convention in both presentation directions.
+- Click a visible crossing to select its exact word index in the canvas, list,
+  and inspector after pan or zoom. Picking pauses playback at its current time.
+  Crossings whose midpoints have not yet appeared cannot be picked. The position
+  control also synchronizes selection; the append position clears the old
+  crossing highlight. Selection is drawn behind the strands, and overpass gaps
+  are clipped to the revealed portion of each crossing.
+- Continuous scrubbing, play/pause, and previous/next boundary controls retain
+  separate view time. Unequal frame durations reach the same endpoints. Edits
+  and undo/redo stop playback and discard partial geometry from the prior word;
+  rejected edits retain the current fractional view. Empty braids remain
+  stationary, and nonfinite times are rejected. Browser previews use the same
+  sampler and keep publication geometry unavailable.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. A new dedicated interaction suite
+passed **49 assertions** covering independent endpoints, physical signs,
+fractional positions, reverse sampling, pause, frame partitioning, actual scene
+mouse dispatch, indexed selection, rejection, undo/redo, and empty words.
+The aggregate runner passed: **175 model/controller assertions**, **119 desktop
+scene assertions**, **49 braid interaction assertions**, **41 browser-mode
+controller assertions**, **3 Python bridge tests**, **3 runner contract tests**,
+**13 browser adapter/loader tests**, and the intentional exit-1 failure check.
+Godot editor import and a three-frame project run completed without diagnostics.
+All three fixtures passed the Python renderer. Full inherited Python and
+browser-editor suites were not rerun because shared code and the adapter did
+not change.
+
+Full interactive visual acceptance remains unavailable without a display
+server. These checks exercise schematic path data and live headless scene
+controllers; they do not certify the appearance of crossing gaps or controls.
+The Python publication adapter and mathematical JSON schema are unchanged.
+
+## Earlier increment: signed braid word and step timeline
 
 Built from live fork head `187c908c4e587236446419176b8e63046ace8353`.
 The private Site was not redeployed or modified during this increment.
@@ -128,7 +173,8 @@ of the native controls or confirmation dialog; no display server is available.
 
 ## Foreground web proof of concept
 
-Josh explicitly approved pursuing a private ChatGPT Site. Deployment succeeded:
+Josh explicitly approved pursuing a private ChatGPT Site. Deployment succeeded,
+and he subsequently requested public access on 2026-09-23:
 <https://surface-diagrams-studio.joshgay.chatgpt.site>. This is **not full browser
 acceptance or completion of M2**. The desktop path remains geometry-validated.
 
@@ -284,7 +330,7 @@ See `RUNTIME.md` for official sources and commands.
 ## Known limitations
 
 This is a planar point/label, curve-itinerary, row, and curve-creation editor
-with signed braid-word editing and a discrete braid timeline. Native curve
+with signed braid-word editing, crossing picking, and a fractional braid timeline. Native curve
 drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
 There is no factor workspace or 3D surface view yet.
@@ -307,12 +353,13 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Complete the M3 interaction gate: add canvas hit testing for crossing selection
-in either presentation, keep the exact crossing index attached through word
-edits and reverse scrubs, and add a narrowly tested within-crossing preview
-that preserves physical over/under signs and transported identities. Keep the
-view time separate from the mathematical word. A display-enabled pass must
-inspect native controls, crossing gaps, M2 forms and dialogs, and recovery.
+Begin M4 with a bounded, versioned factor-workspace importer and one generic
+fixture containing literal factor IDs, support diagrams, braid blocks, and
+supplied before/after states. Connect it through a narrow tested adapter to
+Python's FactorPanel and synchronize selection across the three views. Missing
+after-states must remain explicitly absent, never inferred as computed actions.
+A display-enabled pass still needs to inspect native controls, crossing gaps,
+M2 forms and dialogs, and recovery before visual acceptance can be claimed.
 
 Update this checkpoint after every meaningful implementation commit with actual
 changes, tests, remaining failures, and the next concrete task. Work on generic

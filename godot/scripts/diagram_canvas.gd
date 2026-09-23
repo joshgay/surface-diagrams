@@ -25,6 +25,7 @@ var curve_draft_id := ""
 var curve_draft_cuts: Array = []
 var pick_for_new_curve := false
 var braid_step := -1
+var braid_playhead := -1.0
 var braid_presentation := ""
 
 func set_document(value: DiagramDocument) -> void:
@@ -34,6 +35,7 @@ func set_document(value: DiagramDocument) -> void:
 	selected_record = {}
 	pick_for_new_curve = false
 	braid_step = -1
+	braid_playhead = -1.0
 	braid_presentation = ""
 	set_curve_draft("", [])
 	cancel_edit_preview()
@@ -54,12 +56,13 @@ func set_curve_draft(id: String, cuts: Array) -> void:
 	curve_draft_cuts = cuts.duplicate(true)
 	queue_redraw()
 
-func set_braid_view(step: int, direction: String) -> void:
+func set_braid_view(playhead: float, direction: String) -> void:
 	if document == null or document.data.kind != "braid":
 		return
-	if direction not in ["bottom-to-top", "top-to-bottom"]:
+	if not is_finite(playhead) or direction not in ["bottom-to-top", "top-to-bottom"]:
 		return
-	braid_step = clampi(step, 0, document.data.braid.word.size())
+	braid_playhead = clampf(playhead, 0.0, document.data.braid.word.size())
+	braid_step = floori(braid_playhead)
 	braid_presentation = direction
 	queue_redraw()
 
@@ -76,7 +79,9 @@ func _gui_input(event: InputEvent) -> void:
 			zoom_at(event.position, 1.0 / 1.12)
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				if not begin_edit_drag(event.position) and (selected_record.get("kind", "") == "curve" or pick_for_new_curve):
+				if document != null and document.data.kind == "braid":
+					select_braid_crossing(event.position)
+				elif not begin_edit_drag(event.position) and (selected_record.get("kind", "") == "curve" or pick_for_new_curve):
 					var cut := _hit_cut(event.position)
 					if cut >= 0:
 						cut_picked.emit(cut)
@@ -175,6 +180,45 @@ func screen_position_for_cut(cut: int) -> Vector2:
 	endpoint_x.append(data.surface.width / 2.0)
 	var x: float = (endpoint_x[cut] + endpoint_x[cut + 1]) / 2.0
 	return _screen(Vector2(x, 0), _planar_frame(data))
+
+func _braid_frame() -> Dictionary:
+	var braid: Dictionary = document.data.braid
+	return _frame(maxf(160.0, (braid.strands - 1) * braid.spacing), maxi(1, braid.word.size()) * braid.step + 80.0)
+
+func _braid_sample() -> Dictionary:
+	var time: float = document.data.braid.word.size() if braid_playhead < 0 else braid_playhead
+	return BraidTimeline.sample(document, time, braid_presentation)
+
+func screen_position_for_crossing(index: int) -> Vector2:
+	if document == null or document.data.kind != "braid":
+		return Vector2.INF
+	var sample := _braid_sample()
+	for crossing in sample.crossings:
+		if crossing.index == index and crossing.fraction >= 0.5:
+			return _screen((crossing.a + crossing.b) / 2.0, _braid_frame())
+	return Vector2.INF
+
+func select_braid_crossing(screen_position: Vector2) -> bool:
+	if document == null or document.data.kind != "braid" or not screen_position.is_finite():
+		return false
+	var sample := _braid_sample()
+	var frame := _braid_frame()
+	var nearest := -1
+	var distance := 13.0
+	for crossing in sample.crossings:
+		if crossing.fraction < 0.5:
+			continue
+		var center := _screen((crossing.a + crossing.b) / 2.0, frame)
+		var candidate := center.distance_to(screen_position)
+		if candidate < distance:
+			distance = candidate
+			nearest = crossing.index
+	if nearest < 0:
+		return false
+	var record: Dictionary = document.inspector_records()[nearest + 1]
+	select_record(record)
+	record_selected.emit(record.duplicate(true))
+	return true
 
 func zoom_at(point: Vector2, factor: float) -> void:
 	var old := zoom
@@ -357,57 +401,42 @@ func _draw_curve(curve: Dictionary, endpoint_x: Array[float], frame: Dictionary,
 
 func _draw_braid(data: Dictionary) -> void:
 	var braid: Dictionary = data.braid
-	var width: float = maxf(160.0, (braid.strands - 1) * braid.spacing)
-	var height: float = maxf(1, braid.word.size()) * braid.step
-	var frame := _frame(width, height + 80.0)
+	var frame := _braid_frame()
+	var sample := _braid_sample()
 	var colors: Array = braid.colors
-	var order: Array = range(braid.strands)
 	var points: Array = []
-	for identity in braid.strands: points.append(PackedVector2Array())
-	var bottom_up: bool = (braid.direction if braid_presentation.is_empty() else braid_presentation) == "bottom-to-top"
-	var visible_steps: int = braid.word.size() if braid_step < 0 else clampi(braid_step, 0, braid.word.size())
-	for identity in braid.strands:
-		var y := -height / 2.0 if bottom_up else height / 2.0
-		points[identity].append(_screen(Vector2((identity - (braid.strands - 1) / 2.0) * braid.spacing, y), frame))
-	var overlays: Array = []
-	for step in visible_steps:
-		var generator: int = braid.word[step]
-		var left: int = abs(generator) - 1
-		var next_order := order.duplicate()
-		next_order[left] = order[left + 1]
-		next_order[left + 1] = order[left]
-		var y: float = (-height / 2.0 + (step + 1) * braid.step) if bottom_up else (height / 2.0 - (step + 1) * braid.step)
-		for slot in braid.strands:
-			var identity: int = next_order[slot]
-			points[identity].append(_screen(Vector2((slot - (braid.strands - 1) / 2.0) * braid.spacing, y), frame))
-		var over_slot: int
-		if generator > 0:
-			over_slot = left + 1 if bottom_up else left
-		else:
-			over_slot = left if bottom_up else left + 1
-		var over_id: int = order[over_slot]
-		overlays.append({"a": points[over_id][-2], "b": points[over_id][-1], "color": Color(colors[over_id % colors.size()]), "index": step})
-		order = next_order
-	if braid.word.is_empty():
-		for identity in braid.strands:
-			points[identity].append(_screen(Vector2((identity - (braid.strands - 1) / 2.0) * braid.spacing, height / 2.0 if bottom_up else -height / 2.0), frame))
+	var bottom_up: bool = sample.direction == "bottom-to-top"
+	for path in sample.paths:
+		var screen_points := PackedVector2Array()
+		for point in path:
+			screen_points.append(_screen(point, frame))
+		points.append(screen_points)
+	# Selection is drawn behind the strands so highlighting cannot hide a gap.
+	for crossing in sample.crossings:
+		if crossing.fraction >= 0.5 and selected_record.get("kind", "") == "crossing" and selected_record.get("index", -1) == crossing.index:
+			var middle := _screen((crossing.a + crossing.b) / 2.0, frame)
+			draw_circle(middle, 17.0, Color("#fff4cf"))
+			draw_arc(middle, 17.0, 0.0, TAU, 32, Color("#f2a900"), 3.0, true)
 	for identity in braid.strands:
 		if points[identity].size() >= 2:
 			draw_polyline(points[identity], Color(colors[identity % colors.size()]), 4.0, true)
 		else:
 			draw_circle(points[identity][0], 3.0, Color(colors[identity % colors.size()]))
-	for crossing in overlays:
-		var middle: Vector2 = (crossing.a + crossing.b) / 2.0
-		var direction: Vector2 = (crossing.b - crossing.a).normalized() * 11.0
-		if selected_record.get("kind", "") == "crossing" and selected_record.get("index", -1) == crossing.index:
-			draw_circle(middle, 17.0, Color("#fff4cf"))
-			draw_arc(middle, 17.0, 0.0, TAU, 32, Color("#f2a900"), 3.0, true)
-		draw_line(middle - direction, middle + direction, Color("#ffffff"), 9.0, true)
-		draw_line(middle - direction, middle + direction, crossing.color, 4.0, true)
+	for crossing in sample.crossings:
+		var start := _screen(crossing.a, frame)
+		var end := _screen(crossing.b, frame)
+		var half_gap := minf(0.18, 11.0 / maxf(0.001, start.distance_to(end)))
+		var from := 0.5 - half_gap
+		var to := minf(0.5 + half_gap, crossing.fraction)
+		if to > from:
+			var color := Color(colors[(crossing.over_id - 1) % colors.size()])
+			draw_line(start.lerp(end, from), start.lerp(end, to), Color("#ffffff"), 9.0, true)
+			draw_line(start.lerp(end, from), start.lerp(end, to), color, 4.0, true)
 	for identity in braid.strands:
 		_draw_centered(str(identity + 1), points[identity][0] + Vector2(0, 18 if bottom_up else -12), Color(colors[identity % colors.size()]), 12)
-		_draw_centered(str(identity + 1), points[identity][-1] + Vector2(0, -12 if bottom_up else 18), Color(colors[identity % colors.size()]), 12)
-	_draw_centered("Step %d/%d. Positive = upper-left over upper-right in either direction." % [visible_steps, braid.word.size()], Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
+		if is_equal_approx(sample.time, roundf(sample.time)):
+			_draw_centered(str(identity + 1), points[identity][-1] + Vector2(0, -12 if bottom_up else 18), Color(colors[identity % colors.size()]), 12)
+	_draw_centered("Step %.2f/%d. Positive = upper-left over upper-right in either direction." % [sample.time, braid.word.size()], Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
 
 func _draw_centered(text: String, at: Vector2, color: Color, font_size: int) -> void:
 	var font := ThemeDB.fallback_font

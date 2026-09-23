@@ -89,6 +89,11 @@ func _run() -> void:
 	studio._discard_and_continue()
 	_check(studio.document.data.kind == "braid" and studio.record_list.item_count == 6, "braid view remains available without Python")
 	var braid_source: String = studio.document.to_json()
+	studio.braid_editor.set_playhead(1.75)
+	studio.braid_editor.set_direction("top-to-bottom")
+	_check(studio.canvas.braid_playhead == 1.75 and studio.document.to_json() == braid_source, "browser fractional playback keeps exact source outside view state")
+	_check(studio.canvas.select_braid_crossing(studio.canvas.screen_position_for_crossing(1)) and studio.braid_editor.index_spin.value == 1, "browser canvas picks visible partial crossing without Python")
+	_check(not studio.geometry_result.ok and studio.svg_button.disabled and studio.tikz_button.disabled, "fractional browser preview never enables publication geometry")
 	studio._edit_braid_word("insert", 1, -1)
 	_check(studio.document.to_json() == braid_source and not studio.history.can_undo(), "browser braid word edit requires explicit opt in")
 	studio.browser_drafts.button_pressed = true

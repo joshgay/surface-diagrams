@@ -2,13 +2,16 @@ class_name BraidEditor
 extends VBoxContainer
 
 signal edit_requested(action: String, index: int, generator: int)
-signal view_changed(step: int, direction: String)
+signal view_changed(playhead: float, direction: String)
+signal selection_requested(index: int)
+
+const SECONDS_PER_CROSSING := 0.6
 
 var document: DiagramDocument
 var step := 0
+var playhead := 0.0
 var direction := ""
 var playing := false
-var elapsed := 0.0
 var index_spin: SpinBox
 var generator_spin: SpinBox
 var direction_option: OptionButton
@@ -68,7 +71,7 @@ func _init() -> void:
 	play_button.pressed.connect(toggle_play)
 	view_row.add_child(play_button)
 	scrub = HSlider.new()
-	scrub.step = 1
+	scrub.step = 0.001
 	scrub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scrub.value_changed.connect(_scrub_changed)
 	add_child(scrub)
@@ -87,17 +90,19 @@ func configure(value: DiagramDocument, selection: Dictionary = {}, reset_view: b
 	play_button.text = "Play"
 	if reset_view or direction.is_empty():
 		direction = document.data.braid.direction
-		step = length
+		playhead = float(length)
 	else:
-		step = clampi(step, 0, length)
+		# History changes discard an in-flight partial crossing from the old word.
+		playhead = float(clampi(step, 0, length))
+	step = floori(playhead)
 	direction_option.select(0 if direction == "bottom-to-top" else 1)
 	index_spin.max_value = length
 	generator_spin.min_value = -int(document.data.braid.strands) + 1
 	generator_spin.max_value = int(document.data.braid.strands) - 1
 	scrub.max_value = length
-	scrub.set_value_no_signal(step)
+	scrub.set_value_no_signal(playhead)
 	inspect(selection)
-	view_changed.emit(step, direction)
+	view_changed.emit(playhead, direction)
 
 func inspect(selection: Dictionary) -> void:
 	if not visible:
@@ -107,18 +112,26 @@ func inspect(selection: Dictionary) -> void:
 		if index >= 0 and index < document.data.braid.word.size():
 			index_spin.set_value_no_signal(index)
 			generator_spin.set_value_no_signal(document.data.braid.word[index])
+			playing = false
+			play_button.text = "Play"
 	_update_details()
 
 func set_step(value: int, from_playback: bool = false) -> void:
-	if not visible:
+	set_playhead(float(value), from_playback)
+
+func set_playhead(value: float, from_playback: bool = false) -> void:
+	if not visible or not is_finite(value):
 		return
 	if not from_playback:
 		playing = false
 		play_button.text = "Play"
-	step = clampi(value, 0, document.data.braid.word.size())
-	scrub.set_value_no_signal(step)
+	playhead = clampf(value, 0.0, document.data.braid.word.size())
+	if absf(playhead - roundf(playhead)) < 1e-9:
+		playhead = roundf(playhead)
+	step = floori(playhead)
+	scrub.set_value_no_signal(playhead)
 	_update_details()
-	view_changed.emit(step, direction)
+	view_changed.emit(playhead, direction)
 
 func set_direction(value: String) -> void:
 	if not visible or value not in ["bottom-to-top", "top-to-bottom"]:
@@ -126,7 +139,7 @@ func set_direction(value: String) -> void:
 	direction = value
 	direction_option.select(0 if direction == "bottom-to-top" else 1)
 	_update_details()
-	view_changed.emit(step, direction)
+	view_changed.emit(playhead, direction)
 
 func toggle_play() -> void:
 	if not visible:
@@ -137,19 +150,16 @@ func toggle_play() -> void:
 		if step == document.data.braid.word.size():
 			set_step(0)
 		playing = document.data.braid.word.size() > 0
-		elapsed = 0.0
 	play_button.text = "Pause" if playing else "Play"
 
 func advance(delta: float) -> void:
 	if not playing or not is_finite(delta) or delta <= 0:
 		return
-	elapsed += minf(delta, 5.0)
-	while elapsed >= 0.6 and playing:
-		elapsed -= 0.6
-		set_step(step + 1, true)
-		if step == document.data.braid.word.size():
-			playing = false
-			play_button.text = "Play"
+	var remaining: float = document.data.braid.word.size() - playhead
+	set_playhead(playhead + minf(delta, remaining * SECONDS_PER_CROSSING) / SECONDS_PER_CROSSING, true)
+	if step == document.data.braid.word.size():
+		playing = false
+		play_button.text = "Play"
 
 func _process(delta: float) -> void:
 	advance(delta)
@@ -170,15 +180,16 @@ func _index_changed(value: float) -> void:
 	var index := int(value)
 	if index < document.data.braid.word.size():
 		generator_spin.set_value_no_signal(document.data.braid.word[index])
+	selection_requested.emit(index if index < document.data.braid.word.size() else -1)
 	_update_details()
 
 func _scrub_changed(value: float) -> void:
 	playing = false
 	play_button.text = "Play"
-	set_step(int(value))
+	set_playhead(value)
 
 func _start() -> void: set_step(0)
-func _back() -> void: set_step(step - 1)
+func _back() -> void: set_step(ceili(playhead) - 1)
 func _forward() -> void: set_step(step + 1)
 func _end() -> void: set_step(document.data.braid.word.size())
 
@@ -187,6 +198,8 @@ func _update_details() -> void:
 	if states.is_empty():
 		return
 	var lines := ["After %d/%d literal crossings: IDs left to right %s." % [step, states.size() - 1, states[step]]]
+	if playhead > step:
+		lines.append("Crossing %d in progress: %.1f%%." % [step + 1, (playhead - step) * 100.0])
 	var index: int = int(index_spin.value)
 	if index >= 0 and index < states.size() - 1:
 		var crossing := BraidTimeline.crossing(document, index, direction)

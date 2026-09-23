@@ -37,6 +37,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--editor", "--quit"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/run_tests.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/ui_smoke.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/braid_interaction.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/web_mode_smoke.gd"])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
