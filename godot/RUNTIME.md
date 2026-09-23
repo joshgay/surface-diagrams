@@ -66,3 +66,12 @@ to 10,054,758 bytes in this environment. This compression preserves all engine
 bytes and is required because Sites rejected the raw source object as too large.
 Godot export and Node WebAssembly compilation succeeded; neither substitutes for
 executing the full application with WebGL in a real browser.
+
+## Portable Linux review package
+
+The pinned standard Linux runtime can also run a compiled project pack without
+installing a separate export template. `desktop/build_linux.py` assembles that
+runtime, the pack, and the fixed Python authority into a private directory and
+tests it from outside the source checkout. See [desktop/README.md](desktop/README.md).
+The package is deliberately not committed or published. Python 3 is still
+required for exact geometry validation and publication.

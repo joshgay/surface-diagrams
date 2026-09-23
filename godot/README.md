@@ -67,6 +67,12 @@ publication. Its runner executes twice and retains a receipt and bundle only
 when both runs are byte-identical. The visual, browser, phone, and screen-reader
 checklist remains separate from that automated evidence.
 
+For installed-layout review, [desktop/README.md](desktop/README.md) describes a
+private portable Linux package. It runs outside the source checkout with a
+fixed sibling Python authority, verifies exact geometry and publication, and
+tests explicit missing-authority and missing-interpreter failures. The helper
+does not publish or install the generated binary.
+
 Import `project.godot` using Godot 4.7.2 stable. The exact runtime, checksum, and
 commands are in [RUNTIME.md](RUNTIME.md). Use GDScript and the Compatibility
 renderer; no .NET or external assets are required.

@@ -11,60 +11,64 @@
   exploratory surface slice implemented, visual acceptance pending; M6 supplied
   planar, signed-braid, and explicitly linked exploratory surface walkthrough
   slices implemented, visual acceptance pending; M7 first reproducible
-  walkthrough-publication, keyboard-access, and deterministic demo-review
-  slices implemented; visual and assistive-technology acceptance pending**.
+  walkthrough-publication, keyboard-access, deterministic demo-review, and
+  portable Linux slices implemented; visual and assistive-technology acceptance
+  pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: deterministic end-to-end demo review
+## Latest increment: verified portable Linux package
 
-Built from live fork head `6afe04be1aae5b893c9ad1590d3f6569065d5013`
+Built from live fork head `c675316e10a2bb098091894d3d6b3d03923a573e`
 in an isolated worktree under the exclusive Studio lock.
 
-- Added a fixed generic review workflow that runs the real Studio controller,
-  Python geometry bridge, factor view, signed-braid walkthrough, linked
-  exploratory surface record, and publication adapter in one session.
-- The workflow validates a stable-ID point edit, byte-exact undo/redo, the third
-  supplied factor and its transported identities, the literal `[-2]` braid
-  block under independent reverse playback/presentation, and exact publication
-  of the supplied disk endpoints. It verifies that both exploratory 3D views are
-  named in the manifest but excluded from certified geometry artifacts.
-- Added a version-1 deterministic receipt containing exact-source and bundle
-  SHA-256 checksums, stable IDs, literal words, transported identities, output
-  size, endpoint order, and exclusions. It contains no timestamp, local path,
-  camera state, or promoted verification claim.
-- Added an operator wrapper that runs the entire workflow twice and retains the
-  receipt and ZIP only when both pairs are byte-identical. The CLI-only demo is
-  excluded from Web packaging.
-- Added `DEMO_REVIEW.md` with the reproducible command and a separate manual
-  checklist for desktop, WebGL, phones, screen readers, and mathematical review.
-  Headless receipt success is not used as visual or assistive-technology proof.
+- Added a private x86-64 package builder using the exact standard Godot runtime
+  and a compiled project pack. The generated directory contains the runtime,
+  pack, fixed authority adapters, a private Python library copy, license, and a
+  versioned SHA-256 manifest. No export-template dependency is required.
+- Added bounded authority discovery. Studio uses an explicitly configured
+  trusted authority, then a fixed `authority/` directory beside the executable,
+  then source-checkout adapters. An explicit incomplete authority fails instead
+  of silently falling back. Imported records cannot select scripts or paths.
+- Updated both Python adapters to load the packaged private library while
+  retaining source-checkout operation. Successful bridge results report whether
+  the authority was configured, packaged, or from the checkout.
+- Added a packaged self-test that requires exact planar SVG/TikZ geometry and a
+  deterministic linked-walkthrough publication with both exploratory 3D views
+  explicitly excluded. It returns a bounded machine-readable receipt.
+- The builder ran the 147,279,259-byte, 53-file manifested payload from a
+  separate working directory outside the repository. It then verified nonzero
+  actionable failure
+  for both an absent authority directory and a configured missing Python
+  interpreter. The package remained local and was not published.
 
 Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
 
 - Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
   30 mobile, 71 factor-workspace, 54 surface-view, 79 planar-walkthrough, 54
   signed-braid walkthrough, 52 cover-link walkthrough, 35 publication, 40
-  keyboard/accessibility, and **24 new end-to-end demo assertions**, 823 total.
-  Two complete runs produced identical receipt and ZIP bytes; the retained
-  7,447-byte ZIP checksum matched the receipt.
+  keyboard/accessibility, 24 end-to-end demo, and **10 new authority-discovery
+  assertions**, 833 total. The aggregate runner also rebuilt and tested all
+  three portable runtime scenarios.
 - The complete pinned-runtime runner passed, including 13 browser adapter/loader
   tests, 18 independent Python bridge/adapter/runner tests, and the intentional
   harness failure exiting 1.
 - Full repository regression: **225 Python tests with 359 subtests** and **8
   browser-editor tests**.
 - Editor import, three-frame launch, and static Web export passed. Inspection of
-  the Web pack confirmed that the desktop demo runner was excluded. No Site
-  deployment, download publication, or release occurred.
+  the Web pack confirmed that desktop, bridge, and demo implementation files
+  were excluded. No Site deployment, download publication, or release occurred.
 
 No controller/test failure remains. Headless controller checks do not establish
 screen-reader interoperability, visible focus clarity, keyboard behavior in an
 actual WebGL browser, or physical-phone usability. Display-enabled desktop,
-mobile, and browser acceptance therefore remains pending. Exact publication is
-desktop-only and packaged operation outside a source checkout is still pending.
+mobile, and browser acceptance therefore remains pending. Packaged operation is
+verified headlessly on Linux, but its visible desktop presentation has not been
+accepted and Python 3 remains a documented runtime requirement.
 
-**Next specific task:** add and verify a portable Linux desktop export that runs
-outside a source checkout, with Python authority discovery and publication
-failure states tested from the packaged layout. Do not publish the binary.
+**Next specific task:** add bounded performance fixtures and a reproducible
+benchmark receipt for import, edit/history, timeline sampling, exact geometry,
+and publication. Record practical limits without converting timings into
+correctness claims.
 
 ## Earlier increment: explicit supplied planar-to-surface endpoint links
 

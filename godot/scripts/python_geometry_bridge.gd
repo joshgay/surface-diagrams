@@ -18,10 +18,11 @@ static func render(document: Variant) -> Dictionary:
 	var save_error: String = document.save_path(input_path)
 	if not save_error.is_empty():
 		return _failure(save_error)
-	var python := OS.get_environment("SURFACE_DIAGRAMS_PYTHON")
-	if python.is_empty():
-		python = "python3"
-	var script := ProjectSettings.globalize_path("res://bridge/render_document.py")
+	var authority := PythonAuthority.resolve_script("render_document.py")
+	if not authority.ok:
+		return _failure(authority.error)
+	var python := PythonAuthority.python_executable()
+	var script: String = authority.path
 	var output: Array = []
 	# OS.execute invokes this fixed trusted script directly. No shell is used and
 	# imported records cannot alter the executable, script, or cache paths.
@@ -41,7 +42,7 @@ static func render(document: Variant) -> Dictionary:
 	if not svg_result.text.begins_with("<svg") or "tikzpicture" not in tikz_result.text:
 		return _failure("Python geometry returned unexpected output")
 	return {"ok": true, "error": "", "svg": svg_result.text, "tikz": tikz_result.text,
-		"manifest": manifest}
+		"manifest": manifest, "authority_source": authority.source}
 
 static func _read_bounded(path: String) -> Dictionary:
 	var file := FileAccess.open(path, FileAccess.READ)

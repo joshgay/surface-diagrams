@@ -62,6 +62,40 @@ func _ready() -> void:
 	_open_result(DiagramDocument.load_path("res://fixtures/planar-v1.json"), "res://fixtures/planar-v1.json", false)
 	if not browser_mode:
 		_offer_recovery()
+	if "--portable-self-test" in OS.get_cmdline_user_args():
+		call_deferred("_run_portable_self_test")
+
+func _run_portable_self_test() -> void:
+	var failures: Array[String] = []
+	if not geometry_result.get("ok", false):
+		failures.append("initial geometry: " + geometry_result.get("error", "unknown failure"))
+	var parsed := WalkthroughDocument.parse(FileAccess.get_file_as_string(WalkthroughView.COVER_FIXTURE))
+	if not parsed.ok:
+		failures.append("packaged walkthrough fixture: " + parsed.error)
+	var publication := WalkthroughPublicationBridge._failure("walkthrough did not parse") if not parsed.ok else WalkthroughPublicationBridge.build(parsed.document)
+	if not publication.get("ok", false):
+		failures.append("publication: " + publication.get("error", "unknown failure"))
+	var exclusions: Array = []
+	if publication.get("ok", false):
+		exclusions = publication.manifest.excluded_exploratory_surface_views.map(func(item): return item.id)
+		if exclusions != ["surface_before", "surface_after"]:
+			failures.append("publication did not preserve explicit exploratory exclusions")
+	var receipt := {
+		"format": "surface-diagrams-studio-portable-self-test",
+		"version": 1,
+		"authority_source": geometry_result.get("authority_source", "unavailable"),
+		"geometry_ok": geometry_result.get("ok", false),
+		"publication_ok": publication.get("ok", false),
+		"publication_authority_source": publication.get("authority_source", "unavailable"),
+		"excluded_exploratory_surface_views": exclusions,
+		"failures": failures
+	}
+	if failures.is_empty():
+		print("PORTABLE SELF-TEST PASS " + JSON.stringify(receipt))
+		get_tree().quit(0)
+	else:
+		printerr("PORTABLE SELF-TEST FAIL " + JSON.stringify(receipt))
+		get_tree().quit(1)
 
 func _build_interface() -> void:
 	var background := ColorRect.new()

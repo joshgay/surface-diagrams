@@ -48,11 +48,16 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_cover.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_publication.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/keyboard_accessibility.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/python_authority.gd"])
     with tempfile.TemporaryDirectory(prefix="surface-studio-demo-") as directory:
         run([sys.executable, str(PROJECT / "demo" / "run_demo.py"),
              "--godot", args.godot,
              "--receipt", str(Path(directory) / "receipt.json"),
              "--bundle", str(Path(directory) / "bundle.zip")])
+    with tempfile.TemporaryDirectory(prefix="surface-studio-linux-test-") as directory:
+        run([sys.executable, str(PROJECT / "desktop" / "build_linux.py"),
+             "--godot", args.godot,
+             "--output", str(Path(directory) / "package")])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",

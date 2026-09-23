@@ -13,8 +13,9 @@ from pathlib import Path
 import sys
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "src"
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+SOURCE = HERE / "python" if (HERE / "python" / "surface_diagrams").is_dir() else ROOT / "src"
 MAX_OUTPUT_BYTES = 4 * 1024 * 1024
 
 

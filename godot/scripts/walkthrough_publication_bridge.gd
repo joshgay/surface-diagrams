@@ -16,9 +16,11 @@ static func build(document: Variant) -> Dictionary:
 	var output_path := cache_dir.path_join("walkthrough-publication.zip")
 	var save_error: String = document.save_path(input_path)
 	if not save_error.is_empty(): return _failure(save_error)
-	var python := OS.get_environment("SURFACE_DIAGRAMS_PYTHON")
-	if python.is_empty(): python = "python3"
-	var script := ProjectSettings.globalize_path("res://bridge/build_walkthrough_bundle.py")
+	var authority := PythonAuthority.resolve_script("build_walkthrough_bundle.py")
+	if not authority.ok:
+		return _failure(authority.error)
+	var python := PythonAuthority.python_executable()
+	var script: String = authority.path
 	var output: Array = []
 	# The executable, adapter, and paths are fixed. Imported records are bounded
 	# JSON data and cannot select code, modules, commands, or output locations.
@@ -39,7 +41,7 @@ static func build(document: Variant) -> Dictionary:
 	if int(receipt.get("bundle_bytes", -1)) != bundle.size():
 		return _failure("Publication receipt size does not match the bundle")
 	return {"ok": true, "error": "", "bundle": bundle,
-		"manifest": receipt.manifest.duplicate(true)}
+		"manifest": receipt.manifest.duplicate(true), "authority_source": authority.source}
 
 static func _failure(message: String) -> Dictionary:
 	return {"ok": false, "error": message, "bundle": PackedByteArray(), "manifest": {}}

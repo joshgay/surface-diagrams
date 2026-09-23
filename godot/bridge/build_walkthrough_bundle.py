@@ -17,8 +17,9 @@ import sys
 import zipfile
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "src"
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+SOURCE = HERE / "python" if (HERE / "python" / "surface_diagrams").is_dir() else ROOT / "src"
 MAX_INPUT_BYTES = 256 * 1024
 MAX_BUNDLE_BYTES = 64 * 1024 * 1024
 MAX_DOCUMENTS = 65
