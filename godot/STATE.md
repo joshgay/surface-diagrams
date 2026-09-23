@@ -6,10 +6,66 @@
 - Checkpoint date: 2026-09-23 UTC.
 - Current milestone: **M0 and M1 complete; M2 programmable work complete,
   with display-enabled visual acceptance still pending; M3 interaction and
-  playback implemented, visual acceptance pending**.
+  playback implemented, visual acceptance pending; M4 first import/view/export
+  slice implemented, shared factor playback still pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: mobile layout and touch controls
+## Latest increment: supplied factor workspace
+
+Built from live fork head `08ef1f7b3c375df7718eacac0b4db362d973e7e4` in an
+isolated worktree under the exclusive Studio lock.
+
+- Added a bounded, independently validated version-1 factor-workspace envelope.
+  It preserves literal factor IDs/exponents/groups, named complete planar
+  support/state recipes, application order and signed braid blocks. Duplicate
+  keys, unsafe references, executable/unknown fields and future versions fail.
+- Added a separate read-only factor workspace reachable from Studio. Desktop
+  file import and desktop/browser pasted JSON synchronize support, supplied
+  before/after states, a continuous braid and exact transported strand IDs.
+  Picking a crossing selects its factor; explicit empty blocks retain their
+  own selection without stealing a neighboring crossing. Phone layouts stack
+  the views. Invalid imports preserve accepted data and selection. Opening and
+  closing the viewer preserves the editor's unsaved record and undo history;
+  viewer shortcuts cannot undo hidden editor work.
+- Added a generic grouped storyboard, including a straight block and a negative
+  exponent with an already-supplied complete word. No cancellation, power
+  expansion, research identity, computed surface action or verified lift is
+  claimed. Missing states remain visibly absent, including missing before-states
+  after gaps; older states are never carried forward.
+- Added a narrow Python adapter to `FactorPanel` / `FactorizationDiagram` and
+  exact desktop SVG/TikZ export. Nested recipe styles and labels are preserved.
+  Incomplete state sequences remain viewable but cannot export through the
+  all-or-none state API. Browser publication remains explicitly unavailable.
+  The Python library itself was not changed. See `FACTOR_WORKSPACE.md`.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: 175 model, 119 desktop scene, 49 braid interaction, 41 browser-mode,
+  30 mobile and **55 new factor-workspace assertions**, 469 total. Factor tests
+  include 320/390/1280-pixel layouts, actual main-scene phone integration,
+  import rejection, missing states, selection, read-only dragging, hidden-editor
+  undo isolation, deterministic exports and empty sequences.
+- **6 new Python factor-adapter tests**, 3 existing geometry-bridge tests,
+  3 runner-contract tests and 13 browser adapter/loader tests. Adapter tests
+  independently construct library panels, compare exact outputs, and check
+  physical crossing signs and color continuity through tall/empty blocks in
+  both display directions.
+- Full inherited regression: **207 Python tests** and **8 browser-editor tests**.
+- Editor import, three-frame headless launch, all three existing fixture renders,
+  and the deliberate failing assertion's exit-1 contract.
+- Static Web export built locally; its pack includes the new nested fixture.
+  No Site deployment or binary publication occurred. The exported SVG geometry
+  was decoded and inspected: blue points, magenta arcs and continuous braid
+  blocks. That decoder does not render SVG text, so this is geometry inspection,
+  not typography or full interactive UI acceptance.
+
+No remaining test failures. Display-enabled UI, actual Android/iOS browser
+gestures, keyboard and WebGL acceptance are still unavailable. The factor
+workspace is read-only and has no shared playback timeline or workspace
+recovery yet. It accepts planar support/state recipes, not genus-surface data.
+The public Site is unchanged by this branch-only run.
+
+## Earlier increment: mobile layout and touch controls
 
 Foreground repair requested by Josh, built from live fork head
 `716c5e3aa93efd2111540a80d6158836dd01cd3a`.
@@ -368,7 +424,8 @@ This is a planar point/label, curve-itinerary, row, and curve-creation editor
 with signed braid-word editing, crossing picking, and a fractional braid timeline. Native curve
 drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
-There is no factor workspace or 3D surface view yet.
+There is now a read-only supplied factor workspace with linked views and exact
+desktop export, but no shared factor playback or 3D surface view yet.
 Desktop recovery is
 bounded and tested, but browser persistence remains deliberately absent. The
 source-checkout bridge currently requires a compatible
@@ -388,11 +445,11 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Begin M4 with a bounded, versioned factor-workspace importer and one generic
-fixture containing literal factor IDs, support diagrams, braid blocks, and
-supplied before/after states. Connect it through a narrow tested adapter to
-Python's FactorPanel and synchronize selection across the three views. Missing
-after-states must remain explicitly absent, never inferred as computed actions.
+Add a factor-index timeline with previous/next and deterministic per-block
+fractional braid playback. Empty blocks must remain explicit selectable steps,
+and every support/state/braid view must follow the same selection without
+inserting or interpolating missing supplied states. Keep this view state outside
+the mathematical envelope and test both presentation directions.
 A display-enabled pass still needs to inspect native controls, crossing gaps,
 M2 forms and dialogs, and recovery before visual acceptance can be claimed.
 

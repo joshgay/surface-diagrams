@@ -3,7 +3,9 @@ extends RefCounted
 
 const MAX_RENDER_BYTES := 4 * 1024 * 1024
 
-static func render(document: DiagramDocument) -> Dictionary:
+static func render(document: Variant) -> Dictionary:
+	if not (document is DiagramDocument or document is FactorWorkspace):
+		return _failure("Only validated diagram or factor-workspace records can be rendered")
 	if OS.has_feature("web"):
 		return _failure("This browser proof of concept has no Python runtime. Geometry validation and publication exports are disabled.")
 	var cache_dir := ProjectSettings.globalize_path("user://geometry-preview")
@@ -13,7 +15,7 @@ static func render(document: DiagramDocument) -> Dictionary:
 	var input_path := cache_dir.path_join("recipe.json")
 	var svg_path := cache_dir.path_join("diagram.svg")
 	var tikz_path := cache_dir.path_join("diagram.tikz")
-	var save_error := document.save_path(input_path)
+	var save_error: String = document.save_path(input_path)
 	if not save_error.is_empty():
 		return _failure(save_error)
 	var python := OS.get_environment("SURFACE_DIAGRAMS_PYTHON")

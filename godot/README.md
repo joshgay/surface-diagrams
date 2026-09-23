@@ -12,7 +12,14 @@ objects, curves, labels, and crossing indices selected in its inspector. In a
 desktop planar document, drag a point or label to preview a move. Release commits only
 after record and Python geometry validation; a rejected move restores the last
 accepted record. Undo/redo buttons and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, or Ctrl+Y
-restore exact serialized states. The braid view remains inspection-only.
+restore exact serialized states. The braid editor supports literal signed-word
+edits, crossing selection, undo/redo and deterministic fractional playback.
+
+**Factor workspace** opens a separate read-only viewer with linked supports,
+supplied before/after states, and continuous braid blocks. It imports bounded
+versioned JSON and offers exact desktop Python SVG/TikZ export, without computing
+missing states or claiming a verified action. See [FACTOR_WORKSPACE.md](FACTOR_WORKSPACE.md)
+for the generic fixture, schema, import controls and explicit limitations.
 
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the

@@ -40,6 +40,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/braid_interaction.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/web_mode_smoke.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/mobile_smoke.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/factor_workspace.gd"])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",
@@ -49,6 +50,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--quit-after", "3"])
 
     run([sys.executable, str(PROJECT / "tests" / "test_geometry_bridge.py")])
+    run([sys.executable, str(PROJECT / "tests" / "test_factor_workspace.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_run_all.py")])
 
     # The existing Python implementation independently checks both shared

@@ -1,0 +1,36 @@
+{
+  "format": "surface-diagrams-factor-workspace",
+  "version": 1,
+  "title": "Generic supplied storyboard - no action or equality asserted",
+  "strands": 3,
+  "direction": "bottom-to-top",
+  "documents": {
+    "leftArc": {
+      "format": "surface-diagrams", "version": 1, "kind": "planar",
+      "title": "Literal arc (1,2)",
+      "surface": {"width": 280, "height": 160, "objects": [
+        {"id": "p1", "kind": "point", "x": -70},
+        {"id": "p2", "kind": "point", "x": 0},
+        {"id": "p3", "kind": "point", "x": 70}
+      ]},
+      "curves": [{"id": "cLeft", "kind": "arc", "start": 1, "end": 2, "cuts": []}],
+      "labels": [{"id": "caption", "text": "Supplied left arc", "x": 0, "y": -50}]
+    },
+    "rightArc": {
+      "format": "surface-diagrams", "version": 1, "kind": "planar",
+      "title": "Literal arc (2,3)",
+      "surface": {"width": 280, "height": 160, "objects": [
+        {"id": "p1", "kind": "point", "x": -70},
+        {"id": "p2", "kind": "point", "x": 0},
+        {"id": "p3", "kind": "point", "x": 70}
+      ]},
+      "curves": [{"id": "cRight", "kind": "arc", "start": 2, "end": 3, "cuts": []}]
+    }
+  },
+  "initial_state": "leftArc",
+  "factors": [
+    {"id": "a", "exponent": 1, "group": "First block", "support": "leftArc", "braid_word": [1], "after": "rightArc"},
+    {"id": "hold", "exponent": 1, "group": "First block", "support": "rightArc", "braid_word": [], "after": "rightArc"},
+    {"id": "b", "exponent": -2, "group": "Second block", "support": "rightArc", "braid_word": [-2, 1, -1], "after": "leftArc"}
+  ]
+}

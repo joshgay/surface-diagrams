@@ -28,6 +28,7 @@ var braid_step := -1
 var braid_playhead := -1.0
 var braid_presentation := ""
 var touch_move_enabled := false
+var read_only := false
 var touches: Dictionary = {}
 var touch_start := Vector2.ZERO
 var touch_moved := false
@@ -195,6 +196,7 @@ func _touch_tap(point: Vector2) -> void:
 			cut_picked.emit(cut)
 
 func begin_edit_drag(screen_position: Vector2) -> bool:
+	if read_only: return false
 	if document == null or document.data.kind != "planar":
 		return false
 	var record := _hit_planar_record(screen_position)

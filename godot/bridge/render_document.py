@@ -21,12 +21,23 @@ MAX_OUTPUT_BYTES = 4 * 1024 * 1024
 def render(input_path: Path, svg_path: Path, tikz_path: Path) -> dict[str, object]:
     if SOURCE.is_dir():
         sys.path.insert(0, str(SOURCE))
-    from surface_diagrams import DiagramDocument
+    from surface_diagrams import DiagramDocument, render_svg, render_tikz
 
+    if input_path.stat().st_size > 256 * 1024:
+        raise ValueError("input exceeds 256 KiB")
     source = input_path.read_text(encoding="utf-8")
-    document = DiagramDocument.from_json(source)
-    svg = document.render_svg()
-    tikz = document.render_tikz()
+    raw = json.loads(source)
+    if isinstance(raw, dict) and raw.get("format") == "surface-diagrams-factor-workspace":
+        from factor_workspace import diagram
+        document, title = diagram(source)
+        svg = render_svg(document, title=title)
+        tikz = render_tikz(document, title=title)
+        kind = "factor-workspace"
+    else:
+        document = DiagramDocument.from_json(source)
+        svg = document.render_svg()
+        tikz = document.render_tikz()
+        kind = document.to_dict()["kind"]
     encoded_size = len(svg.encode("utf-8")) + len(tikz.encode("utf-8"))
     if encoded_size > MAX_OUTPUT_BYTES:
         raise ValueError("rendered output exceeds 4 MiB")
@@ -36,7 +47,7 @@ def render(input_path: Path, svg_path: Path, tikz_path: Path) -> dict[str, objec
     tikz_path.write_text(tikz, encoding="utf-8")
     return {
         "ok": True,
-        "kind": document.to_dict()["kind"],
+        "kind": kind,
         "svg_bytes": len(svg.encode("utf-8")),
         "tikz_bytes": len(tikz.encode("utf-8")),
     }

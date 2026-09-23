@@ -47,6 +47,7 @@ var camera_note: Label
 var compact_layout := false
 var showing_records := false
 var move_button: CheckButton
+var factor_view: FactorWorkspaceView
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -86,6 +87,10 @@ func _build_interface() -> void:
 		fixtures.get_popup().add_item(label)
 	fixtures.get_popup().index_pressed.connect(func(index: int): _open_resource(["res://fixtures/planar-v1.json", "res://fixtures/multi-curve-v1.json", "res://fixtures/braid-v1.json"][index]))
 	file_tools.add_child(fixtures)
+	var factors_button := Button.new()
+	factors_button.text = "Factor workspace"
+	factors_button.pressed.connect(_show_factor_workspace)
+	file_tools.add_child(factors_button)
 	for spec in [["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
 		var button := Button.new()
 		button.text = spec[0]
@@ -310,6 +315,21 @@ func _show_mobile_panel(records: bool) -> void:
 	inspector_scroll.visible = not compact_layout or records
 	canvas_box.visible = not compact_layout or not records
 	canvas.cancel_touch_gesture()
+
+func _show_factor_workspace() -> void:
+	# A separate read-only workspace leaves accepted edits, drafts and recovery
+	# untouched. Returning to the editor restores the exact current workspace.
+	canvas.cancel_touch_gesture()
+	if factor_view == null:
+		factor_view = FactorWorkspaceView.new()
+		factor_view.browser_mode = browser_mode
+		add_child(factor_view)
+		factor_view.closed.connect(func():
+			factor_view.hide()
+			workspace_root.show())
+		factor_view.import_source(FileAccess.get_file_as_string("res://fixtures/workspaces/grouped-v1.json"))
+	workspace_root.hide()
+	factor_view.show()
 
 func _popup_fitted(dialog: Window, desired: Vector2i) -> void:
 	var available := Vector2i(get_viewport_rect().size) - Vector2i(24, 24)
@@ -847,6 +867,7 @@ func _notification(what: int) -> void:
 		_request_close()
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if factor_view != null and factor_view.visible: return
 	if not event is InputEventKey:
 		return
 	var key_event := event as InputEventKey
