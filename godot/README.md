@@ -15,11 +15,13 @@ accepted record. Undo/redo buttons and Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, or Ctrl+Y
 restore exact serialized states. The braid view remains inspection-only.
 
 The Studio lists strand transport, exposes normalized source, pans/zooms without
-changing records, and opens/saves bounded JSON. A fixed local bridge validates
-the same record with the Python library and makes its exact publication SVG and
-TikZ available through explicit export buttons. Bridge failure is visible and
-never falls back to a purported exact result. Do not confuse this early editor
-with the more complete
+changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
+current stable-ID selection, and unapplied curve drafts are also checkpointed in
+a separate bounded version-1 workspace recovery record. A fixed local bridge
+validates the same record with the Python library and makes its exact publication
+SVG and TikZ available through explicit export buttons. Bridge failure is visible
+and never falls back to a purported exact result. Do not confuse this early
+editor with the more complete
 [local browser editor](../docs/EDITOR.md), which runs without Godot.
 
 Import `project.godot` using Godot 4.7.2 stable. The exact runtime, checksum, and
@@ -49,9 +51,19 @@ validation and the Python geometry renderer must accept it. A rejected route
 leaves the accepted recipe, history, SVG, and TikZ untouched. The draft stays
 available when switching between curve and object selections; another curve's
 accepted edit does not delete it. Save JSON writes only the accepted recipe and
-warns when unapplied drafts are excluded. Drafts are currently session-only:
-opening another valid file/fixture or closing the application discards them.
-Unsaved-change confirmation and persistent draft recovery are still pending.
+warns when unapplied drafts are excluded. If drafts remain, they stay recoverable
+without being inserted into that mathematical JSON file.
+
+Opening a file or fixture, or closing Studio, now checks both accepted-record
+changes and every stable-ID curve draft. The confirmation offers explicit
+Cancel and **Discard and continue** choices. Cancel leaves the record, command
+history, and drafts unchanged; a failed import also leaves them unchanged. On a
+later desktop start, a recovery prompt lets the user restore or explicitly
+discard the validated checkpoint. Recovery is limited to 1 MiB, 100 undo/redo
+commands in either stack, known curve IDs, and 64 cut visits per draft. It never
+loads a script, scene, or resource, and camera state remains outside the
+mathematical record. Successful Save marks the accepted source clean, while any
+unapplied drafts remain visibly unsaved and recoverable.
 
 Example: select `editable` in the six-point fixture. Its initial itinerary is
 `[0]`. Appending `c5` proposes `[0, 5]`, which the Python noncrossing router

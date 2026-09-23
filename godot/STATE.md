@@ -3,52 +3,56 @@
 - Branch: `joshgay/surface-diagrams:codex/godot-studio`.
 - Starting parent: `4bd028e4052e34de429c60502e24e6686c9c2d09`, the browser-editor
   contribution on `codex/ordered-factorizations`.
-- Checkpoint date: 2026-09-14 UTC.
+- Checkpoint date: 2026-09-23 UTC.
 - Current milestone: **M0 and M1 complete; M2 in progress**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: ordered curve editing
+## Latest increment: guarded open/close and persistent recovery
 
-Built on live fork head `b20e4831f202ebd4ad0063af79cc3f1a7da8025a`.
+Built on live fork head `28ca5251dd0a4ae6a04c21912b876374ce71c6ec`.
 The private Site was not redeployed or modified during this increment.
 
-- Added an original six-point, three-curve fixture and a multi-curve inspector
-  exposing stable IDs, exact endpoints, orientation, and accepted/draft cuts.
-- Numbered inspector buttons and canvas ticks/labels append literal cut visits.
-  Repeated visits are retained; schema-invalid and Python-unroutable sequences
-  are rejected, not simplified. Cut picking chooses the nearest target and
-  ignores exact ties. Drafts stop at 64 visits without truncating earlier input.
-- Added immutable itinerary proposals and one-command Apply/Undo/Redo. Desktop
-  Apply uses the same Python adapter as point/label edits. Rejection preserves
-  the accepted source, undo/redo stacks, and publication outputs. Save/reopen,
-  undo, and redo recover byte-identical SVG/TikZ for the accepted fixture edits.
-- Drafts are retained per stable curve ID across selection changes and edits to
-  another curve, with `[draft]` markers and explicit Reset. Save warns that it
-  writes only accepted records. This is session recovery, not disk persistence:
-  opening a new valid document or closing Studio still discards those drafts.
-- Browser controller tests cover opt-in itinerary changes and retain explicit
-  UNVALIDATED status and disabled exact exports. No desktop validation was
-  weakened and no browser geometry certificate was invented.
-- Wrapped the growing fixture toolbar and cut action controls. This is tested
-  scene construction, not proof of responsive or visual acceptance.
-- Bounded aggregate subprocess checks to 120 seconds so a runtime failure
-  cannot hang indefinitely; added independent mocked runner contract tests.
+- Added a separate `surface-diagrams-studio-recovery` version-1 envelope. It
+  checkpoints the exact accepted source, baseline, bounded undo/redo commands,
+  stable-ID selection, and every unapplied curve draft. It does not extend the
+  mathematical document schema or contain camera state.
+- Recovery input is bounded to 1 MiB, 100 commands in either history stack, 16
+  known curve IDs, and 64 integer visits per curve. Future versions, unknown
+  fields/IDs, malformed documents, invalid selections, oversized input, and
+  discontinuous histories are rejected. Imported scenes, resources, and scripts
+  are never loaded. Invalid drafts such as repeated visits remain literal drafts;
+  recovery does not simplify or promote them to accepted geometry.
+- Desktop edits and draft changes checkpoint through a temporary file and fixed
+  `user://` path. A later start offers explicit Restore or Discard and leaves the
+  initial fixture untouched until that choice. Restore recovers undo and redo as
+  working commands, not merely a snapshot. A successful JSON save marks only the
+  accepted source clean; any unapplied draft remains recoverable and excluded
+  from mathematical JSON.
+- Opening a fixture/file and closing Studio now detect accepted changes and
+  drafts. Explicit Cancel preserves the document, both history stacks, and all
+  drafts. Discard continues the pending action. A failed or cancelled file open
+  never clears the active workspace; old recovery is cleared only after a valid
+  replacement or explicit close/discard.
+- Browser mode receives the same in-session cancel/discard guard but deliberately
+  does not claim durable browser recovery. Exact geometry/export limitations and
+  the explicit unvalidated edit opt-in are unchanged.
 
-Runtime remains `4.7.2.stable.official.ed1daf0bf`.
-Checks actually run: **97 model/controller assertions**, **55 desktop scene
-assertions**, **25 web-mode controller assertions**, **3 Python bridge tests**
-(including multi-curve and edited/rejected itineraries), **3 runner contract
-tests**, **13 existing browser-adapter/loader tests**, and the intentional
-exit-1 harness. Full inherited regressions: **207 Python tests** and **8 browser
-editor tests** passed. Godot import/startup completed without final diagnostics.
+Runtime remains `4.7.2.stable.official.ed1daf0bf`; the freshly downloaded
+official archive again matched SHA-256
+`cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4`.
+Checks actually run: **114 model/controller assertions**, **68 desktop scene
+assertions**, **26 web-mode controller assertions**, **3 Python bridge tests**,
+**3 runner contract tests**, **13 browser-adapter/loader tests**, and the
+intentional exit-1 harness. Full inherited regressions: **213 Python tests with
+324 subtests** and **8 browser-editor tests** passed. Godot editor import and a
+three-frame project start completed without final diagnostics.
 
-During development, the runner caught an array-formatting error in the inspector;
-an explicit type fixed a later draft-marker parse error. Both were corrected
-before the final successful checks. The new fixture and its `[0, 6]` edit were
-rasterized from exact library SVG and visually inspected: six blue marks and
-three magenta curves retained identity and the explicit itinerary change. This
-does not verify native UI layout, draft overlays, or actual pointer gestures.
-No display server or Xvfb is available; full visual acceptance remains pending.
+The first full Python regression attempt had four subprocess import failures
+because the fresh environment had not installed this checkout. An ordinary
+editable package install fixed the environment; the complete rerun passed. No
+drawing geometry changed in this slice, so existing exact SVG/TikZ comparisons
+were exercised without regenerating committed artifacts. Native dialog layout
+and pointer behavior still lack display-enabled visual acceptance.
 
 ## Foreground web proof of concept
 
@@ -162,7 +166,7 @@ See `RUNTIME.md` for official sources and commands.
 - Main project ran for three headless frames without script/runtime errors.
 - The aggregate runner now treats Godot `ERROR:` or `SCRIPT ERROR:` diagnostics
   as failures even when the engine process itself exits zero.
-- Godot tests: **97 assertions passed**. Covered fixtures/defaults, immutable
+- Godot tests: **114 assertions passed**. Covered fixtures/defaults, immutable
   records, save/reopen, duplicate JSON keys (including escaped spelling), future
   versions, unknown fields, duplicate IDs, object order, curve minimality,
   empty/exact braid words, strand transport, camera separation, scene load, and
@@ -171,28 +175,35 @@ See `RUNTIME.md` for official sources and commands.
   explicit unavailable state when the configured Python executable is missing.
   Editing checks cover immutable proposals, neighbor and ellipse rejection,
   geometry rejection, exact undo/redo, redo invalidation, label commands,
-  save/reopen, draft separation, and cancellation.
-- Headless UI smoke: **55 assertions passed**. The live scene opened the
+  save/reopen, draft separation, and cancellation. Recovery checks additionally
+  cover future/unknown/oversized input, unknown curve IDs, discontinuous command
+  stacks, literal invalid drafts, exact disk round trip, and restored undo/redo.
+- Headless UI smoke: **68 assertions passed**. The live scene opened the
   fixtures, edited a point and label through canvas hit-testing, preserved IDs,
   endpoints and cuts, retained camera state, rejected a cross-neighbor drag,
   restored exact source through Undo/Redo, exported exact SVG/TikZ, and preserved
-  the current document after a rejected open.
+  the current document after a rejected open. It also exercised cancel/discard
+  guards for fixture replacement and close, started a second Studio instance,
+  restored accepted edits plus two drafts, and used undo after recovery.
+- Web-mode controller smoke: **26 assertions passed**. Browser editing remains
+  explicitly unvalidated and now guards a pending curve draft before replacement.
 - Independent Python bridge contract: **3 tests passed**. Outputs for all three
   fixtures matched the library byte-for-byte and repeated deterministically;
   invalid versioned data failed without leaving SVG or TikZ output files.
 - Intentional harness failure reported `FAILED: 1 of 1 assertions` and exited 1.
-- Both fixtures were independently accepted and rendered to SVG by the Python
-  library. Full inherited regression: **207 Python tests passed** and **8 browser-
-  editor controller tests passed**.
+- All three fixtures were independently accepted and rendered to SVG by the
+  Python library. Full inherited regression: **213 Python tests with 324 subtests
+  passed** and **8 browser-editor controller tests passed**.
 
 ## Known limitations
 
 This is a planar point/label and curve-itinerary editor and a braid viewer. Native curve
 drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
-There is no row reindexing workflow, arbitrary curve creation, persistent draft
-recovery, unsaved-change confirmation, braid editing/playback, factor workspace, or 3D
-surface view yet. The source-checkout bridge currently requires a compatible
+There is no row reindexing workflow, arbitrary curve creation, braid
+editing/playback, factor workspace, or 3D surface view yet. Desktop recovery is
+bounded and tested, but browser persistence remains deliberately absent. The
+source-checkout bridge currently requires a compatible
 Python executable and this repository's package source; packaged desktop
 operation has not been designed or claimed. The separate browser proof of
 concept and its deliberately unavailable geometry bridge are described above.
@@ -209,13 +220,14 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Continue M2 with unsaved-change safeguards: detect accepted-record changes and
-unapplied curve drafts before opening a file/fixture or closing Studio, offer
-explicit cancel/discard choices, and add a bounded versioned recovery envelope
-separate from mathematical JSON so rejected drafts can survive a restart. Prove
-that cancellation and failed imports preserve both history and every draft.
-Row reindexing and arbitrary curve creation remain later M2 work. A display-enabled
-pass must still inspect UI layout, overlays, gestures, and file dialogs.
+Continue M2 with an explicit row-reindex transaction. Show the proposed old/new
+horizontal order and every affected endpoint/cut number before confirmation;
+preserve stable object and curve IDs; validate the complete candidate through
+the Python bridge; commit it as one undoable command; and prove Cancel or failed
+geometry leaves the accepted record, recovery, and drafts unchanged. Do not let
+ordinary dragging cross neighbors. Arbitrary curve creation remains later M2
+work. A display-enabled pass must still inspect UI layout, overlays, gestures,
+dialogs, and the recovery prompt.
 
 Update this checkpoint after every meaningful implementation commit with actual
 changes, tests, remaining failures, and the next concrete task. Work on generic

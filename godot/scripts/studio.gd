@@ -22,12 +22,22 @@ var candidate_geometry: Dictionary = {}
 var browser_mode := OS.has_feature("web")
 var browser_drafts: CheckButton
 var upload_callback: JavaScriptObject
+var baseline_source := ""
+var pending_action: Callable
+var pending_description := ""
+var unsaved_dialog: ConfirmationDialog
+var recovery_dialog: ConfirmationDialog
+var startup_recovery: Dictionary = {}
+var recovery_error := ""
 
 func _ready() -> void:
+	get_tree().auto_accept_quit = false
 	_build_interface()
 	if browser_mode and OS.has_feature("web"):
 		upload_callback = JavaScriptBridge.create_callback(_browser_file_received)
-	_open_resource("res://fixtures/planar-v1.json")
+	_open_result(DiagramDocument.load_path("res://fixtures/planar-v1.json"), "res://fixtures/planar-v1.json", false)
+	if not browser_mode:
+		_offer_recovery()
 
 func _build_interface() -> void:
 	var background := ColorRect.new()
@@ -159,8 +169,26 @@ func _build_interface() -> void:
 	export_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	export_dialog.file_selected.connect(_save_export)
 	add_child(export_dialog)
+	unsaved_dialog = ConfirmationDialog.new()
+	unsaved_dialog.title = "Unsaved workspace changes"
+	unsaved_dialog.ok_button_text = "Discard and continue"
+	unsaved_dialog.get_cancel_button().text = "Cancel"
+	unsaved_dialog.confirmed.connect(_discard_and_continue)
+	unsaved_dialog.canceled.connect(_cancel_pending_action)
+	add_child(unsaved_dialog)
+	recovery_dialog = ConfirmationDialog.new()
+	recovery_dialog.title = "Recovered workspace found"
+	recovery_dialog.ok_button_text = "Restore recovered work"
+	recovery_dialog.get_cancel_button().text = "Discard recovery"
+	recovery_dialog.confirmed.connect(_restore_startup_recovery)
+	recovery_dialog.canceled.connect(_discard_startup_recovery)
+	add_child(recovery_dialog)
 
 func _show_open() -> void:
+	if _request_before_destructive_action(Callable(self, "_show_open_after_guard"), "open another JSON file"):
+		_show_open_after_guard()
+
+func _show_open_after_guard() -> void:
 	if browser_mode:
 		var files = JavaScriptBridge.get_interface("SurfaceStudioFiles") if OS.has_feature("web") else null
 		if files == null:
@@ -182,6 +210,7 @@ func _show_save() -> void:
 			_show_edit_error(error)
 		else:
 			status_label.text = "JSON download requested. This browser record is not geometry-validated; validate with the Python library before publication."
+			baseline_source = document.to_json()
 			if not curve_inspector.drafts.is_empty():
 				status_label.text += " Unapplied curve drafts are NOT in this download."
 		return
@@ -201,18 +230,26 @@ func _show_export(kind: String) -> void:
 	export_dialog.popup_centered_ratio(0.8)
 
 func _open_resource(path: String) -> void:
+	var action := Callable(self, "_open_resource_after_guard").bind(path)
+	if _request_before_destructive_action(action, "open " + path.get_file()):
+		action.call()
+
+func _open_resource_after_guard(path: String) -> void:
 	_open_result(DiagramDocument.load_path(path), path)
 
 func _open_path(path: String) -> void:
 	_open_result(DiagramDocument.load_path(path), path)
 
-func _open_result(result: Dictionary, path: String) -> void:
+func _open_result(result: Dictionary, path: String, clear_recovery: bool = true) -> void:
 	if not result.ok:
 		status_label.text = "Not opened: " + result.error
 		status_label.add_theme_color_override("font_color", Color("#a54439"))
 		return
 	history.set_document(result.document)
 	curve_inspector.clear_drafts()
+	baseline_source = result.document.to_json()
+	if clear_recovery:
+		WorkspaceRecovery.clear_file()
 	if browser_mode:
 		browser_drafts.button_pressed = false
 	_present_document(result.document, true)
@@ -271,10 +308,14 @@ func _render_geometry(value: DiagramDocument, rendered: Dictionary = {}) -> Dict
 func _save_path(path: String) -> void:
 	if not path.to_lower().ends_with(".json"): path += ".json"
 	var error := document.save_path(path)
+	if error.is_empty():
+		baseline_source = document.to_json()
 	status_label.text = "Saved exact normalized recipe to " + path if error.is_empty() else error
 	if error.is_empty() and not curve_inspector.drafts.is_empty():
 		status_label.text += " Unapplied curve drafts remain in memory and are NOT in this file."
 	status_label.add_theme_color_override("font_color", Color("#415b55") if error.is_empty() else Color("#a54439"))
+	if error.is_empty():
+		_persist_recovery()
 
 func _save_export(path: String) -> void:
 	if not geometry_result.ok or export_kind not in ["svg", "tikz"]:
@@ -306,6 +347,7 @@ func _select_record(index: int) -> void:
 		identity = " %d" % (record.index + 1)
 	status_label.text = "Selected %s%s. Selection changes the view only; the mathematical record is unchanged." % [record.kind, identity]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
 
 func _canvas_record_selected(record: Dictionary) -> void:
 	_select_matching_row(record)
@@ -313,6 +355,7 @@ func _canvas_record_selected(record: Dictionary) -> void:
 	canvas.set_curve_draft("", [])
 	status_label.text = "Selected %s %s. Drag to preview a move; release validates before the record changes." % [record.kind, record.id]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
 
 func _canvas_preview_changed(valid: bool, message: String) -> void:
 	status_label.text = "Move preview only; release to validate." if valid else message
@@ -337,6 +380,7 @@ func _canvas_edit_commit(kind: String, id: String, position: Vector2) -> void:
 	if browser_mode:
 		status_label.text = result.label + " stored as an UNVALIDATED browser draft. IDs and order preserved; curve geometry was not checked."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
+	_persist_recovery()
 
 func _curve_draft_changed(id: String, cuts: Array, message: String) -> void:
 	canvas.set_curve_draft(id, cuts)
@@ -344,6 +388,7 @@ func _curve_draft_changed(id: String, cuts: Array, message: String) -> void:
 	if not id.is_empty():
 		status_label.text = "%s Draft cuts=%s" % [message, cuts]
 		status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
 
 func _refresh_draft_markers() -> void:
 	for index in record_list.item_count:
@@ -363,6 +408,7 @@ func _apply_curve_cuts(id: String, cuts: Array) -> void:
 	if browser_mode:
 		status_label.text = "UNVALIDATED browser itinerary draft for %s: %s. Curve routing was NOT checked; publication exports remain disabled." % [id, cuts]
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
 
 func _validate_candidate_geometry(candidate: DiagramDocument) -> Dictionary:
 	if browser_mode:
@@ -382,6 +428,7 @@ func _undo() -> void:
 	_present_document(result.document, false, result.selection)
 	status_label.text = result.label + ". The exact prior recipe was restored."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
+	_persist_recovery()
 
 func _redo() -> void:
 	var result := history.redo()
@@ -391,6 +438,7 @@ func _redo() -> void:
 	_present_document(result.document, false, result.selection)
 	status_label.text = result.label + ". The exact accepted recipe was restored."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
+	_persist_recovery()
 
 func _show_edit_error(message: String) -> void:
 	status_label.text = message
@@ -407,6 +455,125 @@ func _select_matching_row(selection: Dictionary) -> void:
 func _update_history_buttons() -> void:
 	undo_button.disabled = not history.can_undo()
 	redo_button.disabled = not history.can_redo()
+
+func _has_unsaved_work() -> bool:
+	if document == null:
+		return false
+	return document.to_json() != baseline_source or not curve_inspector.drafts.is_empty()
+
+func _request_before_destructive_action(action: Callable, description: String) -> bool:
+	if not _has_unsaved_work():
+		return true
+	pending_action = action
+	pending_description = description
+	var accepted_changed := document.to_json() != baseline_source
+	var parts: Array[String] = []
+	if accepted_changed:
+		parts.append("accepted record changes")
+	if not curve_inspector.drafts.is_empty():
+		parts.append("%d unapplied curve draft%s" % [curve_inspector.drafts.size(), "" if curve_inspector.drafts.size() == 1 else "s"])
+	unsaved_dialog.dialog_text = "The workspace has %s. Cancel to keep them, or discard them and %s." % [" and ".join(parts), description]
+	unsaved_dialog.popup_centered(Vector2i(560, 220))
+	status_label.text = "Waiting for an explicit cancel/discard choice; the current record, history, and drafts are unchanged."
+	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
+	return false
+
+func _cancel_pending_action() -> void:
+	unsaved_dialog.hide()
+	var description := pending_description
+	pending_action = Callable()
+	pending_description = ""
+	status_label.text = "Cancelled %s. Accepted records, undo/redo history, and curve drafts were preserved." % description
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _discard_and_continue() -> void:
+	unsaved_dialog.hide()
+	var action := pending_action
+	pending_action = Callable()
+	pending_description = ""
+	if action.is_valid():
+		action.call()
+
+func _persist_recovery() -> void:
+	if browser_mode or document == null or baseline_source.is_empty():
+		return
+	if not startup_recovery.is_empty():
+		return
+	if not _has_unsaved_work():
+		WorkspaceRecovery.clear_file()
+		return
+	var error := WorkspaceRecovery.save_file(baseline_source, history,
+		curve_inspector.drafts, _current_selection())
+	if not error.is_empty():
+		recovery_error = error
+		status_label.text = error + ". The in-memory workspace is unchanged."
+		status_label.add_theme_color_override("font_color", Color("#a54439"))
+
+func _current_selection() -> Dictionary:
+	if canvas == null or canvas.selected_record.is_empty():
+		return {}
+	var selection := canvas.selected_record.duplicate(true)
+	return {"kind": selection.get("kind", ""), "id": selection.get("id", ""),
+		"index": int(selection.get("index", -1))}
+
+func _offer_recovery() -> void:
+	var recovered := WorkspaceRecovery.load_file()
+	if not recovered.get("found", false):
+		return
+	if not recovered.ok:
+		WorkspaceRecovery.clear_file()
+		status_label.text = "Ignored an invalid workspace recovery record: " + recovered.error
+		status_label.add_theme_color_override("font_color", Color("#a54439"))
+		return
+	startup_recovery = recovered
+	var drafts: Dictionary = recovered.drafts
+	var undo_count: int = recovered.history_state.undo.size()
+	var redo_count: int = recovered.history_state.redo.size()
+	recovery_dialog.dialog_text = "A bounded version-1 recovery record contains %d curve draft%s, %d undo step%s, and %d redo step%s. Restore it, or explicitly discard it." % [drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s"]
+	recovery_dialog.popup_centered(Vector2i(580, 230))
+	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
+	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
+
+func _restore_startup_recovery() -> bool:
+	recovery_dialog.hide()
+	if startup_recovery.is_empty():
+		return false
+	var restored := history.restore_state(startup_recovery.history_state)
+	if not restored.ok:
+		status_label.text = "Could not restore workspace: " + restored.error
+		status_label.add_theme_color_override("font_color", Color("#a54439"))
+		return false
+	baseline_source = startup_recovery.baseline_source
+	curve_inspector.drafts = startup_recovery.drafts.duplicate(true)
+	var selection: Dictionary = startup_recovery.selection.duplicate(true)
+	_present_document(history.current, true, selection)
+	startup_recovery.clear()
+	_persist_recovery()
+	status_label.text = "Recovered accepted edits, exact undo/redo history, selection, and unapplied curve drafts. Recovery is workspace data, not mathematical JSON."
+	status_label.add_theme_color_override("font_color", Color("#167464"))
+	return true
+
+func _discard_startup_recovery() -> void:
+	recovery_dialog.hide()
+	startup_recovery.clear()
+	WorkspaceRecovery.clear_file()
+	status_label.text = "Discarded the recovery record. The initial fixture remains open."
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _request_close() -> bool:
+	var action := Callable(self, "_quit_after_discard")
+	if _request_before_destructive_action(action, "close Studio"):
+		_quit_after_discard()
+		return true
+	return false
+
+func _quit_after_discard() -> void:
+	WorkspaceRecovery.clear_file()
+	get_tree().quit()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and is_node_ready():
+		_request_close()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event is InputEventKey:

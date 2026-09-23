@@ -63,6 +63,8 @@ func _run() -> void:
 	studio.curve_inspector._apply()
 	_check(studio.document.to_json() == multi_source and studio.curve_inspector.draft_cuts == [0, 0], "browser opt in does not permit nonminimal record")
 	studio._open_resource("res://fixtures/braid-v1.json")
+	_check(studio.document.to_json() == multi_source and studio.pending_action.is_valid(), "web mode also guards unapplied drafts before fixture replacement")
+	studio._discard_and_continue()
 	_check(studio.document.data.kind == "braid" and studio.record_list.item_count == 6, "braid view remains available without Python")
 	studio.queue_free()
 	await process_frame

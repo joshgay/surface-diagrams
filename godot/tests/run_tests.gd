@@ -232,6 +232,48 @@ func _run_tests() -> void:
 	cut_canvas._gui_input(cut_event)
 	_expect(picked == [6], "canvas emits cut picks in click order")
 	cut_canvas.free()
+	var recovery_history := DiagramEditHistory.new()
+	recovery_history.set_document(multi)
+	var recovered_edit := recovery_history.set_curve_cuts("editable", [0, 6], PythonGeometryBridge.render)
+	_expect(recovered_edit.ok, "recovery fixture accepts an exact curve command")
+	var recovery_after: String = recovery_history.current.to_json()
+	recovery_history.undo()
+	var recovery_drafts := {"editable": [0, 0], "left": [1, 2, 1]}
+	var recovery_selection := {"kind": "curve", "id": "editable", "index": 1}
+	var encoded_recovery := WorkspaceRecovery.encode(multi_source, recovery_history, recovery_drafts, recovery_selection)
+	_expect(encoded_recovery.ok and encoded_recovery.text.length() > 0, "bounded recovery envelope encodes accepted state, history, and rejected drafts")
+	var parsed_recovery := WorkspaceRecovery.parse(encoded_recovery.text)
+	_expect(parsed_recovery.ok and parsed_recovery.baseline_source == multi_source, "recovery envelope retains exact normalized baseline")
+	_expect(parsed_recovery.ok and parsed_recovery.drafts == recovery_drafts, "recovery retains literal invalid drafts without simplifying them")
+	_expect(parsed_recovery.ok and parsed_recovery.selection == recovery_selection, "recovery retains stable record selection")
+	var restored_history := DiagramEditHistory.new()
+	var restore_result := restored_history.restore_state(parsed_recovery.history_state)
+	_expect(restore_result.ok and restored_history.current.to_json() == multi_source and restored_history.can_redo(), "recovery restores current record and redo stack")
+	_expect(restored_history.redo().document.to_json() == recovery_after and restored_history.can_undo(), "restored redo reproduces the exact accepted itinerary")
+	_expect(restored_history.undo().document.to_json() == multi_source, "restored undo reproduces the exact prior recipe")
+	var future_recovery: Dictionary = JSON.parse_string(encoded_recovery.text)
+	future_recovery.version = 2
+	_expect(not WorkspaceRecovery.parse(JSON.stringify(future_recovery)).ok, "future recovery version is rejected")
+	var duplicate_recovery: String = encoded_recovery.text.replace("\"version\": 1,", "\"version\": 1,\n\t\"version\": 1,")
+	_expect(not WorkspaceRecovery.parse(duplicate_recovery).ok, "duplicate recovery field is rejected")
+	var unknown_recovery: Dictionary = JSON.parse_string(encoded_recovery.text)
+	unknown_recovery.camera = {"zoom": 2}
+	_expect(not WorkspaceRecovery.parse(JSON.stringify(unknown_recovery)).ok, "unknown recovery field is rejected rather than merged into mathematical data")
+	var unknown_draft: Dictionary = JSON.parse_string(encoded_recovery.text)
+	unknown_draft.drafts = {"missing": [0]}
+	_expect(not WorkspaceRecovery.parse(JSON.stringify(unknown_draft)).ok, "recovery draft for unknown stable curve ID is rejected")
+	var discontinuous: Dictionary = JSON.parse_string(encoded_recovery.text)
+	discontinuous.history.redo[0].before = recovery_after
+	_expect(not WorkspaceRecovery.parse(JSON.stringify(discontinuous)).ok, "noncontiguous recovery history is rejected")
+	var oversized_recovery := " ".repeat(WorkspaceRecovery.MAX_BYTES) + "{}"
+	_expect(not WorkspaceRecovery.parse(oversized_recovery).ok, "oversized recovery envelope is rejected before use")
+	WorkspaceRecovery.clear_file()
+	var save_recovery_error := WorkspaceRecovery.save_file(multi_source, recovery_history, recovery_drafts, recovery_selection)
+	var loaded_recovery := WorkspaceRecovery.load_file()
+	_expect(save_recovery_error.is_empty() and loaded_recovery.ok and loaded_recovery.found, "versioned recovery record writes and reopens")
+	_expect(loaded_recovery.drafts == recovery_drafts and loaded_recovery.history_state == parsed_recovery.history_state, "disk recovery round trip retains drafts and command history exactly")
+	WorkspaceRecovery.clear_file()
+	_expect(not FileAccess.file_exists(WorkspaceRecovery.PATH), "explicit recovery discard removes the separate workspace file")
 	var scene := load("res://scenes/studio.tscn")
 	_expect(scene is PackedScene, "main scene loads")
 	if scene is PackedScene:
