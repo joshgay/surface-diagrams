@@ -16,6 +16,7 @@ var undo_button: Button
 var redo_button: Button
 var curve_inspector: CurveInspector
 var curve_creator: CurveCreator
+var braid_editor: BraidEditor
 var geometry_result: Dictionary = {"ok": false, "error": "Not rendered", "svg": "", "tikz": ""}
 var export_kind := ""
 var history := DiagramEditHistory.new()
@@ -118,6 +119,10 @@ func _build_interface() -> void:
 	curve_creator.create_requested.connect(_create_curve)
 	curve_creator.draft_changed.connect(_creation_draft_changed)
 	inspector.add_child(curve_creator)
+	braid_editor = BraidEditor.new()
+	braid_editor.edit_requested.connect(_edit_braid_word)
+	braid_editor.view_changed.connect(_braid_view_changed)
+	inspector.add_child(braid_editor)
 	var source_button := Button.new()
 	source_button.text = "Show accepted source"
 	source_button.pressed.connect(func(): source_view.visible = not source_view.visible)
@@ -330,6 +335,7 @@ func _present_document(value: DiagramDocument, reset_camera: bool,
 	geometry_result = _render_geometry(document, rendered)
 	curve_inspector.inspect(document, selection)
 	curve_creator.configure(document)
+	braid_editor.configure(document, selection, reset_camera)
 	_refresh_reindex_controls(selection)
 	_refresh_draft_markers()
 	if selection.get("kind", "") != "curve":
@@ -382,6 +388,7 @@ func _select_record(index: int) -> void:
 		return
 	canvas.select_record(record)
 	curve_inspector.inspect(document, record)
+	braid_editor.inspect(record)
 	_refresh_reindex_controls(record)
 	if record.kind != "curve":
 		canvas.set_curve_draft("", [])
@@ -443,6 +450,11 @@ func _cut_picked(cut: int) -> void:
 		curve_inspector.append_cut(cut)
 
 func _creation_draft_changed(is_active: bool, curve: Dictionary, message: String) -> void:
+	canvas.pick_for_new_curve = is_active
+	if is_active:
+		canvas.set_curve_draft(str(curve.get("id", "")), curve.get("cuts", []))
+	else:
+		canvas.set_curve_draft("", [])
 	if is_active:
 		status_label.text = "%s New %s %s cuts=%s is an in-memory draft only." % [message, curve.get("kind", "curve"), curve.get("id", ""), curve.get("cuts", [])]
 		status_label.add_theme_color_override("font_color", Color("#415b55"))
@@ -463,6 +475,23 @@ func _create_curve(curve: Dictionary) -> void:
 	status_label.text = "Created %s %s as one validated command. Stable ID, literal endpoint/orientation fields, and ordered cut visits were preserved exactly." % [curve.get("kind", "curve"), curve.get("id", "")]
 	if browser_mode:
 		status_label.text = "Created UNVALIDATED browser %s %s as one command. Record schema passed, but Python routing was NOT checked." % [curve.get("kind", "curve"), curve.get("id", "")]
+	status_label.add_theme_color_override("font_color", Color("#167464"))
+	_persist_recovery()
+
+func _braid_view_changed(step: int, direction: String) -> void:
+	canvas.set_braid_view(step, direction)
+
+func _edit_braid_word(action: String, index: int, generator: int) -> void:
+	candidate_geometry = {}
+	var result := history.edit_braid_word(action, index, generator, _validate_candidate_geometry)
+	if not result.ok:
+		_show_edit_error("Braid edit rejected: " + result.error + ". The exact source, timeline, and history are unchanged.")
+		return
+	_present_document(result.document, false, result.selection, candidate_geometry)
+	braid_editor.set_step(mini(index + 1, result.document.data.braid.word.size()))
+	status_label.text = "%s. Exact signed word and transported IDs are preserved without reduction." % result.label
+	if browser_mode:
+		status_label.text = result.label + " stored as an UNVALIDATED browser draft. Exact publication exports remain disabled."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
 	_persist_recovery()
 

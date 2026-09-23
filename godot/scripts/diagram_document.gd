@@ -115,6 +115,30 @@ func with_added_curve(curve: Dictionary) -> Dictionary:
 	# Appending intentionally preserves the supplied curve order.
 	return DiagramDocument.parse(JSON.stringify(candidate))
 
+func with_braid_word_edit(action: String, index: int, generator: int = 0) -> Dictionary:
+	if _data.kind != "braid":
+		return _failure("Only braid documents contain a signed word")
+	var candidate := to_dict()
+	var word: Array = candidate.braid.word
+	if action == "insert":
+		if index < 0 or index > word.size():
+			return _failure("Insertion position is outside 0..word length")
+	elif action in ["replace", "delete"]:
+		if index < 0 or index >= word.size():
+			return _failure("Crossing index is outside the exact word")
+	else:
+		return _failure("Unsupported braid edit action")
+	if action != "delete" and (generator == 0 or absi(generator) >= int(candidate.braid.strands)):
+		return _failure("Signed generator must have magnitude 1..strands-1")
+	match action:
+		"insert": word.insert(index, generator)
+		"replace":
+			if word[index] == generator:
+				return _failure("Crossing already has that generator")
+			word[index] = generator
+		"delete": word.remove_at(index)
+	return DiagramDocument.parse(JSON.stringify(candidate))
+
 func with_object_order(ids: Array) -> Dictionary:
 	if _data.kind != "planar":
 		return _failure("Only planar documents contain an object row")

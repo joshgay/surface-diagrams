@@ -88,6 +88,15 @@ func _run() -> void:
 	_check(studio.document.to_json() == multi_source and studio.pending_action.is_valid(), "web mode also guards unapplied drafts before fixture replacement")
 	studio._discard_and_continue()
 	_check(studio.document.data.kind == "braid" and studio.record_list.item_count == 6, "braid view remains available without Python")
+	var braid_source: String = studio.document.to_json()
+	studio._edit_braid_word("insert", 1, -1)
+	_check(studio.document.to_json() == braid_source and not studio.history.can_undo(), "browser braid word edit requires explicit opt in")
+	studio.browser_drafts.button_pressed = true
+	studio._edit_braid_word("insert", 1, -1)
+	_check(studio.document.data.braid.word == [1, -1, -2, 3, -4, 5] and "UNVALIDATED" in studio.status_label.text, "browser signed braid edit is visibly unvalidated")
+	_check(not studio.geometry_result.ok and studio.svg_button.disabled and studio.tikz_button.disabled, "browser braid editor cannot enable publication geometry")
+	studio._undo()
+	_check(studio.document.to_json() == braid_source, "browser signed braid undo restores exact source")
 	studio.queue_free()
 	await process_frame
 	print("WEB MODE CONTROLLER: %d assertions, %d failures" % [assertions, failures])

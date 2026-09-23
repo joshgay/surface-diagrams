@@ -23,12 +23,18 @@ var preview_valid := false
 var preview_error := ""
 var curve_draft_id := ""
 var curve_draft_cuts: Array = []
+var pick_for_new_curve := false
+var braid_step := -1
+var braid_presentation := ""
 
 func set_document(value: DiagramDocument) -> void:
 	document = value
 	zoom = 1.0
 	pan = Vector2.ZERO
 	selected_record = {}
+	pick_for_new_curve = false
+	braid_step = -1
+	braid_presentation = ""
 	set_curve_draft("", [])
 	cancel_edit_preview()
 	queue_redraw()
@@ -48,6 +54,15 @@ func set_curve_draft(id: String, cuts: Array) -> void:
 	curve_draft_cuts = cuts.duplicate(true)
 	queue_redraw()
 
+func set_braid_view(step: int, direction: String) -> void:
+	if document == null or document.data.kind != "braid":
+		return
+	if direction not in ["bottom-to-top", "top-to-bottom"]:
+		return
+	braid_step = clampi(step, 0, document.data.braid.word.size())
+	braid_presentation = direction
+	queue_redraw()
+
 func fit_view() -> void:
 	zoom = 1.0
 	pan = Vector2.ZERO
@@ -61,7 +76,7 @@ func _gui_input(event: InputEvent) -> void:
 			zoom_at(event.position, 1.0 / 1.12)
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				if not begin_edit_drag(event.position) and selected_record.get("kind", "") == "curve":
+				if not begin_edit_drag(event.position) and (selected_record.get("kind", "") == "curve" or pick_for_new_curve):
 					var cut := _hit_cut(event.position)
 					if cut >= 0:
 						cut_picked.emit(cut)
@@ -284,7 +299,7 @@ func _draw_planar(data: Dictionary) -> void:
 		var at := _screen(Vector2(x, 0), frame)
 		draw_line(at + Vector2(0, -4), at + Vector2(0, 4), Color("#9aaba6"), 1.0)
 		_draw_centered("c%d" % cut, at + Vector2(0, 35), Color("#6b7b78"), 11)
-		if curve_draft_id == selected_record.get("id", "") and cut in curve_draft_cuts:
+		if (curve_draft_id == selected_record.get("id", "") or pick_for_new_curve) and cut in curve_draft_cuts:
 			draw_arc(at, 10.0, 0.0, TAU, 24, Color("#f2a900"), 2.0, true)
 			var visits: Array[String] = []
 			for visit in curve_draft_cuts.size():
@@ -349,12 +364,13 @@ func _draw_braid(data: Dictionary) -> void:
 	var order: Array = range(braid.strands)
 	var points: Array = []
 	for identity in braid.strands: points.append(PackedVector2Array())
-	var bottom_up: bool = braid.direction == "bottom-to-top"
+	var bottom_up: bool = (braid.direction if braid_presentation.is_empty() else braid_presentation) == "bottom-to-top"
+	var visible_steps: int = braid.word.size() if braid_step < 0 else clampi(braid_step, 0, braid.word.size())
 	for identity in braid.strands:
 		var y := -height / 2.0 if bottom_up else height / 2.0
 		points[identity].append(_screen(Vector2((identity - (braid.strands - 1) / 2.0) * braid.spacing, y), frame))
 	var overlays: Array = []
-	for step in braid.word.size():
+	for step in visible_steps:
 		var generator: int = braid.word[step]
 		var left: int = abs(generator) - 1
 		var next_order := order.duplicate()
@@ -376,7 +392,10 @@ func _draw_braid(data: Dictionary) -> void:
 		for identity in braid.strands:
 			points[identity].append(_screen(Vector2((identity - (braid.strands - 1) / 2.0) * braid.spacing, height / 2.0 if bottom_up else -height / 2.0), frame))
 	for identity in braid.strands:
-		draw_polyline(points[identity], Color(colors[identity % colors.size()]), 4.0, true)
+		if points[identity].size() >= 2:
+			draw_polyline(points[identity], Color(colors[identity % colors.size()]), 4.0, true)
+		else:
+			draw_circle(points[identity][0], 3.0, Color(colors[identity % colors.size()]))
 	for crossing in overlays:
 		var middle: Vector2 = (crossing.a + crossing.b) / 2.0
 		var direction: Vector2 = (crossing.b - crossing.a).normalized() * 11.0
@@ -388,7 +407,7 @@ func _draw_braid(data: Dictionary) -> void:
 	for identity in braid.strands:
 		_draw_centered(str(identity + 1), points[identity][0] + Vector2(0, 18 if bottom_up else -12), Color(colors[identity % colors.size()]), 12)
 		_draw_centered(str(identity + 1), points[identity][-1] + Vector2(0, -12 if bottom_up else 18), Color(colors[identity % colors.size()]), 12)
-	_draw_centered("Positive = upper-left over upper-right. Word order is preserved.", Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
+	_draw_centered("Step %d/%d. Positive = upper-left over upper-right in either direction." % [visible_steps, braid.word.size()], Vector2(size.x / 2.0, size.y - 18), Color("#6b7b78"), 12)
 
 func _draw_centered(text: String, at: Vector2, color: Color, font_size: int) -> void:
 	var font := ThemeDB.fallback_font

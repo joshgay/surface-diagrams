@@ -49,6 +49,19 @@ func add_curve(curve: Dictionary, validator: Callable = Callable()) -> Dictionar
 	return _validate_and_commit(proposal.document, validator, "Create curve " + id,
 		{"kind": "curve", "id": id})
 
+func edit_braid_word(action: String, index: int, generator: int = 0,
+		validator: Callable = Callable()) -> Dictionary:
+	if current == null:
+		return _failure("No document is open")
+	var proposal := current.with_braid_word_edit(action, index, generator)
+	if not proposal.ok:
+		return proposal
+	var length: int = proposal.document.data.braid.word.size()
+	var selected_index := mini(index, length - 1)
+	var selection := {"kind": "crossing", "id": "", "index": selected_index} if length > 0 else {"kind": "braid", "id": "", "index": -1}
+	return _validate_and_commit(proposal.document, validator,
+		"%s crossing %d" % [action.capitalize(), index + 1], selection)
+
 func reindex_objects(ids: Array, selected_id: String,
 		validator: Callable = Callable()) -> Dictionary:
 	if current == null:

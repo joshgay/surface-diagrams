@@ -5,10 +5,50 @@
   contribution on `codex/ordered-factorizations`.
 - Checkpoint date: 2026-09-23 UTC.
 - Current milestone: **M0 and M1 complete; M2 programmable work complete,
-  with display-enabled visual acceptance still pending; M3 next**.
+  with display-enabled visual acceptance still pending; M3 in progress**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: arbitrary arc and loop creation
+## Latest increment: signed braid word and step timeline
+
+Built from live fork head `187c908c4e587236446419176b8e63046ace8353`.
+The private Site was not redeployed or modified during this increment.
+
+- Added strict immutable insert, replace, and delete proposals at explicit
+  zero-based positions in the version-1 signed braid word. The document parser
+  enforces strand ranges and word bounds; the desktop Python adapter validates
+  and renders before a one-command commit. Adjacent equal or inverse terms stay
+  literal. Rejected edits do not change accepted source, timeline, or history.
+- Added a braid workspace with an indexed crossing inspector, entry/exit strand
+  IDs, over strand ID, signed generator input, direction control, step buttons,
+  discrete scrub bar, and timed play/pause. The pure record-level timeline
+  computes every left-to-right strand order from the word. The schematic canvas
+  draws only the selected prefix and preserves transported strand colors and
+  the fixed upper-left-over-upper-right meaning of positive generators in both
+  traversal directions. View direction and step are outside the mathematical
+  JSON. Import resets the view to the supplied direction and full word.
+- Undo/redo stops playback and preserves exact signed words. Unsaved braid
+  edits survive desktop recovery with command history. Save/reopen and Python
+  SVG comparisons are deterministic. Browser editing still requires explicit
+  unvalidated opt-in; no publication geometry is enabled there. Also fixed
+  numbered cut picking for an active new-curve draft when a point is selected.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`; previously verified official
+archive SHA-256 `cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4`.
+Checks actually run: **175 model/controller assertions**, **119 headless desktop
+scene assertions**, **38 headless web-mode controller assertions**, **3 Python
+bridge tests**, **3 runner contract tests**, **13 browser-adapter/loader tests**,
+and the intentionally failing harness (exit 1). The fixed Python adapter
+accepted and rendered all three inherited fixtures. Godot editor import and a
+three-frame project run completed without final diagnostics. Full inherited
+Python and browser-editor regression suites were not rerun in this increment;
+the Python library and adapter were unchanged.
+
+This verifies deterministic record state, controller behavior, and exact
+publication output. It does not visually verify control layout or crossing
+over/under gaps, because a display server is unavailable. Braid playback is
+currently discrete by complete crossing; it does not interpolate a crossing.
+
+## Earlier increment: arbitrary arc and loop creation
 
 Built on live fork head `30a21aae75a9c5a593437f726907097122d88090`.
 The private Site was not redeployed or modified during this increment.
@@ -243,10 +283,11 @@ See `RUNTIME.md` for official sources and commands.
 
 ## Known limitations
 
-This is a planar point/label, curve-itinerary, row, and curve-creation editor and
-a braid viewer. Native curve drawing, edit previews, and selection overlays are explicitly schematic;
+This is a planar point/label, curve-itinerary, row, and curve-creation editor
+with signed braid-word editing and a discrete braid timeline. Native curve
+drawing, edit previews, and selection overlays are explicitly schematic;
 publication/certified geometry still belongs to the Python renderer and bridge.
-There is no braid editing/playback, factor workspace, or 3D surface view yet.
+There is no factor workspace or 3D surface view yet.
 Desktop recovery is
 bounded and tested, but browser persistence remains deliberately absent. The
 source-checkout bridge currently requires a compatible
@@ -266,14 +307,12 @@ does not visually verify selection overlays, pointer gestures, or file dialogs.
 
 ## Next implementation task
 
-Begin M3 with a bounded signed-braid-word editor and deterministic record-level
-timeline. Add insert, replace, and delete commands without reduction; retain
-stable crossing selection and independent transported strand identities; and
-make top-to-bottom versus bottom-to-top a presentation toggle that never
-reverses the word or changes a sign. Exact undo/redo and step/scrub endpoints
-must match independently computed strand orders. A display-enabled pass must
-still inspect the M2 form layout, overlays, gestures, dialogs, reindex preview,
-and recovery prompt.
+Complete the M3 interaction gate: add canvas hit testing for crossing selection
+in either presentation, keep the exact crossing index attached through word
+edits and reverse scrubs, and add a narrowly tested within-crossing preview
+that preserves physical over/under signs and transported identities. Keep the
+view time separate from the mathematical word. A display-enabled pass must
+inspect native controls, crossing gaps, M2 forms and dialogs, and recovery.
 
 Update this checkpoint after every meaningful implementation commit with actual
 changes, tests, remaining failures, and the next concrete task. Work on generic
