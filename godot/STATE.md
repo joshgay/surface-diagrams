@@ -16,7 +16,53 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: normalized local edit candidates
+## Latest increment: canonical immutable document JSON
+
+Built from live fork head `9ee0768b4094a3b96d2284c6e56ecdc01211e255`
+in an isolated worktree under the exclusive Studio lock.
+
+- Every accepted immutable `DiagramDocument` now computes its canonical
+  normalized JSON once at construction. History commands, recovery envelopes,
+  save operations, bridge calls, and checksums reuse that exact string instead
+  of serializing an unchanged dictionary on every access.
+- The public record dictionary remains a deep defensive copy. Mutating that copy
+  cannot alter either the accepted record or its cached canonical bytes. Imported
+  and recovered text still passes through the full bounded parser before the
+  cache is created.
+- Added direct assertions that cached text equals the previous normalized
+  serialization and that `save_path()` writes those exact bytes. Existing
+  recovery, deterministic demo, exact SVG/TikZ, publication ZIP, manifest, and
+  checksum tests verify all downstream byte-level behavior.
+- The fixed benchmark retained identical fixture and output hashes. Its committed
+  receipt reduced the combined 100-edit, 100-undo, 100-redo median from 0.653 to
+  0.529 seconds, another 19.0 percent. Maximum-record undo fell from 0.855 to
+  0.023 ms per action and redo from 0.688 to 0.017 ms. The complete workload is
+  86.8 percent below the original 4.008-second baseline. Timings remain
+  observations, not a correctness gate.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **851 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark, portable-package scenarios,
+  and intentional failure-harness check. Its independent benchmark repetition
+  observed a 0.592-second combined history median and reproduced the same
+  integrity profile.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Static Web export rebuilt successfully. Pack inspection confirmed that
+  benchmark implementation and receipts remain excluded. No Site deployment,
+  download publication, or release occurred.
+
+No controller/test failure remains. This optimization does not resolve the
+existing display-enabled desktop, mobile, WebGL, visible-focus, or screen-reader
+review gaps.
+
+**Next specific task:** add a deterministic bounded history-retention audit that
+reports serialized command bytes and runtime snapshot counts at the 100-command
+limit, verifies eviction leaves no stale cached snapshots, and documents the
+maximum retained-data envelope before further history optimization.
+
+## Earlier increment: normalized local edit candidates
 
 Built from live fork head `54f62d7d789c4c60a65cc5ab774fb8653d03b9ff`
 in an isolated worktree under the exclusive Studio lock.

@@ -19,12 +19,16 @@ const STYLE_DEFAULTS := {
 }
 
 var _data: Dictionary
+var _canonical_json: String
 var data: Dictionary:
 	get:
 		return _data.duplicate(true)
 
 func _init(normalized: Dictionary) -> void:
 	_data = normalized.duplicate(true)
+	# DiagramDocument is immutable. Compute its exact interchange text once so
+	# history, recovery, checksums, and saves all share the same canonical bytes.
+	_canonical_json = JSON.stringify(_data, "\t", false, true) + "\n"
 
 static func parse(text: String) -> Dictionary:
 	if text.to_utf8_buffer().size() > MAX_BYTES:
@@ -66,7 +70,7 @@ func to_dict() -> Dictionary:
 	return _data.duplicate(true)
 
 func to_json() -> String:
-	return JSON.stringify(_data, "\t", false, true) + "\n"
+	return _canonical_json
 
 func save_path(path: String) -> String:
 	var file := FileAccess.open(path, FileAccess.WRITE)

@@ -24,8 +24,10 @@ func _run_tests() -> void:
 	_expect(planar.data.surface.objects.size() == 4, "four planar objects")
 	_expect(planar.data.surface.objects[0].id == "p1", "stable object ID")
 	_expect(planar.data.curves[0].cuts == [], "exact empty itinerary")
+	var canonical_planar := planar.to_json()
+	_expect(canonical_planar == JSON.stringify(planar.to_dict(), "\t", false, true) + "\n", "cached canonical JSON exactly matches normalized serialization")
 	var leaked := planar.data; leaked.title = "Mutated copy"
-	_expect(planar.data.title == "Generic planar import fixture", "external dictionary mutation cannot change record")
+	_expect(planar.data.title == "Generic planar import fixture" and planar.to_json() == canonical_planar, "external dictionary mutation cannot change record or cached canonical JSON")
 	_expect(planar.data.style.marked_point_color == "#006fff", "blue marks")
 	_expect(planar.data.style.boundary_color == "#8b8b8b", "gray boundaries")
 	_expect(planar.data.curves[0].color == "#ff00d4", "magenta curve default")
@@ -109,6 +111,7 @@ func _run_tests() -> void:
 		_expect(not internal_rejection.ok and not text_rejection.ok and internal_rejection.error == text_rejection.error, "bounded edit candidate rejects with the same schema error as the full text parser")
 	var save_path := "user://round-trip.json"
 	_expect(planar.save_path(save_path).is_empty(), "save succeeds")
+	_expect(FileAccess.get_file_as_string(save_path) == canonical_planar, "save writes the exact cached canonical bytes")
 	var reopened := DiagramDocument.load_path(save_path)
 	_expect(reopened.ok and reopened.document.data == planar.data, "saved recipe reopens exactly")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))

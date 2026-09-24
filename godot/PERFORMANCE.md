@@ -84,3 +84,24 @@ The full workload is 83.7% below the original 4,007.524 ms baseline. Cached
 undo and redo remain in the sub-millisecond-per-action range; their smaller
 differences between receipts are normal host timing variation. These observations
 do not change any correctness claim or timing threshold.
+
+## Canonical JSON cache comparison
+
+Every immutable `DiagramDocument` now computes its canonical normalized JSON
+once at construction. History commands, recovery, checksums, saves, and bridge
+calls reuse that exact string. A defensive copy remains the only public record
+dictionary, so callers cannot make the cached text stale.
+
+The [canonical JSON receipt](benchmark/receipts/linux-headless-2026-09-24-canonical-json.json)
+again retains the same fixtures and integrity outputs:
+
+| Maximum-record history workload | Normalized candidates | Canonical JSON | Change |
+| --- | ---: | ---: | ---: |
+| 100 edits + 100 undos + 100 redos | 652.606 ms | 528.907 ms | -19.0% |
+| 100 undos | 85.494 ms | 2.340 ms | -97.3% |
+| 100 redos | 68.754 ms | 1.651 ms | -97.6% |
+
+New edits still construct and validate a new immutable document, including its
+one canonical serialization, so their small difference between receipts is host
+variation rather than an optimization claim. The full history workload is now
+86.8% below the original 4,007.524 ms baseline.
