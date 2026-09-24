@@ -6,9 +6,10 @@ const path = require('node:path');
 const source = fs.readFileSync(path.join(__dirname, '../web/browser_files.js'), 'utf8');
 
 function harness() {
-  const elements = [], blobs = [], revoked = [], timers = [];
+  const elements = [], blobs = [], revoked = [], timers = [], rootListeners = {};
   const context = {
     TextDecoder, Blob,
+    addEventListener(event, callback) { rootListeners[event] = callback; },
     document: {
       body: { appendChild() {} },
       createElement(tag) {
@@ -25,8 +26,29 @@ function harness() {
     setTimeout(cb) { timers.push(cb); }
   };
   vm.runInNewContext(source, context);
-  return { api: context.SurfaceStudioFiles, elements, blobs, revoked, timers };
+  return { api: context.SurfaceStudioFiles, elements, blobs, revoked, timers, rootListeners };
 }
+
+test('unsaved edits request a close or reload warning until cleared', () => {
+  const h = harness();
+  function event() {
+    return {prevented: false, returnValue: undefined,
+      preventDefault() { this.prevented = true; }};
+  }
+  const clean = event();
+  h.rootListeners.beforeunload(clean);
+  assert.equal(clean.prevented, false);
+  assert.equal(clean.returnValue, undefined);
+  h.api.setUnsaved(true);
+  const dirty = event();
+  h.rootListeners.beforeunload(dirty);
+  assert.equal(dirty.prevented, true);
+  assert.equal(dirty.returnValue, '');
+  h.api.setUnsaved(false);
+  const saved = event();
+  h.rootListeners.beforeunload(saved);
+  assert.equal(saved.prevented, false);
+});
 
 test('upload forwards bounded UTF-8 text literally, not interpreted code', async () => {
   const h = harness(); let result;

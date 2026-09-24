@@ -16,7 +16,55 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: browser startup diagnostics and build identity
+## Latest increment: exact Site identity check and browser unload protection
+
+Built from live fork head `5a6a4c490e967eb10d177b7c8dfb4dd979fcd867`
+in an isolated worktree under the exclusive Studio lock.
+
+- A read-only Site checker now compares the public ChatGPT Site with either the
+  current checkout revision or an exact candidate `studio-build.json`. Candidate
+  mode compares the commit, pinned engine, pack bytes/hash, and compressed-engine
+  bytes/hash without downloading the large assets or publishing anything.
+- The checker strictly bounds and validates the manifest, rejects duplicate,
+  unknown, future, malformed, dirty-build, and incomplete asset records, and
+  gives distinct exits for current, different, and unidentified publications.
+- The live public Site at
+  <https://surface-diagrams-studio.joshgay.chatgpt.site> was reachable during
+  this run, but its `studio-build.json` path returned the older HTML application
+  shell. It is therefore accurately reported as a legacy publication without
+  build identity, not silently treated as this GitHub checkpoint.
+- Browser edits and unapplied new/existing curve drafts now activate the standard
+  close/reload warning. Undo back to the opened/downloaded baseline clears it;
+  redo restores it. A successful JSON download clears the warning only when no
+  unapplied draft remains. This is a data-loss safeguard, not browser persistence,
+  and mathematical records are unchanged.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- **1,120 headless Godot assertions**, including 6 new browser unload-state
+  assertions, deterministic demo, two-run bounded benchmark, bridge harnesses,
+  intentional failure detection, and private portable Linux
+  success/missing-authority/missing-Python checks (53 files, 147,319,487 bytes).
+- **240 Python tests with 359 subtests**, including 5 new fail-closed Site
+  manifest/comparison tests; **8 browser-editor tests** and **28 Web adapter
+  tests**, including the new `beforeunload` contract.
+- Static Web export from the clean committed worktree succeeded with a
+  255,604-byte PCK; generated JavaScript syntax and build identity checks passed.
+  Exact candidate-to-Site comparison correctly returned unidentified for the
+  older Site rather than a false match.
+
+No regression failure remains. This worker still has no X11/Wayland display or
+WebGL 2 browser. The unload contract is controller/JavaScript evidence; actual
+browser prompting, rendered startup/editor layout, clipboard behavior, Orca,
+and physical-phone acceptance remain pending. No Site deployment was performed.
+
+**Next specific task:** in an explicitly authorized foreground Site publication,
+deploy a clean candidate containing `studio-build.json`, require the exact Site
+checker to match its commit and assets, then exercise edit/download/unload and
+the loaded editor on desktop and phone WebGL 2 browsers and repair the first
+observed prompt, focus, clipping, or keyboard-occlusion defect.
+
+## Earlier increment: browser startup diagnostics and build identity
 
 Built from live fork head `66844f38f1235ef0d4612077fe38369f0129c0a9`
 in an isolated worktree under the exclusive Studio lock.

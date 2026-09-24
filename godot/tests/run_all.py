@@ -81,6 +81,7 @@ def main():
     run([sys.executable, str(PROJECT / "tests" / "test_factor_workspace.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_run_all.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_web_build.py")])
+    run([sys.executable, str(PROJECT / "tests" / "test_site_check.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_walkthrough_bundle.py")])
     run([sys.executable, str(PROJECT / "visual_review" / "test_visual_review.py")])
 

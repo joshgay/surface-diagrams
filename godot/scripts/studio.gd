@@ -24,6 +24,7 @@ var candidate_geometry: Dictionary = {}
 var browser_mode := OS.has_feature("web")
 var browser_drafts: CheckButton
 var upload_callback: JavaScriptObject
+var browser_unsaved_state := false
 var baseline_source := ""
 var pending_action: Callable
 var pending_description := ""
@@ -670,6 +671,7 @@ func _show_save() -> void:
 			baseline_source = document.to_json()
 			if not curve_inspector.drafts.is_empty() or curve_creator.active:
 				status_label.text += " Unapplied curve drafts are NOT in this download."
+			_sync_browser_unload_guard()
 		return
 	save_dialog.current_file = _safe_filename(document.data.title) + ".json"
 	save_dialog.popup_centered_ratio(0.8)
@@ -716,6 +718,7 @@ func _open_result(result: Dictionary, path: String, clear_recovery: bool = true)
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 	if browser_mode:
 		status_label.text = "Browser proof of concept: inspect records, or explicitly enable unvalidated draft editing. No geometry certification. Save JSON downloads a local file; this site does not upload your data to a server."
+	_sync_browser_unload_guard()
 
 func _browser_file_received(arguments: Array) -> void:
 	if arguments.size() != 2:
@@ -1098,7 +1101,10 @@ func _discard_and_continue() -> void:
 		action.call()
 
 func _persist_recovery() -> void:
-	if browser_mode or document == null or baseline_source.is_empty():
+	if browser_mode:
+		_sync_browser_unload_guard()
+		return
+	if document == null or baseline_source.is_empty():
 		return
 	if not startup_recovery.is_empty():
 		return
@@ -1131,8 +1137,18 @@ func _current_creation_state() -> Dictionary:
 	return {"active": true, "draft": curve_creator.draft.duplicate(true)}
 
 func _schedule_recovery() -> void:
-	if recovery_timer != null and not browser_mode:
+	if browser_mode:
+		_sync_browser_unload_guard()
+	elif recovery_timer != null:
 		recovery_timer.start()
+
+func _sync_browser_unload_guard() -> void:
+	browser_unsaved_state = browser_mode and document != null and _has_unsaved_work()
+	if not browser_mode or not OS.has_feature("web"):
+		return
+	var files = JavaScriptBridge.get_interface("SurfaceStudioFiles")
+	if files != null:
+		files.setUnsaved(browser_unsaved_state)
 
 func _restore_view_state(value: Dictionary) -> bool:
 	var checked := WorkspaceViewState.normalize(value, document)

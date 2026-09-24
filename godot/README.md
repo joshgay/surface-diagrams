@@ -225,6 +225,33 @@ and records the source revision, local-change flag, exact engine, and pack and
 compressed-engine checksums. These identifiers help compare a deployed Site
 with a GitHub checkpoint; they do not certify browser or mathematical acceptance.
 
+Check the public publication against the current checkout without deploying it:
+
+```
+python3 godot/web/check_site.py
+```
+
+For an exact source-and-assets comparison, build the candidate Web export and
+pass its manifest:
+
+```
+python3 godot/web/check_site.py \
+  --expected-manifest godot/builds/web/studio-build.json
+```
+
+Exit 0 means the public Site identifies the expected commit (and, in manifest
+mode, exact pack and compressed-engine bytes). Exit 3 means a valid but different
+build is live. Exit 2 means the publication cannot be identified, including the
+older Site shell that predates `studio-build.json`. This read-only check does not
+publish or download the large assets.
+
+When browser edits or unapplied curve drafts differ from the last opened or
+downloaded JSON, Studio also requests the browser's standard close/reload
+confirmation. Downloading accepted JSON clears that warning only when no
+unapplied draft remains. Browser vendors may suppress this prompt, especially
+on mobile, so it is a safeguard rather than persistence: download JSON before
+leaving the Site.
+
 With the pinned engine and matching templates installed:
 
 ```

@@ -3,7 +3,17 @@
   'use strict';
   const MAX_BYTES = 256 * 1024;
   let busy = false;
+  let unsaved = false;
+  root.addEventListener('beforeunload', (event) => {
+    if (!unsaved) return;
+    event.preventDefault();
+    // Modern browsers ignore custom text but still require returnValue.
+    event.returnValue = '';
+  });
   root.SurfaceStudioFiles = Object.freeze({
+    setUnsaved(value) {
+      unsaved = value === true;
+    },
     open(callback) {
       if (busy) return;
       busy = true;
