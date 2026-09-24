@@ -121,7 +121,7 @@
       "commands": 100,
       "compact_history_bytes": 1538696,
       "documents": 101,
-      "envelope_bytes": 1559493,
+      "envelope_bytes": 1559787,
       "final_matches": true,
       "final_sha256": "142233d46591acc24d084c935b320709b3d8631c576584879000bf30e3a6383b",
       "initial_matches": true,
@@ -130,7 +130,7 @@
       "maximum_envelope_bytes": 33554432,
       "ok": true,
       "saved_history_bytes": 1513019,
-      "version": 2
+      "version": 3
     }
   },
   "interpretation": {

@@ -479,17 +479,23 @@ func _run_tests() -> void:
 	recovery_history.undo()
 	var recovery_drafts := {"editable": [0, 0], "left": [1, 2, 1]}
 	var recovery_selection := {"kind": "curve", "id": "editable", "index": 1}
-	var encoded_recovery := WorkspaceRecovery.encode(multi_source, recovery_history, recovery_drafts, recovery_selection)
-	_expect(encoded_recovery.ok and encoded_recovery.text.length() > 0, "bounded recovery envelope encodes accepted state, history, and rejected drafts")
+	var recovery_view := WorkspaceViewState.defaults(recovery_history.current)
+	recovery_view.camera = {"zoom": 1.75, "pan": [123.5, -44.25]}
+	recovery_view.panels = {"records": true, "source": true, "move_points": false}
+	var encoded_recovery := WorkspaceRecovery.encode(multi_source, recovery_history,
+		recovery_drafts, recovery_selection, recovery_view)
+	_expect(encoded_recovery.ok and encoded_recovery.text.length() > 0, "bounded recovery envelope encodes accepted state, history, drafts, and separate view state")
 	var encoded_recovery_raw: Dictionary = JSON.parse_string(encoded_recovery.text)
-	_expect(encoded_recovery_raw.version == 2 and encoded_recovery_raw.history.format == DiagramEditHistory.COMPACT_STATE_FORMAT and encoded_recovery_raw.history.documents.size() == 2, "new recovery writes version 2 with deduplicated command endpoint documents")
+	_expect(encoded_recovery_raw.version == 3 and encoded_recovery_raw.history.format == DiagramEditHistory.COMPACT_STATE_FORMAT and encoded_recovery_raw.history.documents.size() == 2, "new recovery writes version 3 with deduplicated command endpoints and a native view envelope")
+	_expect(encoded_recovery_raw.view.camera.zoom == 1.75 and encoded_recovery_raw.view.camera.pan == [123.5, -44.25] and not encoded_recovery_raw.history.has("view"), "view state stays outside every mathematical history document")
 	var excess_recovery_history: Dictionary = encoded_recovery_raw.history.duplicate(true)
 	excess_recovery_history.documents.append(braid.to_json())
 	_expect(not DiagramEditHistory.new().restore_compact_state(excess_recovery_history).ok, "compact history rejects unreferenced document slots")
 	var parsed_recovery := WorkspaceRecovery.parse(encoded_recovery.text)
-	_expect(parsed_recovery.ok and parsed_recovery.recovery_version == 2 and parsed_recovery.baseline_source == multi_source, "recovery envelope retains exact normalized baseline and version")
+	_expect(parsed_recovery.ok and parsed_recovery.recovery_version == 3 and parsed_recovery.baseline_source == multi_source, "recovery envelope retains exact normalized baseline and version")
 	_expect(parsed_recovery.ok and parsed_recovery.drafts == recovery_drafts, "recovery retains literal invalid drafts without simplifying them")
 	_expect(parsed_recovery.ok and parsed_recovery.selection == recovery_selection, "recovery retains stable record selection")
+	_expect(parsed_recovery.ok and parsed_recovery.view_state == recovery_view, "recovery retains bounded camera and panel state without extending DiagramDocument")
 	var restored_history := DiagramEditHistory.new()
 	var restore_result := restored_history.restore_state(parsed_recovery.history_state)
 	_expect(restore_result.ok and restored_history.current.to_json() == multi_source and restored_history.can_redo(), "recovery restores current record and redo stack")
@@ -507,14 +513,23 @@ func _run_tests() -> void:
 	}
 	var parsed_legacy_recovery := WorkspaceRecovery.parse(JSON.stringify(legacy_recovery))
 	_expect(parsed_legacy_recovery.ok and parsed_legacy_recovery.recovery_version == 1 and parsed_legacy_recovery.history_state == parsed_recovery.history_state, "version-1 recovery remains readable and normalizes to the exact public history state")
+	_expect(parsed_legacy_recovery.view_state == WorkspaceViewState.defaults(recovery_history.current), "version-1 recovery receives deterministic default view state")
+	var compact_recovery: Dictionary = encoded_recovery_raw.duplicate(true)
+	compact_recovery.version = WorkspaceRecovery.COMPACT_VERSION
+	compact_recovery.erase("view")
+	var parsed_compact_recovery := WorkspaceRecovery.parse(JSON.stringify(compact_recovery))
+	_expect(parsed_compact_recovery.ok and parsed_compact_recovery.recovery_version == 2 and parsed_compact_recovery.view_state == WorkspaceViewState.defaults(recovery_history.current), "version-2 compact recovery remains readable with deterministic default view state")
 	var future_recovery: Dictionary = JSON.parse_string(encoded_recovery.text)
-	future_recovery.version = 3
+	future_recovery.version = 4
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(future_recovery)).ok, "future recovery version is rejected")
-	var duplicate_recovery: String = encoded_recovery.text.replace("\"version\": 2,", "\"version\": 2,\n\t\"version\": 2,")
+	var duplicate_recovery: String = encoded_recovery.text.replace("\"version\": 3,", "\"version\": 3,\n\t\"version\": 3,")
 	_expect(not WorkspaceRecovery.parse(duplicate_recovery).ok, "duplicate recovery field is rejected")
 	var unknown_recovery: Dictionary = JSON.parse_string(encoded_recovery.text)
 	unknown_recovery.camera = {"zoom": 2}
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(unknown_recovery)).ok, "unknown recovery field is rejected rather than merged into mathematical data")
+	var invalid_view: Dictionary = JSON.parse_string(encoded_recovery.text)
+	invalid_view.view.camera.zoom = 9.0
+	_expect(not WorkspaceRecovery.parse(JSON.stringify(invalid_view)).ok, "out-of-range native camera state is rejected without affecting mathematical recovery")
 	var unknown_draft: Dictionary = JSON.parse_string(encoded_recovery.text)
 	unknown_draft.drafts = {"missing": [0]}
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(unknown_draft)).ok, "recovery draft for unknown stable curve ID is rejected")
@@ -535,10 +550,11 @@ func _run_tests() -> void:
 	legacy_file.close()
 	var loaded_legacy_recovery := WorkspaceRecovery.load_file()
 	_expect(loaded_legacy_recovery.ok and loaded_legacy_recovery.found and loaded_legacy_recovery.recovery_version == 1 and loaded_legacy_recovery.generation == 0 and loaded_legacy_recovery.slot_source == "legacy", "loader falls back to the existing version-1 recovery path")
-	var save_recovery_error := WorkspaceRecovery.save_file(multi_source, recovery_history, recovery_drafts, recovery_selection)
+	var save_recovery_error := WorkspaceRecovery.save_file(multi_source, recovery_history, recovery_drafts, recovery_selection, recovery_view)
 	var loaded_recovery := WorkspaceRecovery.load_file()
-	_expect(save_recovery_error.is_empty() and loaded_recovery.ok and loaded_recovery.found and loaded_recovery.recovery_version == 2 and loaded_recovery.generation == 1 and loaded_recovery.slot_source == "primary" and not FileAccess.file_exists(WorkspaceRecovery.LEGACY_PATH), "version-2 recovery writes a generation-1 primary and retires the legacy path")
+	_expect(save_recovery_error.is_empty() and loaded_recovery.ok and loaded_recovery.found and loaded_recovery.recovery_version == 3 and loaded_recovery.generation == 1 and loaded_recovery.slot_source == "primary" and not FileAccess.file_exists(WorkspaceRecovery.LEGACY_PATH), "version-3 recovery writes a generation-1 primary and retires the legacy path")
 	_expect(loaded_recovery.drafts == recovery_drafts and loaded_recovery.history_state == parsed_recovery.history_state, "disk recovery round trip retains drafts and command history exactly")
+	_expect(loaded_recovery.view_state == recovery_view, "disk recovery round trip retains the separate native view envelope")
 	var migrated_backup := WorkspaceRecovery.parse_slot(FileAccess.get_file_as_string(WorkspaceRecovery.BACKUP_PATH))
 	_expect(migrated_backup.ok and migrated_backup.generation == 0 and migrated_backup.recovery_version == 1, "version-1 migration preserves the validated legacy record as generation-0 last-known-good data")
 	_expect(recovery_history.redo().ok and recovery_history.current.to_json() == recovery_after, "recovery slot fixture advances to a distinct accepted generation")
@@ -588,7 +604,7 @@ func _run_tests() -> void:
 	_expect(WorkspaceRecovery.save_file(multi_source, recovery_history, recovery_drafts, recovery_selection).is_empty() and WorkspaceRecovery.load_file().generation == 1 and not FileAccess.file_exists(WorkspaceRecovery.BACKUP_PATH), "fresh checkpoint replaces invalid slots and removes the stale backup")
 	WorkspaceRecovery.clear_file()
 	var raw_v2_file := FileAccess.open(WorkspaceRecovery.PATH, FileAccess.WRITE)
-	raw_v2_file.store_string(encoded_recovery.text)
+	raw_v2_file.store_string(JSON.stringify(compact_recovery))
 	raw_v2_file.close()
 	var raw_v2_loaded := WorkspaceRecovery.load_file()
 	_expect(raw_v2_loaded.ok and raw_v2_loaded.generation == 0 and raw_v2_loaded.slot_version == 0 and raw_v2_loaded.recovery_version == 2, "unwrapped version-2 checkpoint from the previous release remains readable")

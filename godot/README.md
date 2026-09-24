@@ -45,10 +45,11 @@ certified geometry output. See [PUBLICATION.md](PUBLICATION.md).
 
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
-current stable-ID selection, and unapplied curve drafts are also checkpointed in
-a separate bounded version-2 workspace recovery record. Its compact history
-stores each exact command endpoint document once; existing version-1 records
-remain readable and are replaced after a successful new checkpoint. Desktop
+current stable-ID selection, unapplied curve drafts, and a separate bounded
+camera/timeline/panel envelope are also checkpointed in a version-3 workspace
+recovery record. Its compact history stores each exact command endpoint document
+once; existing version-1 and version-2 records remain readable and receive
+deterministic default view state. Desktop
 storage keeps the newest checksum-verified generation and one last-known-good
 generation. If replacement is interrupted or the primary is corrupt, startup
 offers the newest valid slot and labels the fallback explicitly. A fixed local
@@ -141,9 +142,11 @@ Cancel and **Discard and continue** choices. Cancel leaves the record, command
 history, and drafts unchanged; a failed import also leaves them unchanged. On a
 later desktop start, a recovery prompt lets the user restore or explicitly
 discard the validated checkpoint. Recovery is limited to 100 undo/redo commands
-total, known curve IDs, and 64 cut visits per draft. Version 2 has a
+total, known curve IDs, and 64 cut visits per draft. Version 3 has a
 32 MiB payload cap, and each generation slot has a 34 MiB cap; legacy version 1
-retains its original 1 MiB limit. Generation and payload bytes share a SHA-256
+retains its original 1 MiB limit. The view envelope bounds zoom, pan, literal
+braid playhead/presentation, and panel booleans; it cannot name scripts or
+resources. Generation and payload bytes share a SHA-256
 checksum. It never loads a script, scene, or resource, and camera state remains
 outside the mathematical record. Successful Save marks the accepted source
 clean, while any unapplied drafts remain visibly unsaved and recoverable.

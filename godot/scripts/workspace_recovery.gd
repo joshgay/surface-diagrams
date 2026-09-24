@@ -2,7 +2,8 @@ class_name WorkspaceRecovery
 extends RefCounted
 
 const FORMAT := "surface-diagrams-studio-recovery"
-const VERSION := 2
+const VERSION := 3
+const COMPACT_VERSION := 2
 const LEGACY_VERSION := 1
 const LEGACY_MAX_BYTES := 1024 * 1024
 # A compact history contains at most 101 distinct endpoint documents. The 32 MiB
@@ -18,9 +19,14 @@ const MAX_SLOT_BYTES := 34 * 1024 * 1024
 const MAX_GENERATION := 2147483647
 
 static func encode(baseline_source: String, history: DiagramEditHistory,
-		drafts: Dictionary, selection: Dictionary) -> Dictionary:
+		drafts: Dictionary, selection: Dictionary, view_state: Dictionary = {}) -> Dictionary:
 	if history == null or history.current == null:
 		return _failure("Cannot recover an empty workspace")
+	var requested_view: Dictionary = view_state if not view_state.is_empty() \
+		else WorkspaceViewState.defaults(history.current)
+	var checked_view := WorkspaceViewState.normalize(requested_view, history.current)
+	if not checked_view.ok:
+		return _failure("Recovery view state is invalid: " + checked_view.error)
 	var envelope := {
 		"format": FORMAT,
 		"version": VERSION,
@@ -28,6 +34,7 @@ static func encode(baseline_source: String, history: DiagramEditHistory,
 		"history": history.to_compact_state(),
 		"drafts": drafts.duplicate(true),
 		"selection": selection.duplicate(true),
+		"view": checked_view.value,
 	}
 	var text := JSON.stringify(envelope, "\t", false, true) + "\n"
 	if text.to_utf8_buffer().size() > MAX_BYTES:
@@ -50,13 +57,19 @@ static func parse(text: String) -> Dictionary:
 	if not duplicate.is_empty():
 		return _failure("Duplicate recovery JSON field: " + duplicate)
 	var raw: Dictionary = parser.data
-	var fields := _keys(raw, ["format", "version", "baseline", "history", "drafts", "selection"])
+	var version_value = raw.get("version", null)
+	if not _integer(version_value):
+		return _failure("Recovery version is invalid")
+	var recovery_version := int(version_value)
+	var expected_fields := ["format", "version", "baseline", "history", "drafts", "selection"]
+	if recovery_version == VERSION:
+		expected_fields.append("view")
+	var fields := _keys(raw, expected_fields)
 	if not fields.ok:
 		return fields
 	if raw.format != FORMAT or not _integer(raw.version) \
-			or int(raw.version) not in [LEGACY_VERSION, VERSION]:
-		return _failure("Expected %s version 1 or 2" % FORMAT)
-	var recovery_version := int(raw.version)
+			or int(raw.version) not in [LEGACY_VERSION, COMPACT_VERSION, VERSION]:
+		return _failure("Expected %s version 1, 2, or 3" % FORMAT)
 	if recovery_version == LEGACY_VERSION and text.to_utf8_buffer().size() > LEGACY_MAX_BYTES:
 		return _failure("Version-1 recovery record exceeds 1 MiB")
 	if typeof(raw.baseline) != TYPE_STRING:
@@ -77,6 +90,11 @@ static func parse(text: String) -> Dictionary:
 	var selection_result := _selection(raw.selection, restored_history.current)
 	if not selection_result.ok:
 		return selection_result
+	var view_result := WorkspaceViewState.normalize(raw.view, restored_history.current) \
+		if recovery_version == VERSION else {"ok": true, "error": "",
+			"value": WorkspaceViewState.defaults(restored_history.current)}
+	if not view_result.ok:
+		return _failure("Recovery view state is invalid: " + view_result.error)
 	return {
 		"ok": true,
 		"error": "",
@@ -85,6 +103,7 @@ static func parse(text: String) -> Dictionary:
 		"history_state": restored_history.to_state(),
 		"drafts": drafts_result.value,
 		"selection": selection_result.value,
+		"view_state": view_result.value,
 	}
 
 static func load_file() -> Dictionary:
@@ -106,8 +125,8 @@ static func load_file() -> Dictionary:
 	return result
 
 static func save_file(baseline_source: String, history: DiagramEditHistory,
-		drafts: Dictionary, selection: Dictionary) -> String:
-	var encoded := encode(baseline_source, history, drafts, selection)
+		drafts: Dictionary, selection: Dictionary, view_state: Dictionary = {}) -> String:
+	var encoded := encode(baseline_source, history, drafts, selection, view_state)
 	if not encoded.ok:
 		return encoded.error
 	var payload = JSON.parse_string(encoded.text)

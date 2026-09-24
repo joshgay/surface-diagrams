@@ -6,6 +6,7 @@ signal edit_commit_requested(kind: String, id: String, position: Vector2)
 signal edit_preview_changed(valid: bool, message: String)
 signal edit_rejected(message: String)
 signal cut_picked(cut: int)
+signal view_changed
 
 var document: DiagramDocument
 var zoom := 1.0
@@ -116,6 +117,7 @@ func fit_view() -> void:
 	zoom = 1.0
 	pan = Vector2.ZERO
 	queue_redraw()
+	view_changed.emit()
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventKey and handle_keyboard(event):
@@ -148,6 +150,8 @@ func _gui_input(event: InputEvent) -> void:
 			dragging = event.pressed
 			drag_start = event.position
 			pan_start = pan
+			if not event.pressed:
+				view_changed.emit()
 	elif event is InputEventMouseMotion:
 		if edit_dragging:
 			update_edit_drag(event.position)
@@ -187,6 +191,7 @@ func handle_keyboard(event: InputEventKey) -> bool:
 		_:
 			return false
 	queue_redraw()
+	view_changed.emit()
 	return true
 
 func _select_relative_record(delta: int) -> bool:
@@ -269,6 +274,7 @@ func _handle_touch(event: InputEvent) -> void:
 				else:
 					pan += event.position - previous
 					queue_redraw()
+		view_changed.emit()
 
 func _touch_tap(point: Vector2) -> void:
 	if document == null:
@@ -412,6 +418,7 @@ func zoom_at(point: Vector2, factor: float) -> void:
 	zoom = clampf(zoom * factor, 0.25, 4.0)
 	pan = point - size / 2.0 - (point - size / 2.0 - pan) * zoom / old
 	queue_redraw()
+	view_changed.emit()
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("#ffffff"))

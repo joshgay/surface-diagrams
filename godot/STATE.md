@@ -16,7 +16,54 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: bounded persistent-record search
+## Latest increment: separate recoverable native view state
+
+Built from live fork head `8e9637aa54e5608596e31de9b5a414404a32c711`
+in an isolated worktree under the exclusive Studio lock.
+
+- Workspace recovery version 3 now checkpoints a strictly bounded native view
+  envelope beside, never inside, the mathematical record. It covers the editor
+  camera zoom/pan, compact Records versus Diagram pane, accepted-source and
+  move-mode visibility, plus fractional signed-braid playhead and presentation.
+- Mouse, touch, keyboard, toolbar, panel, and braid playback changes schedule a
+  short debounced checkpoint whenever recoverable mathematical work exists.
+  Playback cannot create per-frame disk writes, and a clean workspace still
+  removes recovery rather than manufacturing state.
+- Restore validates every view field before applying it, restores exact
+  selection/history/drafts first, and then restores the independent view. Zoom,
+  pan, braid bounds, directions, field sets, and scalar types are explicit;
+  scripts, resources, scene paths, and arbitrary imported fields are rejected.
+- Version-1 and version-2 recovery records remain readable. They receive
+  deterministic fitted/default view state and are migrated by the existing
+  checksum-verified primary/last-known-good slot workflow.
+- Controller coverage restores a nondefault planar camera and panel state plus
+  a fractional top-to-bottom braid view while checking byte-identical
+  mathematical JSON. The maximum-fixture version-3 envelope is 1,559,787 bytes,
+  within the unchanged 32 MiB cap, and all 100 undo/redo endpoints remain exact.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,127 Godot assertions**, including **11 new recovery/view-state
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt successfully with a 251,988-byte PCK. The private
+  portable Linux package passed outside the checkout with 53 files and
+  147,315,871 bytes.
+
+No controller/test failure remains. This worker still has no X11 or Wayland
+display or compositor, and the available cloud browser does not expose WebGL 2.
+Rendered recovery layout, visible focus, Orca announcements, physical-phone
+target sizing, keyboard occlusion, and actual visual acceptance remain pending.
+
+**Next specific task:** on a real X11 or Wayland desktop with Orca, create an
+unsaved edited workspace at a nondefault camera/timeline position, restart and
+restore it, then repeat on a WebGL 2 phone across keyboard-open rotation; repair
+the first concrete focus, announcement, clipping, or state-restoration defect.
+
+## Earlier increment: bounded persistent-record search
 
 Built from live fork head `b47c2a731302e78da79394c01d70ef7128821951`
 in an isolated worktree under the exclusive Studio lock.

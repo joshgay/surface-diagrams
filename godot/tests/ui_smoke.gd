@@ -135,8 +135,16 @@ func _run() -> void:
 	studio._canvas_edit_commit("label", "caption", Vector2(1, -85))
 	_check(studio.curve_inspector.drafts["editable"] == [0, 5] and not studio.curve_inspector.visible, "non-curve command retains hidden curve drafts")
 	_check("[draft]" in studio.record_list.get_item_text(7), "draft marker survives non-curve presentation refresh")
+	studio.canvas.zoom = 1.75
+	studio.canvas.pan = Vector2(123.5, -44.25)
+	studio.showing_records = true
+	studio.source_view.visible = true
+	studio.move_button.set_pressed_no_signal(true)
+	studio.canvas.touch_move_enabled = true
+	studio._persist_recovery()
 	var recovery_on_disk := WorkspaceRecovery.load_file()
 	_check(recovery_on_disk.ok and recovery_on_disk.found and recovery_on_disk.drafts.size() == 2, "accepted edit and every curve draft are written to separate bounded recovery")
+	_check(recovery_on_disk.view_state.camera.zoom == 1.75 and recovery_on_disk.view_state.camera.pan == [123.5, -44.25] and recovery_on_disk.view_state.panels.records and recovery_on_disk.view_state.panels.source and recovery_on_disk.view_state.panels.move_points, "recovery stores bounded editor camera and panel state outside mathematical JSON")
 	var restarted = packed.instantiate()
 	root.add_child(restarted)
 	await process_frame
@@ -144,6 +152,7 @@ func _run() -> void:
 	_check(restarted._restore_startup_recovery(), "explicit restore accepts the validated recovery envelope")
 	_check(restarted.document.to_json() == studio.document.to_json() and restarted.curve_inspector.drafts == studio.curve_inspector.drafts, "restart restores accepted record and all drafts exactly")
 	_check(restarted.canvas.selected_record.kind == "label" and restarted.canvas.selected_record.id == "caption", "restart restores stable-ID selection separately from mathematical data")
+	_check(restarted.canvas.zoom == 1.75 and restarted.canvas.pan == Vector2(123.5, -44.25) and restarted.showing_records and restarted.source_view.visible and restarted.move_button.button_pressed, "restart restores camera and panel state from the separate native envelope")
 	_check(restarted.history.undo_stack.size() == studio.history.undo_stack.size() and restarted.history.can_undo(), "restart restores exact command history")
 	restarted._undo()
 	_check(restarted.document.to_json() == multi_before and restarted.curve_inspector.drafts["editable"] == [0, 5], "recovered undo works without erasing rejected drafts")
@@ -310,13 +319,18 @@ func _run() -> void:
 	studio._edit_braid_word("replace", 4, -5)
 	var braid_final: String = studio.document.to_json()
 	_check(studio.document.data.braid.word == [1, -2, 3, -4, -5] and braid_final != before, "later signed replacement remains a genuine unsaved edit")
+	studio.braid_editor.set_direction("top-to-bottom")
+	studio.braid_editor.set_playhead(2.25)
+	studio._persist_recovery()
 	var braid_recovery := WorkspaceRecovery.load_file()
 	_check(braid_recovery.ok and braid_recovery.found and braid_recovery.history_state.undo.size() == 4, "braid word commands are stored in separate bounded desktop recovery")
+	_check(braid_recovery.view_state.braid.playhead == 2.25 and braid_recovery.view_state.braid.presentation == "top-to-bottom", "braid recovery stores fractional playback and presentation outside the signed word")
 	var braid_restarted = packed.instantiate()
 	root.add_child(braid_restarted)
 	await process_frame
 	_check(braid_restarted._restore_startup_recovery() and braid_restarted.document.to_json() == braid_final, "restart restores edited braid and exact signed word")
 	_check(braid_restarted.geometry_result.svg == studio.geometry_result.svg and braid_restarted.history.can_undo(), "recovered braid has matching Python geometry and working history")
+	_check(braid_restarted.braid_editor.playhead == 2.25 and braid_restarted.braid_editor.direction == "top-to-bottom" and braid_restarted.canvas.braid_playhead == 2.25, "restart restores deterministic fractional braid view state without changing the word")
 	braid_restarted.queue_free()
 	await process_frame
 	studio._save_path("user://ui-braid-edited.json")

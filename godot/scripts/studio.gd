@@ -31,6 +31,7 @@ var unsaved_dialog: ConfirmationDialog
 var recovery_dialog: ConfirmationDialog
 var startup_recovery: Dictionary = {}
 var recovery_error := ""
+var recovery_timer: Timer
 var row_reindex_panel: HFlowContainer
 var row_reindex_label: Label
 var reindex_left_button: Button
@@ -65,6 +66,11 @@ var active_modal: Window
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	_build_interface()
+	recovery_timer = Timer.new()
+	recovery_timer.one_shot = true
+	recovery_timer.wait_time = 0.25
+	recovery_timer.timeout.connect(_persist_recovery)
+	add_child(recovery_timer)
 	get_tree().root.size_changed.connect(_sync_viewport)
 	_sync_viewport()
 	if browser_mode and OS.has_feature("web"):
@@ -226,7 +232,7 @@ func _build_interface() -> void:
 	inspector.add_child(braid_editor)
 	source_button = Button.new()
 	source_button.text = "Show accepted source"
-	source_button.pressed.connect(func(): source_view.visible = not source_view.visible)
+	source_button.pressed.connect(_toggle_source_view)
 	inspector.add_child(source_button)
 	source_view = TextEdit.new()
 	source_view.editable = false
@@ -252,7 +258,7 @@ func _build_interface() -> void:
 		canvas_tools.add_child(zoom_button)
 	move_button = CheckButton.new()
 	move_button.text = "Move points"
-	move_button.toggled.connect(func(enabled: bool): canvas.touch_move_enabled = enabled)
+	move_button.toggled.connect(_toggle_move_points)
 	canvas_tools.add_child(move_button)
 	camera_note = Label.new()
 	camera_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -292,6 +298,7 @@ func _build_interface() -> void:
 	canvas.edit_preview_changed.connect(_canvas_preview_changed)
 	canvas.edit_rejected.connect(_show_edit_error)
 	canvas.cut_picked.connect(_cut_picked)
+	canvas.view_changed.connect(_schedule_recovery)
 	canvas_box.add_child(canvas)
 	canvas.set_accessibility_name("Editable diagram canvas")
 	geometry_label = Label.new()
@@ -526,6 +533,15 @@ func _show_mobile_panel(records: bool) -> void:
 	inspector_scroll.visible = not compact_layout or records
 	canvas_box.visible = not compact_layout or not records
 	canvas.cancel_touch_gesture()
+	_schedule_recovery()
+
+func _toggle_source_view() -> void:
+	source_view.visible = not source_view.visible
+	_schedule_recovery()
+
+func _toggle_move_points(enabled: bool) -> void:
+	canvas.touch_move_enabled = enabled
+	_schedule_recovery()
 
 func _show_factor_workspace() -> void:
 	# A separate read-only workspace leaves accepted edits, drafts and recovery
@@ -878,6 +894,7 @@ func _create_curve(curve: Dictionary) -> void:
 
 func _braid_view_changed(playhead: float, direction: String) -> void:
 	canvas.set_braid_view(playhead, direction)
+	_schedule_recovery()
 
 func _braid_selection_requested(index: int) -> void:
 	if document != null and document.data.kind == "braid":
@@ -1088,7 +1105,7 @@ func _persist_recovery() -> void:
 		WorkspaceRecovery.clear_file()
 		return
 	var error := WorkspaceRecovery.save_file(baseline_source, history,
-		curve_inspector.drafts, _current_selection())
+		curve_inspector.drafts, _current_selection(), _current_view_state())
 	if not error.is_empty():
 		recovery_error = error
 		status_label.text = error + ". The in-memory workspace is unchanged."
@@ -1100,6 +1117,33 @@ func _current_selection() -> Dictionary:
 	var selection := canvas.selected_record.duplicate(true)
 	return {"kind": selection.get("kind", ""), "id": selection.get("id", ""),
 		"index": int(selection.get("index", -1))}
+
+func _current_view_state() -> Dictionary:
+	return WorkspaceViewState.capture(document, canvas, braid_editor,
+		showing_records, source_view != null and source_view.visible,
+		move_button != null and move_button.button_pressed)
+
+func _schedule_recovery() -> void:
+	if recovery_timer != null and not browser_mode:
+		recovery_timer.start()
+
+func _restore_view_state(value: Dictionary) -> bool:
+	var checked := WorkspaceViewState.normalize(value, document)
+	if not checked.ok:
+		return false
+	var state: Dictionary = checked.value
+	canvas.zoom = state.camera.zoom
+	canvas.pan = Vector2(state.camera.pan[0], state.camera.pan[1])
+	canvas.queue_redraw()
+	showing_records = state.panels.records
+	source_view.visible = state.panels.source
+	move_button.set_pressed_no_signal(state.panels.move_points)
+	canvas.touch_move_enabled = state.panels.move_points
+	_show_mobile_panel(showing_records)
+	if document.data.kind == "braid":
+		braid_editor.set_direction(state.braid.presentation)
+		braid_editor.set_playhead(state.braid.playhead)
+	return true
 
 func _offer_recovery() -> void:
 	var recovered := WorkspaceRecovery.load_file()
@@ -1116,7 +1160,7 @@ func _offer_recovery() -> void:
 	var redo_count: int = recovered.history_state.redo.size()
 	var recovery_version: int = recovered.get("recovery_version", 1)
 	var fallback_note := " The newest primary slot was unavailable, so this is the validated last-known-good checkpoint." if recovered.get("recovered_from_backup", false) else ""
-	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains %d curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
+	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains view state, %d curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
 	_popup_fitted(recovery_dialog, Vector2i(580, 230), recovery_dialog.get_ok_button())
 	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
@@ -1135,9 +1179,10 @@ func _restore_startup_recovery() -> bool:
 	curve_inspector.drafts = startup_recovery.drafts.duplicate(true)
 	var selection: Dictionary = startup_recovery.selection.duplicate(true)
 	_present_document(history.current, true, selection)
+	var restored_view := _restore_view_state(startup_recovery.view_state)
 	startup_recovery.clear()
 	_persist_recovery()
-	status_label.text = "Recovered accepted edits, exact undo/redo history, selection, and unapplied curve drafts. Recovery is workspace data, not mathematical JSON."
+	status_label.text = "Recovered accepted edits, exact undo/redo history, selection, unapplied curve drafts, and separate camera/timeline/panel state. Recovery is workspace data, not mathematical JSON." if restored_view else "Recovered mathematical workspace data, but its separate view state could not be applied."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
 	return true
 
