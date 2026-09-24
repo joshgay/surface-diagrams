@@ -38,11 +38,13 @@ def main():
         stage = Path(temporary)
         run([args.godot, "--headless", "--path", str(PROJECT), "--export-release",
              "Web proof of concept", str(stage / "index.html")])
-        shutil.copyfile(PROJECT / "web" / "browser_files.js", stage / "browser_files.js")
+        for adapter in ["browser_files.js", "viewport.js"]:
+            shutil.copyfile(PROJECT / "web" / adapter, stage / adapter)
         html = (stage / "index.html").read_text()
-        if 'src="browser_files.js"' not in html:
-            raise SystemExit("Generated HTML does not load the trusted browser adapter")
-        for name in ["index.html", "index.js", "index.wasm", "index.pck", "browser_files.js"]:
+        for adapter in ["browser_files.js", "viewport.js"]:
+            if f'src="{adapter}"' not in html:
+                raise SystemExit("Generated HTML does not load trusted adapter: " + adapter)
+        for name in ["index.html", "index.js", "index.wasm", "index.pck", "browser_files.js", "viewport.js"]:
             if not (stage / name).is_file() or not (stage / name).stat().st_size:
                 raise SystemExit("Missing/empty web asset: " + name)
         with (stage / "index.wasm").open("rb") as wasm:

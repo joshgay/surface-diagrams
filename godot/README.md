@@ -184,8 +184,12 @@ and exact undo/redo, but **does not validate curve geometry**. Downloaded files
 are named `*-unvalidated.json`; the existing schema is not silently extended.
 Validate those records using the Python library before publication.
 
-Use a desktop browser with WebGL 2, WebAssembly, Web Crypto and gzip
-DecompressionStream support. Real browser startup, pointer/touch input, layout,
+Use a browser with WebGL 2, WebAssembly, Web Crypto and gzip DecompressionStream
+support. The Web shell follows the mobile visual viewport across dynamic browser
+chrome, orientation changes, and on-screen keyboard resizing. CSS safe-area
+insets keep the canvas out of display cutouts, and Godot lays controls out in the
+remaining canvas content-box pixels rather than physical backing pixels. These
+contracts are automated, but real browser startup, pointer/touch input, layout,
 and upload/download dialogs still need visual acceptance. There is no automatic
 browser persistence: explicitly download JSON before closing or opening another
 fixture. User diagrams are not uploaded to a server.
@@ -200,6 +204,8 @@ The helper exports into a temporary directory, validates outputs, then copies
 them to the requested static directory. It compresses the engine with
 deterministic gzip; the browser verifies exact size and SHA-256 before supplying
 an `application/wasm` response to Godot. A guarded one-expression adjustment to
-the generated loader selects this path. No engine binary, cache, generated Site
-assets, or Site credentials belong in this GitHub branch. The Site source
-repository separately owns its static output and `.openai/hosting.json`.
+the generated loader selects this path. The bounded `viewport.js` adapter is
+copied and checked alongside the existing trusted file and engine adapters. No
+engine binary, cache, generated Site assets, or Site credentials belong in this
+GitHub branch. The Site source repository separately owns its static output and
+`.openai/hosting.json`.

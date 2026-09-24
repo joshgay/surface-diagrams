@@ -341,8 +341,13 @@ func _make_touch_targets(node: Node) -> void:
 func _sync_viewport() -> void:
 	var logical_size: Vector2i = get_tree().root.size
 	if OS.has_feature("web"):
-		# Godot's Web buffer uses physical pixels. Lay out controls in CSS pixels.
-		logical_size = Vector2i(int(JavaScriptBridge.eval("window.innerWidth")), int(JavaScriptBridge.eval("window.innerHeight")))
+		# Godot's backing buffer uses physical pixels. The trusted shell adapter
+		# reports the usable canvas content box in bounded CSS pixels after mobile
+		# visual-viewport and safe-area changes.
+		var viewport_source := str(JavaScriptBridge.eval("JSON.stringify(window.SurfaceStudioViewport ? window.SurfaceStudioViewport.read() : {width: window.innerWidth, height: window.innerHeight})"))
+		var viewport_value = JSON.parse_string(viewport_source)
+		if typeof(viewport_value) == TYPE_DICTIONARY:
+			logical_size = Vector2i(clampi(int(viewport_value.get("width", 0)), 1, 16384), clampi(int(viewport_value.get("height", 0)), 1, 16384))
 	if logical_size.x <= 0 or logical_size.y <= 0:
 		return
 	if get_tree().root.content_scale_size != logical_size:

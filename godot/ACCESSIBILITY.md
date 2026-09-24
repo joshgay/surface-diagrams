@@ -40,5 +40,8 @@ workspace shortcuts.
 
 The controller tests exercise these paths at 320, 390, 844, and 1280 pixel
 widths, including portrait and landscape compact-view switching.
+The Web shell also reports the canvas content box after safe-area padding and
+visual-viewport changes, so browser chrome and the on-screen keyboard do not
+silently leave Godot using stale layout dimensions.
 This is not a claim of screen-reader certification or visual acceptance. Those
 checks still require display-enabled desktop and physical mobile environments.

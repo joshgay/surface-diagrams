@@ -16,7 +16,53 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: compact linked-view navigation for phones
+## Latest increment: dynamic mobile Web viewport contract
+
+Built from live fork head `d8e148a0e8387f721c02b90af955213f9affd0d7`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added a bounded `viewport.js` adapter for the exported Web application. It
+  follows `visualViewport` resize and scroll events plus window resize and
+  orientation changes, with deterministic fallback to the layout viewport.
+  Measurements are finite positive CSS pixels capped at 16,384 per dimension.
+- The shell now declares `viewport-fit=cover` and keyboard-driven content
+  resizing, places the Godot canvas in the current visual viewport, and applies
+  all four CSS safe-area insets. The adapter reports the canvas content box
+  after those insets, so display cutouts are not counted as usable Godot layout.
+- Godot's Web viewport synchronization now consumes that trusted content-box
+  record rather than raw `window.innerWidth` and `window.innerHeight`. Browser
+  chrome, rotation, and the on-screen keyboard can therefore move the compact
+  breakpoint and control layout without mutating mathematical records.
+- Adapter installation is idempotent, rejects missing host/canvas elements, and
+  keeps the viewport logic independent of imported JSON. The static build
+  requires both the HTML reference and nonempty adapter asset before publishing
+  output to its requested directory.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,011 Godot assertions**, including Web and phone controller
+  layouts, the deterministic demo, all bridge harnesses, the two-run bounded
+  benchmark, private portable-package scenarios, and the intentional failure
+  harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**. Four new viewport
+  tests cover safe-area content sizing, orientation/keyboard resizing, bounded
+  fallback, idempotent listeners, and the shell contract.
+- Static Web export rebuilt with a 234,512-byte PCK and the tested 2,784-byte
+  viewport adapter. The private portable Linux package passed outside the
+  checkout with 53 files and 147,298,395 bytes.
+
+No controller/test failure remains. This worker still has no X11 or Wayland
+display or compositor, and the available cloud browser does not expose WebGL 2.
+Rendered phone inspection, physical-device keyboard/orientation behavior,
+visible focus, and screen-reader acceptance remain pending.
+
+**Next specific task:** run the exported build and fixed capture plan on a real
+WebGL 2 phone and display, rotate portrait to landscape with the source field
+focused and keyboard open, record the resulting canvas/content dimensions, and
+repair the first observed resize, safe-area, focus, or touch defect.
+
+## Earlier increment: compact linked-view navigation for phones
 
 Built from live fork head `a783aa2d8cd58ebca68d66d76aea5eac7e22d2df`
 in an isolated worktree under the exclusive Studio lock.

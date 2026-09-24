@@ -64,6 +64,7 @@ def main():
              "--godot", args.godot,
              "--output", str(Path(directory) / "package")])
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
+    run(["node", "--test", str(PROJECT / "tests" / "viewport.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",
                    "res://tests/run_tests.gd", "--", "--self-test-failure"], expected=1)

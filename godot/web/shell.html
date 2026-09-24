@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>Surface Diagrams Studio</title>
   <style>
     html,body { margin:0; width:100%; height:100%; overflow:hidden; overscroll-behavior:none; background:#f3f6f2; font:16px/1.5 system-ui,sans-serif; color:#243e38; }
+    #studio-viewport { position:fixed; left:var(--studio-left,0); top:var(--studio-top,0); width:100vw; width:var(--studio-width,100vw); height:100vh; height:var(--studio-height,100dvh); padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0); box-sizing:border-box; overflow:hidden; }
     #canvas { display:block; width:100%; height:100%; touch-action:none; }
-    #loading { position:fixed; inset:0; display:grid; place-content:center; padding:24px; background:#f3f6f2; }
+    #loading { position:absolute; inset:0; display:grid; place-content:center; padding:calc(24px + env(safe-area-inset-top,0)) calc(24px + env(safe-area-inset-right,0)) calc(24px + env(safe-area-inset-bottom,0)) calc(24px + env(safe-area-inset-left,0)); background:#f3f6f2; }
     #loading[hidden] { display:none; }
     h1 { font-size:24px; margin:0 0 12px; }
     p { max-width:48ch; }
@@ -16,16 +17,20 @@
   $GODOT_HEAD_INCLUDE
 </head>
 <body>
-  <canvas id="canvas" tabindex="0" aria-label="Surface Diagrams Studio schematic editing canvas">Your browser must support WebAssembly and WebGL 2.</canvas>
-  <section id="loading" aria-live="polite">
-    <h1>Surface Diagrams Studio</h1>
-    <p id="load-status">Loading the Godot browser prototype. The compressed engine is approximately 10 MB.</p>
-    <p>Experimental point and label editing is opt-in. This prototype does not validate curve geometry or export publication figures.</p>
-    <a href="https://godotengine.org/license/" target="_blank" rel="noopener">Godot engine license</a>
-  </section>
+  <main id="studio-viewport">
+    <canvas id="canvas" tabindex="0" aria-label="Surface Diagrams Studio schematic editing canvas">Your browser must support WebAssembly and WebGL 2.</canvas>
+    <section id="loading" aria-live="polite">
+      <h1>Surface Diagrams Studio</h1>
+      <p id="load-status">Loading the Godot browser prototype. The compressed engine is approximately 10 MB.</p>
+      <p>Experimental point and label editing is opt-in. This prototype does not validate curve geometry or export publication figures.</p>
+      <a href="https://godotengine.org/license/" target="_blank" rel="noopener">Godot engine license</a>
+    </section>
+  </main>
   <script src="$GODOT_URL"></script>
   <script>
     const config = $GODOT_CONFIG;
+    const canvas = document.getElementById('canvas');
+    window.SurfaceStudioViewport.install(document.getElementById('studio-viewport'), canvas);
     const status = document.getElementById('load-status');
     let loaded = false;
     window.SurfaceStudioLoadStatus = {
@@ -36,7 +41,7 @@
       window.SurfaceStudioLoadStatus.fail('Required browser features: ' + missing.join(', '));
     } else {
       const engine = new Engine(config);
-      engine.startGame({canvas:document.getElementById('canvas'), virtualKeyboard:true}).then(() => {
+      engine.startGame({canvas, virtualKeyboard:true}).then(() => {
         loaded = true;
         document.getElementById('loading').hidden = true;
       }).catch(window.SurfaceStudioLoadStatus.fail);
