@@ -59,6 +59,10 @@ func _run() -> void:
 	_check(studio.document.to_json() == before_invalid_workspace and "invalid local browser recovery" in studio.status_label.text, "invalid origin-local recovery fails closed without mutating the open record")
 	studio._browser_local_workspace_written(["Persistent browser storage is unavailable."])
 	_check(studio.browser_unsaved_state and "download a complete workspace backup" in studio.status_label.text, "local storage failure keeps the unload warning and provides a portable-backup fallback")
+	studio.browser_unsaved_state = false
+	studio._browser_local_workspace_written(["Local recovery changed in another Studio tab."])
+	_check("existing local recovery was preserved" in studio.status_label.text, "a clean stale tab reports that it preserved a newer local recovery instead of claiming unsaved in-memory work")
+	studio._sync_browser_unload_guard()
 	studio._canvas_edit_commit("object", "p2", Vector2(99999, 0))
 	_check(studio.document.to_json() == after, "draft mode still rejects order/ellipse violation")
 	studio._browser_file_received(["{\"version\":999}", ""])

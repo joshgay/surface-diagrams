@@ -16,7 +16,60 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: bounded origin-local browser recovery
+## Latest increment: conflict-safe multi-tab browser recovery
+
+Built from live fork head `be530b689000fa356006656abf92fab744917c0c`
+in an isolated worktree under the exclusive Studio lock.
+
+- The origin-local recovery value now has a strict versioned storage envelope
+  with a monotone revision around the unchanged checksum-protected version-4
+  workspace text. Mathematical records and the portable workspace format remain
+  byte-for-byte independent of this browser concurrency metadata.
+- Save and clear use one IndexedDB read/write transaction to compare the tab's
+  last loaded revision with the current slot before mutation. A stale tab or a
+  tab that has not loaded an existing slot cannot overwrite or delete newer
+  recovered work. The newer slot remains intact and Studio directs the user to
+  reload and make a portable backup.
+- Initial direct-string browser slots migrate once as revision zero. The storage
+  envelope accepts only its exact format/version/field set, safe integer
+  revision, bounded text, and no extras. A corrupt envelope is retained until
+  the explicit invalid-recovery discard path removes it; arbitrary stored
+  objects never reach the Godot parser.
+- Conflict reporting distinguishes unsaved in-memory work from a clean stale tab.
+  The former keeps the unload warning and backup instruction; the latter says
+  that the existing local recovery was preserved.
+- The live public target remains
+  <https://surface-diagrams-studio.joshgay.chatgpt.site>. It is still the older
+  legacy publication without `studio-build.json`; this run did not deploy these
+  changes there.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- **1,132 headless Godot assertions**, including clean-versus-unsaved conflict
+  reporting, deterministic demo, two-run bounded benchmark, bridge harnesses,
+  intentional failure detection, and private portable Linux success/missing-
+  authority/missing-Python checks (53 files, 147,323,231 bytes).
+- **240 Python tests with 359 subtests**, **8 browser-editor tests**, and **34 Web
+  adapter tests**. The 13 file/storage cases cover two loaded tabs, an unopened
+  tab, stale save and clear rejection, exact reload, legacy migration, strict
+  corrupt-envelope rejection, and explicit corrupt-slot discard.
+- Static Web export succeeded with a 259,348-byte PCK. This is controller and
+  mocked IndexedDB evidence, not real multi-tab or visual acceptance.
+
+No regression failure remains. This worker still has no X11/Wayland display or
+WebGL 2 browser. Actual transaction behavior across live tabs, reload persistence,
+private-mode/quota behavior, eviction, visible recovery focus, Orca,
+keyboard-open rotation, and physical-phone acceptance remain pending. No Site
+deployment was performed.
+
+**Next specific task:** in an explicitly authorized foreground Site publication,
+deploy the exact clean candidate, require its `studio-build.json` to match the
+GitHub checkpoint and assets, then test two live tabs editing the same recovery
+across reload on desktop and phone WebGL 2 browsers, together with disabled
+storage, quota failure, portable download/restore, and keyboard-open rotation;
+repair the first observed defect.
+
+## Earlier increment: bounded origin-local browser recovery
 
 Built from live fork head `1bf6fdef471e1ab5e99e5d9b210e4ecc01398588`
 in an isolated worktree under the exclusive Studio lock.

@@ -53,7 +53,7 @@ function storageHarness() {
 
 function harness(withStorage = false) {
   const elements = [], blobs = [], revoked = [], timers = [], rootListeners = {};
-  const storage = withStorage ? storageHarness() : null;
+  const storage = withStorage === true ? storageHarness() : withStorage || null;
   const context = {
     TextDecoder, Blob,
     addEventListener(event, callback) { rootListeners[event] = callback; },
@@ -185,5 +185,43 @@ test('local recovery fails closed when persistent storage is unavailable or inva
   const invalid = await new Promise(resolve =>
     h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
   assert.equal(invalid[0], '');
-  assert.match(invalid[1], /invalid type/);
+  assert.match(invalid[1], /invalid.*envelope/);
+});
+test('stale tabs cannot overwrite or clear a newer local recovery revision', async () => {
+  const storage = storageHarness();
+  const first = harness(storage), second = harness(storage);
+  const load = api => new Promise(resolve =>
+    api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  assert.deepEqual(await load(first.api), ['', '']);
+  assert.deepEqual(await load(second.api), ['', '']);
+  assert.equal(await new Promise(resolve =>
+    first.api.saveLocalWorkspace('{"tab":1}', resolve)), '');
+  const unopened = harness(storage);
+  assert.match(await new Promise(resolve =>
+    unopened.api.saveLocalWorkspace('{"unseen":true}', resolve)), /another Studio tab/);
+  assert.match(await new Promise(resolve =>
+    second.api.saveLocalWorkspace('{"tab":2}', resolve)), /another Studio tab/);
+  assert.match(await new Promise(resolve =>
+    second.api.clearLocalWorkspace(resolve)), /another Studio tab/);
+  assert.deepEqual(await load(second.api), ['{"tab":1}', '']);
+  assert.equal(await new Promise(resolve =>
+    second.api.saveLocalWorkspace('{"tab":2}', resolve)), '');
+  assert.deepEqual(await load(first.api), ['{"tab":2}', '']);
+});
+test('legacy text migrates once and invalid envelopes require explicit discard', async () => {
+  const storage = storageHarness();
+  storage.records.set('current', '{"legacy":true}');
+  const h = harness(storage);
+  const loaded = await new Promise(resolve =>
+    h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  assert.deepEqual(loaded, ['{"legacy":true}', '']);
+  assert.equal(await new Promise(resolve =>
+    h.api.saveLocalWorkspace('{"migrated":true}', resolve)), '');
+  assert.equal(storage.records.get('current').revision, 1);
+  storage.records.set('current', {unexpected: true});
+  assert.match(await new Promise(resolve =>
+    h.api.clearLocalWorkspace(resolve)), /invalid.*envelope/);
+  assert.equal(await new Promise(resolve =>
+    h.api.clearLocalWorkspace(resolve, true)), '');
+  assert.equal(storage.records.has('current'), false);
 });

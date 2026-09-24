@@ -834,6 +834,8 @@ func _browser_local_workspace_received(arguments: Array) -> void:
 	var error := str(arguments[1])
 	if not error.is_empty():
 		recovery_error = error
+		if error.begins_with("The local browser recovery slot is invalid:"):
+			_clear_browser_local_recovery(true)
 		_show_edit_error(error + " The initial fixture remains open; use a downloaded workspace backup if available.")
 		return
 	if source.is_empty():
@@ -856,14 +858,17 @@ func _browser_local_workspace_written(arguments: Array) -> void:
 	if error == recovery_error:
 		return
 	recovery_error = error
-	_show_edit_error(error + " Unsaved work remains in memory; download a complete workspace backup before leaving.")
+	if browser_unsaved_state:
+		_show_edit_error(error + " Unsaved work remains in memory; download a complete workspace backup before leaving.")
+	else:
+		_show_edit_error(error + " The existing local recovery was preserved; reload to review it before clearing or replacing it.")
 
-func _clear_browser_local_recovery() -> void:
+func _clear_browser_local_recovery(discard_invalid := false) -> void:
 	if not browser_mode or not OS.has_feature("web"):
 		return
 	var files = JavaScriptBridge.get_interface("SurfaceStudioFiles")
 	if files != null:
-		files.clearLocalWorkspace(local_recovery_write_callback)
+		files.clearLocalWorkspace(local_recovery_write_callback, discard_invalid)
 
 func _present_document(value: DiagramDocument, reset_camera: bool,
 		selection: Dictionary = {}, rendered: Dictionary = {}) -> void:

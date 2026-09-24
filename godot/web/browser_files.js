@@ -7,8 +7,13 @@
   const DATABASE_VERSION = 1;
   const RECOVERY_STORE = 'workspace-recovery';
   const RECOVERY_KEY = 'current';
+  const SLOT_FORMAT = 'surface-diagrams-studio-browser-recovery-slot';
+  const SLOT_VERSION = 1;
+  const CONFLICT_ERROR = 'Local recovery changed in another Studio tab. ' +
+    'Reload before replacing it, and download a complete workspace backup first.';
   let busy = false;
   let unsaved = false;
+  let localRevision = null;
   root.addEventListener('beforeunload', (event) => {
     if (!unsaved) return;
     event.preventDefault();
@@ -130,6 +135,30 @@
   function workspaceBytes(text) {
     return new Blob([text], { type: 'application/json;charset=utf-8' }).size;
   }
+  function storedWorkspace(value) {
+    if (value === undefined) {
+      return { ok: true, found: false, revision: 0, text: '', error: '' };
+    }
+    // The initial implementation stored the strict workspace text directly.
+    // Treat it as revision zero so a tested candidate can migrate in place.
+    if (typeof value === 'string') {
+      if (workspaceBytes(value) > MAX_WORKSPACE_BYTES) return {
+        ok: false, error: 'The local browser recovery slot is invalid: workspace exceeds 32 MiB.'};
+      return { ok: true, found: true, revision: 0, text: value, error: '' };
+    }
+    if (!value || typeof value !== 'object' || Array.isArray(value) ||
+        Object.keys(value).sort().join(',') !== 'format,revision,text,version' ||
+        value.format !== SLOT_FORMAT || value.version !== SLOT_VERSION ||
+        !Number.isSafeInteger(value.revision) || value.revision < 1 ||
+        typeof value.text !== 'string') {
+      return { ok: false,
+        error: 'The local browser recovery slot is invalid: unknown envelope.' };
+    }
+    if (workspaceBytes(value.text) > MAX_WORKSPACE_BYTES) return {
+      ok: false, error: 'The local browser recovery slot is invalid: workspace exceeds 32 MiB.'};
+    return { ok: true, found: true, revision: value.revision,
+      text: value.text, error: '' };
+  }
   root.SurfaceStudioFiles = Object.freeze({
     setUnsaved(value) {
       unsaved = value === true;
@@ -154,10 +183,29 @@
       }
       openRecoveryStore('readwrite', (value, error) => callback(error || ''),
         (store, finish) => {
-          const request = store.put(text, RECOVERY_KEY);
-          request.onerror = () => finish(null,
-            'Could not save the local browser recovery.');
-          request.onsuccess = () => finish(null, '');
+          const read = store.get(RECOVERY_KEY);
+          read.onerror = () => finish(null,
+            'Could not read the current local browser recovery before saving.');
+          read.onsuccess = () => {
+            const current = storedWorkspace(read.result);
+            if (!current.ok) return finish(null, current.error);
+            if (localRevision === null && current.found) {
+              return finish(null, CONFLICT_ERROR);
+            }
+            const expected = localRevision === null ? 0 : localRevision;
+            if (current.revision !== expected) return finish(null, CONFLICT_ERROR);
+            if (expected >= Number.MAX_SAFE_INTEGER) return finish(null,
+              'Local browser recovery revision limit reached. Download a complete workspace backup.');
+            const nextRevision = expected + 1;
+            const request = store.put({format: SLOT_FORMAT, version: SLOT_VERSION,
+              revision: nextRevision, text}, RECOVERY_KEY);
+            request.onerror = () => finish(null,
+              'Could not save the local browser recovery.');
+            request.onsuccess = () => {
+              localRevision = nextRevision;
+              finish(null, '');
+            };
+          };
         });
     },
     loadLocalWorkspace(callback) {
@@ -168,23 +216,36 @@
           request.onerror = () => finish(null,
             'Could not read the local browser recovery.');
           request.onsuccess = () => {
-            const value = request.result;
-            if (value === undefined) return finish('', '');
-            if (typeof value !== 'string') return finish(null,
-              'The local browser recovery has an invalid type.');
-            if (workspaceBytes(value) > MAX_WORKSPACE_BYTES) return finish(null,
-              'The local browser recovery exceeds 32 MiB.');
-            finish(value, '');
+            const current = storedWorkspace(request.result);
+            if (!current.ok) return finish(null, current.error);
+            localRevision = current.revision;
+            finish(current.text, '');
           };
         });
     },
-    clearLocalWorkspace(callback) {
+    clearLocalWorkspace(callback, discardInvalid) {
       openRecoveryStore('readwrite', (value, error) => callback(error || ''),
         (store, finish) => {
-          const request = store.delete(RECOVERY_KEY);
-          request.onerror = () => finish(null,
-            'Could not clear the local browser recovery.');
-          request.onsuccess = () => finish(null, '');
+          const read = store.get(RECOVERY_KEY);
+          read.onerror = () => finish(null,
+            'Could not read the current local browser recovery before clearing.');
+          read.onsuccess = () => {
+            const current = storedWorkspace(read.result);
+            if (!current.ok && discardInvalid !== true) {
+              return finish(null, current.error);
+            }
+            if (current.ok && current.found && (localRevision === null ||
+                current.revision !== localRevision)) {
+              return finish(null, CONFLICT_ERROR);
+            }
+            const request = store.delete(RECOVERY_KEY);
+            request.onerror = () => finish(null,
+              'Could not clear the local browser recovery.');
+            request.onsuccess = () => {
+              localRevision = 0;
+              finish(null, '');
+            };
+          };
         });
     }
   });
