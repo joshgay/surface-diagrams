@@ -43,6 +43,17 @@ static func parse(text: String) -> Dictionary:
 		return normalized
 	return {"ok": true, "document": DiagramDocument.new(normalized.data), "error": ""}
 
+# Local edit candidates are dictionaries copied from an already accepted,
+# bounded document. They cannot contain duplicate JSON fields, but every field
+# and sibling record still passes the same complete schema normalizer. Imported
+# and recovered text must continue through parse(), including its byte bound,
+# JSON parser, and duplicate-field scan.
+static func _from_edit_candidate(candidate: Dictionary) -> Dictionary:
+	var normalized := _normalize(candidate)
+	if not normalized.ok:
+		return normalized
+	return {"ok": true, "document": DiagramDocument.new(normalized.data), "error": ""}
+
 static func load_path(path: String) -> Dictionary:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
@@ -75,7 +86,7 @@ func with_object_x(id: String, x: float) -> Dictionary:
 			if is_equal_approx(candidate.surface.objects[index].x, x):
 				return _failure("Object %s has not moved" % id)
 			candidate.surface.objects[index].x = x
-			return DiagramDocument.parse(JSON.stringify(candidate))
+			return _from_edit_candidate(candidate)
 	return _failure("Unknown object ID: " + id)
 
 func with_label_position(id: String, position: Vector2) -> Dictionary:
@@ -88,7 +99,7 @@ func with_label_position(id: String, position: Vector2) -> Dictionary:
 				return _failure("Label %s has not moved" % id)
 			candidate.labels[index].x = position.x
 			candidate.labels[index].y = position.y
-			return DiagramDocument.parse(JSON.stringify(candidate))
+			return _from_edit_candidate(candidate)
 	return _failure("Unknown label ID: " + id)
 
 func with_curve_cuts(id: String, cuts: Array) -> Dictionary:
@@ -100,7 +111,7 @@ func with_curve_cuts(id: String, cuts: Array) -> Dictionary:
 			if candidate.curves[index].cuts == cuts:
 				return _failure("Curve %s already has that exact cut itinerary" % id)
 			candidate.curves[index].cuts = cuts.duplicate(true)
-			return DiagramDocument.parse(JSON.stringify(candidate))
+			return _from_edit_candidate(candidate)
 	return _failure("Unknown curve ID: " + id)
 
 func with_added_curve(curve: Dictionary) -> Dictionary:
@@ -110,10 +121,10 @@ func with_added_curve(curve: Dictionary) -> Dictionary:
 		return _failure("New curve must be an exact record object")
 	var candidate := to_dict()
 	candidate.curves.append(curve.duplicate(true))
-	# Strict parsing is the sole record gate. It checks the new stable ID,
-	# literal endpoints/orientation/cuts, curve limit, and every sibling record.
+	# Complete schema normalization checks the new stable ID, literal
+	# endpoints/orientation/cuts, curve limit, and every sibling record.
 	# Appending intentionally preserves the supplied curve order.
-	return DiagramDocument.parse(JSON.stringify(candidate))
+	return _from_edit_candidate(candidate)
 
 func with_braid_word_edit(action: String, index: int, generator: int = 0) -> Dictionary:
 	if _data.kind != "braid":
@@ -137,7 +148,7 @@ func with_braid_word_edit(action: String, index: int, generator: int = 0) -> Dic
 				return _failure("Crossing already has that generator")
 			word[index] = generator
 		"delete": word.remove_at(index)
-	return DiagramDocument.parse(JSON.stringify(candidate))
+	return _from_edit_candidate(candidate)
 
 func with_object_order(ids: Array) -> Dictionary:
 	if _data.kind != "planar":
@@ -166,7 +177,7 @@ func with_object_order(ids: Array) -> Dictionary:
 		object.x = objects[index].x
 		reordered.append(object)
 	candidate.surface.objects = reordered
-	return DiagramDocument.parse(JSON.stringify(candidate))
+	return _from_edit_candidate(candidate)
 
 func summary_rows() -> Array[String]:
 	var rows: Array[String] = []

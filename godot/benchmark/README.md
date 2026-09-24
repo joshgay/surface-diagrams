@@ -33,5 +33,10 @@ Their sum is the recorded total for each sample, allowing changes to record
 construction and history navigation to be distinguished without changing the
 fixed workload.
 
+The committed receipts intentionally retain successive measurements of the
+same workload. This makes history-cache and normalized-edit changes comparable
+while deterministic fixture and result hashes guard against measuring different
+records or outcomes.
+
 The benchmark requires the same trusted local Python geometry authority as the
 desktop application. It is excluded from Web and portable application packs.

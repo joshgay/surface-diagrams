@@ -61,3 +61,26 @@ that strict construction and validation of new maximum-size records now
 dominates history cost. The cache does not relax import, recovery, or mutation
 checks; if serialized command text changes, Studio discards the cached target
 and parses the changed text through the original rejection path.
+
+## Normalized edit candidate comparison
+
+Local edits begin with a defensive dictionary copy of an accepted immutable
+document. The edit path now sends that dictionary directly through the complete
+schema normalizer instead of first serializing it, reparsing the JSON, and
+scanning the generated text for duplicate fields. Imported files and serialized
+recovery records still use the full bounded text parser. Valid and rejected
+candidate tests require the internal path to produce the same normalized record
+or exact schema error as that parser.
+
+The [follow-up receipt](benchmark/receipts/linux-headless-2026-09-24-edit-candidate.json)
+uses the same workload and integrity outputs:
+
+| Maximum-record history workload | Parsed snapshots | Normalized candidates | Change |
+| --- | ---: | ---: | ---: |
+| 100 edits + 100 undos + 100 redos | 2,026.430 ms | 652.606 ms | -67.8% |
+| 100 new edits | 1,829.615 ms | 482.105 ms | -73.6% |
+
+The full workload is 83.7% below the original 4,007.524 ms baseline. Cached
+undo and redo remain in the sub-millisecond-per-action range; their smaller
+differences between receipts are normal host timing variation. These observations
+do not change any correctness claim or timing threshold.

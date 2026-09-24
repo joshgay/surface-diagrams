@@ -75,6 +75,38 @@ func _run_tests() -> void:
 		_expect(round_trip.document.data == planar.data, "round trip is lossless")
 		var camera_state := {"zoom": 2.0, "pan": Vector2(30, -10)}
 		_expect(round_trip.document.data == planar.data and camera_state.zoom == 2.0, "camera state is separate")
+	var edit_candidates: Array[Dictionary] = []
+	var label_candidate := planar.to_dict()
+	label_candidate.labels[0].x = -111.25
+	edit_candidates.append(label_candidate)
+	var object_candidate := planar.to_dict()
+	object_candidate.surface.objects[1].x = -25.5
+	edit_candidates.append(object_candidate)
+	var curve_candidate := multi.to_dict()
+	curve_candidate.curves[1].cuts = [0, 6]
+	edit_candidates.append(curve_candidate)
+	var braid_candidate := braid.to_dict()
+	braid_candidate.braid.word.insert(2, -2)
+	edit_candidates.append(braid_candidate)
+	for candidate in edit_candidates:
+		var internal_candidate := DiagramDocument._from_edit_candidate(candidate)
+		var text_candidate := DiagramDocument.parse(JSON.stringify(candidate))
+		_expect(internal_candidate.ok and text_candidate.ok and internal_candidate.document.to_json() == text_candidate.document.to_json(), "bounded edit candidate normalizes identically to the full text parser")
+	var rejected_candidates: Array[Dictionary] = []
+	var candidate_unknown := planar.to_dict(); candidate_unknown.future_field = true
+	rejected_candidates.append(candidate_unknown)
+	var candidate_duplicate := planar.to_dict(); candidate_duplicate.surface.objects[1].id = "p1"
+	rejected_candidates.append(candidate_duplicate)
+	var candidate_cuts := multi.to_dict(); candidate_cuts.curves[1].cuts = [0, 0]
+	rejected_candidates.append(candidate_cuts)
+	var candidate_generator := braid.to_dict(); candidate_generator.braid.word = [6]
+	rejected_candidates.append(candidate_generator)
+	var candidate_style := planar.to_dict(); candidate_style.style.curve_color = "magenta"
+	rejected_candidates.append(candidate_style)
+	for candidate in rejected_candidates:
+		var internal_rejection := DiagramDocument._from_edit_candidate(candidate)
+		var text_rejection := DiagramDocument.parse(JSON.stringify(candidate))
+		_expect(not internal_rejection.ok and not text_rejection.ok and internal_rejection.error == text_rejection.error, "bounded edit candidate rejects with the same schema error as the full text parser")
 	var save_path := "user://round-trip.json"
 	_expect(planar.save_path(save_path).is_empty(), "save succeeds")
 	var reopened := DiagramDocument.load_path(save_path)

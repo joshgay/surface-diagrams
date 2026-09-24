@@ -16,7 +16,53 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: parsed history snapshot cache
+## Latest increment: normalized local edit candidates
+
+Built from live fork head `54f62d7d789c4c60a65cc5ab774fb8653d03b9ff`
+in an isolated worktree under the exclusive Studio lock.
+
+- Local edit methods now send defensive dictionary copies directly through the
+  complete version-1 schema normalizer. They no longer serialize those trusted
+  copies to JSON, parse them back, or scan generated text for duplicate fields
+  before normalization.
+- Imported files, browser uploads, saved workspaces, and recovery command text
+  still use the full 256 KiB text parser with JSON syntax and duplicate-field
+  checks. The optimized path is internal to dictionaries derived from an
+  already accepted immutable document.
+- Added parity coverage for representative label, planar-object, curve, and
+  signed-braid candidates. Unknown fields, duplicate stable IDs, nonminimal cut
+  itineraries, invalid braid generators, and invalid colors must produce the
+  exact same schema error through both paths.
+- The fixed benchmark retained identical fixture and output hashes. Its committed
+  receipt reduced the combined 100-edit, 100-undo, 100-redo median from 2.026
+  seconds to 0.653 seconds, another 67.8 percent. The maximum-record edit phase
+  fell from 18.296 ms to 4.821 ms per edit. The complete workload is 83.7 percent
+  below the original 4.008-second baseline. Timings remain observations, not a
+  correctness gate.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **849 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark, portable-package scenarios,
+  and intentional failure-harness check. Its independent benchmark repetition
+  observed a 0.878-second combined history median and reproduced the same
+  integrity profile.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Static Web export rebuilt successfully. Pack inspection confirmed that
+  benchmark implementation and receipts remain excluded. No Site deployment,
+  download publication, or release occurred.
+
+No controller/test failure remains. This optimization does not resolve the
+existing display-enabled desktop, mobile, WebGL, visible-focus, or screen-reader
+review gaps.
+
+**Next specific task:** cache each immutable `DiagramDocument`'s canonical JSON
+text at construction so history commands and equality checks do not repeatedly
+serialize unchanged records, while proving save, recovery, publication, and
+checksum outputs remain byte-identical.
+
+## Earlier increment: parsed history snapshot cache
 
 Built from live fork head `2c325f955b9d6bec3f64f08809c1fb99bcb8797d`
 in an isolated worktree under the exclusive Studio lock.
