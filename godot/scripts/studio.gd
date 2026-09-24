@@ -49,6 +49,12 @@ var compact_layout := false
 var showing_records := false
 var move_button: CheckButton
 var source_button: Button
+var find_button: Button
+var find_dialog: ConfirmationDialog
+var find_body: VBoxContainer
+var find_input: LineEdit
+var find_results: ItemList
+var find_status: Label
 var factor_view: FactorWorkspaceView
 var surface_view: SurfaceWorkspaceView
 var walkthrough_view: WalkthroughView
@@ -141,6 +147,13 @@ func _build_interface() -> void:
 		button.text = spec[0]
 		button.pressed.connect(spec[1])
 		file_tools.add_child(button)
+	find_button = Button.new()
+	find_button.text = "Find record"
+	find_button.tooltip_text = "Find a persistent ID or visible record label (Ctrl/Cmd+F)"
+	find_button.pressed.connect(_show_record_find)
+	find_button.set_accessibility_name("Find mathematical record")
+	find_button.set_accessibility_description("Opens bounded view-only search over persistent IDs and visible record labels in exact inspector order.")
+	file_tools.add_child(find_button)
 	if browser_mode:
 		browser_drafts = CheckButton.new()
 		browser_drafts.text = "Edit unvalidated drafts"
@@ -347,6 +360,38 @@ func _build_interface() -> void:
 	add_child(reindex_dialog)
 	_configure_dialog_button(reindex_dialog.get_ok_button(), "Apply validated row reindex", "Applies the exact slot, endpoint attachment, and cut corridor changes listed in the preview as one command.")
 	_configure_dialog_button(reindex_dialog.get_cancel_button(), "Cancel row reindex", "Non-destructive default. Preserves the accepted row, history, recovery, and drafts.")
+	find_dialog = ConfirmationDialog.new()
+	find_dialog.title = "Find mathematical record"
+	find_dialog.ok_button_text = "Select record"
+	find_dialog.get_cancel_button().text = "Cancel"
+	find_dialog.confirmed.connect(_accept_record_find)
+	find_dialog.canceled.connect(_cancel_record_find)
+	find_body = VBoxContainer.new()
+	find_input = LineEdit.new()
+	find_input.placeholder_text = "Persistent ID or visible label"
+	find_input.max_length = RecordLocator.MAX_QUERY_LENGTH + 1
+	find_input.text_changed.connect(_refresh_record_find)
+	find_input.set_accessibility_name("Record search query")
+	find_input.set_accessibility_description("Case-insensitive bounded search. Space-separated terms must all match a persistent ID, record kind, position, or visible label.")
+	find_body.add_child(find_input)
+	find_status = Label.new()
+	find_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	find_status.set_accessibility_name("Record search status")
+	find_status.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
+	find_body.add_child(find_status)
+	find_results = ItemList.new()
+	find_results.custom_minimum_size.y = 260
+	find_results.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	find_results.item_selected.connect(_record_find_highlighted)
+	find_results.item_activated.connect(_record_find_activated)
+	find_results.set_accessibility_name("Matching mathematical records")
+	find_results.set_accessibility_description("View-only matches in exact inspector order. Activate a row or use Select record to synchronize the diagram and inspector selection.")
+	find_body.add_child(find_results)
+	find_dialog.add_child(find_body)
+	add_child(find_dialog)
+	_configure_dialog_button(find_dialog.get_ok_button(), "Select matching mathematical record", "Changes synchronized view selection only; mathematical JSON, history, and drafts remain unchanged.")
+	_configure_dialog_button(find_dialog.get_cancel_button(), "Cancel record search", "Closes search and restores the exact control that opened it.")
+	_set_control_relation(find_input, find_results)
 	_make_touch_targets(root)
 
 func _make_touch_targets(node: Node) -> void:
@@ -358,6 +403,81 @@ func _make_touch_targets(node: Node) -> void:
 func _configure_dialog_button(button: Button, accessible_name: String, description: String) -> void:
 	button.set_accessibility_name(accessible_name)
 	button.set_accessibility_description(description)
+
+func _show_record_find() -> void:
+	if document == null or find_dialog.visible:
+		return
+	find_input.text = ""
+	_refresh_record_find("")
+	var dialog_size := _fit_record_find(get_tree().root.size)
+	_popup_fitted(find_dialog, dialog_size, find_input)
+
+func _fit_record_find(logical_size: Vector2i) -> Vector2i:
+	var dialog_size := Vector2i(clampi(logical_size.x - 24, 1, 620), clampi(logical_size.y - 24, 1, 500))
+	find_body.custom_minimum_size = Vector2(maxi(1, dialog_size.x - 48), maxi(1, dialog_size.y - 140))
+	find_results.custom_minimum_size.y = maxi(44, int(find_body.custom_minimum_size.y) - 100)
+	if find_dialog.visible:
+		find_dialog.size = dialog_size
+		find_dialog.position = (logical_size - dialog_size) / 2
+	return dialog_size
+
+func _refresh_record_find(query: String) -> void:
+	find_results.clear()
+	var found := RecordLocator.find(document.inspector_records(), query)
+	if not found.ok:
+		find_status.text = found.error
+		find_status.add_theme_color_override("font_color", Color("#a54439"))
+		find_dialog.get_ok_button().disabled = true
+		return
+	for result in found.results:
+		find_results.add_item(result.display)
+		find_results.set_item_metadata(find_results.item_count - 1, result)
+	find_dialog.get_ok_button().disabled = find_results.item_count == 0
+	if find_results.item_count == 0:
+		find_status.text = "No record matches. The current synchronized selection is unchanged."
+		find_status.add_theme_color_override("font_color", Color("#a54439"))
+	else:
+		find_results.select(0)
+		_record_find_highlighted(0)
+
+func _record_find_highlighted(index: int) -> void:
+	if index < 0 or index >= find_results.item_count:
+		return
+	var result: Dictionary = find_results.get_item_metadata(index)
+	var record: Dictionary = result.record
+	var identity := str(record.get("id", ""))
+	if identity.is_empty():
+		identity = "position %d" % (int(record.get("index", -1)) + 1)
+	var summary := "Exact persistent ID match." if result.get("exact_id", false) else "%d match%s in exact inspector order." % [find_results.item_count, "" if find_results.item_count == 1 else "es"]
+	find_status.text = "%s Ready to select %s %s." % [summary, record.get("kind", "record"), identity]
+	find_status.add_theme_color_override("font_color", Color("#415b55"))
+
+func _record_find_activated(index: int) -> void:
+	if index < 0 or index >= find_results.item_count:
+		return
+	find_results.select(index)
+	_accept_record_find()
+
+func _accept_record_find() -> void:
+	var selected := find_results.get_selected_items()
+	if selected.is_empty():
+		return
+	var result: Dictionary = find_results.get_item_metadata(selected[0])
+	var row := int(result.get("row", -1))
+	if row < 0 or row >= record_list.item_count:
+		return
+	find_dialog.hide()
+	_release_modal_focus()
+	if compact_layout:
+		_show_mobile_panel(true)
+	record_list.select(row)
+	_select_record(row)
+	record_list.ensure_current_is_visible()
+	record_list.grab_focus()
+
+func _cancel_record_find() -> void:
+	find_dialog.hide()
+	_restore_modal_focus(record_list)
 
 func _set_control_relation(controller: Control, target: Control) -> void:
 	var paths: Array[NodePath] = [controller.get_path_to(target)]
@@ -391,6 +511,8 @@ func _sync_viewport() -> void:
 	camera_note.text = "Drag to pan. Pinch or +/- to zoom. Keyboard: arrows pan, +/- zoom, Home fits, brackets select records." if compact_layout else "Touch: drag to pan, pinch to zoom. Mouse: left drag to edit, wheel to zoom, middle drag to pan. Keyboard: arrows pan, +/- zoom, Home fits, brackets select records."
 	geometry_label.visible = not compact_layout
 	reindex_preview.custom_minimum_size = Vector2(minf(720, logical_size.x - 56), minf(340, logical_size.y * 0.35))
+	if find_dialog != null:
+		_fit_record_find(logical_size)
 	canvas.cancel_touch_gesture()
 	call_deferred("_ensure_editor_focus_visible")
 
@@ -470,6 +592,15 @@ func _popup_fitted(dialog: Window, desired: Vector2i, preferred_focus: Control =
 	call_deferred("_focus_modal", dialog, preferred_focus)
 
 func _focus_modal(dialog: Window, preferred_focus: Control) -> void:
+	if active_modal != dialog or not dialog.visible:
+		return
+	if preferred_focus != null and is_instance_valid(preferred_focus) and preferred_focus.is_visible_in_tree():
+		preferred_focus.grab_focus()
+	# Native dialogs can assign their default button after the first layout pass.
+	# Reassert the explicit safe/query entry point on the following idle turn.
+	call_deferred("_focus_modal_after_layout", dialog, preferred_focus)
+
+func _focus_modal_after_layout(dialog: Window, preferred_focus: Control) -> void:
 	if active_modal != dialog or not dialog.visible:
 		return
 	if preferred_focus != null and is_instance_valid(preferred_focus) and preferred_focus.is_visible_in_tree():
@@ -1057,6 +1188,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif command and key_event.keycode == KEY_S:
 		_show_save()
+		get_viewport().set_input_as_handled()
+	elif command and key_event.keycode == KEY_F:
+		_show_record_find()
 		get_viewport().set_input_as_handled()
 	elif command and key_event.keycode == KEY_1:
 		_show_factor_workspace()

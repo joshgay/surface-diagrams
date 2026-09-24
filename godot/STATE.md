@@ -16,7 +16,52 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: deterministic destructive-dialog focus
+## Latest increment: bounded persistent-record search
+
+Built from live fork head `b47c2a731302e78da79394c01d70ef7128821951`
+in an isolated worktree under the exclusive Studio lock.
+
+- The editor now provides Find record and Ctrl/Cmd+F. Search covers persistent
+  IDs, record kinds, literal positions, and visible labels without changing
+  supplied inspector order. Exact persistent-ID matches are identified
+  explicitly.
+- Search is bounded to 80 query characters and 192 source rows. Multiple terms
+  must all match one row; invalid and unmatched queries disable selection and
+  leave the current synchronized selection unchanged.
+- Selecting a result synchronizes the inspector, 2D canvas, and relevant edit
+  controls as view state only. Accepted JSON, undo/redo history, cameras,
+  playback, and unapplied drafts remain unchanged.
+- The dialog has explicit names, polite result status, deterministic query
+  focus, cancel restoration, and compact-screen behavior that reveals the
+  selected Records pane instead of leaving the match hidden.
+- A new 27-assertion contract covers exact IDs, labels, multi-term filtering,
+  signed braid positions without IDs, hard bounds, keyboard entry, focus,
+  drafts, portrait-to-landscape refitting, compact layout, and byte-identical
+  planar and braid records.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,116 Godot assertions**, including **27 new record-find
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt with a 250,556-byte PCK. The private portable Linux
+  package passed outside the checkout with 53 files and 147,314,439 bytes.
+
+No controller/test failure remains. This worker still has no X11 or Wayland
+display or compositor, and the available cloud browser does not expose WebGL 2.
+Rendered finder layout, visible focus, Orca announcements, physical-phone
+target sizing, and keyboard occlusion therefore remain unaccepted.
+
+**Next specific task:** run the fixed visual-review workflow plus persistent-ID
+search on a real X11 or Wayland desktop with Orca, then on a WebGL 2 phone;
+inspect the search dialog at desktop, portrait, and landscape sizes and repair
+the first concrete focus, announcement, clipping, target-size, or keyboard
+occlusion defect observed.
+
+## Earlier increment: deterministic destructive-dialog focus
 
 Built from live fork head `26b9a0d8416642040a2973fd0c4557496a50dc48`
 in an isolated worktree under the exclusive Studio lock.

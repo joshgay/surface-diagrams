@@ -65,6 +65,13 @@ actions. These commands are view state and never edit mathematical JSON. See
 [ACCESSIBILITY.md](ACCESSIBILITY.md) for the exact shortcuts and current
 screen-reader/visual-acceptance limits.
 
+**Find record** or Ctrl/Cmd+F searches the current diagram by persistent ID,
+record kind, literal position, or visible label. Matching rows stay in exact
+inspector order. Selecting one synchronizes the view only; accepted JSON,
+history, camera/playback state, and unapplied drafts remain unchanged. The
+query and result source are bounded, and compact layouts reveal the selected
+Records pane instead of leaving the match hidden.
+
 At widths below 900 logical pixels, the factor, exploratory surface, and
 walkthrough workspaces expose touch-sized view switchers instead of stacking
 every 2D and 3D canvas into one long scroll. Switching support/state/braid,

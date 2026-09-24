@@ -21,6 +21,9 @@ are view metadata only; updating them does not alter mathematical records.
 - Arrow keys pan a focused diagram canvas.
 - `+` and `-` zoom; Home fits the diagram.
 - `[` and `]` select the previous or next record in exact inspector order.
+- Ctrl/Cmd+F opens bounded record search with focus in the query field. Search
+  is case-insensitive across persistent IDs, record kinds, literal positions,
+  and visible labels; results retain exact inspector order.
 - Ctrl/Cmd+O opens JSON and Ctrl/Cmd+S saves JSON.
 - Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, and Ctrl/Cmd+Y retain their existing exact
   undo/redo behavior.
@@ -42,6 +45,19 @@ are view metadata only; updating them does not alter mathematical records.
 - Form controls and literal cut/timeline actions have a minimum 44-pixel target.
   These semantics do not cause a draft to be accepted; the existing explicit
   validation and commit actions remain authoritative.
+
+## Record search
+
+- Search opens with every current inspector record in supplied order. Multiple
+  space-separated terms must all match the same row, and an exact persistent
+  ID remains distinguishable from a visible-label match.
+- Results are view-only until Select record or row activation. Acceptance
+  synchronizes the list, 2D canvas, and relevant inspector without changing
+  JSON, history, camera, playback, or unapplied drafts.
+- On compact screens, accepting a result reveals the Records pane and keeps the
+  selected row focused. Cancel restores the exact control that opened search.
+- Queries are limited to 80 characters and sources to 192 rows. An invalid or
+  unmatched query disables selection and leaves the prior selection unchanged.
 
 ## Confirmation dialogs
 
@@ -90,7 +106,7 @@ The aggregate also runs a dedicated semantic contract with Godot's dummy
 accessibility driver. It verifies live-region modes, controller relationships,
 form label/description relationships, touch targets, dynamic selected-record
 descriptions, rejected-draft behavior, deterministic dialog focus, and
-byte-identical records. The dummy
+bounded persistent-record search, and byte-identical records. The dummy
 driver does not substitute for a real operating-system accessibility bridge.
 The Web shell also reports the canvas content box after safe-area padding and
 visual-viewport changes, so browser chrome and the on-screen keyboard do not
