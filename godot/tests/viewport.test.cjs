@@ -77,5 +77,7 @@ test('shell declares dynamic viewport, safe areas, and the trusted adapter', () 
   assert.match(shell, /interactive-widget=resizes-content/);
   assert.match(shell, /env\(safe-area-inset-(top|left),/);
   assert.match(shell, /id="studio-viewport"/);
-  assert.match(shell, /SurfaceStudioViewport\.install/);
+  assert.match(shell, /SurfaceStudioStartup\.start/);
+  const startup = fs.readFileSync(path.join(__dirname, '../web/startup.js'), 'utf8');
+  assert.match(startup, /SurfaceStudioViewport\.install/);
 });

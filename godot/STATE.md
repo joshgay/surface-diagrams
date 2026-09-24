@@ -16,7 +16,57 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: exact recovery of unapplied new-curve drafts
+## Latest increment: browser startup diagnostics and build identity
+
+Built from live fork head `66844f38f1235ef0d4612077fe38369f0129c0a9`
+in an isolated worktree under the exclusive Studio lock.
+
+- The Web shell now reports missing engine scripts, unsupported WebGL and
+  compressed-engine prerequisites, synchronous startup failures, and rejected
+  downloads. Failures remain visible even if a late progress or success callback
+  arrives. A slow-start message still permits successful completion.
+- Startup has labeled download progress, a deliberate Reload Studio action after
+  failure, and a scrollable build report with copy/manual-selection fallback.
+  Status announcements, visible focus styles, and 44-pixel action targets are
+  present in the HTML shell; actual assistive-technology acceptance is pending.
+- Every Web export writes `studio-build.json` and embeds the same metadata in
+  the startup report: Git revision, explicit local-change flag, exact engine,
+  and SHA-256/byte counts for the application pack and compressed engine.
+  No timestamps or machine paths enter this metadata. Browser details are
+  copied only on request; no telemetry or automatic report upload was added.
+- The README now prominently explains that GitHub pushes and Site publications
+  are separate. The existing Site is
+  <https://surface-diagrams-studio.joshgay.chatgpt.site>; this run did not deploy
+  its changes there.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. The engine and templates were restored
+after workspace maintenance and matched both recorded official SHA-256 digests.
+Checks actually run and passed:
+
+- **1,138 Godot assertions**, deterministic demo, two-run bounded benchmark,
+  bridge harnesses, intentional failure detection, and private portable Linux
+  success/missing-authority/missing-Python checks (53 files, 147,319,167 bytes).
+- **235 Python tests with 359 subtests**, **8 browser-editor tests**, and
+  **27 Web adapter tests**, including 10 new startup scenarios and 3 new Python
+  build-identity tests. Initial external-recipe checks could not locate the
+  library in the fresh environment; rerunning with an absolute `PYTHONPATH`
+  resolved that setup failure without changing shared library code.
+- Static Web export succeeded with a 255,284-byte PCK. Its embedded build report
+  matched the manifest and both exact asset hashes; an uncommitted source build
+  was correctly labeled dirty. Generated JavaScript syntax was checked.
+
+No regression failure remains. There is no configured X11/Wayland display in
+this worker. These are controller, export, and mocked browser startup checks;
+actual WebGL rendering, phone layout, clipboard interaction, Orca, and keyboard
+occlusion acceptance were not performed.
+
+**Next specific task:** exercise the exported startup panel on a WebGL 2 browser
+at desktop and phone sizes, including a blocked engine download and a denied
+clipboard, then capture the loaded editor and repair the first observed defect.
+Keep a Site publication decision explicit; do not equate a branch push with an
+updated live Site.
+
+## Earlier increment: exact recovery of unapplied new-curve drafts
 
 Built from live fork head `a78ac4e221038e1c25c48d8a7157886e8094d4f0`
 in an isolated worktree under the exclusive Studio lock.

@@ -190,6 +190,9 @@ public Site; the Site source and each publication receipt remain separate.
 Josh authorized a ChatGPT Site proof of concept on 2026-09-14 and requested
 public access on 2026-09-23:
 <https://surface-diagrams-studio.joshgay.chatgpt.site>.
+The live Site is a separately published build. A branch push alone does not
+update it; development handoffs should include this link and state whether the
+reported changes have been deployed.
 
 This is the Godot application exported to WebAssembly, not the separate Python
 browser editor. It opens the two fixtures, inspects records, pans/zooms, imports
@@ -209,6 +212,18 @@ contracts are automated, but real browser startup, pointer/touch input, layout,
 and upload/download dialogs still need visual acceptance. There is no automatic
 browser persistence: explicitly download JSON before closing or opening another
 fixture. User diagrams are not uploaded to a server.
+
+New Web builds show the source revision and engine version during startup,
+check browser capabilities before downloading, and retain visible errors if a
+script or engine fails. Download progress remains indeterminate when the engine
+cannot report a total. A slow start stays recoverable, and reloading after a
+failure requires pressing Reload Studio. The expandable build report can be
+copied or manually selected when clipboard access is unavailable. It contains
+build, browser, viewport, and startup error details; nothing is sent automatically.
+The static `studio-build.json` beside `index.html` remains available after startup
+and records the source revision, local-change flag, exact engine, and pack and
+compressed-engine checksums. These identifiers help compare a deployed Site
+with a GitHub checkpoint; they do not certify browser or mathematical acceptance.
 
 With the pinned engine and matching templates installed:
 

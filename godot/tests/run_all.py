@@ -70,6 +70,7 @@ def main():
     run(["node", "--test", str(PROJECT / "tests" / "browser_files.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "viewport.test.cjs")])
     run(["node", "--test", str(PROJECT / "tests" / "wasm_loader.test.cjs")])
+    run(["node", "--test", str(PROJECT / "tests" / "startup.test.cjs")])
     failure = run([args.godot, "--headless", "--path", str(PROJECT), "--script",
                    "res://tests/run_tests.gd", "--", "--self-test-failure"], expected=1)
     if "intentional harness failure" not in failure:
@@ -79,6 +80,7 @@ def main():
     run([sys.executable, str(PROJECT / "tests" / "test_geometry_bridge.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_factor_workspace.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_run_all.py")])
+    run([sys.executable, str(PROJECT / "tests" / "test_web_build.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_walkthrough_bundle.py")])
     run([sys.executable, str(PROJECT / "visual_review" / "test_visual_review.py")])
 

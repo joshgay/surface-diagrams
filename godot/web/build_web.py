@@ -6,6 +6,7 @@ from a source checkout. Engine binaries/templates are separate dependencies.
 import argparse
 import gzip
 import hashlib
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -13,6 +14,20 @@ import tempfile
 
 PROJECT = Path(__file__).resolve().parents[1]
 VERSION = "4.7.2.stable.official.ed1daf0bf"
+
+
+def build_metadata(stage):
+    """No timestamps or machine paths: the same source/assets identify identically."""
+    revision = run(["git", "-C", str(PROJECT.parent), "rev-parse", "HEAD"])
+    dirty = bool(run(["git", "-C", str(PROJECT.parent), "status", "--porcelain",
+                      "--untracked-files=all", "--", "godot"]))
+    return {
+        "format": "surface-studio-web-build", "version": 1,
+        "revision": revision, "dirty": dirty, "engine": VERSION,
+        "assets": {name: {"bytes": (stage / name).stat().st_size,
+                           "sha256": hashlib.sha256((stage / name).read_bytes()).hexdigest()}
+                   for name in ["index.pck", "index.wasm.gz"]},
+    }
 
 
 def run(command):
@@ -41,7 +56,7 @@ def main():
         for adapter in ["browser_files.js", "viewport.js"]:
             shutil.copyfile(PROJECT / "web" / adapter, stage / adapter)
         html = (stage / "index.html").read_text()
-        for adapter in ["browser_files.js", "viewport.js"]:
+        for adapter in ["browser_files.js", "viewport.js", "startup.js"]:
             if f'src="{adapter}"' not in html:
                 raise SystemExit("Generated HTML does not load trusted adapter: " + adapter)
         for name in ["index.html", "index.js", "index.wasm", "index.pck", "browser_files.js", "viewport.js"]:
@@ -71,6 +86,12 @@ def main():
             raise SystemExit("Godot loader changed; review compression adapter before export")
         engine_path.write_text(engine.replace(original, replacement))
         wasm_path.unlink()
+        metadata = build_metadata(stage)
+        (stage / "studio-build.json").write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n")
+        startup = (PROJECT / "web" / "startup.js").read_text()
+        if startup.count("__STUDIO_BUILD__") != 1:
+            raise SystemExit("Startup build marker changed; review adapter before export")
+        (stage / "startup.js").write_text(startup.replace("__STUDIO_BUILD__", json.dumps(metadata, sort_keys=True)))
         # Drop only a prior uncompressed build product if the destination has it.
         (args.output / "index.wasm").unlink(missing_ok=True)
         args.output.mkdir(parents=True, exist_ok=True)

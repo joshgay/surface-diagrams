@@ -8,46 +8,48 @@
     html,body { margin:0; width:100%; height:100%; overflow:hidden; overscroll-behavior:none; background:#f3f6f2; font:16px/1.5 system-ui,sans-serif; color:#243e38; }
     #studio-viewport { position:fixed; left:var(--studio-left,0); top:var(--studio-top,0); width:100vw; width:var(--studio-width,100vw); height:100vh; height:var(--studio-height,100dvh); padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0); box-sizing:border-box; overflow:hidden; }
     #canvas { display:block; width:100%; height:100%; touch-action:none; }
-    #loading { position:absolute; inset:0; display:grid; place-content:center; padding:calc(24px + env(safe-area-inset-top,0)) calc(24px + env(safe-area-inset-right,0)) calc(24px + env(safe-area-inset-bottom,0)) calc(24px + env(safe-area-inset-left,0)); background:#f3f6f2; }
+    #loading { position:absolute; inset:0; overflow:auto; padding:calc(24px + env(safe-area-inset-top,0)) calc(24px + env(safe-area-inset-right,0)) calc(24px + env(safe-area-inset-bottom,0)) calc(24px + env(safe-area-inset-left,0)); background:#f3f6f2; }
     #loading[hidden] { display:none; }
     h1 { font-size:24px; margin:0 0 12px; }
     p { max-width:48ch; }
     a { color:#167464; }
+    button,summary { min-height:44px; font:inherit; cursor:pointer; }
+    button { padding:8px 14px; }
+    button:focus-visible,summary:focus-visible,textarea:focus-visible { outline:3px solid #006fff; outline-offset:2px; }
+    textarea { display:block; box-sizing:border-box; width:100%; max-width:70ch; height:12em; margin:12px 0; font:13px/1.5 monospace; }
+    #build-summary { overflow-wrap:anywhere; }
   </style>
   $GODOT_HEAD_INCLUDE
 </head>
 <body>
   <main id="studio-viewport">
     <canvas id="canvas" tabindex="0" aria-label="Surface Diagrams Studio schematic editing canvas">Your browser must support WebAssembly and WebGL 2.</canvas>
-    <section id="loading" aria-live="polite">
-      <h1>Surface Diagrams Studio</h1>
-      <p id="load-status">Loading the Godot browser prototype. The compressed engine is approximately 10 MB.</p>
+    <section id="loading" aria-labelledby="studio-title">
+      <h1 id="studio-title">Surface Diagrams Studio</h1>
+      <noscript><p>Studio requires JavaScript. Enable it in your browser to open the editor.</p></noscript>
+      <p id="load-status" role="status">Loading the Godot browser prototype. The compressed engine is approximately 10 MB.</p>
+      <progress id="load-progress" aria-label="Studio download progress"></progress>
+      <button id="retry-startup" type="button" hidden>Reload Studio</button>
       <p>Experimental point and label editing is opt-in. This prototype does not validate curve geometry or export publication figures.</p>
+      <p id="build-summary"></p>
+      <details id="report-details">
+        <summary>Build and browser report</summary>
+        <p>This report contains build and browser details. It contains no diagram data and is sent nowhere automatically.</p>
+        <textarea id="build-report" readonly aria-label="Build and browser report" spellcheck="false"></textarea>
+        <button id="copy-report" type="button">Copy report</button>
+        <p id="copy-status" role="status"></p>
+      </details>
       <a href="https://godotengine.org/license/" target="_blank" rel="noopener">Godot engine license</a>
     </section>
   </main>
   <script src="$GODOT_URL"></script>
   <script>
     const config = $GODOT_CONFIG;
-    const canvas = document.getElementById('canvas');
-    window.SurfaceStudioViewport.install(document.getElementById('studio-viewport'), canvas);
-    const status = document.getElementById('load-status');
-    let loaded = false;
-    window.SurfaceStudioLoadStatus = {
-      fail(error) { status.textContent = 'Could not start Studio: ' + (error.message || String(error)); }
-    };
-    const missing = Engine.getMissingFeatures({threads:false});
-    if (missing.length) {
-      window.SurfaceStudioLoadStatus.fail('Required browser features: ' + missing.join(', '));
+    if (window.SurfaceStudioStartup) {
+      window.SurfaceStudioStartup.start(config);
     } else {
-      const engine = new Engine(config);
-      engine.startGame({canvas, virtualKeyboard:true}).then(() => {
-        loaded = true;
-        document.getElementById('loading').hidden = true;
-      }).catch(window.SurfaceStudioLoadStatus.fail);
-      setTimeout(() => {
-        if (!loaded && status.textContent.startsWith('Loading')) status.textContent = 'Startup is taking longer than expected. If it does not finish, reload and report your browser and the visible error.';
-      }, 60000);
+      document.getElementById('load-status').textContent = 'The startup script did not load. Check your connection and reload this page.';
+      document.getElementById('load-progress').hidden = true;
     }
   </script>
 </body>
