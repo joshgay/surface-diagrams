@@ -23,7 +23,9 @@ var history := DiagramEditHistory.new()
 var candidate_geometry: Dictionary = {}
 var browser_mode := OS.has_feature("web")
 var browser_drafts: CheckButton
+var browser_file_menu: MenuButton
 var upload_callback: JavaScriptObject
+var recovery_upload_callback: JavaScriptObject
 var browser_unsaved_state := false
 var baseline_source := ""
 var pending_action: Callable
@@ -76,6 +78,7 @@ func _ready() -> void:
 	_sync_viewport()
 	if browser_mode and OS.has_feature("web"):
 		upload_callback = JavaScriptBridge.create_callback(_browser_file_received)
+		recovery_upload_callback = JavaScriptBridge.create_callback(_browser_workspace_received)
 	_open_result(DiagramDocument.load_path("res://fixtures/planar-v1.json"), "res://fixtures/planar-v1.json", false)
 	if not browser_mode:
 		_offer_recovery()
@@ -149,11 +152,25 @@ func _build_interface() -> void:
 	workspaces.get_popup().index_pressed.connect(func(index: int):
 		[Callable(self, "_show_factor_workspace"), Callable(self, "_show_surface_workspace"), Callable(self, "_show_walkthrough")][index].call())
 	file_tools.add_child(workspaces)
-	for spec in [["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
-		var button := Button.new()
-		button.text = spec[0]
-		button.pressed.connect(spec[1])
-		file_tools.add_child(button)
+	if browser_mode:
+		browser_file_menu = MenuButton.new()
+		browser_file_menu.text = "Browser files"
+		browser_file_menu.custom_minimum_size.y = 44
+		browser_file_menu.set_accessibility_name("Open, save, back up, or restore browser files")
+		browser_file_menu.get_popup().add_theme_constant_override("v_separation", 20)
+		for label in ["Open accepted JSON", "Save accepted JSON", "Backup complete workspace", "Restore complete workspace"]:
+			browser_file_menu.get_popup().add_item(label)
+		browser_file_menu.get_popup().index_pressed.connect(func(index: int):
+			[Callable(self, "_show_open"), Callable(self, "_show_save"),
+				Callable(self, "_download_browser_workspace"),
+				Callable(self, "_show_browser_workspace_restore")][index].call())
+		file_tools.add_child(browser_file_menu)
+	else:
+		for spec in [["Open JSON", Callable(self, "_show_open")], ["Save JSON", Callable(self, "_show_save")]]:
+			var button := Button.new()
+			button.text = spec[0]
+			button.pressed.connect(spec[1])
+			file_tools.add_child(button)
 	find_button = Button.new()
 	find_button.text = "Find record"
 	find_button.tooltip_text = "Find a persistent ID or visible record label (Ctrl/Cmd+F)"
@@ -730,6 +747,66 @@ func _browser_file_received(arguments: Array) -> void:
 		_show_edit_error(error)
 	elif not source.is_empty():
 		_open_result(DiagramDocument.parse(source), "browser file")
+
+func _encode_browser_workspace() -> Dictionary:
+	if document == null or baseline_source.is_empty():
+		return {"ok": false, "error": "Cannot back up an empty workspace"}
+	return WorkspaceRecovery.encode(baseline_source, history,
+		curve_inspector.drafts, _current_selection(), _current_view_state(),
+		_current_creation_state())
+
+func _download_browser_workspace() -> void:
+	if not browser_mode:
+		return
+	var encoded := _encode_browser_workspace()
+	if not encoded.ok:
+		_show_edit_error("Workspace backup failed: " + encoded.error)
+		return
+	var files = JavaScriptBridge.get_interface("SurfaceStudioFiles") if OS.has_feature("web") else null
+	if files == null:
+		_show_edit_error("Browser workspace download adapter unavailable.")
+		return
+	var filename := _safe_filename(document.data.title) + ".surface-workspace.json"
+	var error: String = files.downloadWorkspace(encoded.text, filename)
+	if not error.is_empty():
+		_show_edit_error(error)
+		return
+	status_label.text = "Complete browser workspace recovery requested. It includes exact undo/redo, drafts, selection, and view state, but is not geometry-validated publication JSON."
+	status_label.add_theme_color_override("font_color", Color("#415b55"))
+
+func _show_browser_workspace_restore() -> void:
+	var action := Callable(self, "_show_browser_workspace_restore_after_guard")
+	if _request_before_destructive_action(action, "restore another browser workspace"):
+		action.call()
+
+func _show_browser_workspace_restore_after_guard() -> void:
+	if not browser_mode:
+		return
+	var files = JavaScriptBridge.get_interface("SurfaceStudioFiles") if OS.has_feature("web") else null
+	if files == null:
+		_show_edit_error("Browser workspace upload adapter unavailable. The current workspace is unchanged.")
+		return
+	files.openWorkspace(recovery_upload_callback)
+
+func _browser_workspace_received(arguments: Array) -> void:
+	if arguments.size() != 2:
+		_show_edit_error("Invalid browser workspace response; current workspace unchanged.")
+		return
+	var source := str(arguments[0])
+	var error := str(arguments[1])
+	if not error.is_empty():
+		_show_edit_error(error + " The current workspace is unchanged.")
+		return
+	if source.is_empty():
+		return
+	var recovered := WorkspaceRecovery.parse(source)
+	if not recovered.ok:
+		_show_edit_error("Workspace not restored: " + recovered.error + ". The current workspace is unchanged.")
+		return
+	startup_recovery = recovered
+	if _restore_startup_recovery():
+		status_label.text = "Restored complete browser workspace data: accepted records, exact undo/redo, selection, drafts, and separate view state. Geometry remains unvalidated in the browser."
+		status_label.add_theme_color_override("font_color", Color("#167464"))
 
 func _present_document(value: DiagramDocument, reset_camera: bool,
 		selection: Dictionary = {}, rendered: Dictionary = {}) -> void:

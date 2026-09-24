@@ -67,6 +67,17 @@ test('oversized upload is rejected before reading', async () => {
   await h.elements[0].fire('change');
   assert.match(result[1], /256 KiB/);
 });
+test('workspace upload has a separate strict 32 MiB bound', async () => {
+  const h = harness(); let result;
+  h.api.openWorkspace((...args) => result = args);
+  const input = h.elements[0];
+  assert.match(input.accept, /surface-workspace/);
+  input.files = [{size: 32 * 1024 * 1024 + 1,
+    arrayBuffer() { throw Error('must not read'); }}];
+  await input.fire('change');
+  assert.match(result[1], /32 MiB/);
+  assert.equal(input.removed, true);
+});
 test('invalid UTF-8 is rejected', async () => {
   const h = harness(); let result;
   h.api.open((...args) => result = args);
@@ -97,4 +108,10 @@ test('download enforces byte bound including multibyte text', () => {
   const h = harness();
   assert.match(h.api.download('α'.repeat(131073), 'large.json'), /256 KiB/);
   assert.equal(h.blobs.length, 0);
+});
+test('workspace download preserves exact recovery bytes and filename', async () => {
+  const h = harness(); const recovery = '{"format":"surface-diagrams-studio-recovery"}\n';
+  assert.equal(h.api.downloadWorkspace(recovery, 'draft.surface-workspace.json'), '');
+  assert.equal(await h.blobs[0].text(), recovery);
+  assert.equal(h.elements[0].download, 'draft.surface-workspace.json');
 });

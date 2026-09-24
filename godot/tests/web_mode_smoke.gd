@@ -1,5 +1,8 @@
 extends SceneTree
 
+const DiagramDocumentClass = preload("res://scripts/diagram_document.gd")
+const WorkspaceRecoveryClass = preload("res://scripts/workspace_recovery.gd")
+
 var failures := 0
 var assertions := 0
 
@@ -18,6 +21,7 @@ func _run() -> void:
 	_check(not studio.geometry_result.ok, "web mode never claims certified geometry")
 	_check(studio.svg_button.disabled and studio.tikz_button.disabled, "exact exports disabled")
 	_check(not studio.browser_drafts.button_pressed, "unvalidated edits require opt in")
+	_check(studio.browser_file_menu.get_popup().item_count == 4 and studio.browser_file_menu.custom_minimum_size.y >= 44, "browser file actions share one touch-sized compact menu")
 	_check(not studio.browser_unsaved_state, "fresh browser fixture has no unload warning")
 	var before: String = studio.document.to_json()
 	var x: float = studio.document.data.surface.objects[1].x + 0.1
@@ -36,6 +40,16 @@ func _run() -> void:
 	studio._redo()
 	_check(studio.document.to_json() == after, "browser-mode redo restores draft")
 	_check(studio.browser_unsaved_state, "redo away from baseline restores unload warning")
+	var workspace_backup: Dictionary = studio._encode_browser_workspace()
+	var parsed_backup: Dictionary = WorkspaceRecoveryClass.parse(workspace_backup.get("text", ""))
+	_check(workspace_backup.ok and parsed_backup.ok and parsed_backup.history_state.undo.size() == 1, "browser workspace backup is the strict bounded recovery format with exact history")
+	_check(DiagramDocumentClass.parse(parsed_backup.history_state.current).document.to_json() == after and parsed_backup.baseline_source == before, "browser workspace backup preserves exact accepted current and baseline records")
+	studio._undo()
+	studio._browser_workspace_received([workspace_backup.text, ""])
+	_check(studio.document.to_json() == after and studio.history.can_undo() and "Restored complete browser workspace" in studio.status_label.text, "explicit browser workspace restore recovers exact accepted state and history")
+	var before_invalid_workspace: String = studio.document.to_json()
+	studio._browser_workspace_received(["{\"format\":\"not-a-workspace\"}", ""])
+	_check(studio.document.to_json() == before_invalid_workspace and "current workspace is unchanged" in studio.status_label.text, "invalid browser workspace fails closed without mutation")
 	studio._canvas_edit_commit("object", "p2", Vector2(99999, 0))
 	_check(studio.document.to_json() == after, "draft mode still rejects order/ellipse violation")
 	studio._browser_file_received(["{\"version\":999}", ""])
@@ -56,6 +70,9 @@ func _run() -> void:
 	var multi_initial: String = studio.document.to_json()
 	studio.curve_creator.start("arc")
 	_check(studio.browser_unsaved_state, "unapplied new-curve draft activates unload warning")
+	workspace_backup = studio._encode_browser_workspace()
+	parsed_backup = WorkspaceRecoveryClass.parse(workspace_backup.get("text", ""))
+	_check(parsed_backup.ok and parsed_backup.creation_state.active and parsed_backup.creation_state.draft == studio.curve_creator.draft, "browser workspace backup retains the complete literal unapplied new-curve draft")
 	studio.curve_creator._create()
 	_check(studio.document.to_json() == multi_initial and studio.curve_creator.active and not studio.history.can_undo(), "browser curve creation requires explicit unvalidated-edit opt in")
 	studio.browser_drafts.button_pressed = true

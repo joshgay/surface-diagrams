@@ -252,6 +252,17 @@ unapplied draft remains. Browser vendors may suppress this prompt, especially
 on mobile, so it is a safeguard rather than persistence: download JSON before
 leaving the Site.
 
+**Backup workspace** downloads a separate bounded
+`.surface-workspace.json` recovery record containing the accepted baseline and
+current records, exact undo/redo history, stable-ID selection, all existing-curve
+drafts, one unapplied new-curve draft, and separate camera/timeline/panel state.
+**Restore workspace** validates every field before replacing the current browser
+workspace; malformed, oversized, future-version, duplicate-field, unknown-ID,
+or executable-looking extra data is rejected without mutation. The 32 MiB cap
+matches the strict version-4 recovery envelope. This recovery file is Studio
+workspace data, not a geometry certificate or publication recipe. Save accepted
+JSON separately and validate it with the Python library before publication.
+
 With the pinned engine and matching templates installed:
 
 ```

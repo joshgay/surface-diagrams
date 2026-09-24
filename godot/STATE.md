@@ -16,7 +16,59 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: exact Site identity check and browser unload protection
+## Latest increment: complete browser workspace backup and restore
+
+Built from live fork head `3a4413fe71298993f6d0e2a9321dda2d433beaf2`
+in an isolated worktree under the exclusive Studio lock.
+
+- Browser users can now download and restore a complete Studio workspace through
+  a compact, touch-sized `Browser files` menu. The recovery file contains the
+  exact accepted and saved-baseline mathematical records, bounded undo/redo
+  history, persistent selection, existing-curve and new-curve drafts, and the
+  separate camera, panel, and fractional braid playback state.
+- Workspace files use the existing strict, checksum-protected version-4 recovery
+  parser with a separate 32 MiB browser bound. Invalid, oversized, future,
+  unknown-field, or checksum-mismatched input fails closed without changing the
+  open workspace. Imported text remains data only and is never executed.
+- The workspace file is explicitly labeled as recovery data, not geometry-
+  validated publication JSON or evidence of a mathematical identity. Normal
+  accepted JSON import/export retains its tighter 256 KiB bound.
+- The first implementation used two additional toolbar buttons and caused the
+  2D diagram to fall below its minimum usable height at both 320x640 portrait
+  and 844x390 landscape. The full suite caught both failures. Replacing those
+  buttons with the four-action menu restored both mobile layouts while keeping
+  every action at least 44 pixels high.
+- The live public target remains
+  <https://surface-diagrams-studio.joshgay.chatgpt.site>. It is still the older
+  legacy publication without `studio-build.json`; this run did not deploy the
+  new workspace controls there.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- **1,126 headless Godot assertions**, including exact workspace encoding and
+  restoration, invalid-input nonmutation, new-curve draft preservation, the
+  repaired portrait/landscape mobile checks, deterministic demo, two-run bounded
+  benchmark, bridge harnesses, intentional failure detection, and private
+  portable Linux success/missing-authority/missing-Python checks (53 files,
+  147,321,455 bytes).
+- **240 Python tests with 359 subtests**, **8 browser-editor tests**, and **30 Web
+  adapter tests**, including separate 32 MiB upload enforcement and exact
+  recovery-download byte preservation.
+- Static Web export succeeded with a 257,572-byte PCK. This is build evidence,
+  not browser rendering or visual acceptance.
+
+No regression failure remains. This worker still has no X11/Wayland display or
+WebGL 2 browser. Actual browser download permission, picker cancellation,
+restore behavior, visible layout/focus, Orca, keyboard-open rotation, and
+physical-phone acceptance remain pending. No Site deployment was performed.
+
+**Next specific task:** in an explicitly authorized foreground Site publication,
+deploy the exact clean candidate, require its `studio-build.json` to match the
+GitHub checkpoint and assets, then test complete workspace download/restore on
+desktop and phone WebGL 2 browsers, including denied downloads, picker cancel,
+and keyboard-open rotation; repair the first observed defect.
+
+## Earlier increment: exact Site identity check and browser unload protection
 
 Built from live fork head `5a6a4c490e967eb10d177b7c8dfb4dd979fcd867`
 in an isolated worktree under the exclusive Studio lock.

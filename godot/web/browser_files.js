@@ -2,6 +2,7 @@
 (function (root) {
   'use strict';
   const MAX_BYTES = 256 * 1024;
+  const MAX_WORKSPACE_BYTES = 32 * 1024 * 1024;
   let busy = false;
   let unsaved = false;
   root.addEventListener('beforeunload', (event) => {
@@ -10,16 +11,12 @@
     // Modern browsers ignore custom text but still require returnValue.
     event.returnValue = '';
   });
-  root.SurfaceStudioFiles = Object.freeze({
-    setUnsaved(value) {
-      unsaved = value === true;
-    },
-    open(callback) {
+  function openBounded(callback, maxBytes, accept, noun) {
       if (busy) return;
       busy = true;
       const input = root.document.createElement('input');
       input.type = 'file';
-      input.accept = '.json,application/json';
+      input.accept = accept;
       input.hidden = true;
       let finished = false;
       function finish(text, error) {
@@ -33,21 +30,24 @@
       input.addEventListener('change', async () => {
         const file = input.files[0];
         if (!file) return finish('', '');
-        if (file.size > MAX_BYTES) return finish('', 'JSON file exceeds 256 KiB.');
+        if (file.size > maxBytes) return finish('', noun + ' exceeds ' +
+          (maxBytes === MAX_BYTES ? '256 KiB.' : '32 MiB.'));
         try {
           const bytes = await file.arrayBuffer();
-          if (bytes.byteLength > MAX_BYTES) return finish('', 'JSON file exceeds 256 KiB.');
+          if (bytes.byteLength > maxBytes) return finish('', noun + ' exceeds ' +
+            (maxBytes === MAX_BYTES ? '256 KiB.' : '32 MiB.'));
           finish(new TextDecoder('utf-8', { fatal: true }).decode(bytes), '');
         } catch (_) {
-          finish('', 'Could not read this file as UTF-8 JSON.');
+          finish('', 'Could not read this ' + noun.toLowerCase() + ' as UTF-8 JSON.');
         }
       });
       root.document.body.appendChild(input);
       input.click();
-    },
-    download(text, filename) {
+  }
+  function downloadBounded(text, filename, maxBytes, noun) {
       const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
-      if (blob.size > MAX_BYTES) return 'JSON document exceeds 256 KiB.';
+      if (blob.size > maxBytes) return noun + ' exceeds ' +
+        (maxBytes === MAX_BYTES ? '256 KiB.' : '32 MiB.');
       const url = root.URL.createObjectURL(blob);
       const link = root.document.createElement('a');
       link.href = url;
@@ -57,6 +57,23 @@
       link.remove();
       root.setTimeout(() => root.URL.revokeObjectURL(url), 1000);
       return '';
+  }
+  root.SurfaceStudioFiles = Object.freeze({
+    setUnsaved(value) {
+      unsaved = value === true;
+    },
+    open(callback) {
+      openBounded(callback, MAX_BYTES, '.json,application/json', 'JSON file');
+    },
+    openWorkspace(callback) {
+      openBounded(callback, MAX_WORKSPACE_BYTES,
+        '.surface-workspace.json,.json,application/json', 'Workspace recovery');
+    },
+    download(text, filename) {
+      return downloadBounded(text, filename, MAX_BYTES, 'JSON document');
+    },
+    downloadWorkspace(text, filename) {
+      return downloadBounded(text, filename, MAX_WORKSPACE_BYTES, 'Workspace recovery');
     }
   });
 })(globalThis);
