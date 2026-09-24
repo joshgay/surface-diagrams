@@ -353,6 +353,12 @@ func _sync_viewport() -> void:
 	if get_tree().root.content_scale_size != logical_size:
 		get_tree().root.content_scale_size = logical_size
 	compact_layout = logical_size.x < 900
+	var focused := get_viewport().gui_get_focus_owner()
+	if compact_layout and focused != null:
+		if focused == inspector_scroll or inspector_scroll.is_ancestor_of(focused):
+			showing_records = true
+		elif focused == canvas_box or canvas_box.is_ancestor_of(focused):
+			showing_records = false
 	inspector_scroll.custom_minimum_size.x = 0 if compact_layout else 340
 	inspector_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL if compact_layout else Control.SIZE_FILL
 	mobile_tabs.visible = compact_layout
@@ -361,6 +367,12 @@ func _sync_viewport() -> void:
 	geometry_label.visible = not compact_layout
 	reindex_preview.custom_minimum_size = Vector2(minf(720, logical_size.x - 56), minf(340, logical_size.y * 0.35))
 	canvas.cancel_touch_gesture()
+	call_deferred("_ensure_editor_focus_visible")
+
+func _ensure_editor_focus_visible() -> void:
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused != null and inspector_scroll.visible and (focused == inspector_scroll or inspector_scroll.is_ancestor_of(focused)) and focused.is_visible_in_tree():
+		inspector_scroll.ensure_control_visible(focused)
 
 func _show_mobile_panel(records: bool) -> void:
 	showing_records = records

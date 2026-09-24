@@ -16,7 +16,50 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: dynamic mobile Web viewport contract
+## Latest increment: focus-stable compact viewport transitions
+
+Built from live fork head `15a9c1da209dc59e887a58f3caa5cc50b92432c9`
+in an isolated worktree under the exclusive Studio lock.
+
+- Desktop-to-phone breakpoint changes now inspect keyboard focus before hiding
+  linked columns. The factor workspace retains a focused braid, the surface
+  workspace retains a focused exploratory 3D view, and a walkthrough retains
+  the exact focused 2D or supplied 3D endpoint as its active compact view.
+- Each secondary workspace retains its root scroll container and asks Godot to
+  bring the focused control into the reachable content region after responsive
+  layout. Compact view changes remain presentation state only and do not alter
+  factor selection, stable IDs, cameras, timelines, or mathematical JSON.
+- The main editor now follows focused inspector and accepted-source controls
+  into the compact Records pane when orientation or the on-screen keyboard
+  changes usable dimensions. A focused canvas similarly keeps the Diagram pane.
+- Controller coverage starts at 1280x800, crosses to 390x640 with focus in each
+  linked workspace, and contracts the editor to 390x360 with the source focused
+  to model keyboard occlusion. All focus owners, active views, scroll reachability,
+  and exact record bytes are checked after layout settles.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,019 Godot assertions**, including **8 new responsive-focus
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt with a 236,672-byte PCK. The private portable Linux
+  package passed outside the checkout with 53 files and 147,300,555 bytes.
+
+No controller/test failure remains. This worker still has no X11 or Wayland
+display or compositor, and the available cloud browser does not expose WebGL 2.
+Rendered focus/scroll inspection, physical-device keyboard/orientation behavior,
+and screen-reader acceptance remain pending.
+
+**Next specific task:** run the exported build and fixed capture plan on a real
+WebGL 2 phone and display, rotate portrait to landscape with the source focused
+and keyboard open, confirm that the Records pane and focused field remain
+visible, and repair the first concrete clipping, safe-area, focus, or touch
+defect observed.
+
+## Earlier increment: dynamic mobile Web viewport contract
 
 Built from live fork head `d8e148a0e8387f721c02b90af955213f9affd0d7`
 in an isolated worktree under the exclusive Studio lock.

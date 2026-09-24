@@ -31,6 +31,12 @@ focus when that control still exists.
 - On compact screens, touch-sized view-switcher buttons place one linked canvas
   at a time in the content region. They participate in ordinary Tab navigation;
   switching them changes no supplied record or stable-ID selection.
+- If an orientation change or on-screen keyboard resize crosses the compact
+  breakpoint, the linked view containing keyboard focus becomes the active
+  compact view before sibling columns are hidden. The workspace then scrolls
+  that focused control into the reachable content region. The editor likewise
+  follows focused inspector/source controls into the Records pane instead of
+  replacing them with the Diagram pane.
 - Escape returns from any secondary workspace to the editor.
 
 These commands modify selection, camera, visibility, or playback state only.
@@ -39,7 +45,9 @@ record. Text-entry fields keep ordinary editing keys instead of triggering
 workspace shortcuts.
 
 The controller tests exercise these paths at 320, 390, 844, and 1280 pixel
-widths, including portrait and landscape compact-view switching.
+widths, including portrait and landscape compact-view switching. A separate
+focus contract shrinks a desktop layout to 390 pixels wide, and the editor
+source case also contracts to 360 pixels high to model a virtual keyboard.
 The Web shell also reports the canvas content box after safe-area padding and
 visual-viewport changes, so browser chrome and the on-screen keyboard do not
 silently leave Godot using stale layout dimensions.

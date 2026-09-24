@@ -10,6 +10,7 @@ var details: Label
 var record_list: ItemList
 var canvas_2d: DiagramCanvas
 var surface_3d: ExploratorySurface3D
+var scroll: ScrollContainer
 var grid: GridContainer
 var view_tabs: HBoxContainer
 var view_tab_buttons: Array[Button] = []
@@ -22,7 +23,7 @@ var selected_id := ""
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	set_accessibility_name("Exploratory surface workspace")
-	var scroll := ScrollContainer.new()
+	scroll = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll)
 	var body := VBoxContainer.new()
@@ -134,12 +135,31 @@ func _responsive() -> void:
 	if grid == null:
 		return
 	var compact := get_viewport_rect().size.x < 900
+	if compact:
+		var focused_index := _focused_column_index(view_columns)
+		if focused_index >= 0:
+			compact_view = focused_index
 	grid.columns = 1 if compact else 2
 	view_tabs.visible = compact
 	for index in view_columns.size():
 		view_columns[index].visible = not compact or index == compact_view
 	for index in view_tab_buttons.size():
 		view_tab_buttons[index].set_pressed_no_signal(index == compact_view)
+	call_deferred("_ensure_focused_control_visible")
+
+func _focused_column_index(columns: Array[Control]) -> int:
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == null:
+		return -1
+	for index in columns.size():
+		if focused == columns[index] or columns[index].is_ancestor_of(focused):
+			return index
+	return -1
+
+func _ensure_focused_control_visible() -> void:
+	var focused := get_viewport().gui_get_focus_owner()
+	if scroll != null and focused != null and is_ancestor_of(focused) and focused.is_visible_in_tree():
+		scroll.ensure_control_visible(focused)
 
 func show_compact_view(name: String) -> bool:
 	var names := ["surface-2d", "surface-3d"]

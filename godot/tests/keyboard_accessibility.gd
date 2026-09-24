@@ -105,6 +105,56 @@ func _run() -> void:
 	walkthrough.handle_keyboard(_key(KEY_B))
 	_check(walkthrough.braid_presentation != presentation, "B changes only the signed-braid presentation direction")
 
+	# A rotation or virtual-keyboard resize can cross the compact breakpoint.
+	# Keep the view containing keyboard focus active before hiding desktop columns.
+	root.size = Vector2i(1280, 800)
+	root.content_scale_size = root.size
+	for frame in 2: await process_frame
+	factor.braid_canvas.grab_focus()
+	root.size = Vector2i(390, 640)
+	root.content_scale_size = root.size
+	for frame in 4: await process_frame
+	_check(factor.compact_view == 2 and factor.braid_canvas.is_visible_in_tree() and root.gui_get_focus_owner() == factor.braid_canvas, "factor resize keeps the focused braid active instead of hiding it")
+	_check(factor.scroll.scroll_vertical > 0 and factor.workspace.to_json() == factor_source, "factor resize scrolls focused content into reach without changing its record")
+
+	root.size = Vector2i(1280, 800)
+	root.content_scale_size = root.size
+	for frame in 3: await process_frame
+	surface.surface_3d.grab_focus()
+	root.size = Vector2i(390, 640)
+	root.content_scale_size = root.size
+	for frame in 4: await process_frame
+	_check(surface.compact_view == 1 and surface.surface_3d.is_visible_in_tree() and root.gui_get_focus_owner() == surface.surface_3d, "surface resize keeps the focused exploratory view active")
+	_check(surface.scroll.get_global_rect().intersects(surface.surface_3d.get_global_rect()) and surface.document.to_json() == surface_source, "surface resize keeps focused 3D content in the scroll viewport without changing supplied geometry")
+
+	root.size = Vector2i(1280, 800)
+	root.content_scale_size = root.size
+	for frame in 3: await process_frame
+	_check(walkthrough.import_source(FileAccess.get_file_as_string(WalkthroughView.COVER_FIXTURE)), "linked walkthrough loads for responsive focus test")
+	var linked_source := walkthrough.document.to_json()
+	walkthrough.cover_after_view.grab_focus()
+	root.size = Vector2i(390, 640)
+	root.content_scale_size = root.size
+	for frame in 4: await process_frame
+	_check(walkthrough.compact_view == 3 and walkthrough.cover_after_view.is_visible_in_tree() and root.gui_get_focus_owner() == walkthrough.cover_after_view, "walkthrough resize keeps the focused supplied 3D endpoint active")
+	_check(walkthrough.scroll.scroll_vertical > 0 and walkthrough.document.to_json() == linked_source, "walkthrough resize keeps focused endpoint reachable without changing its record")
+
+	root.size = Vector2i(1280, 800)
+	root.content_scale_size = root.size
+	studio._sync_viewport()
+	studio.source_view.visible = true
+	studio.source_view.grab_focus()
+	root.size = Vector2i(390, 360)
+	studio._sync_viewport()
+	for frame in 4: await process_frame
+	_check(studio.compact_layout and studio.showing_records and studio.inspector_scroll.visible and not studio.canvas_box.visible, "editor keyboard resize follows focused source into the compact records pane")
+	_check(root.gui_get_focus_owner() == studio.source_view and studio.inspector_scroll.scroll_vertical > 0 and studio.document.to_json() == accepted, "editor keeps focused source reachable without changing accepted JSON")
+	root.size = Vector2i(1280, 800)
+	root.content_scale_size = root.size
+	studio._sync_viewport()
+	studio._show_mobile_panel(false)
+	studio.canvas.grab_focus()
+
 	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(1280, 800)]:
 		root.size = viewport
 		root.content_scale_size = viewport
