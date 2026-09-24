@@ -335,6 +335,8 @@ func _build_interface() -> void:
 	reindex_preview.editable = false
 	reindex_preview.custom_minimum_size = Vector2(720, 340)
 	reindex_preview.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
+	reindex_preview.set_accessibility_name("Exact reindex impact preview")
+	reindex_preview.set_accessibility_description("Read-only list of every endpoint attachment and cut corridor affected before explicit confirmation.")
 	reindex_dialog.add_child(reindex_preview)
 	add_child(reindex_dialog)
 	_make_touch_targets(root)

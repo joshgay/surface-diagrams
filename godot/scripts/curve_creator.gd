@@ -23,6 +23,7 @@ var create_button: Button
 
 func _init() -> void:
 	add_theme_constant_override("separation", 5)
+	set_accessibility_name("New curve editor")
 	var heading := Label.new()
 	heading.text = "Create a curve"
 	heading.add_theme_font_size_override("font_size", 16)
@@ -33,6 +34,8 @@ func _init() -> void:
 	for spec in [["New arc", "arc"], ["New loop", "loop"]]:
 		var button := Button.new()
 		button.text = spec[0]
+		button.custom_minimum_size.y = 44
+		button.set_accessibility_name(spec[0])
 		button.pressed.connect(start.bind(spec[1]))
 		starters.add_child(button)
 	form = VBoxContainer.new()
@@ -49,8 +52,11 @@ func _init() -> void:
 	id_edit = LineEdit.new()
 	id_edit.max_length = 40
 	id_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	id_edit.custom_minimum_size.y = 44
+	id_edit.set_accessibility_name("New curve stable ID")
 	id_edit.text_changed.connect(_id_changed)
 	id_row.add_child(id_edit)
+	_label_control(id_edit, id_label)
 	var endpoint_row := HFlowContainer.new()
 	form.add_child(endpoint_row)
 	start_spin = _number_control(endpoint_row, "Start endpoint", _start_changed)
@@ -60,6 +66,8 @@ func _init() -> void:
 	end_side_option = _option_control(endpoint_row, "End rim", ["none", "left", "right"], _end_side_changed)
 	start_up_check = CheckBox.new()
 	start_up_check.text = "Loop starts upward"
+	start_up_check.custom_minimum_size.y = 44
+	start_up_check.set_accessibility_name("Loop starts upward")
 	start_up_check.toggled.connect(_start_up_changed)
 	form.add_child(start_up_check)
 	var instruction := Label.new()
@@ -71,21 +79,29 @@ func _init() -> void:
 	form.add_child(cut_grid)
 	cuts_label = Label.new()
 	cuts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	cuts_label.set_accessibility_name("New curve literal cut itinerary")
 	form.add_child(cuts_label)
 	var actions := HFlowContainer.new()
 	form.add_child(actions)
 	for spec in [["Remove last", _remove_last], ["Clear cuts", _clear_cuts], ["Cancel draft", cancel]]:
 		var button := Button.new()
 		button.text = spec[0]
+		button.custom_minimum_size.y = 44
+		button.set_accessibility_name(spec[0])
 		button.pressed.connect(spec[1])
 		actions.add_child(button)
 	create_button = Button.new()
 	create_button.text = "Validate and create"
+	create_button.custom_minimum_size.y = 44
+	create_button.set_accessibility_name("Validate and create exact curve")
 	create_button.pressed.connect(_create)
 	actions.add_child(create_button)
 	warning_label = Label.new()
 	warning_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	warning_label.set_accessibility_name("New curve validation status")
+	warning_label.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
 	form.add_child(warning_label)
+	_describe_control(create_button, warning_label)
 
 func configure(value: DiagramDocument) -> void:
 	document = value
@@ -154,10 +170,13 @@ func _number_control(parent: Control, label_text: String, callback: Callable) ->
 	var spin := SpinBox.new()
 	spin.min_value = 0
 	spin.step = 1
+	spin.custom_minimum_size.y = 44
+	spin.set_accessibility_name(label_text)
 	spin.allow_greater = false
 	spin.allow_lesser = false
 	spin.value_changed.connect(callback)
 	field.add_child(spin)
+	_label_control(spin, label)
 	return spin
 
 func _option_control(parent: Control, label_text: String, values: Array,
@@ -168,10 +187,13 @@ func _option_control(parent: Control, label_text: String, values: Array,
 	label.text = label_text
 	field.add_child(label)
 	var option := OptionButton.new()
+	option.custom_minimum_size.y = 44
+	option.set_accessibility_name(label_text)
 	for value in values:
 		option.add_item(value)
 	option.item_selected.connect(callback)
 	field.add_child(option)
+	_label_control(option, label)
 	return option
 
 func _build_cut_buttons(count: int) -> void:
@@ -184,8 +206,17 @@ func _build_cut_buttons(count: int) -> void:
 		button.text = "c%d" % cut
 		button.custom_minimum_size = Vector2(44, 44)
 		button.tooltip_text = "Append cut %d to the new curve" % cut
+		button.set_accessibility_name("Append cut %d to new curve" % cut)
 		button.pressed.connect(append_cut.bind(cut))
 		cut_grid.add_child(button)
+
+func _label_control(control: Control, label: Control) -> void:
+	var paths: Array[NodePath] = [control.get_path_to(label)]
+	control.set_accessibility_labeled_by_nodes(paths)
+
+func _describe_control(control: Control, description: Control) -> void:
+	var paths: Array[NodePath] = [control.get_path_to(description)]
+	control.set_accessibility_described_by_nodes(paths)
 
 func _next_id(kind: String) -> String:
 	var used := {}

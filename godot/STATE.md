@@ -16,7 +16,52 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: machine-verifiable accessibility semantics
+## Latest increment: accessible mathematical edit forms
+
+Built from live fork head `485acea6d34541e5926399cba10f34eb75d03515`
+in an isolated worktree under the exclusive Studio lock.
+
+- The new-curve editor now exposes explicit names and visible-label
+  relationships for stable ID, endpoints, direction, and rim choices. Literal
+  cut buttons announce the exact cut they append, and every form action has a
+  minimum 44-pixel target.
+- The exact-curve itinerary editor distinguishes accepted details from the
+  draft itinerary and relates its commit control to a polite live validation
+  status. Rejected nonminimal drafts remain session-only and leave the accepted
+  record byte-identical.
+- The signed-braid editor now names its position, signed generator,
+  presentation, fractional playhead, and symbolic timeline controls. Numeric
+  fields reference both their visible labels and the no-reduction/no-reordering
+  policy.
+- The explicit row-reindex confirmation now identifies its read-only impact
+  preview and states that it lists every affected endpoint attachment and cut
+  corridor before confirmation.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,066 Godot assertions**, including **17 new form-semantic
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt with a 242,768-byte PCK. The private portable Linux
+  package passed outside the checkout with 53 files and 147,306,651 bytes.
+
+No controller/test failure remains. Godot's dummy driver verifies semantic
+relationships but does not expose them to an operating-system accessibility
+bridge. This worker still has no X11 or Wayland display or compositor, and the
+available cloud browser does not expose WebGL 2. Actual form announcements,
+focus presentation, mobile touch use, and physical-phone keyboard behavior
+therefore remain unaccepted.
+
+**Next specific task:** run the curve creation, exact-itinerary edit,
+signed-braid edit, and row-reindex confirmation paths on a real X11 or Wayland
+desktop with Godot's platform accessibility driver and Orca; then repeat the
+forms on a WebGL 2 phone and repair the first concrete announcement, focus,
+target-size, or keyboard-occlusion defect observed.
+
+## Earlier increment: machine-verifiable accessibility semantics
 
 Built from live fork head `cff15d4c7fe56de1b0bdeb92db32b7fe76cac171`
 in an isolated worktree under the exclusive Studio lock.

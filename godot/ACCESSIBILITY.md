@@ -27,6 +27,22 @@ are view metadata only; updating them does not alter mathematical records.
 - Ctrl/Cmd+1, 2, or 3 opens the factor, exploratory surface, or supplied
   walkthrough workspace.
 
+## Mathematical edit forms
+
+- The new-curve form links every stable-ID, endpoint, direction, and rim field
+  to its visible label. Every literal cut button is announced as an append
+  action with its exact cut number.
+- The curve inspector distinguishes accepted curve details, the draft literal
+  itinerary, and the exact apply action. Validation feedback is a polite live
+  region and describes the apply control.
+- The signed-braid editor names word position, signed generator, presentation,
+  fractional playhead, and every symbolic timeline button. Position and
+  generator fields reference both their visible labels and the explicit policy
+  that supplied generators are never reduced or reordered.
+- Form controls and literal cut/timeline actions have a minimum 44-pixel target.
+  These semantics do not cause a draft to be accepted; the existing explicit
+  validation and commit actions remain authoritative.
+
 ## Secondary workspaces
 
 - Factor workspace: Left/Right steps factors, Home/End jumps, Space plays or
@@ -58,7 +74,8 @@ focus contract shrinks a desktop layout to 390 pixels wide, and the editor
 source case also contracts to 360 pixels high to model a virtual keyboard.
 The aggregate also runs a dedicated semantic contract with Godot's dummy
 accessibility driver. It verifies live-region modes, controller relationships,
-dynamic selected-record descriptions, and byte-identical records. The dummy
+form label/description relationships, touch targets, dynamic selected-record
+descriptions, rejected-draft behavior, and byte-identical records. The dummy
 driver does not substitute for a real operating-system accessibility bridge.
 The Web shell also reports the canvas content box after safe-area padding and
 visual-viewport changes, so browser chrome and the on-screen keyboard do not

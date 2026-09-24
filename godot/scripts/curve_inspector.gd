@@ -21,6 +21,7 @@ var drafts: Dictionary = {}
 func _init() -> void:
 	visible = false
 	add_theme_constant_override("separation", 5)
+	set_accessibility_name("Exact curve itinerary editor")
 	heading = Label.new()
 	heading.text = "Curve inspector"
 	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -29,9 +30,11 @@ func _init() -> void:
 	add_child(heading)
 	details = Label.new()
 	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	details.set_accessibility_name("Accepted curve details")
 	add_child(details)
 	draft_label = Label.new()
 	draft_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	draft_label.set_accessibility_name("Draft literal cut itinerary")
 	add_child(draft_label)
 	var instruction := Label.new()
 	instruction.text = "Pick cuts in visit order. Repeated visits stay repeated. Unapplied drafts stay in this session; Save JSON writes only the accepted record."
@@ -45,15 +48,23 @@ func _init() -> void:
 	for spec in [["Remove last", _remove_last], ["Clear", _clear], ["Reset", _reset]]:
 		var button := Button.new()
 		button.text = spec[0]
+		button.custom_minimum_size.y = 44
+		button.set_accessibility_name("%s draft cuts" % spec[0])
 		button.pressed.connect(spec[1])
 		actions.add_child(button)
 	apply_button = Button.new()
 	apply_button.text = "Apply exact cuts"
+	apply_button.custom_minimum_size.y = 44
+	apply_button.set_accessibility_name("Apply exact literal cut itinerary")
 	apply_button.pressed.connect(_apply)
 	actions.add_child(apply_button)
 	warning_label = Label.new()
 	warning_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	warning_label.set_accessibility_name("Curve itinerary validation status")
+	warning_label.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
 	add_child(warning_label)
+	var descriptions: Array[NodePath] = [apply_button.get_path_to(warning_label)]
+	apply_button.set_accessibility_described_by_nodes(descriptions)
 
 func inspect(value: DiagramDocument, record: Dictionary) -> void:
 	document = value
@@ -106,6 +117,7 @@ func _build_cut_buttons(count: int) -> void:
 		button.text = "c%d" % cut
 		button.custom_minimum_size = Vector2(44, 44)
 		button.tooltip_text = "Append cut %d to the itinerary" % cut
+		button.set_accessibility_name("Append cut %d to curve itinerary" % cut)
 		button.pressed.connect(append_cut.bind(cut))
 		cut_grid.add_child(button)
 

@@ -22,6 +22,7 @@ var edit_note: Label
 
 func _init() -> void:
 	visible = false
+	set_accessibility_name("Signed braid editor")
 	var heading := Label.new()
 	heading.text = "Signed braid word and steps"
 	heading.add_theme_font_size_override("font_size", 16)
@@ -34,50 +35,79 @@ func _init() -> void:
 	index_spin = SpinBox.new()
 	index_spin.min_value = 0
 	index_spin.step = 1
+	index_spin.custom_minimum_size.y = 44
 	index_spin.tooltip_text = "Zero-based word position. Insert occurs before this position."
+	index_spin.set_accessibility_name("Braid word position")
 	index_spin.value_changed.connect(_index_changed)
 	edit_row.add_child(index_spin)
+	_label_control(index_spin, index_label)
 	var generator_label := Label.new()
 	generator_label.text = "Signed σ"
 	edit_row.add_child(generator_label)
 	generator_spin = SpinBox.new()
 	generator_spin.step = 1
 	generator_spin.value = 1
+	generator_spin.custom_minimum_size.y = 44
 	generator_spin.tooltip_text = "Signed generator. Zero and indices at or above strand count are rejected."
+	generator_spin.set_accessibility_name("Signed braid generator")
 	edit_row.add_child(generator_spin)
+	_label_control(generator_spin, generator_label)
 	for action in ["insert", "replace", "delete"]:
 		var button := Button.new()
 		button.text = action.capitalize()
+		button.custom_minimum_size.y = 44
+		button.set_accessibility_name("%s signed generator" % action.capitalize())
 		button.pressed.connect(_request_edit.bind(action))
 		edit_row.add_child(button)
 	edit_note = Label.new()
 	edit_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	edit_note.text = "Position is zero-based. Literal signed generators are never reduced or reordered."
+	edit_note.set_accessibility_name("Braid edit policy")
 	add_child(edit_note)
+	_describe_control(index_spin, edit_note)
+	_describe_control(generator_spin, edit_note)
 	var view_row := HFlowContainer.new()
 	add_child(view_row)
 	direction_option = OptionButton.new()
 	direction_option.add_item("Bottom to top")
 	direction_option.add_item("Top to bottom")
+	direction_option.custom_minimum_size.y = 44
+	direction_option.set_accessibility_name("Braid presentation direction")
 	direction_option.item_selected.connect(_direction_selected)
 	view_row.add_child(direction_option)
-	for spec in [["|<", _start], ["<", _back], [">", _forward], [">|", _end]]:
+	for spec in [["|<", "Braid timeline start", _start], ["<", "Previous braid crossing", _back], [">", "Next braid crossing", _forward], [">|", "Braid timeline end", _end]]:
 		var button := Button.new()
 		button.text = spec[0]
-		button.pressed.connect(spec[1])
+		button.custom_minimum_size = Vector2(44, 44)
+		button.set_accessibility_name(spec[1])
+		button.pressed.connect(spec[2])
 		view_row.add_child(button)
 	play_button = Button.new()
 	play_button.text = "Play"
+	play_button.custom_minimum_size.y = 44
+	play_button.set_accessibility_name("Play or pause braid timeline")
 	play_button.pressed.connect(toggle_play)
 	view_row.add_child(play_button)
 	scrub = HSlider.new()
 	scrub.step = 0.001
+	scrub.custom_minimum_size.y = 44
 	scrub.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scrub.set_accessibility_name("Braid playback position")
+	scrub.set_accessibility_description("View-only fractional position through the literal supplied braid word.")
 	scrub.value_changed.connect(_scrub_changed)
 	add_child(scrub)
 	detail = Label.new()
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail.set_accessibility_name("Braid crossing and transport details")
 	add_child(detail)
+
+func _label_control(control: Control, label: Control) -> void:
+	var paths: Array[NodePath] = [control.get_path_to(label)]
+	control.set_accessibility_labeled_by_nodes(paths)
+
+func _describe_control(control: Control, description: Control) -> void:
+	var paths: Array[NodePath] = [control.get_path_to(description)]
+	control.set_accessibility_described_by_nodes(paths)
 
 func configure(value: DiagramDocument, selection: Dictionary = {}, reset_view: bool = false) -> void:
 	document = value
