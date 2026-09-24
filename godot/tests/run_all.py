@@ -48,6 +48,8 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_cover.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_publication.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/keyboard_accessibility.gd"])
+    run([args.godot, "--headless", "--accessibility", "always", "--accessibility-driver", "dummy",
+         "--path", str(PROJECT), "--script", "res://tests/accessibility_semantics.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/visual_review.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/python_authority.gd"])
     with tempfile.TemporaryDirectory(prefix="surface-studio-demo-") as directory:

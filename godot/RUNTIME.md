@@ -42,6 +42,18 @@ godot --headless --path godot --script res://tests/run_tests.gd -- --self-test-f
 # Expected: exit 1 and an intentional harness failure message.
 ```
 
+The accessibility semantic contract can be exercised without a display using
+Godot's dummy accessibility driver:
+
+```sh
+godot --headless --accessibility always --accessibility-driver dummy \
+  --path godot --script res://tests/accessibility_semantics.gd
+```
+
+This verifies live-region modes, control relationships, and dynamic accessible
+descriptions through Godot's API. The dummy driver does not expose an operating-
+system accessibility bridge and cannot establish screen-reader acceptance.
+
 Engine caches (`.godot/`), exported builds, and test output are ignored. Project
 configuration, scenes, scripts, fixtures, and relevant generated UID files are
 committed. No engine binary or export template is committed.

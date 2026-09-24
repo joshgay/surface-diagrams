@@ -20,6 +20,7 @@ var view_tab_buttons: Array[Button] = []
 var view_columns: Array[Control] = []
 var compact_view := 0
 var source: TextEdit
+var source_button: Button
 var export_svg: Button
 var export_tikz: Button
 var export_dialog: FileDialog
@@ -48,7 +49,7 @@ func _ready() -> void:
 	body.add_child(tools)
 	_button(tools, "Back to editor", _close)
 	_button(tools, "Open workspace", func(): open_dialog.popup_centered_ratio(0.85)).visible = not browser_mode
-	_button(tools, "JSON import / source", func(): source.visible = not source.visible)
+	source_button = _button(tools, "JSON import / source", func(): source.visible = not source.visible)
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
 	_button(tools, "Generic example", func(): import_source(FileAccess.get_file_as_string("res://fixtures/workspaces/grouped-v1.json")))
 	export_svg = _button(tools, "Export exact SVG", _choose_export.bind("svg"))
@@ -126,8 +127,12 @@ func _ready() -> void:
 	braid_canvas.set_accessibility_name("Continuous supplied factor braid")
 	braid_canvas.custom_minimum_size.y = 360
 	braid_canvas.record_selected.connect(_crossing_selected)
+	_set_control_relation(source_button, source)
+	for index in view_tab_buttons.size():
+		_set_control_relation(view_tab_buttons[index], view_columns[index])
 	message = _label(body, "")
 	message.set_accessibility_name("Factor workspace status")
+	message.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	open_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -159,6 +164,10 @@ func _label(parent: Node, caption: String) -> Label:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(label)
 	return label
+
+func _set_control_relation(controller: Control, target: Control) -> void:
+	var paths: Array[NodePath] = [controller.get_path_to(target)]
+	controller.set_accessibility_controls_nodes(paths)
 
 func _column(caption: String) -> VBoxContainer:
 	var column := VBoxContainer.new()

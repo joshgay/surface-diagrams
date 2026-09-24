@@ -43,10 +43,12 @@ var workspace_root: VBoxContainer
 var inspector_scroll: ScrollContainer
 var canvas_box: VBoxContainer
 var mobile_tabs: HBoxContainer
+var mobile_tab_buttons: Array[Button] = []
 var camera_note: Label
 var compact_layout := false
 var showing_records := false
 var move_button: CheckButton
+var source_button: Button
 var factor_view: FactorWorkspaceView
 var surface_view: SurfaceWorkspaceView
 var walkthrough_view: WalkthroughView
@@ -150,6 +152,7 @@ func _build_interface() -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.pressed.connect(_show_mobile_panel.bind(tab == "Records"))
 		mobile_tabs.add_child(button)
+		mobile_tab_buttons.append(button)
 	var split := HBoxContainer.new()
 	split.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	root.add_child(split)
@@ -206,7 +209,7 @@ func _build_interface() -> void:
 	braid_editor.view_changed.connect(_braid_view_changed)
 	braid_editor.selection_requested.connect(_braid_selection_requested)
 	inspector.add_child(braid_editor)
-	var source_button := Button.new()
+	source_button = Button.new()
 	source_button.text = "Show accepted source"
 	source_button.pressed.connect(func(): source_view.visible = not source_view.visible)
 	inspector.add_child(source_button)
@@ -285,7 +288,11 @@ func _build_interface() -> void:
 	status_label.max_lines_visible = 2
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 	status_label.set_accessibility_name("Studio status")
+	status_label.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
 	root.add_child(status_label)
+	_set_control_relation(mobile_tab_buttons[0], canvas_box)
+	_set_control_relation(mobile_tab_buttons[1], inspector_scroll)
+	_set_control_relation(source_button, source_view)
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	open_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -337,6 +344,10 @@ func _make_touch_targets(node: Node) -> void:
 		node.custom_minimum_size.y = maxf(node.custom_minimum_size.y, 44.0)
 	for child in node.get_children():
 		_make_touch_targets(child)
+
+func _set_control_relation(controller: Control, target: Control) -> void:
+	var paths: Array[NodePath] = [controller.get_path_to(target)]
+	controller.set_accessibility_controls_nodes(paths)
 
 func _sync_viewport() -> void:
 	var logical_size: Vector2i = get_tree().root.size

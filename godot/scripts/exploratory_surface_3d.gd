@@ -23,13 +23,14 @@ var dragging := false
 var drag_moved := false
 var drag_start := Vector2.ZERO
 var focus_border: Panel
+const ACCESSIBILITY_CONTROLS := "Arrow keys orbit, plus and minus zoom, and Home restores the fitted camera. This view uses supplied exploratory coordinates."
 
 func _ready() -> void:
 	stretch = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
 	set_accessibility_name("Exploratory three dimensional surface view")
-	set_accessibility_description("Arrow keys orbit, plus and minus zoom, and Home restores the fitted camera. This view uses supplied exploratory coordinates.")
+	_refresh_accessibility_description()
 	viewport_3d = SubViewport.new()
 	viewport_3d.own_world_3d = true
 	viewport_3d.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -83,7 +84,9 @@ func set_document(value: SurfaceViewDocument) -> void:
 	curve_points_by_id.clear()
 	records_by_id.clear()
 	selection_marker.visible = false
-	if document == null: return
+	if document == null:
+		_refresh_accessibility_description()
+		return
 	var data := document.to_dict()
 	var disk := MeshInstance3D.new()
 	var mesh := CylinderMesh.new()
@@ -129,12 +132,14 @@ func set_document(value: SurfaceViewDocument) -> void:
 	_add_label("+y", Vector3(0, data.surface.radius + 0.35, 0.1), Color("#3f8050"))
 	_add_label("front +z", Vector3(0, -data.surface.radius - 0.45, 0.1), Color("#315fa8"))
 	fit_view()
+	_refresh_accessibility_description()
 
 func select_id(id: String) -> bool:
 	if not records_by_id.has(id): return false
 	selected_id = id
 	selection_marker.position = positions_by_id[id]
 	selection_marker.visible = not hidden_ids.has(id)
+	_refresh_accessibility_description()
 	return true
 
 func hide_selected() -> bool:
@@ -142,6 +147,7 @@ func hide_selected() -> bool:
 	hidden_ids[selected_id] = true
 	nodes_by_id[selected_id].visible = false
 	selection_marker.visible = false
+	_refresh_accessibility_description()
 	return true
 
 func isolate_selected() -> bool:
@@ -152,15 +158,32 @@ func isolate_selected() -> bool:
 		nodes_by_id[id].visible = not hidden
 		if hidden: hidden_ids[id] = true
 	selection_marker.visible = true
+	_refresh_accessibility_description()
 	return true
 
 func show_all() -> void:
 	hidden_ids.clear()
 	for node in nodes_by_id.values(): node.visible = true
 	selection_marker.visible = not selected_id.is_empty()
+	_refresh_accessibility_description()
 
 func set_orientation_labels_visible(value: bool) -> void:
-	if orientation_labels != null: orientation_labels.visible = value
+	if orientation_labels != null:
+		orientation_labels.visible = value
+		_refresh_accessibility_description()
+
+func _refresh_accessibility_description() -> void:
+	var context := "No supplied surface is loaded."
+	if document != null:
+		context = "%d stable records loaded." % records_by_id.size()
+		if selected_id.is_empty():
+			context += " No record selected."
+		else:
+			context += " Selected %s %s." % [records_by_id.get(selected_id, {}).get("kind", "record"), selected_id]
+		context += " %d records hidden." % hidden_ids.size()
+		if orientation_labels != null:
+			context += " Orientation labels %s." % ("shown" if orientation_labels.visible else "hidden")
+	set_accessibility_description(ACCESSIBILITY_CONTROLS + " " + context)
 
 func fit_view() -> void:
 	yaw = 0.35

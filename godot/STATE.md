@@ -16,7 +16,52 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: focus-stable compact viewport transitions
+## Latest increment: machine-verifiable accessibility semantics
+
+Built from live fork head `cff15d4c7fe56de1b0bdeb92db32b7fe76cac171`
+in an isolated worktree under the exclusive Studio lock.
+
+- Editor and secondary-workspace status controls are now polite accessibility
+  live regions. Native source and compact-view buttons expose explicit control
+  relationships to the exact panes they reveal without changing record data.
+- Diagram canvases expose dynamic, bounded accessibility descriptions for the
+  loaded diagram kind, selected stable object or curve, and read-only linked
+  context. Braid views also describe the fixed presentation direction, exact
+  playhead, and literal supplied crossing count.
+- Exploratory 3D views describe their selected stable object, object kind,
+  hidden-object count, and orientation-label state. The descriptions remain
+  explicitly exploratory and do not claim a computed lift or equivalence.
+- A dedicated semantic harness runs the pinned engine with accessibility
+  enabled and Godot's dummy driver. It verifies live-region modes, pane
+  relationships, exact selected context, stale-selection clearing, and
+  byte-identical mathematical records across editor, factor, surface, and
+  walkthrough workspaces.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,049 Godot assertions**, including **30 new accessibility
+  semantic assertions**, the deterministic demo, all bridge/browser harnesses,
+  the two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt with a 240,272-byte PCK. The private portable Linux
+  package passed outside the checkout with 53 files and 147,304,155 bytes.
+
+No controller/test failure remains. The dummy accessibility driver exposes the
+same Godot semantic API but no operating-system accessibility bridge. This
+worker still has no X11 or Wayland display or compositor, and the available
+cloud browser does not expose WebGL 2. Actual assistive-technology
+announcements, relation exposure, visible focus, and physical-phone behavior
+therefore remain unaccepted.
+
+**Next specific task:** run the semantic and fixed visual-review workflows on a
+real X11 or Wayland desktop with Godot's platform accessibility driver and Orca,
+then on a WebGL 2 phone; verify live announcements, pane relationships, dynamic
+selection context, and keyboard-open rotation, and repair the first concrete
+accessibility or layout defect observed.
+
+## Earlier increment: focus-stable compact viewport transitions
 
 Built from live fork head `15a9c1da209dc59e887a58f3caa5cc50b92432c9`
 in an isolated worktree under the exclusive Studio lock.

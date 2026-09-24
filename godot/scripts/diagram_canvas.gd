@@ -34,11 +34,12 @@ var touch_start := Vector2.ZERO
 var touch_moved := false
 var multi_touch := false
 var focus_ring_visible := false
+const ACCESSIBILITY_CONTROLS := "Arrow keys pan, plus and minus zoom, Home fits, and left or right bracket selects the previous or next stable record."
 
 func _ready() -> void:
 	focus_mode = Control.FOCUS_ALL
 	set_accessibility_name("Diagram canvas")
-	set_accessibility_description("Arrow keys pan, plus and minus zoom, Home fits, and left or right bracket selects the previous or next stable record.")
+	_refresh_accessibility_description()
 	focus_entered.connect(func():
 		focus_ring_visible = true
 		queue_redraw())
@@ -58,16 +59,19 @@ func set_document(value: DiagramDocument) -> void:
 	braid_presentation = ""
 	set_curve_draft("", [])
 	cancel_edit_preview()
+	_refresh_accessibility_description()
 	queue_redraw()
 
 func update_document(value: DiagramDocument, selection: Dictionary = {}) -> void:
 	document = value
 	selected_record = selection.duplicate(true)
 	cancel_edit_preview()
+	_refresh_accessibility_description()
 	queue_redraw()
 
 func select_record(record: Dictionary) -> void:
 	selected_record = record.duplicate(true)
+	_refresh_accessibility_description()
 	queue_redraw()
 
 func set_curve_draft(id: String, cuts: Array) -> void:
@@ -83,7 +87,30 @@ func set_braid_view(playhead: float, direction: String) -> void:
 	braid_playhead = clampf(playhead, 0.0, document.data.braid.word.size())
 	braid_step = floori(braid_playhead)
 	braid_presentation = direction
+	_refresh_accessibility_description()
 	queue_redraw()
+
+func _refresh_accessibility_description() -> void:
+	var context := "No diagram is loaded."
+	if document != null:
+		context = "%s diagram loaded." % document.data.kind.capitalize()
+		if not selected_record.is_empty():
+			context += " Selected %s." % selected_record.get("label", _selected_record_identity())
+		else:
+			context += " No mathematical record selected."
+		if document.data.kind == "braid" and braid_playhead >= 0.0:
+			context += " %s presentation at playhead %.3f of %d literal crossings." % [braid_presentation.replace("-", " "), braid_playhead, document.data.braid.word.size()]
+	if read_only:
+		context += " This linked view is read only."
+	set_accessibility_description(ACCESSIBILITY_CONTROLS + " " + context)
+
+func _selected_record_identity() -> String:
+	var kind := str(selected_record.get("kind", "record"))
+	if not str(selected_record.get("id", "")).is_empty():
+		return "%s %s" % [kind, selected_record.id]
+	if selected_record.get("index", -1) >= 0:
+		return "%s %d" % [kind, int(selected_record.index) + 1]
+	return kind
 
 func fit_view() -> void:
 	zoom = 1.0

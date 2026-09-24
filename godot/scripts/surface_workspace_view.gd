@@ -5,6 +5,7 @@ signal closed
 const FIXTURE := "res://fixtures/surfaces/disk-v1.json"
 var document: SurfaceViewDocument
 var source: TextEdit
+var source_button: Button
 var status: Label
 var details: Label
 var record_list: ItemList
@@ -33,7 +34,7 @@ func _ready() -> void:
 	body.add_child(tools)
 	_button(tools, "Back to editor", func(): closed.emit())
 	_button(tools, "Open surface JSON", func(): open_dialog.popup_centered_ratio(0.85)).visible = not browser_mode
-	_button(tools, "JSON import / source", func(): source.visible = not source.visible)
+	source_button = _button(tools, "JSON import / source", func(): source.visible = not source.visible)
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
 	_button(tools, "Generic disk", func(): import_source(FileAccess.get_file_as_string(FIXTURE)))
 	_button(tools, "Fit 3D", func(): surface_3d.fit_view())
@@ -95,8 +96,12 @@ func _ready() -> void:
 	surface_3d.record_picked.connect(_record_selected)
 	three_d.add_child(surface_3d)
 	surface_3d.set_accessibility_name("Linked exploratory three dimensional view")
+	_set_control_relation(source_button, source)
+	for index in view_tab_buttons.size():
+		_set_control_relation(view_tab_buttons[index], view_columns[index])
 	status = _label(body, "")
 	status.set_accessibility_name("Exploratory surface status")
+	status.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
 	_label(body, "Keyboard: Up/Down select a stable record, Home selects the first, F fits 3D, H hides, I isolates, A shows all, Escape returns to the editor.")
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
@@ -123,6 +128,10 @@ func _label(parent: Node, caption: String) -> Label:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(label)
 	return label
+
+func _set_control_relation(controller: Control, target: Control) -> void:
+	var paths: Array[NodePath] = [controller.get_path_to(target)]
+	controller.set_accessibility_controls_nodes(paths)
 
 func _column(caption: String) -> VBoxContainer:
 	var column := VBoxContainer.new()

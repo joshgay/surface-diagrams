@@ -8,6 +8,14 @@ have explicit accessibility names. Opening a secondary workspace places focus
 on its primary selector; Escape returns to the editor and restores the prior
 focus when that control still exists.
 
+Status text in the editor and each secondary workspace is marked as a polite
+live region. Source toggles and compact view buttons identify the exact control
+or pane they reveal. The custom 2D canvas exposes the loaded diagram kind, exact
+selected inspector row, braid presentation, and literal playhead through its
+accessible description. The exploratory 3D view similarly exposes the selected
+stable ID, hidden-record count, and orientation-label state. These descriptions
+are view metadata only; updating them does not alter mathematical records.
+
 ## Editor
 
 - Arrow keys pan a focused diagram canvas.
@@ -48,6 +56,10 @@ The controller tests exercise these paths at 320, 390, 844, and 1280 pixel
 widths, including portrait and landscape compact-view switching. A separate
 focus contract shrinks a desktop layout to 390 pixels wide, and the editor
 source case also contracts to 360 pixels high to model a virtual keyboard.
+The aggregate also runs a dedicated semantic contract with Godot's dummy
+accessibility driver. It verifies live-region modes, controller relationships,
+dynamic selected-record descriptions, and byte-identical records. The dummy
+driver does not substitute for a real operating-system accessibility bridge.
 The Web shell also reports the canvas content box after safe-area padding and
 visual-viewport changes, so browser chrome and the on-screen keyboard do not
 silently leave Godot using stale layout dimensions.

@@ -16,6 +16,7 @@ var play_direction := 1
 var braid_presentation := "bottom-to-top"
 var browser_mode := OS.has_feature("web")
 var source: TextEdit
+var source_button: Button
 var selector: OptionButton
 var timeline: HSlider
 var timeline_label: Label
@@ -67,7 +68,7 @@ func _ready() -> void:
 	_button(tools, "Save walkthrough", func(): _choose_save()).visible = not browser_mode
 	publication_button = _button(tools, "Export publication bundle", _choose_publication)
 	publication_button.disabled = true
-	_button(tools, "JSON import / source", func(): source.visible = not source.visible)
+	source_button = _button(tools, "JSON import / source", func(): source.visible = not source.visible)
 	_button(tools, "Import pasted JSON", func(): import_source(source.text))
 	_button(tools, "Generic planar", func(): import_source(FileAccess.get_file_as_string(PLANAR_FIXTURE)))
 	_button(tools, "Generic braid", func(): import_source(FileAccess.get_file_as_string(BRAID_FIXTURE)))
@@ -171,8 +172,14 @@ func _ready() -> void:
 	cover_after_label = _label(cover_after_column, "")
 	cover_after_view = _surface_view(cover_after_column)
 	cover_after_view.set_accessibility_name("Complete supplied exploratory after-view")
+	_set_control_relation(source_button, source)
+	for index in endpoint_columns.size():
+		_set_control_relation(view_tab_buttons[index], endpoint_columns[index])
+	for index in cover_columns.size():
+		_set_control_relation(view_tab_buttons[index + 2], cover_columns[index])
 	status = _label(body, "")
 	status.set_accessibility_name("Walkthrough status")
+	status.set_accessibility_live(AccessibilityServer.LIVE_POLITE)
 	open_dialog = FileDialog.new()
 	open_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	open_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -211,6 +218,10 @@ func _label(parent: Node, caption: String) -> Label:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(label)
 	return label
+
+func _set_control_relation(controller: Control, target: Control) -> void:
+	var paths: Array[NodePath] = [controller.get_path_to(target)]
+	controller.set_accessibility_controls_nodes(paths)
 
 func _column(caption: String) -> VBoxContainer:
 	var column := VBoxContainer.new()
