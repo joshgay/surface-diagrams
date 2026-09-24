@@ -89,12 +89,21 @@ func _run() -> void:
 	view.surface_3d.set_orientation_labels_visible(true)
 	var prior_id := view.selected_id
 	_check(not view.import_source("{}") and view.document.to_json() == accepted and view.selected_id == prior_id, "failed import preserves record and linked selection")
-	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(1280, 800)]:
+	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(844, 390), Vector2i(1280, 800)]:
 		root.size = viewport
 		root.content_scale_size = viewport
 		for frame in 4: await process_frame
 		_check(view.grid.columns == (1 if viewport.x < 900 else 2), "surface workspace adapts columns at %s" % viewport)
 		_check(view.grid.get_global_rect().end.x <= viewport.x + 1, "surface workspace does not overflow horizontally at %s" % viewport)
+		if viewport.x < 900:
+			_check(view.view_tabs.visible and view.view_columns.filter(func(column): return column.visible).size() == 1, "compact surface workspace shows one selectable linked view at %s" % viewport)
+			_check(view.view_tabs.get_global_rect().end.x <= viewport.x + 1 and view.view_tab_buttons.all(func(button): return button.custom_minimum_size.y >= 44), "compact surface switcher fits and retains touch targets at %s" % viewport)
+			var preserved := view.document.to_json()
+			_check(view.show_compact_view("surface-3d") and view.surface_3d.is_visible_in_tree() and not view.canvas_2d.is_visible_in_tree(), "compact surface tabs reveal 3D without a stacked 760-pixel view block at %s" % viewport)
+			_check(view.document.to_json() == preserved and view.selected_id == prior_id, "compact surface switching preserves the exact record and stable-ID selection")
+			view.show_compact_view("surface-2d")
+		else:
+			_check(not view.view_tabs.visible and view.view_columns.all(func(column): return column.visible), "desktop surface workspace keeps both linked views visible")
 	view.queue_free()
 	await process_frame
 	root.size = Vector2i(1280, 800)

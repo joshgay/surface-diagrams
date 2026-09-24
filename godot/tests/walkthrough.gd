@@ -124,12 +124,21 @@ func _run() -> void:
 	_check(not view.import_source("{}") and view.document.to_json() == normalized and view.timeline_position == accepted_position, "failed import preserves accepted walkthrough and timeline")
 	_check(view.save_path("user://walkthrough-view-test.json") and FileAccess.get_file_as_string("user://walkthrough-view-test.json") == normalized, "viewer save preserves exact record")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://walkthrough-view-test.json"))
-	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(1280, 800)]:
+	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(844, 390), Vector2i(1280, 800)]:
 		root.size = viewport
 		root.content_scale_size = viewport
 		for frame in 4: await process_frame
 		_check(view.grid.columns == (1 if viewport.x < 900 else 2), "walkthrough adapts columns at %s" % viewport)
 		_check(view.grid.get_global_rect().end.x <= viewport.x + 1, "walkthrough endpoints do not overflow horizontally at %s" % viewport)
+		if viewport.x < 900:
+			_check(view.view_tabs.visible and view.endpoint_columns.filter(func(column): return column.visible).size() == 1, "compact walkthrough shows one selectable endpoint at %s" % viewport)
+			_check(view.view_tabs.get_global_rect().end.x <= viewport.x + 1 and view.view_tab_buttons.slice(0, 2).all(func(button): return button.custom_minimum_size.y >= 44), "compact walkthrough switcher fits and retains touch targets at %s" % viewport)
+			var preserved := view.document.to_json()
+			_check(view.show_compact_view("after") and view.after_canvas.is_visible_in_tree() and not view.before_canvas.is_visible_in_tree(), "compact walkthrough tabs reveal the complete after-state without stacked endpoints at %s" % viewport)
+			_check(view.document.to_json() == preserved and view.step_index == 1 and not view.show_compact_view("cover-before"), "compact endpoint switching preserves records and refuses absent cover views")
+			view.show_compact_view("before")
+		else:
+			_check(not view.view_tabs.visible and view.endpoint_columns.all(func(column): return column.visible), "desktop walkthrough keeps both complete endpoints visible")
 	view.queue_free()
 	await process_frame
 	root.size = Vector2i(1280, 800)

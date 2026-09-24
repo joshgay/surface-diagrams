@@ -30,6 +30,12 @@ var after_canvas: DiagramCanvas
 var before_label: Label
 var after_label: Label
 var grid: GridContainer
+var view_tabs: HBoxContainer
+var view_tab_buttons: Array[Button] = []
+var endpoint_columns: Array[Control] = []
+var cover_columns: Array[Control] = []
+var compact_view := 0
+var current_step_has_cover := false
 var cover_panel: VBoxContainer
 var cover_grid: GridContainer
 var cover_before_view: ExploratorySurface3D
@@ -122,14 +128,26 @@ func _ready() -> void:
 	selected_list.item_selected.connect(_selected_row)
 	selected_list.set_accessibility_name("Stable records selected by this supplied step")
 	body.add_child(selected_list)
+	view_tabs = HBoxContainer.new()
+	view_tabs.visible = false
+	view_tabs.set_accessibility_name("Walkthrough view switcher")
+	body.add_child(view_tabs)
+	for spec in [["Before", "before"], ["After", "after"], ["3D before", "cover-before"], ["3D after", "cover-after"]]:
+		var button := _button(view_tabs, spec[0], show_compact_view.bind(spec[1]))
+		button.toggle_mode = true
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.set_accessibility_description("Show only the %s view on a compact screen." % spec[0].to_lower())
+		view_tab_buttons.append(button)
 	grid = GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(grid)
 	var before_column := _column("Complete supplied before-state")
+	endpoint_columns.append(before_column)
 	before_label = _label(before_column, "")
 	before_canvas = _canvas(before_column)
 	before_canvas.set_accessibility_name("Complete supplied before-state diagram")
 	var after_column := _column("Complete supplied after-state")
+	endpoint_columns.append(after_column)
 	after_label = _label(after_column, "")
 	after_canvas = _canvas(after_column)
 	after_canvas.set_accessibility_name("Complete supplied after-state diagram")
@@ -143,10 +161,12 @@ func _ready() -> void:
 	cover_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cover_panel.add_child(cover_grid)
 	var cover_before_column := _cover_column("Complete supplied exploratory before-view")
+	cover_columns.append(cover_before_column)
 	cover_before_label = _label(cover_before_column, "")
 	cover_before_view = _surface_view(cover_before_column)
 	cover_before_view.set_accessibility_name("Complete supplied exploratory before-view")
 	var cover_after_column := _cover_column("Complete supplied exploratory after-view")
+	cover_columns.append(cover_after_column)
 	cover_after_label = _label(cover_after_column, "")
 	cover_after_view = _surface_view(cover_after_column)
 	cover_after_view.set_accessibility_name("Complete supplied exploratory after-view")
@@ -223,8 +243,32 @@ func _surface_view(parent: Node) -> ExploratorySurface3D:
 	return view
 
 func _responsive() -> void:
-	if grid != null: grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
-	if cover_grid != null: cover_grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
+	if grid == null or cover_grid == null:
+		return
+	var compact := get_viewport_rect().size.x < 900
+	if compact_view >= 2 and not current_step_has_cover:
+		compact_view = 0
+	grid.columns = 1 if compact else 2
+	cover_grid.columns = 1 if compact else 2
+	view_tabs.visible = compact
+	grid.visible = not compact or compact_view < 2
+	cover_panel.visible = current_step_has_cover and (not compact or compact_view >= 2)
+	for index in endpoint_columns.size():
+		endpoint_columns[index].visible = not compact or index == compact_view
+	for index in cover_columns.size():
+		cover_columns[index].visible = not compact or index + 2 == compact_view
+	for index in view_tab_buttons.size():
+		view_tab_buttons[index].visible = index < 2 or current_step_has_cover
+		view_tab_buttons[index].set_pressed_no_signal(index == compact_view)
+
+func show_compact_view(name: String) -> bool:
+	var names := ["before", "after", "cover-before", "cover-after"]
+	var index := names.find(name)
+	if index < 0 or (index >= 2 and not current_step_has_cover):
+		return false
+	compact_view = index
+	_responsive()
+	return true
 
 func focus_entry() -> void:
 	if selector != null and selector.item_count > 0:
@@ -348,10 +392,11 @@ func set_timeline_position(value: float, from_playback: bool = false) -> void:
 
 func _update_cover(step: Dictionary) -> void:
 	var has_cover: bool = step.has("cover")
-	cover_panel.visible = has_cover
+	current_step_has_cover = has_cover
 	if not has_cover:
 		cover_before_view.set_document(null)
 		cover_after_view.set_document(null)
+		_responsive()
 		return
 	var before_surface := document.surface_view(step.cover.before_surface)
 	var after_surface := document.surface_view(step.cover.after_surface)
@@ -360,6 +405,7 @@ func _update_cover(step: Dictionary) -> void:
 	cover_before_label.text = "%s: %s" % [step.cover.before_surface, before_surface.to_dict().title]
 	cover_after_label.text = "%s: %s" % [step.cover.after_surface, after_surface.to_dict().title]
 	cover_status.text = "SUPPLIED EXPLORATORY LINKAGE. These are complete endpoint views. Studio does not compute a branched-cover lift, interpolate surface geometry, or certify equivalence."
+	_responsive()
 
 func _record_selected(record: Dictionary) -> void:
 	if document == null or not record.has("kind") or not record.has("id"): return

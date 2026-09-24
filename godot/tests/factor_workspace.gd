@@ -108,7 +108,7 @@ func _run() -> void:
 	_check(view.before_canvas.document == null and view.after_canvas.document != null and view.braid_canvas.braid_playhead == 1.0, "partial state gap stays absent throughout empty-stage playback")
 	view.browser_mode = true
 	_check(view.import_source(source) and view.export_svg.disabled and "Browser" in view.message.text, "browser never claims local Python validation")
-	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(1280, 800)]:
+	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(844, 390), Vector2i(1280, 800)]:
 		root.size = viewport
 		# The main Studio sets this to CSS pixels in _sync_viewport(). Reproduce
 		# that contract when testing the factor panel without its parent scene.
@@ -116,6 +116,15 @@ func _run() -> void:
 		for frame in 4: await process_frame
 		_check(view.grid.columns == (1 if viewport.x < 900 else 3), "factor viewer adapts columns at %s" % viewport)
 		_check(view.grid.get_global_rect().end.x <= viewport.x + 1, "factor views do not overflow horizontally at %s" % viewport)
+		if viewport.x < 900:
+			_check(view.view_tabs.visible and view.view_columns.filter(func(column): return column.visible).size() == 1, "compact factor workspace shows one selectable mathematical view at %s" % viewport)
+			_check(view.view_tabs.get_global_rect().end.x <= viewport.x + 1 and view.view_tab_buttons.all(func(button): return button.custom_minimum_size.y >= 44), "compact factor switcher fits and retains touch targets at %s" % viewport)
+			var preserved := view.workspace.to_json()
+			_check(view.show_compact_view("braid") and view.braid_canvas.is_visible_in_tree() and not view.support_canvas.is_visible_in_tree(), "compact factor tabs reveal the braid without a long stacked scroll at %s" % viewport)
+			_check(view.workspace.to_json() == preserved and view.factor_index == 0, "compact factor switching preserves the exact workspace and factor selection")
+			view.show_compact_view("support")
+		else:
+			_check(not view.view_tabs.visible and view.view_columns.all(func(column): return column.visible), "desktop factor workspace keeps all three linked views visible")
 	var empty := workspace.to_dict()
 	empty.factors = []
 	empty.initial_state = null

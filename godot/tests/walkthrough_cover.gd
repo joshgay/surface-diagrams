@@ -86,12 +86,19 @@ func _run() -> void:
 	_check(view.save_path("user://walkthrough-cover-test.json") and FileAccess.get_file_as_string("user://walkthrough-cover-test.json") == normalized, "viewer saves exact linked walkthrough")
 	_check(WalkthroughDocument.parse(FileAccess.get_file_as_string("user://walkthrough-cover-test.json")).document.to_json() == normalized, "saved linked walkthrough reopens exactly")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://walkthrough-cover-test.json"))
-	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(1280, 800)]:
+	for viewport in [Vector2i(320, 640), Vector2i(390, 844), Vector2i(844, 390), Vector2i(1280, 800)]:
 		root.size = viewport
 		root.content_scale_size = viewport
 		for frame in 4: await process_frame
 		_check(view.cover_grid.columns == (1 if viewport.x < 900 else 2), "linked surface endpoints adapt columns at %s" % viewport)
 		_check(view.cover_grid.get_global_rect().end.x <= viewport.x + 1, "linked surface endpoints do not overflow horizontally at %s" % viewport)
+		if viewport.x < 900:
+			var preserved := view.document.to_json()
+			_check(view.show_compact_view("cover-after") and view.cover_panel.visible and not view.grid.visible and view.cover_after_view.is_visible_in_tree() and not view.cover_before_view.is_visible_in_tree(), "compact linked walkthrough exposes one requested exploratory endpoint at %s" % viewport)
+			_check(view.document.to_json() == preserved and view.step_index == 0 and view.view_tab_buttons[2].visible, "compact exploratory switching preserves the supplied linkage and selection")
+			view.show_compact_view("before")
+		else:
+			_check(view.grid.visible and view.cover_panel.visible and view.endpoint_columns.all(func(column): return column.visible) and view.cover_columns.all(func(column): return column.visible), "desktop linked walkthrough keeps all four complete endpoints visible")
 	_check(view.import_source(plain_source) and not view.cover_panel.visible and view.cover_before_view.document == null and view.cover_after_view.document == null, "steps without links hide and clear exploratory views")
 	view.queue_free()
 	await process_frame

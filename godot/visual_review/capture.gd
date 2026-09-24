@@ -197,16 +197,19 @@ func _select_editor_id(studio, id: String) -> void:
 			return
 
 func _factor_target(view: FactorWorkspaceView, target: String) -> Control:
+	view.show_compact_view(target)
 	if target == "braid": return view.braid_canvas
 	if target == "states": return view.before_canvas
 	return view.support_canvas
 
 func _surface_target(view: SurfaceWorkspaceView, target: String) -> Control:
+	view.show_compact_view(target)
 	if target == "surface-3d": return view.surface_3d
 	if target == "surface-2d": return view.canvas_2d
 	return view.grid
 
 func _walkthrough_target(view: WalkthroughView, target: String) -> Control:
+	view.show_compact_view(target)
 	if target == "after": return view.after_canvas
 	if target == "before": return view.before_canvas
 	return view.grid

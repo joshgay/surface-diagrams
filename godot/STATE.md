@@ -16,7 +16,55 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: reproducible real-window visual-review evidence
+## Latest increment: compact linked-view navigation for phones
+
+Built from live fork head `a783aa2d8cd58ebca68d66d76aea5eac7e22d2df`
+in an isolated worktree under the exclusive Studio lock.
+
+- Replaced the secondary workspaces' compact behavior of stacking every large
+  linked canvas into a single long phone scroll. At widths below 900 logical
+  pixels, the factor workspace now switches among support, supplied states, and
+  braid; the surface workspace switches between linked 2D and exploratory 3D;
+  and walkthroughs switch between complete before/after endpoints plus supplied
+  exploratory endpoints when those records actually exist.
+- Every switcher uses touch-sized, keyboard-focusable native buttons with
+  explicit accessibility names and descriptions. The selected button remains
+  visible, while desktop layouts continue to show every linked view together.
+- Switching views changes presentation only. Tests retain exact normalized
+  workspace/walkthrough JSON, stable-ID and factor/step selection, timeline
+  position, and the independent 3D view state. A walkthrough cannot expose
+  cover tabs when no supplied cover records exist.
+- The fixed visual-review capture now selects the requested compact subview
+  before focusing and scrolling to it. Portrait and landscape evidence will
+  therefore capture the named braid/state, 2D/3D, or before/after content rather
+  than a hidden or merely distant stacked panel.
+- The public Site shell was opened read-only during this run, but the available
+  cloud browser reported that WebGL 2 was unavailable and Godot did not start.
+  No public Site deployment occurred, and that browser result is not presented
+  as mobile visual acceptance.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,011 Godot assertions**, including **54 new responsive-view
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**
+  and **8 browser-editor tests**.
+- Static Web export rebuilt successfully with a 234,208-byte PCK. The private
+  portable Linux package passed outside the checkout with 53 files and
+  147,298,091 bytes.
+
+No controller/test failure remains. Display-enabled desktop and phone image
+inspection, WebGL, physical-phone, visible-focus, and screen-reader acceptance
+remain pending.
+
+**Next specific task:** run the fixed twelve-frame harness on an actual X11 or
+Wayland display, inspect the new compact switchers and selected content in all
+eight phone frames, and repair the first observed clipping, focus, or touch-flow
+defect before marking any visual item passed.
+
+## Earlier increment: reproducible real-window visual-review evidence
 
 Built from live fork head `2a38853ddf72099ddcdebe49f54ff48e54f4d0de`
 in an isolated worktree under the exclusive Studio lock.

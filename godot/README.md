@@ -65,6 +65,13 @@ actions. These commands are view state and never edit mathematical JSON. See
 [ACCESSIBILITY.md](ACCESSIBILITY.md) for the exact shortcuts and current
 screen-reader/visual-acceptance limits.
 
+At widths below 900 logical pixels, the factor, exploratory surface, and
+walkthrough workspaces expose touch-sized view switchers instead of stacking
+every 2D and 3D canvas into one long scroll. Switching support/state/braid,
+2D/3D, or complete before/after endpoints changes only presentation. Stable-ID
+selection, timeline position, supplied records, and independent 3D cameras are
+preserved. Desktop layouts continue to show all linked views together.
+
 For real-window visual evidence, [visual_review/README.md](visual_review/README.md)
 defines twelve fixed editor/workspace captures at desktop, phone portrait, and
 phone landscape sizes. The runner isolates recovery state, records fixture,

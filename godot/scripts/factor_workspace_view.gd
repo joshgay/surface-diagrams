@@ -14,6 +14,10 @@ var braid_canvas: DiagramCanvas
 var before_label: Label
 var after_label: Label
 var grid: GridContainer
+var view_tabs: HBoxContainer
+var view_tab_buttons: Array[Button] = []
+var view_columns: Array[Control] = []
+var compact_view := 0
 var source: TextEdit
 var export_svg: Button
 var export_tikz: Button
@@ -90,13 +94,25 @@ func _ready() -> void:
 	timeline_label = _label(body, "Timeline is view state. Supplied planar states switch at factor boundaries; they are not interpolated or computed.")
 	_label(body, "Keyboard: Left/Right step, Home/End jump, Space plays or pauses, D changes braid presentation, Escape returns to the editor.")
 	details = _label(body, "")
+	view_tabs = HBoxContainer.new()
+	view_tabs.visible = false
+	view_tabs.set_accessibility_name("Factor view switcher")
+	body.add_child(view_tabs)
+	for caption in ["Support", "States", "Braid"]:
+		var button := _button(view_tabs, caption, show_compact_view.bind(caption.to_lower()))
+		button.toggle_mode = true
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.set_accessibility_description("Show only the %s view on a compact screen." % caption.to_lower())
+		view_tab_buttons.append(button)
 	grid = GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(grid)
 	var supports := _column("Support")
+	view_columns.append(supports)
 	support_canvas = _canvas(supports)
 	support_canvas.set_accessibility_name("Selected factor support diagram")
 	var states := _column("Supplied states")
+	view_columns.append(states)
 	before_label = _label(states, "")
 	before_canvas = _canvas(states)
 	before_canvas.set_accessibility_name("Supplied factor before-state diagram")
@@ -104,6 +120,7 @@ func _ready() -> void:
 	after_canvas = _canvas(states)
 	after_canvas.set_accessibility_name("Supplied factor after-state diagram")
 	var braids := _column("Continuous supplied braid")
+	view_columns.append(braids)
 	braid_canvas = _canvas(braids)
 	braid_canvas.set_accessibility_name("Continuous supplied factor braid")
 	braid_canvas.custom_minimum_size.y = 360
@@ -197,7 +214,24 @@ func _text_entry_focused() -> bool:
 func _responsive() -> void:
 	# Use the available viewport, not a temporarily expanded container minimum.
 	# Otherwise the desktop grid can prevent its own phone breakpoint.
-	if grid != null: grid.columns = 1 if get_viewport_rect().size.x < 900 else 3
+	if grid == null:
+		return
+	var compact := get_viewport_rect().size.x < 900
+	grid.columns = 1 if compact else 3
+	view_tabs.visible = compact
+	for index in view_columns.size():
+		view_columns[index].visible = not compact or index == compact_view
+	for index in view_tab_buttons.size():
+		view_tab_buttons[index].set_pressed_no_signal(index == compact_view)
+
+func show_compact_view(name: String) -> bool:
+	var names := ["support", "states", "braid"]
+	var index := names.find(name)
+	if index < 0:
+		return false
+	compact_view = index
+	_responsive()
+	return true
 
 func open_path(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)

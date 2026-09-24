@@ -28,6 +28,9 @@ focus when that control still exists.
 - Supplied walkthrough: Left/Right steps, Home/End jumps, Space plays or
   pauses, R reverses playback, and B changes only signed-braid presentation.
 - A focused 3D view uses arrow keys to orbit, `+`/`-` to zoom, and Home to fit.
+- On compact screens, touch-sized view-switcher buttons place one linked canvas
+  at a time in the content region. They participate in ordinary Tab navigation;
+  switching them changes no supplied record or stable-ID selection.
 - Escape returns from any secondary workspace to the editor.
 
 These commands modify selection, camera, visibility, or playback state only.
@@ -35,6 +38,7 @@ They do not renumber, simplify, reroute, or otherwise change a mathematical
 record. Text-entry fields keep ordinary editing keys instead of triggering
 workspace shortcuts.
 
-The controller tests exercise these paths at 320, 390, and 1280 pixel widths.
+The controller tests exercise these paths at 320, 390, 844, and 1280 pixel
+widths, including portrait and landscape compact-view switching.
 This is not a claim of screen-reader certification or visual acceptance. Those
 checks still require display-enabled desktop and physical mobile environments.

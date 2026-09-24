@@ -11,6 +11,10 @@ var record_list: ItemList
 var canvas_2d: DiagramCanvas
 var surface_3d: ExploratorySurface3D
 var grid: GridContainer
+var view_tabs: HBoxContainer
+var view_tab_buttons: Array[Button] = []
+var view_columns: Array[Control] = []
+var compact_view := 0
 var open_dialog: FileDialog
 var browser_mode := OS.has_feature("web")
 var selected_id := ""
@@ -60,10 +64,21 @@ func _ready() -> void:
 	_button(visibility_tools, "Isolate selected", _isolate_selected)
 	_button(visibility_tools, "Show all", _show_all)
 	details = _label(body, "Select the same stable ID in either view.")
+	view_tabs = HBoxContainer.new()
+	view_tabs.visible = false
+	view_tabs.set_accessibility_name("Surface view switcher")
+	body.add_child(view_tabs)
+	for spec in [["2D recipe", "surface-2d"], ["Exploratory 3D", "surface-3d"]]:
+		var button := _button(view_tabs, spec[0], show_compact_view.bind(spec[1]))
+		button.toggle_mode = true
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.set_accessibility_description("Show only the %s on a compact screen." % spec[0])
+		view_tab_buttons.append(button)
 	grid = GridContainer.new()
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_child(grid)
 	var two_d := _column("Linked 2D recipe (schematic)")
+	view_columns.append(two_d)
 	canvas_2d = DiagramCanvas.new()
 	canvas_2d.read_only = true
 	canvas_2d.custom_minimum_size.y = 380
@@ -72,6 +87,7 @@ func _ready() -> void:
 	two_d.add_child(canvas_2d)
 	canvas_2d.set_accessibility_name("Linked two dimensional recipe")
 	var three_d := _column("Exploratory supplied 3D view")
+	view_columns.append(three_d)
 	surface_3d = ExploratorySurface3D.new()
 	surface_3d.custom_minimum_size.y = 380
 	surface_3d.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -115,7 +131,24 @@ func _column(caption: String) -> VBoxContainer:
 	return column
 
 func _responsive() -> void:
-	if grid != null: grid.columns = 1 if get_viewport_rect().size.x < 900 else 2
+	if grid == null:
+		return
+	var compact := get_viewport_rect().size.x < 900
+	grid.columns = 1 if compact else 2
+	view_tabs.visible = compact
+	for index in view_columns.size():
+		view_columns[index].visible = not compact or index == compact_view
+	for index in view_tab_buttons.size():
+		view_tab_buttons[index].set_pressed_no_signal(index == compact_view)
+
+func show_compact_view(name: String) -> bool:
+	var names := ["surface-2d", "surface-3d"]
+	var index := names.find(name)
+	if index < 0:
+		return false
+	compact_view = index
+	_responsive()
+	return true
 
 func focus_entry() -> void:
 	if record_list != null:
