@@ -105,3 +105,43 @@ New edits still construct and validate a new immutable document, including its
 one canonical serialization, so their small difference between receipts is host
 variation rather than an optimization claim. The full history workload is now
 86.8% below the original 4,007.524 ms baseline.
+
+## Deterministic history-retention envelope
+
+The versioned retention audit records logical data shape at the exact history
+limit. It separately counts compact UTF-8 serialization of command dictionaries,
+the document-source strings referenced by those commands, runtime-only snapshot
+source/document slots, and the current immutable document. It also verifies
+that every snapshot source and cached document exactly matches its corresponding
+serialized command. The audit is deterministic and deliberately does not report
+allocator, heap, resident-memory, or process measurements because Godot may
+share immutable string storage.
+
+The [retention receipt](benchmark/receipts/linux-headless-2026-09-24-retention-audit.json)
+reproduced this endpoint across two complete runs of the unchanged
+`bounded-m7-v1` workload:
+
+| Retained quantity at 100 commands | Exact amount |
+| --- | ---: |
+| Compact serialized command equivalent | 3,036,447 bytes |
+| Source text in command fields | 2,171,147 bytes |
+| Runtime snapshot source slots | 1,085,572 bytes |
+| Runtime immutable snapshot document slots | 1,085,572 bytes |
+| Current immutable document | 10,857 bytes |
+| Total logical source slots | 4,353,148 bytes |
+| Runtime snapshots | 100 |
+| Stale, missing, or orphaned snapshots | 0 |
+
+Undoing and redoing the full stack must reproduce the byte-identical audit.
+The 101st edit evicts both the oldest serialized command and its runtime
+snapshot, and a new edit after undo clears both redo structures together.
+Recovery now enforces 100 commands across undo and redo combined, matching live
+history behavior rather than allowing two independent 100-command stacks.
+
+The conservative logical source-slot ceiling is 105,119,744 bytes: two bounded
+document sources per command, one snapshot source plus one snapshot document
+per command, and the current document. This ceiling intentionally counts each
+logical slot even where the runtime shares storage. The exercised maximum
+structural fixture uses about 4.14 percent of it. Compact command serialization
+is reported separately because it is an equivalent diagnostic representation,
+not another retained runtime buffer.

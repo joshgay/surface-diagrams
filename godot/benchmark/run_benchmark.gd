@@ -60,6 +60,11 @@ func _run() -> void:
 
 	_require(measurements.all(func(item): return item.samples_us.all(func(value): return value > 0)), "all measured samples are positive")
 	_require(history_measurement.initial_sha256 == _sha_text(planar_json), "history undo returns exact initial record")
+	_require(history_measurement.retention.cache_aligned and history_measurement.retention.within_source_bounds,
+		"history retention remains aligned and inside the conservative source envelope")
+	_require(history_measurement.retention.totals.command_count == HISTORY_COMMANDS
+		and history_measurement.retention.totals.snapshot_count == HISTORY_COMMANDS,
+		"history retention reports the complete command and runtime snapshot bounds")
 	_require(timeline_measurement.final_crossings == 128 and timeline_measurement.final_paths == 32, "timeline reaches the exact maximum braid endpoint")
 	_require(geometry_measurement.svg_sha256 == _sha_text(warm_geometry.svg), "geometry output remains byte-identical after warmup")
 	_require(geometry_measurement.tikz_sha256 == _sha_text(warm_geometry.tikz), "TikZ output remains byte-identical after warmup")
@@ -105,6 +110,7 @@ func _run() -> void:
 		"integrity": {
 			"history_initial_sha256": history_measurement.initial_sha256,
 			"history_final_sha256": history_measurement.final_sha256,
+			"history_retention": history_measurement.retention,
 			"timeline_final_paths": timeline_measurement.final_paths,
 			"timeline_final_crossings": timeline_measurement.final_crossings,
 			"geometry_svg_sha256": geometry_measurement.svg_sha256,
@@ -156,7 +162,8 @@ func _measure_history(planar: DiagramDocument) -> Dictionary:
 		"redo": _timing_summary(redo_samples, HISTORY_COMMANDS)
 	}
 	return {"measurement": measurement,
-		"initial_sha256": last.initial_sha256, "final_sha256": last.final_sha256}
+		"initial_sha256": last.initial_sha256, "final_sha256": last.final_sha256,
+		"retention": last.retention}
 
 func _history_once(planar: DiagramDocument) -> Dictionary:
 	var history := DiagramEditHistory.new()
@@ -168,6 +175,7 @@ func _history_once(planar: DiagramDocument) -> Dictionary:
 		if not moved.ok: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - edit_started}
 	var edit_us := Time.get_ticks_usec() - edit_started
 	var final := history.current.to_json()
+	var retention := history.retention_audit()
 	var undo_started := Time.get_ticks_usec()
 	for index in HISTORY_COMMANDS:
 		if not history.undo().ok: return {"ok": false, "elapsed_us": edit_us + Time.get_ticks_usec() - undo_started}
@@ -178,9 +186,11 @@ func _history_once(planar: DiagramDocument) -> Dictionary:
 		if not history.redo().ok: return {"ok": false, "elapsed_us": edit_us + undo_us + Time.get_ticks_usec() - redo_started}
 	var redo_us := Time.get_ticks_usec() - redo_started
 	if history.current.to_json() != final: return {"ok": false, "elapsed_us": edit_us + undo_us + redo_us}
+	if history.retention_audit() != retention: return {"ok": false, "elapsed_us": edit_us + undo_us + redo_us}
 	return {"ok": true, "elapsed_us": edit_us + undo_us + redo_us,
 		"edit_us": edit_us, "undo_us": undo_us, "redo_us": redo_us,
-		"initial_sha256": _sha_text(initial), "final_sha256": _sha_text(final)}
+		"initial_sha256": _sha_text(initial), "final_sha256": _sha_text(final),
+		"retention": retention}
 
 func _measure_timeline(braid: DiagramDocument) -> Dictionary:
 	var samples: Array[int] = []

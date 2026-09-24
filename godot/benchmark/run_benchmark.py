@@ -81,6 +81,21 @@ def validate(path: Path) -> dict:
             or integrity.get("publication_documents") != ["disk_before", "disk_after"]
             or integrity.get("excluded_exploratory_surface_views") != ["surface_before", "surface_after"]):
         raise SystemExit("benchmark integrity endpoint is unexpected")
+    retention = integrity.get("history_retention", {})
+    totals, bounds = retention.get("totals", {}), retention.get("bounds", {})
+    if (retention.get("format") != "surface-diagrams-history-retention"
+            or retention.get("version") != 1
+            or retention.get("history_limit") != 100
+            or retention.get("cache_aligned") is not True
+            or retention.get("within_source_bounds") is not True
+            or totals.get("command_count") != 100
+            or totals.get("snapshot_count") != 100
+            or totals.get("stale_snapshot_count") != 0
+            or totals.get("missing_snapshot_count") != 0
+            or totals.get("orphan_snapshot_count") != 0
+            or not 0 < totals.get("serialized_command_bytes", 0) < 128 * 1024 * 1024
+            or not 0 < totals.get("logical_source_bytes", 0) <= bounds.get("maximum_logical_source_bytes", 0)):
+        raise SystemExit("history retention audit is malformed or outside its bound")
     return receipt
 
 

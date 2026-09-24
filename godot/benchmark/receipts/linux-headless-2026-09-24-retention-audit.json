@@ -1,0 +1,256 @@
+{
+  "bounds": {
+    "braid_strands": 32,
+    "braid_word": 128,
+    "document_bytes": 262144,
+    "history_commands": 100,
+    "labels": 32,
+    "planar_curves": 16,
+    "planar_objects": 32
+  },
+  "environment": {
+    "architecture": "x86_64",
+    "display_driver": "headless",
+    "os": "Linux",
+    "processor_count": 9
+  },
+  "fixtures": [
+    {
+      "curves": 16,
+      "id": "maximum-planar",
+      "labels": 32,
+      "normalized_bytes": 10854,
+      "objects": 32,
+      "sha256": "d385317f09b907243a7e84e3f3386f7321c8cdb9f5bc121c51566260269f67f3"
+    },
+    {
+      "id": "maximum-braid",
+      "normalized_bytes": 1665,
+      "sha256": "32ba74e1933f40046da6ade21b4d1083ed56f39b9f047fdb4b9f90634070c5dd",
+      "strands": 32,
+      "word": 128
+    },
+    {
+      "documents": 2,
+      "id": "representative-linked-publication",
+      "normalized_bytes": 9153,
+      "scope": "representative, not the schema maximum",
+      "sha256": "469950ae05c79c4d236da8cb860497e5c987cee535f061408b00e6e79bf7dd3f",
+      "steps": 1
+    }
+  ],
+  "format": "surface-diagrams-studio-benchmark",
+  "integrity": {
+    "excluded_exploratory_surface_views": [
+      "surface_before",
+      "surface_after"
+    ],
+    "geometry_svg_bytes": 8987,
+    "geometry_svg_sha256": "eed86c599d71d517db246409a125caceb0f8e1f80e458e32a81101f11f14ad57",
+    "geometry_tikz_bytes": 10242,
+    "geometry_tikz_sha256": "03d5cb1949dacca17f3f0c72c9c460ea66c0c61fbaa789286798c4f514bec1a6",
+    "history_final_sha256": "142233d46591acc24d084c935b320709b3d8631c576584879000bf30e3a6383b",
+    "history_initial_sha256": "d385317f09b907243a7e84e3f3386f7321c8cdb9f5bc121c51566260269f67f3",
+    "history_retention": {
+      "bounds": {
+        "maximum_command_source_bytes": 52428800,
+        "maximum_commands": 100,
+        "maximum_current_document_bytes": 262144,
+        "maximum_document_bytes": 262144,
+        "maximum_logical_source_bytes": 105119744,
+        "maximum_snapshot_document_bytes": 26214400,
+        "maximum_snapshot_source_bytes": 26214400
+      },
+      "cache_aligned": true,
+      "format": "surface-diagrams-history-retention",
+      "history_limit": 100,
+      "redo": {
+        "cache_aligned": true,
+        "command_count": 0,
+        "command_source_bytes": 0,
+        "first_snapshot_sha256": "",
+        "last_snapshot_sha256": "",
+        "missing_snapshot_count": 0,
+        "orphan_snapshot_count": 0,
+        "serialized_command_bytes": 0,
+        "snapshot_count": 0,
+        "snapshot_document_bytes": 0,
+        "snapshot_source_bytes": 0,
+        "stale_snapshot_count": 0
+      },
+      "totals": {
+        "command_count": 100,
+        "command_source_bytes": 2171147,
+        "current_document_bytes": 10857,
+        "logical_source_bytes": 4353148,
+        "missing_snapshot_count": 0,
+        "orphan_snapshot_count": 0,
+        "serialized_command_bytes": 3036447,
+        "snapshot_count": 100,
+        "snapshot_document_bytes": 1085572,
+        "snapshot_source_bytes": 1085572,
+        "stale_snapshot_count": 0
+      },
+      "undo": {
+        "cache_aligned": true,
+        "command_count": 100,
+        "command_source_bytes": 2171147,
+        "first_snapshot_sha256": "d385317f09b907243a7e84e3f3386f7321c8cdb9f5bc121c51566260269f67f3",
+        "last_snapshot_sha256": "7bae08f455685812e3520a6344f698b1869d93db36315f86ce8c7bbf339d6bed",
+        "missing_snapshot_count": 0,
+        "orphan_snapshot_count": 0,
+        "serialized_command_bytes": 3036447,
+        "snapshot_count": 100,
+        "snapshot_document_bytes": 1085572,
+        "snapshot_source_bytes": 1085572,
+        "stale_snapshot_count": 0
+      },
+      "version": 1,
+      "within_source_bounds": true
+    },
+    "publication_bundle_bytes": 7447,
+    "publication_bundle_sha256": "92ded1bcecc34f968cfe68d5acaac564f18c851d0ebf5169b4536dffaf0a615f",
+    "publication_documents": [
+      "disk_before",
+      "disk_after"
+    ],
+    "timeline_final_crossings": 128,
+    "timeline_final_paths": 32
+  },
+  "interpretation": {
+    "note": "Repeatable workloads and exact fingerprints are deterministic; elapsed times vary by host and load.",
+    "status": "performance-observation-only",
+    "thresholds_enforced": false,
+    "timings_establish_correctness": false,
+    "unit": "microseconds"
+  },
+  "measurements": [
+    {
+      "description": "40 maximum planar plus 40 maximum braid parses per sample",
+      "id": "bounded-import",
+      "maximum_us": 209386,
+      "median_per_unit_us": 2355.863,
+      "median_us": 188469,
+      "minimum_us": 186524,
+      "sample_count": 5,
+      "samples_us": [
+        189323,
+        188469,
+        209386,
+        186524,
+        186665
+      ],
+      "units_per_sample": 80
+    },
+    {
+      "description": "100 label edits, 100 exact undos, and 100 exact redos per sample",
+      "id": "edit-undo-redo",
+      "maximum_us": 140245,
+      "median_per_unit_us": 459.477,
+      "median_us": 137843,
+      "minimum_us": 131305,
+      "phases": {
+        "edit": {
+          "maximum_us": 138902,
+          "median_per_unit_us": 1359.46,
+          "median_us": 135946,
+          "minimum_us": 129949,
+          "samples_us": [
+            136686,
+            135931,
+            129949,
+            138902,
+            135946
+          ]
+        },
+        "redo": {
+          "maximum_us": 872,
+          "median_per_unit_us": 5.93,
+          "median_us": 593,
+          "minimum_us": 503,
+          "samples_us": [
+            503,
+            872,
+            593,
+            624,
+            573
+          ]
+        },
+        "undo": {
+          "maximum_us": 1104,
+          "median_per_unit_us": 7.19,
+          "median_us": 719,
+          "minimum_us": 636,
+          "samples_us": [
+            654,
+            1104,
+            763,
+            719,
+            636
+          ]
+        }
+      },
+      "sample_count": 5,
+      "samples_us": [
+        137843,
+        137907,
+        131305,
+        140245,
+        137155
+      ],
+      "units_per_sample": 300
+    },
+    {
+      "description": "257 half-step samples across a maximum 32-strand, 128-generator word",
+      "id": "braid-timeline",
+      "maximum_us": 252282,
+      "median_per_unit_us": 938.222,
+      "median_us": 241123,
+      "minimum_us": 239062,
+      "sample_count": 5,
+      "samples_us": [
+        241441,
+        239062,
+        241123,
+        252282,
+        239304
+      ],
+      "units_per_sample": 257
+    },
+    {
+      "description": "one maximum-planar Python SVG and TikZ render per sample",
+      "id": "exact-svg-tikz",
+      "maximum_us": 87587,
+      "median_per_unit_us": 82465.0,
+      "median_us": 82465,
+      "minimum_us": 77010,
+      "sample_count": 5,
+      "samples_us": [
+        87587,
+        77035,
+        83355,
+        77010,
+        82465
+      ],
+      "units_per_sample": 1
+    },
+    {
+      "description": "one representative linked walkthrough ZIP per sample",
+      "id": "publication-bundle",
+      "maximum_us": 89800,
+      "median_per_unit_us": 85969.0,
+      "median_us": 85969,
+      "minimum_us": 78239,
+      "sample_count": 3,
+      "samples_us": [
+        89800,
+        78239,
+        85969
+      ],
+      "units_per_sample": 1
+    }
+  ],
+  "runtime": "4.7.2.stable.official.ed1daf0bf",
+  "version": 1,
+  "workload": "bounded-m7-v1"
+}

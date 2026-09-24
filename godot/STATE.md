@@ -16,7 +16,58 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: canonical immutable document JSON
+## Latest increment: deterministic bounded history-retention audit
+
+Built from live fork head `2cd48105340636e8e0749af00ae3786d5dd957dd`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added a versioned, deterministic audit for the complete undo/redo retention
+  shape. It reports compact serialized-command bytes, command source bytes,
+  runtime snapshot counts and source/document slots, the current document, and
+  a conservative schema envelope. The audit explicitly does not present these
+  logical quantities as allocator, heap, RSS, or process-memory measurements.
+- Every cached snapshot is checked against both the corresponding serialized
+  command field and the immutable document's canonical JSON. Tests cover a
+  deliberately mismatched command, exact repair, the 101st-edit eviction,
+  complete undo/redo transfer, byte-identical round-trip audit, and redo
+  invalidation after a replacement edit.
+- Recovery now enforces the same 100-command bound across undo and redo
+  combined. Previously it independently accepted up to 100 in each array even
+  though live history can retain only 100 total.
+- The maximum structural benchmark fixture retains 100 commands and 100 aligned
+  snapshots. It reports 3,036,447 bytes of compact command serialization,
+  4,353,148 logical source-slot bytes, and zero stale, missing, or orphaned
+  snapshots. The deterministic profile reproduced across two complete runs.
+- Documented the 105,119,744-byte conservative logical source-slot ceiling and
+  the exercised fixture's 4.14 percent use. This deliberately double-counts
+  logical slots where the runtime may share immutable string storage.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. The official Linux runtime and Web
+templates were freshly downloaded and matched their recorded SHA-256 digests.
+Checks actually run and passed:
+
+- Aggregate: **863 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark with retention validation,
+  portable-package success/failure scenarios, and the intentional failure
+  harness. The private portable package contained 53 files and was exercised
+  outside the checkout.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**. The first aggregate attempt correctly exposed that
+  the newly reconstructed environment lacked the editable local Python package;
+  ordinary editable installation followed by a complete rerun passed.
+- Static Web export rebuilt successfully with the checked official templates.
+  This is a build check, not WebGL or physical-phone visual acceptance. No Site
+  deployment, download publication, release, or email occurred.
+
+No controller/test failure remains. Display-enabled desktop, mobile, WebGL,
+visible-focus, and screen-reader review remain unavailable in this environment.
+
+**Next specific task:** remove the duplicate source string from each runtime
+snapshot cache entry and validate snapshots directly against the immutable
+document's canonical JSON, while preserving exact public command/recovery JSON,
+tamper fallback, eviction semantics, and the deterministic retention audit.
+
+## Earlier increment: canonical immutable document JSON
 
 Built from live fork head `9ee0768b4094a3b96d2284c6e56ecdc01211e255`
 in an isolated worktree under the exclusive Studio lock.

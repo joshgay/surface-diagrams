@@ -28,6 +28,13 @@ correctness, mathematical validity, visual quality, or suitability on another
 machine. Publication is deliberately representative rather than a claim about
 the largest possible 65-document bundle.
 
+The integrity profile also contains a versioned history-retention audit at the
+100-command endpoint. It reports compact serialized-command bytes, logical
+source bytes, runtime snapshot counts, cache alignment, and the conservative
+schema envelope. These are deterministic logical quantities, not allocator,
+heap, resident-memory, or process measurements; immutable string storage may be
+shared by the engine.
+
 History measurements also contain separate edit, undo, and redo phase samples.
 Their sum is the recorded total for each sample, allowing changes to record
 construction and history navigation to be distinguished without changing the

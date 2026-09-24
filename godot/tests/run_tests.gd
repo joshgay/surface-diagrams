@@ -219,9 +219,12 @@ func _run_tests() -> void:
 	var accepted_before_tamper := history.current.to_json()
 	var cached_before: String = history.undo_stack[-1].before
 	history.undo_stack[-1].before = "{invalid cached command"
+	var tampered_audit := history.retention_audit()
+	_expect(not tampered_audit.cache_aligned and tampered_audit.totals.stale_snapshot_count == 1, "retention audit exposes a serialized-command/cache mismatch without trusting either copy")
 	var tampered_undo := history.undo()
 	_expect(not tampered_undo.ok and "Stored undo record is invalid" in tampered_undo.error and history.current.to_json() == accepted_before_tamper and history.undo_stack.size() == 1 and not history.can_redo(), "undo cache cannot bypass a mutated serialized command")
 	history.undo_stack[-1].before = cached_before
+	_expect(history.retention_audit().cache_aligned, "retention audit returns to aligned after exact serialized command restoration")
 	_expect(history.undo().ok and history.current.to_json() == original_source, "valid serialized undo still uses the exact accepted target after rejection")
 	var cached_after: String = history.redo_stack[-1].after
 	history.redo_stack[-1].after = "{invalid cached command"
@@ -236,16 +239,29 @@ func _run_tests() -> void:
 		var bounded_move := bounded_history.move_label("label1", Vector2(100.0 + index, -60.0))
 		if index == 0: oldest_retained_target = bounded_move.document.to_json()
 	var bounded_final := bounded_history.current.to_json()
+	var bounded_audit := bounded_history.retention_audit()
+	_expect(bounded_audit.format == DiagramEditHistory.RETENTION_AUDIT_FORMAT and bounded_audit.version == 1 and bounded_audit.history_limit == 100, "history retention audit is explicitly versioned")
+	_expect(bounded_audit.totals.command_count == 100 and bounded_audit.totals.snapshot_count == 100 and bounded_audit.undo.command_count == 100 and bounded_audit.redo.command_count == 0, "history retention audit reports the exact 100-command runtime shape")
+	_expect(bounded_audit.cache_aligned and bounded_audit.totals.stale_snapshot_count == 0 and bounded_audit.totals.missing_snapshot_count == 0 and bounded_audit.totals.orphan_snapshot_count == 0, "oldest-command eviction leaves no stale, missing, or orphaned runtime snapshot")
+	_expect(bounded_audit.undo.first_snapshot_sha256 == DiagramEditHistory._sha256_text(oldest_retained_target), "oldest cached snapshot advances with the evicted command")
+	_expect(bounded_audit.totals.serialized_command_bytes > bounded_audit.totals.command_source_bytes and bounded_audit.totals.logical_source_bytes > bounded_audit.totals.command_source_bytes, "history retention audit reports command serialization and logical source slots separately")
+	_expect(bounded_audit.within_source_bounds and bounded_audit.bounds.maximum_logical_source_bytes == 105119744, "history retention audit enforces the conservative 100-command logical source envelope")
 	for index in 100: bounded_history.undo()
 	_expect(bounded_history.undo_stack.is_empty() and bounded_history.current.to_json() == oldest_retained_target, "100-command eviction keeps the parsed undo targets aligned")
+	var undone_audit := bounded_history.retention_audit()
+	_expect(undone_audit.cache_aligned and undone_audit.undo.snapshot_count == 0 and undone_audit.redo.snapshot_count == 100 and undone_audit.totals.command_count == 100, "complete undo transfers every retained snapshot without duplication")
 	for index in 100: bounded_history.redo()
 	_expect(bounded_history.redo_stack.is_empty() and bounded_history.current.to_json() == bounded_final, "100-command redo retains exact targets after oldest-command eviction")
+	var redone_audit := bounded_history.retention_audit()
+	_expect(redone_audit.cache_aligned and redone_audit.undo.snapshot_count == 100 and redone_audit.redo.snapshot_count == 0 and redone_audit == bounded_audit, "complete redo reproduces the byte-identical retention audit")
 	var label_move := history.move_label("label1", Vector2(15, -55))
 	_expect(label_move.ok and label_move.document.data.labels[0].x == 15.0 and label_move.document.data.labels[0].y == -55.0, "label move is command based")
 	var label_source: String = history.current.to_json()
 	history.undo()
 	var replacement_move := history.move_object("p2", -30.0)
 	_expect(replacement_move.ok and not history.can_redo(), "a new edit clears redo history")
+	var replacement_audit := history.retention_audit()
+	_expect(replacement_audit.cache_aligned and replacement_audit.redo.command_count == 0 and replacement_audit.redo.snapshot_count == 0, "new edit clears redo commands and runtime snapshots together")
 	history.undo()
 	history.redo()
 	var history_path := "user://edited-round-trip.json"
@@ -469,6 +485,12 @@ func _run_tests() -> void:
 	var discontinuous: Dictionary = JSON.parse_string(encoded_recovery.text)
 	discontinuous.history.redo[0].before = recovery_after
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(discontinuous)).ok, "noncontiguous recovery history is rejected")
+	var overfull_state := recovery_history.to_state()
+	var repeated_command: Dictionary = overfull_state.redo[0].duplicate(true)
+	overfull_state.undo = []
+	overfull_state.redo = []
+	for index in 101: overfull_state.redo.append(repeated_command.duplicate(true))
+	_expect(not DiagramEditHistory.new().restore_state(overfull_state).ok, "recovery rejects more than 100 total undo and redo commands before retaining snapshots")
 	var oversized_recovery := " ".repeat(WorkspaceRecovery.MAX_BYTES) + "{}"
 	_expect(not WorkspaceRecovery.parse(oversized_recovery).ok, "oversized recovery envelope is rejected before use")
 	WorkspaceRecovery.clear_file()

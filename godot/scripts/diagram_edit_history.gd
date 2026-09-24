@@ -2,6 +2,8 @@ class_name DiagramEditHistory
 extends RefCounted
 
 const MAX_HISTORY := 100
+const RETENTION_AUDIT_FORMAT := "surface-diagrams-history-retention"
+const RETENTION_AUDIT_VERSION := 1
 
 var current: DiagramDocument
 var undo_stack: Array[Dictionary] = []
@@ -92,6 +94,60 @@ func to_state() -> Dictionary:
 		"redo": redo_stack.duplicate(true),
 	}
 
+# Deterministic logical accounting for the bounded history. This intentionally
+# does not claim to measure allocator, heap, or process memory: Godot may share
+# immutable String storage. Serialized command bytes are the compact UTF-8 JSON
+# equivalent of the retained command dictionaries. Snapshot byte counts report
+# the source and immutable document slots held by the runtime-only caches.
+func retention_audit() -> Dictionary:
+	var undo := _stack_retention(undo_stack, _undo_targets, "before")
+	var redo := _stack_retention(redo_stack, _redo_targets, "after")
+	var current_bytes := current.to_json().to_utf8_buffer().size() if current != null else 0
+	var command_count: int = undo.command_count + redo.command_count
+	var snapshot_count: int = undo.snapshot_count + redo.snapshot_count
+	var command_source_bytes: int = undo.command_source_bytes + redo.command_source_bytes
+	var snapshot_source_bytes: int = undo.snapshot_source_bytes + redo.snapshot_source_bytes
+	var snapshot_document_bytes: int = undo.snapshot_document_bytes + redo.snapshot_document_bytes
+	var logical_source_bytes := command_source_bytes + snapshot_source_bytes + snapshot_document_bytes + current_bytes
+	var maximum_logical_source_bytes := (MAX_HISTORY * 4 + 1) * DiagramDocument.MAX_BYTES
+	return {
+		"format": RETENTION_AUDIT_FORMAT,
+		"version": RETENTION_AUDIT_VERSION,
+		"history_limit": MAX_HISTORY,
+		"undo": undo,
+		"redo": redo,
+		"totals": {
+			"command_count": command_count,
+			"serialized_command_bytes": undo.serialized_command_bytes + redo.serialized_command_bytes,
+			"command_source_bytes": command_source_bytes,
+			"snapshot_count": snapshot_count,
+			"snapshot_source_bytes": snapshot_source_bytes,
+			"snapshot_document_bytes": snapshot_document_bytes,
+			"current_document_bytes": current_bytes,
+			"logical_source_bytes": logical_source_bytes,
+			"stale_snapshot_count": undo.stale_snapshot_count + redo.stale_snapshot_count,
+			"missing_snapshot_count": undo.missing_snapshot_count + redo.missing_snapshot_count,
+			"orphan_snapshot_count": undo.orphan_snapshot_count + redo.orphan_snapshot_count,
+		},
+		"bounds": {
+			"maximum_commands": MAX_HISTORY,
+			"maximum_document_bytes": DiagramDocument.MAX_BYTES,
+			"maximum_command_source_bytes": MAX_HISTORY * 2 * DiagramDocument.MAX_BYTES,
+			"maximum_snapshot_source_bytes": MAX_HISTORY * DiagramDocument.MAX_BYTES,
+			"maximum_snapshot_document_bytes": MAX_HISTORY * DiagramDocument.MAX_BYTES,
+			"maximum_current_document_bytes": DiagramDocument.MAX_BYTES,
+			"maximum_logical_source_bytes": maximum_logical_source_bytes,
+		},
+		"cache_aligned": undo.cache_aligned and redo.cache_aligned,
+		"within_source_bounds": command_count <= MAX_HISTORY \
+			and snapshot_count <= MAX_HISTORY \
+			and command_source_bytes <= MAX_HISTORY * 2 * DiagramDocument.MAX_BYTES \
+			and snapshot_source_bytes <= MAX_HISTORY * DiagramDocument.MAX_BYTES \
+			and snapshot_document_bytes <= MAX_HISTORY * DiagramDocument.MAX_BYTES \
+			and current_bytes <= DiagramDocument.MAX_BYTES \
+			and logical_source_bytes <= maximum_logical_source_bytes,
+	}
+
 func restore_state(state: Variant) -> Dictionary:
 	if typeof(state) != TYPE_DICTIONARY:
 		return _failure("Recovery history must be an object")
@@ -108,8 +164,8 @@ func restore_state(state: Variant) -> Dictionary:
 		return _failure("Recovery current record is invalid: " + parsed_current.error)
 	if typeof(state.undo) != TYPE_ARRAY or typeof(state.redo) != TYPE_ARRAY:
 		return _failure("Recovery undo and redo histories must be arrays")
-	if state.undo.size() > MAX_HISTORY or state.redo.size() > MAX_HISTORY:
-		return _failure("Recovery history exceeds %d commands" % MAX_HISTORY)
+	if state.undo.size() + state.redo.size() > MAX_HISTORY:
+		return _failure("Recovery history exceeds %d total commands" % MAX_HISTORY)
 	var validated_undo: Array[Dictionary] = []
 	var validated_redo: Array[Dictionary] = []
 	var validated_undo_targets: Array[Dictionary] = []
@@ -208,6 +264,68 @@ static func _failure(message: String) -> Dictionary:
 
 static func _target(source: String, document: DiagramDocument) -> Dictionary:
 	return {"source": source, "document": document}
+
+static func _stack_retention(commands: Array[Dictionary], targets: Array[Dictionary],
+		target_field: String) -> Dictionary:
+	var serialized_command_bytes := 0
+	var command_source_bytes := 0
+	for command in commands:
+		serialized_command_bytes += JSON.stringify(command, "", false, true).to_utf8_buffer().size()
+		for field in ["before", "after"]:
+			var source = command.get(field, null)
+			if typeof(source) == TYPE_STRING:
+				command_source_bytes += source.to_utf8_buffer().size()
+	var snapshot_source_bytes := 0
+	var snapshot_document_bytes := 0
+	for target in targets:
+		var source = target.get("source", null)
+		if typeof(source) == TYPE_STRING:
+			snapshot_source_bytes += source.to_utf8_buffer().size()
+		var document = target.get("document")
+		if document is DiagramDocument:
+			snapshot_document_bytes += document.to_json().to_utf8_buffer().size()
+	var paired := mini(commands.size(), targets.size())
+	var stale := 0
+	for index in paired:
+		var expected = commands[index].get(target_field, null)
+		var target: Dictionary = targets[index]
+		var source = target.get("source", null)
+		var document = target.get("document")
+		if typeof(expected) != TYPE_STRING or typeof(source) != TYPE_STRING \
+				or source != expected or not (document is DiagramDocument) \
+				or document.to_json() != source:
+			stale += 1
+	var missing := maxi(commands.size() - targets.size(), 0)
+	var orphan := maxi(targets.size() - commands.size(), 0)
+	var first_source := ""
+	var last_source := ""
+	if not targets.is_empty():
+		if typeof(targets.front().get("source", null)) == TYPE_STRING:
+			first_source = targets.front().source
+		if typeof(targets.back().get("source", null)) == TYPE_STRING:
+			last_source = targets.back().source
+	return {
+		"command_count": commands.size(),
+		"serialized_command_bytes": serialized_command_bytes,
+		"command_source_bytes": command_source_bytes,
+		"snapshot_count": targets.size(),
+		"snapshot_source_bytes": snapshot_source_bytes,
+		"snapshot_document_bytes": snapshot_document_bytes,
+		"stale_snapshot_count": stale,
+		"missing_snapshot_count": missing,
+		"orphan_snapshot_count": orphan,
+		"first_snapshot_sha256": _sha256_text(first_source),
+		"last_snapshot_sha256": _sha256_text(last_source),
+		"cache_aligned": stale == 0 and missing == 0 and orphan == 0,
+	}
+
+static func _sha256_text(value: String) -> String:
+	if value.is_empty():
+		return ""
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(value.to_utf8_buffer())
+	return context.finish().hex_encode()
 
 static func _resolve_target(targets: Array[Dictionary], index: int, source: String) -> Dictionary:
 	if index >= 0 and index < targets.size():
