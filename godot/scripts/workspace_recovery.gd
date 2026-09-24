@@ -2,7 +2,8 @@ class_name WorkspaceRecovery
 extends RefCounted
 
 const FORMAT := "surface-diagrams-studio-recovery"
-const VERSION := 3
+const VERSION := 4
+const VIEW_VERSION := 3
 const COMPACT_VERSION := 2
 const LEGACY_VERSION := 1
 const LEGACY_MAX_BYTES := 1024 * 1024
@@ -19,7 +20,8 @@ const MAX_SLOT_BYTES := 34 * 1024 * 1024
 const MAX_GENERATION := 2147483647
 
 static func encode(baseline_source: String, history: DiagramEditHistory,
-		drafts: Dictionary, selection: Dictionary, view_state: Dictionary = {}) -> Dictionary:
+		drafts: Dictionary, selection: Dictionary, view_state: Dictionary = {},
+		creation_state: Dictionary = {}) -> Dictionary:
 	if history == null or history.current == null:
 		return _failure("Cannot recover an empty workspace")
 	var requested_view: Dictionary = view_state if not view_state.is_empty() \
@@ -27,6 +29,11 @@ static func encode(baseline_source: String, history: DiagramEditHistory,
 	var checked_view := WorkspaceViewState.normalize(requested_view, history.current)
 	if not checked_view.ok:
 		return _failure("Recovery view state is invalid: " + checked_view.error)
+	var requested_creation: Dictionary = creation_state if not creation_state.is_empty() \
+		else {"active": false, "draft": {}}
+	var checked_creation := _creation(requested_creation, history.current)
+	if not checked_creation.ok:
+		return _failure("Recovery creation draft is invalid: " + checked_creation.error)
 	var envelope := {
 		"format": FORMAT,
 		"version": VERSION,
@@ -35,6 +42,7 @@ static func encode(baseline_source: String, history: DiagramEditHistory,
 		"drafts": drafts.duplicate(true),
 		"selection": selection.duplicate(true),
 		"view": checked_view.value,
+		"creation": checked_creation.value,
 	}
 	var text := JSON.stringify(envelope, "\t", false, true) + "\n"
 	if text.to_utf8_buffer().size() > MAX_BYTES:
@@ -62,14 +70,16 @@ static func parse(text: String) -> Dictionary:
 		return _failure("Recovery version is invalid")
 	var recovery_version := int(version_value)
 	var expected_fields := ["format", "version", "baseline", "history", "drafts", "selection"]
-	if recovery_version == VERSION:
+	if recovery_version >= VIEW_VERSION:
 		expected_fields.append("view")
+	if recovery_version == VERSION:
+		expected_fields.append("creation")
 	var fields := _keys(raw, expected_fields)
 	if not fields.ok:
 		return fields
 	if raw.format != FORMAT or not _integer(raw.version) \
-			or int(raw.version) not in [LEGACY_VERSION, COMPACT_VERSION, VERSION]:
-		return _failure("Expected %s version 1, 2, or 3" % FORMAT)
+			or int(raw.version) not in [LEGACY_VERSION, COMPACT_VERSION, VIEW_VERSION, VERSION]:
+		return _failure("Expected %s version 1, 2, 3, or 4" % FORMAT)
 	if recovery_version == LEGACY_VERSION and text.to_utf8_buffer().size() > LEGACY_MAX_BYTES:
 		return _failure("Version-1 recovery record exceeds 1 MiB")
 	if typeof(raw.baseline) != TYPE_STRING:
@@ -91,10 +101,15 @@ static func parse(text: String) -> Dictionary:
 	if not selection_result.ok:
 		return selection_result
 	var view_result := WorkspaceViewState.normalize(raw.view, restored_history.current) \
-		if recovery_version == VERSION else {"ok": true, "error": "",
+		if recovery_version >= VIEW_VERSION else {"ok": true, "error": "",
 			"value": WorkspaceViewState.defaults(restored_history.current)}
 	if not view_result.ok:
 		return _failure("Recovery view state is invalid: " + view_result.error)
+	var creation_result := _creation(raw.creation, restored_history.current) \
+		if recovery_version == VERSION else {"ok": true, "error": "",
+			"value": {"active": false, "draft": {}}}
+	if not creation_result.ok:
+		return _failure("Recovery creation draft is invalid: " + creation_result.error)
 	return {
 		"ok": true,
 		"error": "",
@@ -104,6 +119,7 @@ static func parse(text: String) -> Dictionary:
 		"drafts": drafts_result.value,
 		"selection": selection_result.value,
 		"view_state": view_result.value,
+		"creation_state": creation_result.value,
 	}
 
 static func load_file() -> Dictionary:
@@ -125,8 +141,10 @@ static func load_file() -> Dictionary:
 	return result
 
 static func save_file(baseline_source: String, history: DiagramEditHistory,
-		drafts: Dictionary, selection: Dictionary, view_state: Dictionary = {}) -> String:
-	var encoded := encode(baseline_source, history, drafts, selection, view_state)
+		drafts: Dictionary, selection: Dictionary, view_state: Dictionary = {},
+		creation_state: Dictionary = {}) -> String:
+	var encoded := encode(baseline_source, history, drafts, selection, view_state,
+		creation_state)
 	if not encoded.ok:
 		return encoded.error
 	var payload = JSON.parse_string(encoded.text)
@@ -354,6 +372,65 @@ static func _drafts(value: Variant, document: DiagramDocument) -> Dictionary:
 			normalized.append(int(cut))
 		result[id] = normalized
 	return {"ok": true, "error": "", "value": result}
+
+static func _creation(value: Variant, document: DiagramDocument) -> Dictionary:
+	if typeof(value) != TYPE_DICTIONARY:
+		return _failure("Creation state must be an object")
+	var fields := _keys(value, ["active", "draft"])
+	if not fields.ok:
+		return fields
+	if typeof(value.active) != TYPE_BOOL or typeof(value.draft) != TYPE_DICTIONARY:
+		return _failure("Creation state needs a boolean active flag and object draft")
+	if not value.active:
+		if not value.draft.is_empty():
+			return _failure("Inactive creation state must have an empty draft")
+		return {"ok": true, "error": "", "value": {"active": false, "draft": {}}}
+	if document.data.kind != "planar":
+		return _failure("Only planar workspaces can recover a curve creation draft")
+	var draft: Dictionary = value.draft
+	if typeof(draft.get("kind", null)) != TYPE_STRING or draft.kind not in ["arc", "loop"]:
+		return _failure("Creation draft kind must be arc or loop")
+	var expected := ["id", "kind", "color", "cuts", "start", "end", "direction",
+		"start_side", "end_side"] if draft.kind == "arc" else \
+		["id", "kind", "color", "cuts", "start_up"]
+	fields = _keys(draft, expected)
+	if not fields.ok:
+		return fields
+	if typeof(draft.id) != TYPE_STRING or draft.id.length() > 40:
+		return _failure("Creation draft ID exceeds the editor bound")
+	if typeof(draft.color) != TYPE_STRING or draft.color != "#ff00d4":
+		return _failure("Creation draft must retain the explicit magenta color")
+	if typeof(draft.cuts) != TYPE_ARRAY or draft.cuts.size() > DiagramDocument.MAX_CUTS:
+		return _failure("Creation draft exceeds the cut visit bound")
+	var cuts: Array = []
+	for cut in draft.cuts:
+		if not _integer(cut) or int(cut) < 0 or int(cut) > document.data.surface.objects.size():
+			return _failure("Creation draft has an invalid cut")
+		cuts.append(int(cut))
+	var normalized := {"id": draft.id, "kind": draft.kind,
+		"color": "#ff00d4", "cuts": cuts}
+	if draft.kind == "loop":
+		if typeof(draft.start_up) != TYPE_BOOL:
+			return _failure("Loop creation orientation must be boolean")
+		normalized.start_up = draft.start_up
+	else:
+		var endpoint_max: int = document.data.surface.objects.size() + 1
+		if not _integer(draft.start) or not _integer(draft.end) \
+				or int(draft.start) < 0 or int(draft.start) > endpoint_max \
+				or int(draft.end) < 0 or int(draft.end) > endpoint_max:
+			return _failure("Arc creation endpoints are outside the numbered range")
+		if typeof(draft.direction) != TYPE_STRING or draft.direction not in ["default", "up", "down"]:
+			return _failure("Arc creation direction is invalid")
+		for side in [draft.start_side, draft.end_side]:
+			if side != null and (typeof(side) != TYPE_STRING or side not in ["left", "right"]):
+				return _failure("Arc creation rim side is invalid")
+		normalized.start = int(draft.start)
+		normalized.end = int(draft.end)
+		normalized.direction = draft.direction
+		normalized.start_side = draft.start_side
+		normalized.end_side = draft.end_side
+	return {"ok": true, "error": "", "value": {"active": true,
+		"draft": normalized}}
 
 static func _selection(value: Variant, document: DiagramDocument) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:

@@ -100,7 +100,7 @@ def validate(path: Path) -> dict:
         raise SystemExit("history retention audit is malformed or outside its bound")
     recovery = integrity.get("workspace_recovery", {})
     if (recovery.get("ok") is not True
-            or recovery.get("version") != 3
+            or recovery.get("version") != 4
             or recovery.get("commands") != 100
             or recovery.get("documents") != 101
             or recovery.get("initial_matches") is not True

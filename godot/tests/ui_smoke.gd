@@ -26,6 +26,11 @@ func _run() -> void:
 	_check(studio.geometry_result.ok, "planar fixture has exact Python geometry")
 	_check(not studio.svg_button.disabled and not studio.tikz_button.disabled, "publication exports are enabled after exact render")
 	var planar_before: String = studio.document.to_json()
+	studio.curve_creator.start("arc")
+	var initial_creation_recovery := WorkspaceRecovery.load_file()
+	_check(initial_creation_recovery.ok and initial_creation_recovery.found and initial_creation_recovery.creation_state.active and initial_creation_recovery.creation_state.draft == studio.curve_creator.draft and studio.document.to_json() == planar_before, "starting a new curve immediately checkpoints its separate literal draft")
+	studio.curve_creator.cancel()
+	_check(not studio._has_unsaved_work() and not WorkspaceRecovery.load_file().found and studio.document.to_json() == planar_before, "explicit creation cancel removes its clean-workspace recovery without touching mathematical JSON")
 	studio.record_list.select(4)
 	studio.record_list.item_selected.emit(4)
 	_check(studio.canvas.selected_record.id == "arc1", "planar inspector selects stable curve ID")
@@ -225,6 +230,16 @@ func _run() -> void:
 	studio.curve_creator._create()
 	_check(studio.document.to_json() == creation_before and not studio.history.can_undo() and studio.curve_creator.draft.id == "narrowArc", "Python routing rejection leaves narrow arc input available")
 	_check(studio.curve_inspector.drafts == sibling_drafts and FileAccess.get_file_as_string(WorkspaceRecovery.PATH) == recovery_before_creation_failure, "routing rejection preserves other drafts and the last accepted recovery checkpoint")
+	var rejected_creation_recovery := WorkspaceRecovery.load_file()
+	_check(rejected_creation_recovery.ok and rejected_creation_recovery.creation_state.active and rejected_creation_recovery.creation_state.draft == studio.curve_creator.draft, "recovery checkpoints the complete rejected new-curve draft without simplifying it")
+	var draft_restarted = packed.instantiate()
+	root.add_child(draft_restarted)
+	await process_frame
+	_check(draft_restarted._restore_startup_recovery() and draft_restarted.document.to_json() == creation_before, "restart explicitly restores the accepted record behind an unapplied creation draft")
+	_check(draft_restarted.curve_creator.active and draft_restarted.curve_creator.draft == studio.curve_creator.draft and draft_restarted.canvas.pick_for_new_curve and draft_restarted.canvas.curve_draft_cuts == studio.curve_creator.draft.cuts, "restart restores every literal new-curve field and resumes cut picking")
+	_check(draft_restarted.curve_inspector.drafts == sibling_drafts and not draft_restarted.history.can_undo(), "new-curve recovery preserves sibling drafts and exact empty command history")
+	draft_restarted.queue_free()
+	await process_frame
 	studio.curve_creator.id_edit.text = "outerArc"
 	studio.curve_creator._id_changed("outerArc")
 	studio.curve_creator.start_spin.value = 0

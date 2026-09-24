@@ -177,7 +177,7 @@ to this storage-only change.
 
 ## Compact workspace recovery history
 
-Workspace recovery version 3 uses the version-2 compact history document table
+Workspace recovery version 4 uses the version-2 compact history document table
 and bounded integer command
 references. A valid contiguous 100-command history can contain at most 101
 distinct canonical endpoint documents, so the same document is no longer copied
@@ -193,9 +193,9 @@ transitions:
 | Commands | 100 |
 | Distinct canonical endpoint documents | 101 |
 | Version-1-equivalent history JSON | 3,051,715 bytes |
-| Version-2 compact history JSON inside version 3 | 1,538,696 bytes |
+| Version-2 compact history JSON inside version 4 | 1,538,696 bytes |
 | History reduction | 1,513,019 bytes (49.58%) |
-| Complete version-3 envelope with native view state | 1,559,787 bytes |
+| Complete version-4 envelope with inactive creation state | 1,559,839 bytes |
 | Explicit envelope bound | 33,554,432 bytes |
 
 The exercised envelope uses 4.65 percent of the bound. The 32 MiB limit is an
@@ -204,6 +204,9 @@ JSON string escaping also counts toward it, so encoding still rejects any actual
 record that crosses the cap. Version-1 files retain their original 1 MiB limit.
 Parsing all supported versions performs strict document, command, continuity,
 selection, and draft validation before changing the live workspace. Versions 2
-and 3 reject duplicate, unreferenced, or out-of-range document slots; version 3
-also validates its separate bounded camera, braid playback, and panel state.
+through 4 reject duplicate, unreferenced, or out-of-range document slots;
+versions 3 and 4 validate their separate bounded camera, braid playback, and
+panel state. Version 4 additionally validates a bounded inactive or literal
+arc/loop creation draft without requiring invalid work-in-progress geometry to
+be accepted as a mathematical record.
 These byte counts describe serialized recovery data, not process memory.

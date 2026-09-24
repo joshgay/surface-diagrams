@@ -149,6 +149,16 @@ func finish_success() -> void:
 	form.visible = false
 	draft_changed.emit(false, {}, "")
 
+func restore_draft(value: Dictionary) -> bool:
+	if document == null or document.data.kind != "planar" or value.is_empty():
+		return false
+	active = true
+	draft = value.duplicate(true)
+	_sync_controls()
+	form.visible = true
+	_refresh()
+	return true
+
 func show_rejection(message: String) -> void:
 	warning_label.text = message
 	warning_label.add_theme_color_override("font_color", Color("#a54439"))

@@ -875,6 +875,7 @@ func _creation_draft_changed(is_active: bool, curve: Dictionary, message: String
 	elif not message.is_empty():
 		status_label.text = message + " The accepted record and other curve drafts are unchanged."
 		status_label.add_theme_color_override("font_color", Color("#415b55"))
+	_persist_recovery()
 
 func _create_curve(curve: Dictionary) -> void:
 	candidate_geometry = {}
@@ -1105,7 +1106,8 @@ func _persist_recovery() -> void:
 		WorkspaceRecovery.clear_file()
 		return
 	var error := WorkspaceRecovery.save_file(baseline_source, history,
-		curve_inspector.drafts, _current_selection(), _current_view_state())
+		curve_inspector.drafts, _current_selection(), _current_view_state(),
+		_current_creation_state())
 	if not error.is_empty():
 		recovery_error = error
 		status_label.text = error + ". The in-memory workspace is unchanged."
@@ -1122,6 +1124,11 @@ func _current_view_state() -> Dictionary:
 	return WorkspaceViewState.capture(document, canvas, braid_editor,
 		showing_records, source_view != null and source_view.visible,
 		move_button != null and move_button.button_pressed)
+
+func _current_creation_state() -> Dictionary:
+	if curve_creator == null or not curve_creator.active:
+		return {"active": false, "draft": {}}
+	return {"active": true, "draft": curve_creator.draft.duplicate(true)}
 
 func _schedule_recovery() -> void:
 	if recovery_timer != null and not browser_mode:
@@ -1159,8 +1166,9 @@ func _offer_recovery() -> void:
 	var undo_count: int = recovered.history_state.undo.size()
 	var redo_count: int = recovered.history_state.redo.size()
 	var recovery_version: int = recovered.get("recovery_version", 1)
+	var creation_count := 1 if recovered.creation_state.active else 0
 	var fallback_note := " The newest primary slot was unavailable, so this is the validated last-known-good checkpoint." if recovered.get("recovered_from_backup", false) else ""
-	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains view state, %d curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
+	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains view state, %d existing-curve draft%s, %d new-curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", creation_count, "" if creation_count == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
 	_popup_fitted(recovery_dialog, Vector2i(580, 230), recovery_dialog.get_ok_button())
 	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
@@ -1180,9 +1188,12 @@ func _restore_startup_recovery() -> bool:
 	var selection: Dictionary = startup_recovery.selection.duplicate(true)
 	_present_document(history.current, true, selection)
 	var restored_view := _restore_view_state(startup_recovery.view_state)
+	var restored_creation := true
+	if startup_recovery.creation_state.active:
+		restored_creation = curve_creator.restore_draft(startup_recovery.creation_state.draft)
 	startup_recovery.clear()
 	_persist_recovery()
-	status_label.text = "Recovered accepted edits, exact undo/redo history, selection, unapplied curve drafts, and separate camera/timeline/panel state. Recovery is workspace data, not mathematical JSON." if restored_view else "Recovered mathematical workspace data, but its separate view state could not be applied."
+	status_label.text = "Recovered accepted edits, exact undo/redo history, selection, all unapplied curve drafts, and separate camera/timeline/panel state. Recovery is workspace data, not mathematical JSON." if restored_view and restored_creation else "Recovered mathematical workspace data, but some separate presentation or creation-draft state could not be applied."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
 	return true
 

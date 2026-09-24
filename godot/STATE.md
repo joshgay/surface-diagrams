@@ -16,7 +16,58 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: separate recoverable native view state
+## Latest increment: exact recovery of unapplied new-curve drafts
+
+Built from live fork head `a78ac4e221038e1c25c48d8a7157886e8094d4f0`
+in an isolated worktree under the exclusive Studio lock.
+
+- Workspace recovery version 4 now checkpoints an active new-arc or new-loop
+  draft beside the mathematical record. All literal fields are retained,
+  including an ID or endpoint combination that has not yet passed schema or
+  Python geometry validation, repeated ordered cut visits, rim sides, direction,
+  and loop orientation.
+- Starting a draft immediately creates a checkpoint, every bounded field change
+  refreshes it, explicit cancellation removes it from an otherwise clean
+  workspace, and a rejected validation or routing attempt keeps the last exact
+  input available after restart. None of these actions modifies accepted JSON or
+  creates an undo command.
+- Import remains data-only and strictly bounded. Version 4 accepts only the
+  exact arc or loop field set, fixed thesis magenta, 40-character IDs, at most
+  64 cut visits, and endpoints within the current planar surface. Unknown,
+  script, resource, and scene-path fields are rejected rather than executed.
+- Version-1, version-2, and version-3 records remain readable with a
+  deterministic inactive creation state. Existing checksum verification,
+  last-known-good fallback, history limits, and exact recovery migration remain
+  in force.
+- Controller coverage restores an intentionally rejected narrow-arc draft with
+  its sibling curve drafts, empty command history, accepted record, and cut
+  picking intact. The maximum-fixture version-4 envelope is 1,559,839 bytes,
+  within the unchanged 32 MiB cap, and all 100 undo/redo endpoints remain exact.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,138 Godot assertions**, including **11 new recovery and UI
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt successfully with a 255,284-byte PCK. The private
+  portable Linux package passed outside the checkout with 53 files and
+  147,319,167 bytes.
+
+No controller/test failure remains. This worker still has no X11 or Wayland
+display or compositor, and the available cloud browser does not expose WebGL 2.
+Rendered restored-draft layout, visible focus, Orca announcements,
+physical-phone target sizing, keyboard occlusion, and actual visual acceptance
+remain pending.
+
+**Next specific task:** on a real X11 or Wayland desktop with Orca, restore the
+rejected new-curve fixture from version-4 recovery and verify field focus, cut
+picking, validation announcements, and visible layout; repeat on a WebGL 2 phone
+across keyboard-open rotation and repair the first concrete defect.
+
+## Earlier increment: separate recoverable native view state
 
 Built from live fork head `8e9637aa54e5608596e31de9b5a414404a32c711`
 in an isolated worktree under the exclusive Studio lock.
