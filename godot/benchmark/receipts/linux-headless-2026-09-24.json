@@ -1,0 +1,158 @@
+{
+  "bounds": {
+    "braid_strands": 32,
+    "braid_word": 128,
+    "document_bytes": 262144,
+    "history_commands": 100,
+    "labels": 32,
+    "planar_curves": 16,
+    "planar_objects": 32
+  },
+  "environment": {
+    "architecture": "x86_64",
+    "display_driver": "headless",
+    "os": "Linux",
+    "processor_count": 9
+  },
+  "fixtures": [
+    {
+      "curves": 16,
+      "id": "maximum-planar",
+      "labels": 32,
+      "normalized_bytes": 10854,
+      "objects": 32,
+      "sha256": "d385317f09b907243a7e84e3f3386f7321c8cdb9f5bc121c51566260269f67f3"
+    },
+    {
+      "id": "maximum-braid",
+      "normalized_bytes": 1665,
+      "sha256": "32ba74e1933f40046da6ade21b4d1083ed56f39b9f047fdb4b9f90634070c5dd",
+      "strands": 32,
+      "word": 128
+    },
+    {
+      "documents": 2,
+      "id": "representative-linked-publication",
+      "normalized_bytes": 9153,
+      "scope": "representative, not the schema maximum",
+      "sha256": "469950ae05c79c4d236da8cb860497e5c987cee535f061408b00e6e79bf7dd3f",
+      "steps": 1
+    }
+  ],
+  "format": "surface-diagrams-studio-benchmark",
+  "integrity": {
+    "excluded_exploratory_surface_views": [
+      "surface_before",
+      "surface_after"
+    ],
+    "geometry_svg_bytes": 8987,
+    "geometry_svg_sha256": "eed86c599d71d517db246409a125caceb0f8e1f80e458e32a81101f11f14ad57",
+    "geometry_tikz_bytes": 10242,
+    "geometry_tikz_sha256": "03d5cb1949dacca17f3f0c72c9c460ea66c0c61fbaa789286798c4f514bec1a6",
+    "history_final_sha256": "142233d46591acc24d084c935b320709b3d8631c576584879000bf30e3a6383b",
+    "history_initial_sha256": "d385317f09b907243a7e84e3f3386f7321c8cdb9f5bc121c51566260269f67f3",
+    "publication_bundle_bytes": 7447,
+    "publication_bundle_sha256": "92ded1bcecc34f968cfe68d5acaac564f18c851d0ebf5169b4536dffaf0a615f",
+    "publication_documents": [
+      "disk_before",
+      "disk_after"
+    ],
+    "timeline_final_crossings": 128,
+    "timeline_final_paths": 32
+  },
+  "interpretation": {
+    "note": "Repeatable workloads and exact fingerprints are deterministic; elapsed times vary by host and load.",
+    "status": "performance-observation-only",
+    "thresholds_enforced": false,
+    "timings_establish_correctness": false,
+    "unit": "microseconds"
+  },
+  "measurements": [
+    {
+      "description": "40 maximum planar plus 40 maximum braid parses per sample",
+      "id": "bounded-import",
+      "maximum_us": 624461,
+      "median_per_unit_us": 6643.35,
+      "median_us": 531468,
+      "minimum_us": 474776,
+      "sample_count": 5,
+      "samples_us": [
+        531468,
+        624461,
+        484645,
+        574235,
+        474776
+      ],
+      "units_per_sample": 80
+    },
+    {
+      "description": "100 label edits, 100 exact undos, and 100 exact redos per sample",
+      "id": "edit-undo-redo",
+      "maximum_us": 4997125,
+      "median_per_unit_us": 13358.413,
+      "median_us": 4007524,
+      "minimum_us": 3712440,
+      "sample_count": 5,
+      "samples_us": [
+        3712440,
+        4007524,
+        3714022,
+        4360961,
+        4997125
+      ],
+      "units_per_sample": 300
+    },
+    {
+      "description": "257 half-step samples across a maximum 32-strand, 128-generator word",
+      "id": "braid-timeline",
+      "maximum_us": 1007075,
+      "median_per_unit_us": 3379.241,
+      "median_us": 868465,
+      "minimum_us": 703014,
+      "sample_count": 5,
+      "samples_us": [
+        868465,
+        703014,
+        1007075,
+        934822,
+        813221
+      ],
+      "units_per_sample": 257
+    },
+    {
+      "description": "one maximum-planar Python SVG and TikZ render per sample",
+      "id": "exact-svg-tikz",
+      "maximum_us": 521476,
+      "median_per_unit_us": 487567.0,
+      "median_us": 487567,
+      "minimum_us": 384119,
+      "sample_count": 5,
+      "samples_us": [
+        492726,
+        384119,
+        521476,
+        487567,
+        401254
+      ],
+      "units_per_sample": 1
+    },
+    {
+      "description": "one representative linked walkthrough ZIP per sample",
+      "id": "publication-bundle",
+      "maximum_us": 504278,
+      "median_per_unit_us": 463511.0,
+      "median_us": 463511,
+      "minimum_us": 442337,
+      "sample_count": 3,
+      "samples_us": [
+        463511,
+        442337,
+        504278
+      ],
+      "units_per_sample": 1
+    }
+  ],
+  "runtime": "4.7.2.stable.official.ed1daf0bf",
+  "version": 1,
+  "workload": "bounded-m7-v1"
+}

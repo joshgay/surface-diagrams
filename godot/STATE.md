@@ -11,12 +11,62 @@
   exploratory surface slice implemented, visual acceptance pending; M6 supplied
   planar, signed-braid, and explicitly linked exploratory surface walkthrough
   slices implemented, visual acceptance pending; M7 first reproducible
-  walkthrough-publication, keyboard-access, deterministic demo-review, and
-  portable Linux slices implemented; visual and assistive-technology acceptance
-  pending**.
+  walkthrough-publication, keyboard-access, deterministic demo-review, portable
+  Linux, and measured-performance slices implemented; visual and
+  assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: verified portable Linux package
+## Latest increment: bounded performance baseline
+
+Built from live fork head `2e0685fae9075b47c30244bca38fff60a278394d`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added the fixed `bounded-m7-v1` benchmark using production record, history,
+  timeline, geometry, and publication code. Its generated planar fixture uses
+  all 32 objects, 16 curves, and 32 labels; its braid uses all 32 strands and
+  128 literal signed generators; history uses all 100 commands.
+- Each run measures five raw samples for import, edit/history, braid sampling,
+  and exact SVG/TikZ, plus three publication samples. A versioned receipt stores
+  raw microseconds, min/median/max summaries, normalized fixture fingerprints,
+  and exact history, geometry, timeline, and publication outcomes.
+- The wrapper executes the entire workload twice and requires the deterministic
+  profile and output hashes to match. It never compares timings between runs,
+  enforces no speed threshold, and explicitly labels all timings as performance
+  observations rather than correctness or mathematical evidence.
+- Committed the first headless Linux receipt and practical interpretation. Its
+  medians were 6.643 ms per maximum import, 13.358 ms per maximum-record
+  edit/undo/redo action, 3.379 ms per maximum-braid timeline sample, 487.567 ms
+  per exact SVG/TikZ render, and 463.511 ms per representative publication.
+  Visible drawing, browser/WebGL, 3D, input, and assistive technology were not
+  measured. The two-document publication is representative, not the 65-document
+  adapter bound.
+- Benchmark code and receipts are excluded from Web and portable application
+  packs. The existing application and mathematical fixture formats are
+  unchanged.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- The benchmark wrapper reproduced the deterministic workload/integrity profile
+  twice for the committed receipt. The complete aggregate runner repeated the
+  two-run benchmark and passed all existing 833 Godot assertions, 13 browser
+  adapter/loader tests, 18 Python bridge/adapter/runner tests, deterministic demo,
+  portable-package scenarios, and intentional failure-harness check.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Editor import and static Web export passed. Pack inspection confirmed the
+  benchmark implementation and receipt were excluded. No Site deployment,
+  download publication, or release occurred.
+
+No controller/test failure remains. The benchmark does not resolve the existing
+display-enabled desktop, mobile, WebGL, visible-focus, or screen-reader review
+gaps. It records only headless controller and subprocess costs on one host.
+
+**Next specific task:** add an internal parsed-snapshot cache for history
+transitions, preserving the exact serialized recovery format and 100-command
+semantics, then rerun the fixed benchmark to quantify the effect without making
+timing a correctness gate.
+
+## Earlier increment: verified portable Linux package
 
 Built from live fork head `c675316e10a2bb098091894d3d6b3d03923a573e`
 in an isolated worktree under the exclusive Studio lock.

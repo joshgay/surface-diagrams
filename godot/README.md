@@ -73,6 +73,12 @@ fixed sibling Python authority, verifies exact geometry and publication, and
 tests explicit missing-authority and missing-interpreter failures. The helper
 does not publish or install the generated binary.
 
+[benchmark/README.md](benchmark/README.md) defines the fixed bounded M7
+performance workload and its versioned receipt. It measures maximum-size import,
+the complete history limit, braid sampling, exact geometry, and representative
+publication without treating elapsed time as correctness evidence. Current
+observations and practical interpretation are in [PERFORMANCE.md](PERFORMANCE.md).
+
 Import `project.godot` using Godot 4.7.2 stable. The exact runtime, checksum, and
 commands are in [RUNTIME.md](RUNTIME.md). Use GDScript and the Compatibility
 renderer; no .NET or external assets are required.

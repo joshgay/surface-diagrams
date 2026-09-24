@@ -54,6 +54,10 @@ def main():
              "--godot", args.godot,
              "--receipt", str(Path(directory) / "receipt.json"),
              "--bundle", str(Path(directory) / "bundle.zip")])
+    with tempfile.TemporaryDirectory(prefix="surface-studio-benchmark-") as directory:
+        run([sys.executable, str(PROJECT / "benchmark" / "run_benchmark.py"),
+             "--godot", args.godot,
+             "--receipt", str(Path(directory) / "receipt.json")])
     with tempfile.TemporaryDirectory(prefix="surface-studio-linux-test-") as directory:
         run([sys.executable, str(PROJECT / "desktop" / "build_linux.py"),
              "--godot", args.godot,
