@@ -909,7 +909,8 @@ func _offer_recovery() -> void:
 	var drafts: Dictionary = recovered.drafts
 	var undo_count: int = recovered.history_state.undo.size()
 	var redo_count: int = recovered.history_state.redo.size()
-	recovery_dialog.dialog_text = "A bounded version-1 recovery record contains %d curve draft%s, %d undo step%s, and %d redo step%s. Restore it, or explicitly discard it." % [drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s"]
+	var recovery_version: int = recovered.get("recovery_version", 1)
+	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains %d curve draft%s, %d undo step%s, and %d redo step%s. Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s"]
 	_popup_fitted(recovery_dialog, Vector2i(580, 230))
 	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))

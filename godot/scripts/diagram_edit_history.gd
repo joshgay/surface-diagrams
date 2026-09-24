@@ -4,6 +4,8 @@ extends RefCounted
 const MAX_HISTORY := 100
 const RETENTION_AUDIT_FORMAT := "surface-diagrams-history-retention"
 const RETENTION_AUDIT_VERSION := 1
+const COMPACT_STATE_FORMAT := "surface-diagrams-compact-history"
+const COMPACT_STATE_VERSION := 1
 
 var current: DiagramDocument
 var undo_stack: Array[Dictionary] = []
@@ -93,6 +95,86 @@ func to_state() -> Dictionary:
 		"undo": undo_stack.duplicate(true),
 		"redo": redo_stack.duplicate(true),
 	}
+
+# Recovery version 2 stores each canonical document once and refers to it by a
+# bounded integer. Public commands and the version-1 state remain unchanged.
+func to_compact_state() -> Dictionary:
+	if current == null:
+		return {}
+	var documents: Array[String] = []
+	var document_indices := {}
+	var compact_undo: Array[Dictionary] = []
+	var compact_redo: Array[Dictionary] = []
+	for command in undo_stack:
+		compact_undo.append(_compact_command(command, documents, document_indices))
+	for command in redo_stack:
+		compact_redo.append(_compact_command(command, documents, document_indices))
+	var current_index := _document_index(current.to_json(), documents, document_indices)
+	return {
+		"format": COMPACT_STATE_FORMAT,
+		"version": COMPACT_STATE_VERSION,
+		"documents": documents,
+		"current": current_index,
+		"undo": compact_undo,
+		"redo": compact_redo,
+	}
+
+func restore_compact_state(state: Variant) -> Dictionary:
+	if typeof(state) != TYPE_DICTIONARY:
+		return _failure("Compact recovery history must be an object")
+	for key in state.keys():
+		if key not in ["format", "version", "documents", "current", "undo", "redo"]:
+			return _failure("Compact recovery history has unknown field " + str(key))
+	for key in ["format", "version", "documents", "current", "undo", "redo"]:
+		if not state.has(key):
+			return _failure("Compact recovery history is missing " + key)
+	if state.format != COMPACT_STATE_FORMAT or not _integer(state.version) \
+			or int(state.version) != COMPACT_STATE_VERSION:
+		return _failure("Expected %s version %d" % [COMPACT_STATE_FORMAT, COMPACT_STATE_VERSION])
+	if typeof(state.documents) != TYPE_ARRAY or state.documents.is_empty() \
+			or state.documents.size() > MAX_HISTORY + 1:
+		return _failure("Compact recovery history must contain 1 to %d documents" % (MAX_HISTORY + 1))
+	if typeof(state.undo) != TYPE_ARRAY or typeof(state.redo) != TYPE_ARRAY:
+		return _failure("Compact recovery undo and redo histories must be arrays")
+	if state.undo.size() + state.redo.size() > MAX_HISTORY:
+		return _failure("Recovery history exceeds %d total commands" % MAX_HISTORY)
+	if state.documents.size() > state.undo.size() + state.redo.size() + 1:
+		return _failure("Compact recovery history contains excess documents")
+	var documents: Array[String] = []
+	var document_seen := {}
+	for source in state.documents:
+		if typeof(source) != TYPE_STRING:
+			return _failure("Compact recovery document must be JSON text")
+		var parsed := DiagramDocument.parse(source)
+		if not parsed.ok:
+			return _failure("Compact recovery document is invalid: " + parsed.error)
+		var canonical: String = parsed.document.to_json()
+		if document_seen.has(canonical):
+			return _failure("Compact recovery documents must be deduplicated")
+		document_seen[canonical] = true
+		documents.append(canonical)
+	if not _integer(state.current) or int(state.current) < 0 or int(state.current) >= documents.size():
+		return _failure("Compact recovery current document reference is invalid")
+	var used := {int(state.current): true}
+	var expanded_undo: Array[Dictionary] = []
+	var expanded_redo: Array[Dictionary] = []
+	for command in state.undo:
+		var expanded := _expand_compact_command(command, documents, used)
+		if not expanded.ok:
+			return expanded
+		expanded_undo.append(expanded.command)
+	for command in state.redo:
+		var expanded := _expand_compact_command(command, documents, used)
+		if not expanded.ok:
+			return expanded
+		expanded_redo.append(expanded.command)
+	if used.size() != documents.size():
+		return _failure("Compact recovery history contains an unreferenced document")
+	return restore_state({
+		"current": documents[int(state.current)],
+		"undo": expanded_undo,
+		"redo": expanded_redo,
+	})
 
 # Deterministic logical accounting for the bounded history. This intentionally
 # does not claim to measure allocator, heap, or process memory: Godot may share
@@ -263,6 +345,46 @@ func _validate_and_commit(candidate: DiagramDocument, validator: Callable,
 
 static func _failure(message: String) -> Dictionary:
 	return {"ok": false, "error": message}
+
+static func _document_index(source: String, documents: Array[String], indices: Dictionary) -> int:
+	if indices.has(source):
+		return indices[source]
+	var index := documents.size()
+	documents.append(source)
+	indices[source] = index
+	return index
+
+static func _compact_command(command: Dictionary, documents: Array[String], indices: Dictionary) -> Dictionary:
+	return {
+		"label": command.label,
+		"selection": command.selection.duplicate(true),
+		"before": _document_index(command.before, documents, indices),
+		"after": _document_index(command.after, documents, indices),
+	}
+
+static func _expand_compact_command(value: Variant, documents: Array[String], used: Dictionary) -> Dictionary:
+	if typeof(value) != TYPE_DICTIONARY:
+		return _failure("Compact recovery command must be an object")
+	for key in value.keys():
+		if key not in ["label", "selection", "before", "after"]:
+			return _failure("Compact recovery command has unknown field " + str(key))
+	for key in ["label", "selection", "before", "after"]:
+		if not value.has(key):
+			return _failure("Compact recovery command is missing " + key)
+	if not _integer(value.before) or not _integer(value.after):
+		return _failure("Compact recovery command document references must be integers")
+	var before := int(value.before)
+	var after := int(value.after)
+	if before < 0 or before >= documents.size() or after < 0 or after >= documents.size():
+		return _failure("Compact recovery command document reference is invalid")
+	used[before] = true
+	used[after] = true
+	return {"ok": true, "error": "", "command": {
+		"label": value.label,
+		"selection": value.selection.duplicate(true) if typeof(value.selection) == TYPE_DICTIONARY else value.selection,
+		"before": documents[before],
+		"after": documents[after],
+	}}
 
 static func _target(document: DiagramDocument) -> Dictionary:
 	return {"document": document}

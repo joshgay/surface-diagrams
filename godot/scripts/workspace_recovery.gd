@@ -2,9 +2,15 @@ class_name WorkspaceRecovery
 extends RefCounted
 
 const FORMAT := "surface-diagrams-studio-recovery"
-const VERSION := 1
-const MAX_BYTES := 1024 * 1024
-const PATH := "user://workspace-recovery-v1.json"
+const VERSION := 2
+const LEGACY_VERSION := 1
+const LEGACY_MAX_BYTES := 1024 * 1024
+# A compact history contains at most 101 distinct endpoint documents. The 32 MiB
+# import cap is explicit and comfortably covers the exercised maximum structural
+# fixture; JSON escaping still counts toward the cap and can cause rejection.
+const MAX_BYTES := 32 * 1024 * 1024
+const PATH := "user://workspace-recovery-v2.json"
+const LEGACY_PATH := "user://workspace-recovery-v1.json"
 
 static func encode(baseline_source: String, history: DiagramEditHistory,
 		drafts: Dictionary, selection: Dictionary) -> Dictionary:
@@ -14,13 +20,13 @@ static func encode(baseline_source: String, history: DiagramEditHistory,
 		"format": FORMAT,
 		"version": VERSION,
 		"baseline": baseline_source,
-		"history": history.to_state(),
+		"history": history.to_compact_state(),
 		"drafts": drafts.duplicate(true),
 		"selection": selection.duplicate(true),
 	}
 	var text := JSON.stringify(envelope, "\t", false, true) + "\n"
 	if text.to_utf8_buffer().size() > MAX_BYTES:
-		return _failure("Recovery record exceeds 1 MiB")
+		return _failure("Recovery record exceeds 32 MiB")
 	var checked := parse(text)
 	if not checked.ok:
 		return checked
@@ -28,7 +34,7 @@ static func encode(baseline_source: String, history: DiagramEditHistory,
 
 static func parse(text: String) -> Dictionary:
 	if text.to_utf8_buffer().size() > MAX_BYTES:
-		return _failure("Recovery record exceeds 1 MiB")
+		return _failure("Recovery record exceeds 32 MiB")
 	var parser := JSON.new()
 	var code := parser.parse(text)
 	if code != OK:
@@ -42,15 +48,20 @@ static func parse(text: String) -> Dictionary:
 	var fields := _keys(raw, ["format", "version", "baseline", "history", "drafts", "selection"])
 	if not fields.ok:
 		return fields
-	if raw.format != FORMAT or not _integer(raw.version) or int(raw.version) != VERSION:
-		return _failure("Expected %s version %d" % [FORMAT, VERSION])
+	if raw.format != FORMAT or not _integer(raw.version) \
+			or int(raw.version) not in [LEGACY_VERSION, VERSION]:
+		return _failure("Expected %s version 1 or 2" % FORMAT)
+	var recovery_version := int(raw.version)
+	if recovery_version == LEGACY_VERSION and text.to_utf8_buffer().size() > LEGACY_MAX_BYTES:
+		return _failure("Version-1 recovery record exceeds 1 MiB")
 	if typeof(raw.baseline) != TYPE_STRING:
 		return _failure("Recovery baseline must be JSON text")
 	var baseline := DiagramDocument.parse(raw.baseline)
 	if not baseline.ok:
 		return _failure("Recovery baseline is invalid: " + baseline.error)
 	var restored_history := DiagramEditHistory.new()
-	var history_result := restored_history.restore_state(raw.history)
+	var history_result := restored_history.restore_state(raw.history) if recovery_version == LEGACY_VERSION \
+		else restored_history.restore_compact_state(raw.history)
 	if not history_result.ok:
 		return history_result
 	if baseline.document.data.kind != restored_history.current.data.kind:
@@ -64,6 +75,7 @@ static func parse(text: String) -> Dictionary:
 	return {
 		"ok": true,
 		"error": "",
+		"recovery_version": recovery_version,
 		"baseline_source": baseline.document.to_json(),
 		"history_state": restored_history.to_state(),
 		"drafts": drafts_result.value,
@@ -71,13 +83,14 @@ static func parse(text: String) -> Dictionary:
 	}
 
 static func load_file() -> Dictionary:
-	if not FileAccess.file_exists(PATH):
+	var path := PATH if FileAccess.file_exists(PATH) else LEGACY_PATH
+	if not FileAccess.file_exists(path):
 		return {"ok": true, "found": false, "error": ""}
-	var file := FileAccess.open(PATH, FileAccess.READ)
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {"ok": false, "found": true, "error": "Could not read the workspace recovery record"}
 	if file.get_length() > MAX_BYTES:
-		return {"ok": false, "found": true, "error": "Recovery record exceeds 1 MiB"}
+		return {"ok": false, "found": true, "error": "Recovery record exceeds 32 MiB"}
 	var parsed := parse(file.get_as_text())
 	parsed.found = true
 	return parsed
@@ -102,14 +115,17 @@ static func save_file(baseline_source: String, history: DiagramEditHistory,
 	if rename_error != OK:
 		DirAccess.remove_absolute(temporary_absolute)
 		return "Could not replace the workspace recovery record"
+	if FileAccess.file_exists(LEGACY_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(LEGACY_PATH))
 	return ""
 
 static func clear_file() -> void:
-	if FileAccess.file_exists(PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
-	var temporary := PATH + ".tmp"
-	if FileAccess.file_exists(temporary):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+	for path: String in [PATH, LEGACY_PATH]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+		var temporary: String = path + ".tmp"
+		if FileAccess.file_exists(temporary):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
 
 static func _drafts(value: Variant, document: DiagramDocument) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:

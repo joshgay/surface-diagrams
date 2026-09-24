@@ -46,11 +46,13 @@ certified geometry output. See [PUBLICATION.md](PUBLICATION.md).
 The Studio lists strand transport, exposes normalized source, pans/zooms without
 changing records, and opens/saves bounded JSON. Accepted edits, undo/redo, the
 current stable-ID selection, and unapplied curve drafts are also checkpointed in
-a separate bounded version-1 workspace recovery record. A fixed local bridge
-validates the same record with the Python library and makes its exact publication
-SVG and TikZ available through explicit export buttons. Bridge failure is visible
-and never falls back to a purported exact result. Do not confuse this early
-editor with the more complete
+a separate bounded version-2 workspace recovery record. Its compact history
+stores each exact command endpoint document once; existing version-1 records
+remain readable and are replaced after a successful new checkpoint. A fixed
+local bridge validates the same record with the Python library and makes its
+exact publication SVG and TikZ available through explicit export buttons.
+Bridge failure is visible and never falls back to a purported exact result. Do
+not confuse this early editor with the more complete
 [local browser editor](../docs/EDITOR.md), which runs without Godot.
 
 The editor and all three secondary workspaces also have an explicit pointer-free
@@ -114,8 +116,10 @@ changes and every stable-ID curve draft. The confirmation offers explicit
 Cancel and **Discard and continue** choices. Cancel leaves the record, command
 history, and drafts unchanged; a failed import also leaves them unchanged. On a
 later desktop start, a recovery prompt lets the user restore or explicitly
-discard the validated checkpoint. Recovery is limited to 1 MiB, 100 undo/redo
-commands in either stack, known curve IDs, and 64 cut visits per draft. It never
+discard the validated checkpoint. Recovery is limited to 100 undo/redo commands
+total, known curve IDs, and 64 cut visits per draft. Version 2 has a
+32 MiB serialized envelope cap; legacy version 1 retains its original 1 MiB
+limit. It never
 loads a script, scene, or resource, and camera state remains outside the
 mathematical record. Successful Save marks the accepted source clean, while any
 unapplied drafts remain visibly unsaved and recoverable.

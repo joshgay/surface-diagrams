@@ -174,3 +174,34 @@ The conservative logical source-slot ceiling falls exactly 25 percent, from
 remain logical retention counts, not measurements of physical process memory.
 Timing differences between receipts are host observations and are not attributed
 to this storage-only change.
+
+## Compact workspace recovery history
+
+Workspace recovery version 2 uses a document table and bounded integer command
+references. A valid contiguous 100-command history can contain at most 101
+distinct canonical endpoint documents, so the same document is no longer copied
+into the `after` field of one command and the adjacent `before` field of the
+next. Public runtime commands and version-1 recovery parsing remain unchanged.
+
+The [compact recovery receipt](benchmark/receipts/linux-headless-2026-09-24-compact-recovery.json)
+uses the 32-object, 16-curve, 32-label fixture and restores all 100 undo and redo
+transitions:
+
+| Maximum-fixture recovery quantity | Exact amount |
+| --- | ---: |
+| Commands | 100 |
+| Distinct canonical endpoint documents | 101 |
+| Version-1-equivalent history JSON | 3,051,715 bytes |
+| Version-2 compact history JSON | 1,538,696 bytes |
+| History reduction | 1,513,019 bytes (49.58%) |
+| Complete version-2 envelope | 1,559,493 bytes |
+| Explicit envelope bound | 33,554,432 bytes |
+
+The exercised envelope uses 4.65 percent of the bound. The 32 MiB limit is an
+explicit serialized import cap chosen above 101 logical 256 KiB document slots;
+JSON string escaping also counts toward it, so encoding still rejects any actual
+record that crosses the cap. Version-1 files retain their original 1 MiB limit.
+Parsing either version performs strict document, command,
+continuity, selection, and draft validation before changing the live workspace;
+version 2 additionally rejects duplicate, unreferenced, or out-of-range document
+slots. These byte counts describe serialized recovery data, not process memory.

@@ -98,6 +98,21 @@ def validate(path: Path) -> dict:
             or not 0 < totals.get("serialized_command_bytes", 0) < 128 * 1024 * 1024
             or not 0 < totals.get("logical_source_bytes", 0) <= bounds.get("maximum_logical_source_bytes", 0)):
         raise SystemExit("history retention audit is malformed or outside its bound")
+    recovery = integrity.get("workspace_recovery", {})
+    if (recovery.get("ok") is not True
+            or recovery.get("version") != 2
+            or recovery.get("commands") != 100
+            or recovery.get("documents") != 101
+            or recovery.get("initial_matches") is not True
+            or recovery.get("final_matches") is not True
+            or recovery.get("cache_aligned") is not True
+            or recovery.get("maximum_envelope_bytes") != 32 * 1024 * 1024
+            or not 0 < recovery.get("compact_history_bytes", 0) < recovery.get("legacy_history_bytes", 0)
+            or recovery.get("saved_history_bytes") != recovery["legacy_history_bytes"] - recovery["compact_history_bytes"]
+            or not 0 < recovery.get("envelope_bytes", 0) <= recovery["maximum_envelope_bytes"]
+            or any(type(recovery.get(key)) is not str or len(recovery[key]) != 64
+                   for key in ("initial_sha256", "final_sha256"))):
+        raise SystemExit("compact workspace recovery is malformed or outside its bound")
     return receipt
 
 

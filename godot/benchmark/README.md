@@ -46,5 +46,13 @@ same workload. This makes history-cache and normalized-edit changes comparable
 while deterministic fixture and result hashes guard against measuring different
 records or outcomes.
 
+The integrity profile also builds and restores version-2 workspace recovery for
+the maximum planar fixture at the exact 100-command limit. It records the
+deduplicated document count, compact and legacy-equivalent history bytes, total
+envelope bytes, the 32 MiB schema bound, endpoint hashes, and cache alignment.
+All 100 undo and redo transitions must reproduce the exact initial and final
+records. Legacy bytes are a deterministic equivalent used for comparison; the
+benchmark does not write a version-1 recovery file.
+
 The benchmark requires the same trusted local Python geometry authority as the
 desktop application. It is excluded from Web and portable application packs.

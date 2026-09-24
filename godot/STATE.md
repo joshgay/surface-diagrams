@@ -16,7 +16,53 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: document-only runtime history snapshots
+## Latest increment: compact versioned workspace recovery
+
+Built from live fork head `703572c608f5b62fab38a2017780f4b22de221be`
+in an isolated worktree under the exclusive Studio lock.
+
+- Workspace recovery version 2 stores canonical endpoint documents once in a
+  bounded table and uses integer references from undo and redo commands. Exact
+  public runtime commands and mathematical document JSON remain unchanged.
+- A valid 100-command recovery contains at most 101 distinct documents.
+  Duplicate, unused, excess, malformed, and out-of-range document slots are
+  rejected before the live workspace changes. Full command continuity, stable
+  selection, draft, diagram-schema, and 100-command checks still apply.
+- Existing version-1 recovery records retain their original 1 MiB bound, load
+  from the existing path, and normalize to the same public history state. The
+  next successful checkpoint writes version 2 atomically and removes the stale
+  version-1 file. Version 2 has an explicit 32 MiB serialized import cap.
+- The maximum structural benchmark restores all 100 undo and redo endpoints,
+  aligned runtime snapshots, and identical initial/final hashes. Its history
+  representation fell from 3,051,715 to 1,538,696 bytes, a 49.58 percent
+  reduction. The complete version-2 envelope is 1,559,493 bytes, 4.65 percent
+  of the cap.
+- Documentation now distinguishes the version-2 envelope, legacy compatibility,
+  logical record limits, serialized byte limits, and the absence of any
+  process-memory claim.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **876 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark with exact compact-recovery
+  reconstruction, private portable-package scenarios, and intentional failure
+  harness. The package contained 53 files, measured 147,288,411 bytes, and ran
+  outside the checkout.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Static Web export rebuilt successfully. This remains a build check, not
+  display-enabled WebGL or physical-phone acceptance. No Site deployment,
+  download publication, release, or email occurred.
+
+No controller/test failure remains. Display-enabled desktop, mobile, WebGL,
+visible-focus, and screen-reader review remain unavailable in this environment.
+
+**Next specific task:** make workspace checkpoints resilient to an interrupted
+replacement by adding a bounded last-known-good recovery slot with generation
+metadata, deterministic selection of the newest valid slot, and exact tests for
+truncation, corruption, rollback, version-1 migration, and stale-slot cleanup.
+
+## Earlier increment: document-only runtime history snapshots
 
 Built from live fork head `b1fb69c6897bf2f9c200767e7105b53856eafb0d`
 in an isolated worktree under the exclusive Studio lock.

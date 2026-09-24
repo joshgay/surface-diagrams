@@ -51,6 +51,7 @@ func _run() -> void:
 	measurements.append(_measure_import(planar_json, braid_json))
 	var history_measurement := _measure_history(planar)
 	measurements.append(history_measurement.measurement)
+	var recovery_check := _recovery_once(planar)
 	var timeline_measurement := _measure_timeline(braid)
 	measurements.append(timeline_measurement.measurement)
 	var geometry_measurement := _measure_geometry(planar)
@@ -68,6 +69,16 @@ func _run() -> void:
 	_require(history_measurement.retention.totals.snapshot_source_bytes == 0
 		and history_measurement.retention.bounds.maximum_snapshot_source_bytes == 0,
 		"runtime snapshots retain immutable documents without duplicate source strings")
+	_require(recovery_check.ok and recovery_check.version == WorkspaceRecovery.VERSION
+		and recovery_check.commands == HISTORY_COMMANDS
+		and recovery_check.documents == HISTORY_COMMANDS + 1,
+		"compact recovery covers the complete maximum-fixture history")
+	_require(recovery_check.compact_history_bytes < recovery_check.legacy_history_bytes
+		and recovery_check.envelope_bytes <= WorkspaceRecovery.MAX_BYTES,
+		"compact recovery reduces retained endpoint text inside its explicit envelope")
+	_require(recovery_check.initial_matches and recovery_check.final_matches
+		and recovery_check.cache_aligned,
+		"compact recovery reproduces every exact maximum-fixture endpoint")
 	_require(timeline_measurement.final_crossings == 128 and timeline_measurement.final_paths == 32, "timeline reaches the exact maximum braid endpoint")
 	_require(geometry_measurement.svg_sha256 == _sha_text(warm_geometry.svg), "geometry output remains byte-identical after warmup")
 	_require(geometry_measurement.tikz_sha256 == _sha_text(warm_geometry.tikz), "TikZ output remains byte-identical after warmup")
@@ -114,6 +125,7 @@ func _run() -> void:
 			"history_initial_sha256": history_measurement.initial_sha256,
 			"history_final_sha256": history_measurement.final_sha256,
 			"history_retention": history_measurement.retention,
+			"workspace_recovery": recovery_check,
 			"timeline_final_paths": timeline_measurement.final_paths,
 			"timeline_final_crossings": timeline_measurement.final_crossings,
 			"geometry_svg_sha256": geometry_measurement.svg_sha256,
@@ -194,6 +206,52 @@ func _history_once(planar: DiagramDocument) -> Dictionary:
 		"edit_us": edit_us, "undo_us": undo_us, "redo_us": redo_us,
 		"initial_sha256": _sha_text(initial), "final_sha256": _sha_text(final),
 		"retention": retention}
+
+func _recovery_once(planar: DiagramDocument) -> Dictionary:
+	var history := DiagramEditHistory.new()
+	history.set_document(planar)
+	var initial := planar.to_json()
+	for index in HISTORY_COMMANDS:
+		var moved := history.move_label("label01", Vector2(-309.0 + index * 0.25, -120.0 + index * 0.125))
+		if not moved.ok:
+			return {"ok": false}
+	var final := history.current.to_json()
+	var legacy_history_bytes := JSON.stringify(history.to_state(), "", false, true).to_utf8_buffer().size()
+	var compact_state := history.to_compact_state()
+	var compact_history_bytes := JSON.stringify(compact_state, "", false, true).to_utf8_buffer().size()
+	var encoded := WorkspaceRecovery.encode(initial, history, {}, {})
+	if not encoded.ok:
+		return {"ok": false}
+	var parsed := WorkspaceRecovery.parse(encoded.text)
+	if not parsed.ok:
+		return {"ok": false}
+	var restored := DiagramEditHistory.new()
+	if not restored.restore_state(parsed.history_state).ok:
+		return {"ok": false}
+	for index in HISTORY_COMMANDS:
+		if not restored.undo().ok:
+			return {"ok": false}
+	var initial_matches := restored.current.to_json() == initial
+	for index in HISTORY_COMMANDS:
+		if not restored.redo().ok:
+			return {"ok": false}
+	var audit := restored.retention_audit()
+	return {
+		"ok": true,
+		"version": parsed.recovery_version,
+		"commands": restored.undo_stack.size() + restored.redo_stack.size(),
+		"documents": compact_state.documents.size(),
+		"envelope_bytes": encoded.text.to_utf8_buffer().size(),
+		"maximum_envelope_bytes": WorkspaceRecovery.MAX_BYTES,
+		"compact_history_bytes": compact_history_bytes,
+		"legacy_history_bytes": legacy_history_bytes,
+		"saved_history_bytes": legacy_history_bytes - compact_history_bytes,
+		"initial_matches": initial_matches,
+		"final_matches": restored.current.to_json() == final,
+		"cache_aligned": audit.cache_aligned and audit.totals.command_count == HISTORY_COMMANDS,
+		"initial_sha256": _sha_text(initial),
+		"final_sha256": _sha_text(final),
+	}
 
 func _measure_timeline(braid: DiagramDocument) -> Dictionary:
 	var samples: Array[int] = []

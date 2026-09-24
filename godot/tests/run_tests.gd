@@ -255,6 +255,24 @@ func _run_tests() -> void:
 	_expect(bounded_history.redo_stack.is_empty() and bounded_history.current.to_json() == bounded_final, "100-command redo retains exact targets after oldest-command eviction")
 	var redone_audit := bounded_history.retention_audit()
 	_expect(redone_audit.cache_aligned and redone_audit.undo.snapshot_count == 100 and redone_audit.redo.snapshot_count == 0 and redone_audit == bounded_audit, "complete redo reproduces the byte-identical retention audit")
+	var compact_bounded := bounded_history.to_compact_state()
+	var legacy_bounded_bytes := JSON.stringify(bounded_history.to_state(), "", false, true).to_utf8_buffer().size()
+	var compact_bounded_bytes := JSON.stringify(compact_bounded, "", false, true).to_utf8_buffer().size()
+	_expect(compact_bounded.format == DiagramEditHistory.COMPACT_STATE_FORMAT and compact_bounded.version == 1 and compact_bounded.documents.size() == 101, "compact history is versioned and stores each endpoint document once")
+	_expect(compact_bounded_bytes < legacy_bounded_bytes and compact_bounded.undo[0].before is int and compact_bounded.undo[0].after is int, "compact history replaces adjacent endpoint copies with bounded integer references")
+	var compact_bounded_restore := DiagramEditHistory.new()
+	var compact_bounded_result := compact_bounded_restore.restore_compact_state(compact_bounded)
+	_expect(compact_bounded_result.ok and compact_bounded_restore.current.to_json() == bounded_final and compact_bounded_restore.undo_stack == bounded_history.undo_stack, "compact 100-command history restores the exact public command state")
+	for index in 100: compact_bounded_restore.undo()
+	_expect(compact_bounded_restore.current.to_json() == oldest_retained_target and compact_bounded_restore.redo_stack.size() == 100, "compact history reproduces all 100 exact undo endpoints")
+	for index in 100: compact_bounded_restore.redo()
+	_expect(compact_bounded_restore.current.to_json() == bounded_final and compact_bounded_restore.retention_audit() == bounded_audit, "compact history reproduces all 100 exact redo endpoints and runtime snapshots")
+	var duplicate_compact: Dictionary = compact_bounded.duplicate(true)
+	duplicate_compact.documents[1] = duplicate_compact.documents[0]
+	_expect(not DiagramEditHistory.new().restore_compact_state(duplicate_compact).ok, "compact history rejects duplicate document slots")
+	var bad_compact_reference: Dictionary = compact_bounded.duplicate(true)
+	bad_compact_reference.undo[0].before = 999
+	_expect(not DiagramEditHistory.new().restore_compact_state(bad_compact_reference).ok, "compact history rejects out-of-range document references")
 	var label_move := history.move_label("label1", Vector2(15, -55))
 	_expect(label_move.ok and label_move.document.data.labels[0].x == 15.0 and label_move.document.data.labels[0].y == -55.0, "label move is command based")
 	var label_source: String = history.current.to_json()
@@ -463,8 +481,13 @@ func _run_tests() -> void:
 	var recovery_selection := {"kind": "curve", "id": "editable", "index": 1}
 	var encoded_recovery := WorkspaceRecovery.encode(multi_source, recovery_history, recovery_drafts, recovery_selection)
 	_expect(encoded_recovery.ok and encoded_recovery.text.length() > 0, "bounded recovery envelope encodes accepted state, history, and rejected drafts")
+	var encoded_recovery_raw: Dictionary = JSON.parse_string(encoded_recovery.text)
+	_expect(encoded_recovery_raw.version == 2 and encoded_recovery_raw.history.format == DiagramEditHistory.COMPACT_STATE_FORMAT and encoded_recovery_raw.history.documents.size() == 2, "new recovery writes version 2 with deduplicated command endpoint documents")
+	var excess_recovery_history: Dictionary = encoded_recovery_raw.history.duplicate(true)
+	excess_recovery_history.documents.append(braid.to_json())
+	_expect(not DiagramEditHistory.new().restore_compact_state(excess_recovery_history).ok, "compact history rejects unreferenced document slots")
 	var parsed_recovery := WorkspaceRecovery.parse(encoded_recovery.text)
-	_expect(parsed_recovery.ok and parsed_recovery.baseline_source == multi_source, "recovery envelope retains exact normalized baseline")
+	_expect(parsed_recovery.ok and parsed_recovery.recovery_version == 2 and parsed_recovery.baseline_source == multi_source, "recovery envelope retains exact normalized baseline and version")
 	_expect(parsed_recovery.ok and parsed_recovery.drafts == recovery_drafts, "recovery retains literal invalid drafts without simplifying them")
 	_expect(parsed_recovery.ok and parsed_recovery.selection == recovery_selection, "recovery retains stable record selection")
 	var restored_history := DiagramEditHistory.new()
@@ -474,10 +497,20 @@ func _run_tests() -> void:
 	_expect(restored_audit.cache_aligned and restored_audit.totals.snapshot_count == 1 and restored_audit.totals.snapshot_source_bytes == 0, "recovery rebuilds document-only runtime snapshots without changing serialized history")
 	_expect(restored_history.redo().document.to_json() == recovery_after and restored_history.can_undo(), "restored redo reproduces the exact accepted itinerary")
 	_expect(restored_history.undo().document.to_json() == multi_source, "restored undo reproduces the exact prior recipe")
+	var legacy_recovery := {
+		"format": WorkspaceRecovery.FORMAT,
+		"version": WorkspaceRecovery.LEGACY_VERSION,
+		"baseline": multi_source,
+		"history": recovery_history.to_state(),
+		"drafts": recovery_drafts,
+		"selection": recovery_selection,
+	}
+	var parsed_legacy_recovery := WorkspaceRecovery.parse(JSON.stringify(legacy_recovery))
+	_expect(parsed_legacy_recovery.ok and parsed_legacy_recovery.recovery_version == 1 and parsed_legacy_recovery.history_state == parsed_recovery.history_state, "version-1 recovery remains readable and normalizes to the exact public history state")
 	var future_recovery: Dictionary = JSON.parse_string(encoded_recovery.text)
-	future_recovery.version = 2
+	future_recovery.version = 3
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(future_recovery)).ok, "future recovery version is rejected")
-	var duplicate_recovery: String = encoded_recovery.text.replace("\"version\": 1,", "\"version\": 1,\n\t\"version\": 1,")
+	var duplicate_recovery: String = encoded_recovery.text.replace("\"version\": 2,", "\"version\": 2,\n\t\"version\": 2,")
 	_expect(not WorkspaceRecovery.parse(duplicate_recovery).ok, "duplicate recovery field is rejected")
 	var unknown_recovery: Dictionary = JSON.parse_string(encoded_recovery.text)
 	unknown_recovery.camera = {"zoom": 2}
@@ -486,7 +519,7 @@ func _run_tests() -> void:
 	unknown_draft.drafts = {"missing": [0]}
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(unknown_draft)).ok, "recovery draft for unknown stable curve ID is rejected")
 	var discontinuous: Dictionary = JSON.parse_string(encoded_recovery.text)
-	discontinuous.history.redo[0].before = recovery_after
+	discontinuous.history.redo[0].before = discontinuous.history.redo[0].after
 	_expect(not WorkspaceRecovery.parse(JSON.stringify(discontinuous)).ok, "noncontiguous recovery history is rejected")
 	var overfull_state := recovery_history.to_state()
 	var repeated_command: Dictionary = overfull_state.redo[0].duplicate(true)
@@ -497,9 +530,14 @@ func _run_tests() -> void:
 	var oversized_recovery := " ".repeat(WorkspaceRecovery.MAX_BYTES) + "{}"
 	_expect(not WorkspaceRecovery.parse(oversized_recovery).ok, "oversized recovery envelope is rejected before use")
 	WorkspaceRecovery.clear_file()
+	var legacy_file := FileAccess.open(WorkspaceRecovery.LEGACY_PATH, FileAccess.WRITE)
+	legacy_file.store_string(JSON.stringify(legacy_recovery))
+	legacy_file.close()
+	var loaded_legacy_recovery := WorkspaceRecovery.load_file()
+	_expect(loaded_legacy_recovery.ok and loaded_legacy_recovery.found and loaded_legacy_recovery.recovery_version == 1, "loader falls back to the existing version-1 recovery path")
 	var save_recovery_error := WorkspaceRecovery.save_file(multi_source, recovery_history, recovery_drafts, recovery_selection)
 	var loaded_recovery := WorkspaceRecovery.load_file()
-	_expect(save_recovery_error.is_empty() and loaded_recovery.ok and loaded_recovery.found, "versioned recovery record writes and reopens")
+	_expect(save_recovery_error.is_empty() and loaded_recovery.ok and loaded_recovery.found and loaded_recovery.recovery_version == 2 and not FileAccess.file_exists(WorkspaceRecovery.LEGACY_PATH), "version-2 recovery writes, reopens, and retires the legacy path")
 	_expect(loaded_recovery.drafts == recovery_drafts and loaded_recovery.history_state == parsed_recovery.history_state, "disk recovery round trip retains drafts and command history exactly")
 	WorkspaceRecovery.clear_file()
 	_expect(not FileAccess.file_exists(WorkspaceRecovery.PATH), "explicit recovery discard removes the separate workspace file")
