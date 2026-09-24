@@ -28,5 +28,10 @@ correctness, mathematical validity, visual quality, or suitability on another
 machine. Publication is deliberately representative rather than a claim about
 the largest possible 65-document bundle.
 
+History measurements also contain separate edit, undo, and redo phase samples.
+Their sum is the recorded total for each sample, allowing changes to record
+construction and history navigation to be distinguished without changing the
+fixed workload.
+
 The benchmark requires the same trusted local Python geometry authority as the
 desktop application. It is excluded from Web and portable application packs.

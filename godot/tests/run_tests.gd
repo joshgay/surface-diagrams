@@ -179,6 +179,32 @@ func _run_tests() -> void:
 	_expect(undone.ok and undone.document.to_json() == original_source and history.can_redo(), "undo restores exact prior recipe")
 	var redone := history.redo()
 	_expect(redone.ok and redone.document.to_json() == moved_source and history.can_undo(), "redo restores exact accepted recipe")
+	var serialized_history := history.to_state()
+	_expect(serialized_history.keys() == ["current", "undo", "redo"] and serialized_history.undo[0].keys() == ["label", "selection", "before", "after"], "parsed history snapshots never enter serialized recovery data")
+	var accepted_before_tamper := history.current.to_json()
+	var cached_before: String = history.undo_stack[-1].before
+	history.undo_stack[-1].before = "{invalid cached command"
+	var tampered_undo := history.undo()
+	_expect(not tampered_undo.ok and "Stored undo record is invalid" in tampered_undo.error and history.current.to_json() == accepted_before_tamper and history.undo_stack.size() == 1 and not history.can_redo(), "undo cache cannot bypass a mutated serialized command")
+	history.undo_stack[-1].before = cached_before
+	_expect(history.undo().ok and history.current.to_json() == original_source, "valid serialized undo still uses the exact accepted target after rejection")
+	var cached_after: String = history.redo_stack[-1].after
+	history.redo_stack[-1].after = "{invalid cached command"
+	var tampered_redo := history.redo()
+	_expect(not tampered_redo.ok and "Stored redo record is invalid" in tampered_redo.error and history.current.to_json() == original_source and history.redo_stack.size() == 1 and not history.can_undo(), "redo cache cannot bypass a mutated serialized command")
+	history.redo_stack[-1].after = cached_after
+	_expect(history.redo().ok and history.current.to_json() == moved_source, "valid serialized redo still uses the exact accepted target after rejection")
+	var bounded_history := DiagramEditHistory.new()
+	bounded_history.set_document(planar)
+	var oldest_retained_target := ""
+	for index in 101:
+		var bounded_move := bounded_history.move_label("label1", Vector2(100.0 + index, -60.0))
+		if index == 0: oldest_retained_target = bounded_move.document.to_json()
+	var bounded_final := bounded_history.current.to_json()
+	for index in 100: bounded_history.undo()
+	_expect(bounded_history.undo_stack.is_empty() and bounded_history.current.to_json() == oldest_retained_target, "100-command eviction keeps the parsed undo targets aligned")
+	for index in 100: bounded_history.redo()
+	_expect(bounded_history.redo_stack.is_empty() and bounded_history.current.to_json() == bounded_final, "100-command redo retains exact targets after oldest-command eviction")
 	var label_move := history.move_label("label1", Vector2(15, -55))
 	_expect(label_move.ok and label_move.document.data.labels[0].x == 15.0 and label_move.document.data.labels[0].y == -55.0, "label move is command based")
 	var label_source: String = history.current.to_json()

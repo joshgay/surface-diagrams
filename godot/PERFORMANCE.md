@@ -42,3 +42,22 @@ load, browser behavior, visible rendering, and assistive technology can change
 the result. The deterministic fixture and output hashes verify that repeated
 runs measured the same work; they do not turn the timings into correctness or
 mathematical evidence.
+
+## Parsed history snapshot comparison
+
+The runtime-only history cache retains already validated immutable record
+targets while leaving recovery JSON byte-for-byte unchanged. The follow-up
+[receipt](benchmark/receipts/linux-headless-2026-09-24-history-cache.json)
+repeated the same `bounded-m7-v1` workload and exact integrity outputs.
+
+| Maximum-record history workload | Baseline | Parsed snapshots | Change |
+| --- | ---: | ---: | ---: |
+| 100 edits + 100 undos + 100 redos | 4,007.524 ms | 2,026.430 ms | -49.4% |
+| Average across 300 actions | 13.358 ms | 6.755 ms | -49.4% |
+
+The newer receipt also separates the phases. Median edit cost was 18.296 ms,
+while cached undo and redo were 0.750 ms and 0.739 ms per action. This shows
+that strict construction and validation of new maximum-size records now
+dominates history cost. The cache does not relax import, recovery, or mutation
+checks; if serialized command text changes, Studio discards the cached target
+and parses the changed text through the original rejection path.

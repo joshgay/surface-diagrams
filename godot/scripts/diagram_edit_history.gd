@@ -6,11 +6,18 @@ const MAX_HISTORY := 100
 var current: DiagramDocument
 var undo_stack: Array[Dictionary] = []
 var redo_stack: Array[Dictionary] = []
+# Runtime-only parsed targets mirror the public serialized stacks. Recovery and
+# interchange remain JSON-only; these snapshots only avoid reparsing records
+# which were already accepted by DiagramDocument.
+var _undo_targets: Array[Dictionary] = []
+var _redo_targets: Array[Dictionary] = []
 
 func set_document(document: DiagramDocument) -> void:
 	current = document
 	undo_stack.clear()
 	redo_stack.clear()
+	_undo_targets.clear()
+	_redo_targets.clear()
 
 func move_object(id: String, x: float, validator: Callable = Callable()) -> Dictionary:
 	if current == null:
@@ -105,6 +112,8 @@ func restore_state(state: Variant) -> Dictionary:
 		return _failure("Recovery history exceeds %d commands" % MAX_HISTORY)
 	var validated_undo: Array[Dictionary] = []
 	var validated_redo: Array[Dictionary] = []
+	var validated_undo_targets: Array[Dictionary] = []
+	var validated_redo_targets: Array[Dictionary] = []
 	var expected := ""
 	for raw_command in state.undo:
 		var checked := _validate_command(raw_command)
@@ -114,6 +123,7 @@ func restore_state(state: Variant) -> Dictionary:
 			return _failure("Recovery undo history is not contiguous")
 		expected = checked.command.after
 		validated_undo.append(checked.command)
+		validated_undo_targets.append(_target(checked.command.before, checked.before_document))
 	if not validated_undo.is_empty() and expected != parsed_current.document.to_json():
 		return _failure("Recovery undo history does not end at the current record")
 	expected = parsed_current.document.to_json()
@@ -125,34 +135,51 @@ func restore_state(state: Variant) -> Dictionary:
 			return _failure("Recovery redo history is not contiguous")
 		expected = checked.command.after
 		validated_redo.push_front(checked.command)
+		validated_redo_targets.push_front(_target(checked.command.after, checked.after_document))
 	current = parsed_current.document
 	undo_stack = validated_undo
 	redo_stack = validated_redo
+	_undo_targets = validated_undo_targets
+	_redo_targets = validated_redo_targets
 	return {"ok": true, "error": "", "document": current}
 
 func undo() -> Dictionary:
 	if not can_undo():
 		return _failure("Nothing to undo")
+	if _undo_targets.size() != undo_stack.size():
+		_undo_targets.clear()
+	var index := undo_stack.size() - 1
 	var command: Dictionary = undo_stack[-1]
-	var parsed := DiagramDocument.parse(command.before)
-	if not parsed.ok:
-		return _failure("Stored undo record is invalid: " + parsed.error)
+	var resolved := _resolve_target(_undo_targets, index, command.before)
+	if not resolved.ok:
+		return _failure("Stored undo record is invalid: " + resolved.error)
+	var after_document := current
 	undo_stack.pop_back()
+	if not _undo_targets.is_empty():
+		_undo_targets.pop_back()
 	redo_stack.append(command)
-	current = parsed.document
+	_redo_targets.append(_target(command.after, after_document) if after_document.to_json() == command.after else {})
+	current = resolved.document
 	return {"ok": true, "error": "", "document": current,
 		"label": "Undo " + command.label, "selection": command.selection.duplicate(true)}
 
 func redo() -> Dictionary:
 	if not can_redo():
 		return _failure("Nothing to redo")
+	if _redo_targets.size() != redo_stack.size():
+		_redo_targets.clear()
+	var index := redo_stack.size() - 1
 	var command: Dictionary = redo_stack[-1]
-	var parsed := DiagramDocument.parse(command.after)
-	if not parsed.ok:
-		return _failure("Stored redo record is invalid: " + parsed.error)
+	var resolved := _resolve_target(_redo_targets, index, command.after)
+	if not resolved.ok:
+		return _failure("Stored redo record is invalid: " + resolved.error)
+	var before_document := current
 	redo_stack.pop_back()
+	if not _redo_targets.is_empty():
+		_redo_targets.pop_back()
 	undo_stack.append(command)
-	current = parsed.document
+	_undo_targets.append(_target(command.before, before_document) if before_document.to_json() == command.before else {})
+	current = resolved.document
 	return {"ok": true, "error": "", "document": current,
 		"label": "Redo " + command.label, "selection": command.selection.duplicate(true)}
 
@@ -166,15 +193,33 @@ func _validate_and_commit(candidate: DiagramDocument, validator: Callable,
 	var command := {"label": label, "selection": selection.duplicate(true),
 		"before": current.to_json(), "after": candidate.to_json()}
 	undo_stack.append(command)
+	_undo_targets.append(_target(command.before, current))
 	if undo_stack.size() > MAX_HISTORY:
 		undo_stack.pop_front()
+		_undo_targets.pop_front()
 	redo_stack.clear()
+	_redo_targets.clear()
 	current = candidate
 	return {"ok": true, "error": "", "document": current, "label": label,
 		"selection": selection.duplicate(true)}
 
 static func _failure(message: String) -> Dictionary:
 	return {"ok": false, "error": message}
+
+static func _target(source: String, document: DiagramDocument) -> Dictionary:
+	return {"source": source, "document": document}
+
+static func _resolve_target(targets: Array[Dictionary], index: int, source: String) -> Dictionary:
+	if index >= 0 and index < targets.size():
+		var target: Dictionary = targets[index]
+		if target.get("source", "") == source and target.get("document") is DiagramDocument:
+			return {"ok": true, "error": "", "document": target.document}
+	# Serialized stacks are intentionally public and recovery data is untrusted.
+	# If a command changed or has no cache, preserve the old parse-and-reject path.
+	var parsed := DiagramDocument.parse(source)
+	if not parsed.ok:
+		return parsed
+	return {"ok": true, "error": "", "document": parsed.document}
 
 static func _validate_command(value: Variant) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:
@@ -210,7 +255,7 @@ static func _validate_command(value: Variant) -> Dictionary:
 		"selection": selection,
 		"before": before.document.to_json(),
 		"after": after.document.to_json(),
-	}}
+	}, "before_document": before.document, "after_document": after.document}
 
 static func _integer(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or (typeof(value) == TYPE_FLOAT and is_finite(value) and value == floor(value))

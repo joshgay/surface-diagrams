@@ -137,31 +137,49 @@ func _import_once(planar_json: String, braid_json: String) -> void:
 
 func _measure_history(planar: DiagramDocument) -> Dictionary:
 	var samples: Array[int] = []
+	var edit_samples: Array[int] = []
+	var undo_samples: Array[int] = []
+	var redo_samples: Array[int] = []
 	var last: Dictionary = {}
 	for sample_index in GENERAL_SAMPLES:
 		last = _history_once(planar)
 		_require(last.ok, "history sample completes")
 		samples.append(last.elapsed_us)
-	return {"measurement": _measurement("edit-undo-redo", samples, HISTORY_COMMANDS * 3,
-		"100 label edits, 100 exact undos, and 100 exact redos per sample"),
+		edit_samples.append(last.edit_us)
+		undo_samples.append(last.undo_us)
+		redo_samples.append(last.redo_us)
+	var measurement := _measurement("edit-undo-redo", samples, HISTORY_COMMANDS * 3,
+		"100 label edits, 100 exact undos, and 100 exact redos per sample")
+	measurement.phases = {
+		"edit": _timing_summary(edit_samples, HISTORY_COMMANDS),
+		"undo": _timing_summary(undo_samples, HISTORY_COMMANDS),
+		"redo": _timing_summary(redo_samples, HISTORY_COMMANDS)
+	}
+	return {"measurement": measurement,
 		"initial_sha256": last.initial_sha256, "final_sha256": last.final_sha256}
 
 func _history_once(planar: DiagramDocument) -> Dictionary:
 	var history := DiagramEditHistory.new()
 	history.set_document(planar)
 	var initial := planar.to_json()
-	var started := Time.get_ticks_usec()
+	var edit_started := Time.get_ticks_usec()
 	for index in HISTORY_COMMANDS:
 		var moved := history.move_label("label01", Vector2(-309.0 + index * 0.25, -120.0 + index * 0.125))
-		if not moved.ok: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - started}
+		if not moved.ok: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - edit_started}
+	var edit_us := Time.get_ticks_usec() - edit_started
 	var final := history.current.to_json()
+	var undo_started := Time.get_ticks_usec()
 	for index in HISTORY_COMMANDS:
-		if not history.undo().ok: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - started}
-	if history.current.to_json() != initial: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - started}
+		if not history.undo().ok: return {"ok": false, "elapsed_us": edit_us + Time.get_ticks_usec() - undo_started}
+	var undo_us := Time.get_ticks_usec() - undo_started
+	if history.current.to_json() != initial: return {"ok": false, "elapsed_us": edit_us + undo_us}
+	var redo_started := Time.get_ticks_usec()
 	for index in HISTORY_COMMANDS:
-		if not history.redo().ok: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - started}
-	if history.current.to_json() != final: return {"ok": false, "elapsed_us": Time.get_ticks_usec() - started}
-	return {"ok": true, "elapsed_us": Time.get_ticks_usec() - started,
+		if not history.redo().ok: return {"ok": false, "elapsed_us": edit_us + undo_us + Time.get_ticks_usec() - redo_started}
+	var redo_us := Time.get_ticks_usec() - redo_started
+	if history.current.to_json() != final: return {"ok": false, "elapsed_us": edit_us + undo_us + redo_us}
+	return {"ok": true, "elapsed_us": edit_us + undo_us + redo_us,
+		"edit_us": edit_us, "undo_us": undo_us, "redo_us": redo_us,
 		"initial_sha256": _sha_text(initial), "final_sha256": _sha_text(final)}
 
 func _measure_timeline(braid: DiagramDocument) -> Dictionary:
@@ -231,11 +249,16 @@ func _measure_publication(walkthrough: WalkthroughDocument) -> Dictionary:
 		"documents": documents, "exclusions": exclusions}
 
 func _measurement(id: String, samples: Array[int], units: int, description: String) -> Dictionary:
+	var summary := _timing_summary(samples, units)
+	summary.merge({"id": id, "description": description, "sample_count": samples.size(),
+		"units_per_sample": units})
+	return summary
+
+func _timing_summary(samples: Array[int], units: int) -> Dictionary:
 	var ordered := samples.duplicate()
 	ordered.sort()
 	var median: int = ordered[ordered.size() / 2]
-	return {"id": id, "description": description, "sample_count": samples.size(),
-		"units_per_sample": units, "samples_us": samples, "minimum_us": ordered.front(),
+	return {"samples_us": samples, "minimum_us": ordered.front(),
 		"median_us": median, "maximum_us": ordered.back(),
 		"median_per_unit_us": snappedf(float(median) / units, 0.001)}
 

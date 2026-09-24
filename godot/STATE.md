@@ -3,7 +3,7 @@
 - Branch: `joshgay/surface-diagrams:codex/godot-studio`.
 - Starting parent: `4bd028e4052e34de429c60502e24e6686c9c2d09`, the browser-editor
   contribution on `codex/ordered-factorizations`.
-- Checkpoint date: 2026-09-23 UTC.
+- Checkpoint date: 2026-09-24 UTC.
 - Current milestone: **M0 and M1 complete; M2 programmable work complete,
   with display-enabled visual acceptance still pending; M3 interaction and
   playback implemented, visual acceptance pending; M4 programmable acceptance
@@ -16,7 +16,57 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: bounded performance baseline
+## Latest increment: parsed history snapshot cache
+
+Built from live fork head `2c325f955b9d6bec3f64f08809c1fb99bcb8797d`
+in an isolated worktree under the exclusive Studio lock.
+
+- Undo and redo now reuse runtime-only, already validated immutable document
+  snapshots instead of reparsing the same stored JSON on every transition. The
+  serialized 100-command history and recovery formats are unchanged and contain
+  no cache objects.
+- Cache entries are accepted only when their source text exactly matches the
+  corresponding serialized command. Missing, size-mismatched, or changed cache
+  entries fall back to the original strict parser. A tampered command therefore
+  still fails with the original error and leaves the document and both stacks
+  unchanged.
+- New edits, redo invalidation, oldest-command eviction, undo, redo, and complete
+  recovery restoration maintain matching bounded caches. Recovery still parses
+  and validates every stored command before changing the live workspace.
+- Extended the fixed benchmark receipt with separate edit, undo, and redo phase
+  timings. The previous combined 100-edit, 100-undo, 100-redo median was 4.008
+  seconds. The new committed receipt records 2.026 seconds, a 49.4 percent
+  reduction with identical deterministic integrity outputs. Maximum-record undo
+  and redo medians are 0.750 ms and 0.739 ms per action; new edit validation is
+  now the dominant 18.296 ms per action. Timing remains observational, not a
+  correctness gate.
+- Added exact tests for cache exclusion from serialized recovery, tamper
+  fallback, failure atomicity, restored-stack use, 100-command eviction, and 100
+  exact redo transitions.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **840 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark, portable-package scenarios,
+  and intentional failure-harness check. Its independent benchmark repetition
+  observed a 1.745-second combined history median and reproduced the same
+  integrity profile.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Static Web export rebuilt successfully. Pack inspection confirmed that
+  benchmark implementation and receipts remain excluded. No Site deployment,
+  download publication, or release occurred.
+
+No controller/test failure remains. This optimization does not resolve the
+existing display-enabled desktop, mobile, WebGL, visible-focus, or screen-reader
+review gaps.
+
+**Next specific task:** add a strict internal normalized-candidate constructor
+for already bounded edit dictionaries while leaving imported JSON on the full
+duplicate-field parser, then benchmark maximum-record edit construction and
+verify identical normalized output and rejection behavior.
+
+## Earlier increment: bounded performance baseline
 
 Built from live fork head `2e0685fae9075b47c30244bca38fff60a278394d`
 in an isolated worktree under the exclusive Studio lock.

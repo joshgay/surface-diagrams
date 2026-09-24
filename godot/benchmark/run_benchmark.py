@@ -59,6 +59,19 @@ def validate(path: Path) -> dict:
         if (item.get("minimum_us") != ordered[0] or item.get("median_us") != ordered[len(ordered) // 2]
                 or item.get("maximum_us") != ordered[-1]):
             raise SystemExit("benchmark summary does not match raw samples: " + item["id"])
+        if item["id"] == "edit-undo-redo" and "phases" in item:
+            phases = item["phases"]
+            if set(phases) != {"edit", "undo", "redo"}:
+                raise SystemExit("history timing phases are missing")
+            for phase in phases.values():
+                phase_samples = phase.get("samples_us", [])
+                if (len(phase_samples) != sample_count
+                        or any(type(value) is not int or value <= 0 for value in phase_samples)):
+                    raise SystemExit("history timing phase is malformed")
+            if any(sum(item["phases"][name]["samples_us"][index]
+                       for name in ("edit", "undo", "redo")) != samples[index]
+                   for index in range(sample_count)):
+                raise SystemExit("history timing phases do not sum to the total")
     integrity = receipt.get("integrity", {})
     hashes = [value for key, value in integrity.items() if key.endswith("sha256")]
     if len(hashes) != 5 or any(type(value) is not str or len(value) != 64 for value in hashes):
