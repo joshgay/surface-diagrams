@@ -43,6 +43,20 @@ are view metadata only; updating them does not alter mathematical records.
   These semantics do not cause a draft to be accepted; the existing explicit
   validation and commit actions remain authoritative.
 
+## Confirmation dialogs
+
+- Unsaved-work and exact row-reindex confirmations initially focus Cancel, so
+  keyboard entry lands on the non-destructive action. Recovery initially
+  focuses Restore rather than the destructive Discard action.
+- Each native dialog action has an explicit accessibility name and description
+  that identifies whether it preserves, restores, applies, or discards data.
+- Canceling unsaved work or row reindexing restores the exact control that
+  opened the dialog. Confirming a reindex also restores that control after the
+  single validated command is accepted. Recovery actions return to the editor.
+- Opening, canceling, and navigating these dialogs does not change mathematical
+  JSON, history, or drafts. The existing validation and explicit confirmation
+  remain authoritative for mutations.
+
 ## Secondary workspaces
 
 - Factor workspace: Left/Right steps factors, Home/End jumps, Space plays or
@@ -75,7 +89,8 @@ source case also contracts to 360 pixels high to model a virtual keyboard.
 The aggregate also runs a dedicated semantic contract with Godot's dummy
 accessibility driver. It verifies live-region modes, controller relationships,
 form label/description relationships, touch targets, dynamic selected-record
-descriptions, rejected-draft behavior, and byte-identical records. The dummy
+descriptions, rejected-draft behavior, deterministic dialog focus, and
+byte-identical records. The dummy
 driver does not substitute for a real operating-system accessibility bridge.
 The Web shell also reports the canvas content box after safe-area padding and
 visual-viewport changes, so browser chrome and the on-screen keyboard do not

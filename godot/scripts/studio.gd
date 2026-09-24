@@ -53,6 +53,8 @@ var factor_view: FactorWorkspaceView
 var surface_view: SurfaceWorkspaceView
 var walkthrough_view: WalkthroughView
 var workspace_focus_before_overlay: Control
+var modal_focus_before: Control
+var active_modal: Window
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -317,6 +319,8 @@ func _build_interface() -> void:
 	unsaved_dialog.confirmed.connect(_discard_and_continue)
 	unsaved_dialog.canceled.connect(_cancel_pending_action)
 	add_child(unsaved_dialog)
+	_configure_dialog_button(unsaved_dialog.get_ok_button(), "Discard unsaved work and continue", "Destructive action. Accepted changes and unapplied drafts listed in this dialog will be discarded.")
+	_configure_dialog_button(unsaved_dialog.get_cancel_button(), "Keep current workspace and cancel action", "Non-destructive default. Returns to the exact control that opened this dialog.")
 	recovery_dialog = ConfirmationDialog.new()
 	recovery_dialog.title = "Recovered workspace found"
 	recovery_dialog.ok_button_text = "Restore recovered work"
@@ -324,6 +328,8 @@ func _build_interface() -> void:
 	recovery_dialog.confirmed.connect(_restore_startup_recovery)
 	recovery_dialog.canceled.connect(_discard_startup_recovery)
 	add_child(recovery_dialog)
+	_configure_dialog_button(recovery_dialog.get_ok_button(), "Restore recovered workspace", "Non-destructive default. Restores the validated bounded recovery record.")
+	_configure_dialog_button(recovery_dialog.get_cancel_button(), "Discard recovered workspace", "Destructive action. Deletes the recovery record and keeps the initial fixture.")
 	reindex_dialog = ConfirmationDialog.new()
 	reindex_dialog.title = "Confirm explicit row reindex"
 	reindex_dialog.ok_button_text = "Apply validated reindex"
@@ -339,6 +345,8 @@ func _build_interface() -> void:
 	reindex_preview.set_accessibility_description("Read-only list of every endpoint attachment and cut corridor affected before explicit confirmation.")
 	reindex_dialog.add_child(reindex_preview)
 	add_child(reindex_dialog)
+	_configure_dialog_button(reindex_dialog.get_ok_button(), "Apply validated row reindex", "Applies the exact slot, endpoint attachment, and cut corridor changes listed in the preview as one command.")
+	_configure_dialog_button(reindex_dialog.get_cancel_button(), "Cancel row reindex", "Non-destructive default. Preserves the accepted row, history, recovery, and drafts.")
 	_make_touch_targets(root)
 
 func _make_touch_targets(node: Node) -> void:
@@ -346,6 +354,10 @@ func _make_touch_targets(node: Node) -> void:
 		node.custom_minimum_size.y = maxf(node.custom_minimum_size.y, 44.0)
 	for child in node.get_children():
 		_make_touch_targets(child)
+
+func _configure_dialog_button(button: Button, accessible_name: String, description: String) -> void:
+	button.set_accessibility_name(accessible_name)
+	button.set_accessibility_description(description)
 
 func _set_control_relation(controller: Control, target: Control) -> void:
 	var paths: Array[NodePath] = [controller.get_path_to(target)]
@@ -450,9 +462,37 @@ func _restore_editor_focus() -> void:
 		record_list.grab_focus()
 	workspace_focus_before_overlay = null
 
-func _popup_fitted(dialog: Window, desired: Vector2i) -> void:
+func _popup_fitted(dialog: Window, desired: Vector2i, preferred_focus: Control = null) -> void:
+	modal_focus_before = get_viewport().gui_get_focus_owner()
+	active_modal = dialog
 	var available := Vector2i(get_viewport_rect().size) - Vector2i(24, 24)
 	dialog.popup_centered(Vector2i(mini(desired.x, available.x), mini(desired.y, available.y)))
+	call_deferred("_focus_modal", dialog, preferred_focus)
+
+func _focus_modal(dialog: Window, preferred_focus: Control) -> void:
+	if active_modal != dialog or not dialog.visible:
+		return
+	if preferred_focus != null and is_instance_valid(preferred_focus) and preferred_focus.is_visible_in_tree():
+		preferred_focus.grab_focus()
+
+func _restore_modal_focus(fallback: Control = null) -> void:
+	var previous := modal_focus_before
+	modal_focus_before = null
+	active_modal = null
+	call_deferred("_restore_modal_focus_deferred", previous, fallback)
+
+func _restore_modal_focus_deferred(previous: Control, fallback: Control) -> void:
+	if previous != null and is_instance_valid(previous) and previous.is_visible_in_tree():
+		previous.grab_focus()
+	elif fallback != null and is_instance_valid(fallback) and fallback.is_visible_in_tree():
+		fallback.grab_focus()
+
+func _release_modal_focus() -> void:
+	var previous := modal_focus_before
+	modal_focus_before = null
+	active_modal = null
+	if previous != null and is_instance_valid(previous) and previous.is_visible_in_tree():
+		previous.grab_focus()
 
 func _show_open() -> void:
 	if _request_before_destructive_action(Callable(self, "_show_open_after_guard"), "open another JSON file"):
@@ -780,7 +820,7 @@ func _request_reindex(offset: int) -> void:
 	pending_reindex = proposal
 	pending_reindex_geometry = validation.duplicate(true)
 	reindex_preview.text = RowReindex.preview_text(proposal)
-	_popup_fitted(reindex_dialog, Vector2i(780, 520))
+	_popup_fitted(reindex_dialog, Vector2i(780, 520), reindex_dialog.get_cancel_button())
 	status_label.text = "Reindex candidate validated. Review the complete slot, endpoint, and cut impact list before applying."
 	if browser_mode:
 		status_label.text = "UNVALIDATED browser reindex proposal. Review every slot, endpoint, and cut impact before applying; Python geometry is unavailable."
@@ -788,6 +828,7 @@ func _request_reindex(offset: int) -> void:
 
 func _cancel_reindex() -> void:
 	reindex_dialog.hide()
+	_restore_modal_focus(record_list)
 	pending_reindex.clear()
 	pending_reindex_geometry.clear()
 	status_label.text = "Cancelled row reindex. Accepted order, exact history, recovery, and all curve drafts were preserved."
@@ -795,6 +836,7 @@ func _cancel_reindex() -> void:
 
 func _confirm_reindex() -> void:
 	reindex_dialog.hide()
+	_restore_modal_focus(record_list)
 	if pending_reindex.is_empty():
 		return
 	if document.to_json() != pending_reindex.before_source or history.current.to_json() != pending_reindex.before_source:
@@ -883,13 +925,14 @@ func _request_before_destructive_action(action: Callable, description: String) -
 	if curve_creator.active:
 		parts.append("one unapplied new-curve draft")
 	unsaved_dialog.dialog_text = "The workspace has %s. Cancel to keep them, or discard them and %s." % [" and ".join(parts), description]
-	_popup_fitted(unsaved_dialog, Vector2i(560, 220))
+	_popup_fitted(unsaved_dialog, Vector2i(560, 220), unsaved_dialog.get_cancel_button())
 	status_label.text = "Waiting for an explicit cancel/discard choice; the current record, history, and drafts are unchanged."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
 	return false
 
 func _cancel_pending_action() -> void:
 	unsaved_dialog.hide()
+	_restore_modal_focus(record_list)
 	var description := pending_description
 	pending_action = Callable()
 	pending_description = ""
@@ -898,6 +941,7 @@ func _cancel_pending_action() -> void:
 
 func _discard_and_continue() -> void:
 	unsaved_dialog.hide()
+	_release_modal_focus()
 	var action := pending_action
 	pending_action = Callable()
 	pending_description = ""
@@ -942,12 +986,13 @@ func _offer_recovery() -> void:
 	var recovery_version: int = recovered.get("recovery_version", 1)
 	var fallback_note := " The newest primary slot was unavailable, so this is the validated last-known-good checkpoint." if recovered.get("recovered_from_backup", false) else ""
 	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains %d curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
-	_popup_fitted(recovery_dialog, Vector2i(580, 230))
+	_popup_fitted(recovery_dialog, Vector2i(580, 230), recovery_dialog.get_ok_button())
 	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
 
 func _restore_startup_recovery() -> bool:
 	recovery_dialog.hide()
+	_restore_modal_focus(record_list)
 	if startup_recovery.is_empty():
 		return false
 	var restored := history.restore_state(startup_recovery.history_state)
@@ -967,6 +1012,7 @@ func _restore_startup_recovery() -> bool:
 
 func _discard_startup_recovery() -> void:
 	recovery_dialog.hide()
+	_restore_modal_focus(record_list)
 	startup_recovery.clear()
 	WorkspaceRecovery.clear_file()
 	status_label.text = "Discarded the recovery record. The initial fixture remains open."

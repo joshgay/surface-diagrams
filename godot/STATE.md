@@ -16,7 +16,52 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: accessible mathematical edit forms
+## Latest increment: deterministic destructive-dialog focus
+
+Built from live fork head `26b9a0d8416642040a2973fd0c4557496a50dc48`
+in an isolated worktree under the exclusive Studio lock.
+
+- Unsaved-work and row-reindex confirmations now enter on Cancel, while
+  recovery enters on Restore rather than destructive Discard. The choices have
+  explicit accessibility names and descriptions that identify their data
+  effect.
+- The editor retains the exact control that invoked a confirmation. Canceling
+  unsaved work or row reindexing restores that focus, and applying a validated
+  reindex restores it after the single accepted command. Recovery actions
+  return focus to the editor.
+- A new controller contract covers all three native dialogs, including safe
+  initial focus, exact focus restoration, cleanup, unchanged JSON and draft
+  state after cancellation, and exact undo after a confirmed reindex.
+- This change does not infer or alter mathematical data. It also does not claim
+  that native dialog button dimensions have passed touch acceptance; Godot's
+  platform-native dialog layout still requires inspection on the target
+  desktop and phone environments.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **1,089 Godot assertions**, including **23 new modal-focus
+  assertions**, the deterministic demo, all bridge/browser harnesses, the
+  two-run bounded benchmark, private portable-package scenarios, and the
+  intentional failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**,
+  **8 browser-editor tests**, and **17 Web adapter tests**.
+- Static Web export rebuilt with a 244,448-byte PCK. The private portable Linux
+  package passed outside the checkout with 53 files and 147,308,331 bytes.
+
+No controller/test failure remains. Godot's dummy accessibility driver and
+headless controller tests do not expose focus or dialog semantics to a real
+operating-system accessibility bridge. This worker still has no X11 or Wayland
+display or compositor, and the available cloud browser does not expose WebGL 2.
+Actual dialog announcements, visible focus, native action sizing, and
+physical-phone keyboard behavior therefore remain unaccepted.
+
+**Next specific task:** run the unsaved-work, row-reindex, and recovery dialogs
+on a real X11 or Wayland desktop with Godot's platform accessibility driver and
+Orca, then on a WebGL 2 phone; verify initial focus, action announcements,
+visible restoration, native target sizes, and keyboard occlusion, and repair
+the first concrete defect observed.
+
+## Earlier increment: accessible mathematical edit forms
 
 Built from live fork head `485acea6d34541e5926399cba10f34eb75d03515`
 in an isolated worktree under the exclusive Studio lock.
