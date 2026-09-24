@@ -16,7 +16,57 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: compact versioned workspace recovery
+## Latest increment: guarded last-known-good recovery slots
+
+Built from live fork head `ced34c9d4e8fbcc3dc6a318bb05877b47b7f458f`
+in an isolated worktree under the exclusive Studio lock.
+
+- Desktop checkpoints now use a strict slot envelope with bounded generation
+  metadata, the exact version-2 recovery payload, and a SHA-256 checksum over
+  both generation and payload. Slot JSON is data only and remains subject to all
+  document, history, selection, draft, and continuity validation.
+- Before replacing the primary, Studio verifies a temporary slot and preserves
+  the newest prior valid generation at a separate last-known-good path. The new
+  primary is reopened and fully verified after installation. A failed primary
+  replacement therefore leaves a validated prior generation available.
+- Startup validates primary, last-known-good, and legacy candidates independently,
+  then selects the highest trusted generation with a deterministic path tie-break.
+  A fallback is explicitly labeled in the restore dialog rather than silently
+  presented as the newest checkpoint.
+- Tests truncate the primary, corrupt its payload checksum, inflate its generation,
+  reverse primary/backup generation order, corrupt both slots, and resume saving
+  after fallback. Invalid data never outranks a valid slot. If no slot remains
+  valid, a new checkpoint starts a fresh sequence and removes the stale backup.
+- Raw version-2 files from the preceding release and version-1 files remain
+  readable as generation 0. Their first guarded save preserves the validated old
+  payload as last-known-good data, installs generation 1, and removes the stale
+  legacy path. Explicit discard removes both slots, legacy data, and temporaries.
+- Recovery payloads retain the 32 MiB cap; complete guarded slot envelopes have
+  a separate 34 MiB cap. Mathematical JSON and public undo/redo commands are
+  unchanged.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **892 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark, guarded recovery failure and
+  migration cases, private portable-package scenarios, and intentional failure
+  harness. The package contained 53 files, measured 147,293,931 bytes, and ran
+  outside the checkout.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Static Web export rebuilt successfully. This remains a build check, not
+  display-enabled WebGL or physical-phone acceptance. No Site deployment,
+  download publication, release, or email occurred.
+
+No controller/test failure remains. Display-enabled desktop, mobile, WebGL,
+visible-focus, and screen-reader review remain unavailable in this environment.
+
+**Next specific task:** add a reproducible display-enabled visual-review harness
+that captures fixed desktop, portrait-phone, and landscape-phone frames for the
+editor and secondary workspaces, records fixture/viewport/focus metadata, and
+keeps image inspection explicitly separate from headless controller acceptance.
+
+## Earlier increment: compact versioned workspace recovery
 
 Built from live fork head `703572c608f5b62fab38a2017780f4b22de221be`
 in an isolated worktree under the exclusive Studio lock.
