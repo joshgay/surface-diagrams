@@ -29,6 +29,7 @@ func _run() -> void:
 	_check(studio.document.to_json() == accepted, "canvas keyboard navigation leaves mathematical JSON byte-identical")
 
 	studio.canvas.grab_focus()
+	_check(studio.canvas.focus_ring_visible, "focused diagram canvas exposes a visible blue focus ring")
 	studio._unhandled_key_input(_key(KEY_2, true))
 	await process_frame
 	await process_frame
@@ -75,6 +76,8 @@ func _run() -> void:
 	surface.handle_keyboard(_key(KEY_A))
 	_check(surface.surface_3d.hidden_ids.is_empty(), "A restores all exploratory records")
 	var camera_before := surface.surface_3d.camera.transform
+	surface.surface_3d.grab_focus()
+	_check(surface.surface_3d.focus_border.visible, "focused exploratory 3D view exposes a visible blue focus ring")
 	surface.surface_3d.handle_keyboard(_key(KEY_LEFT))
 	_check(surface.surface_3d.camera.transform != camera_before, "3D arrow key orbits the camera")
 	surface.surface_3d.handle_keyboard(_key(KEY_HOME))

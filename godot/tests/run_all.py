@@ -48,6 +48,7 @@ def main():
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_cover.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/walkthrough_publication.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/keyboard_accessibility.gd"])
+    run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/visual_review.gd"])
     run([args.godot, "--headless", "--path", str(PROJECT), "--script", "res://tests/python_authority.gd"])
     with tempfile.TemporaryDirectory(prefix="surface-studio-demo-") as directory:
         run([sys.executable, str(PROJECT / "demo" / "run_demo.py"),
@@ -74,6 +75,7 @@ def main():
     run([sys.executable, str(PROJECT / "tests" / "test_factor_workspace.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_run_all.py")])
     run([sys.executable, str(PROJECT / "tests" / "test_walkthrough_bundle.py")])
+    run([sys.executable, str(PROJECT / "visual_review" / "test_visual_review.py")])
 
     # The existing Python implementation independently checks both shared
     # fixture recipes and publication SVG generation.

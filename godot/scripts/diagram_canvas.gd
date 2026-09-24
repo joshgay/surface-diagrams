@@ -33,11 +33,18 @@ var touches: Dictionary = {}
 var touch_start := Vector2.ZERO
 var touch_moved := false
 var multi_touch := false
+var focus_ring_visible := false
 
 func _ready() -> void:
 	focus_mode = Control.FOCUS_ALL
 	set_accessibility_name("Diagram canvas")
 	set_accessibility_description("Arrow keys pan, plus and minus zoom, Home fits, and left or right bracket selects the previous or next stable record.")
+	focus_entered.connect(func():
+		focus_ring_visible = true
+		queue_redraw())
+	focus_exited.connect(func():
+		focus_ring_visible = false
+		queue_redraw())
 
 func set_document(value: DiagramDocument) -> void:
 	cancel_touch_gesture()
@@ -381,12 +388,12 @@ func zoom_at(point: Vector2, factor: float) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("#ffffff"))
-	if document == null:
-		return
-	if document.data.kind == "planar":
+	if document != null and document.data.kind == "planar":
 		_draw_planar(document.data)
-	else:
+	elif document != null:
 		_draw_braid(document.data)
+	if focus_ring_visible:
+		draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), Color("#006fff"), false, 3.0)
 
 func _frame(width: float, height: float) -> Dictionary:
 	var available := size - Vector2(70, 90)

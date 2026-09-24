@@ -22,6 +22,7 @@ var target := Vector3.ZERO
 var dragging := false
 var drag_moved := false
 var drag_start := Vector2.ZERO
+var focus_border: Panel
 
 func _ready() -> void:
 	stretch = true
@@ -34,6 +35,18 @@ func _ready() -> void:
 	viewport_3d.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	viewport_3d.transparent_bg = false
 	add_child(viewport_3d)
+	focus_border = Panel.new()
+	focus_border.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	focus_border.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	focus_border.visible = false
+	var focus_style := StyleBoxFlat.new()
+	focus_style.bg_color = Color(0, 0, 0, 0)
+	focus_style.border_color = Color("#006fff")
+	focus_style.set_border_width_all(3)
+	focus_border.add_theme_stylebox_override("panel", focus_style)
+	add_child(focus_border)
+	focus_entered.connect(func(): focus_border.visible = true)
+	focus_exited.connect(func(): focus_border.visible = false)
 	scene_root = Node3D.new()
 	viewport_3d.add_child(scene_root)
 	camera = Camera3D.new()

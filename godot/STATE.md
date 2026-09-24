@@ -16,7 +16,63 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: guarded last-known-good recovery slots
+## Latest increment: reproducible real-window visual-review evidence
+
+Built from live fork head `2a38853ddf72099ddcdebe49f54ff48e54f4d0de`
+in an isolated worktree under the exclusive Studio lock.
+
+- Added a versioned capture plan for twelve fixed frames: the editor, factor
+  sequence, exploratory surface, and signed-braid walkthrough at desktop
+  1280x800, phone portrait 390x844, and phone landscape 844x390. The mobile
+  editor cases deliberately cover both diagram and records panes; secondary
+  cases scroll to complementary linked content rather than repeatedly capturing
+  only the toolbar.
+- Every case fixes its repository fixture, stable-ID selection, timeline
+  position, content target, viewport, and focused control. Focus is placed on
+  the visible canvas or 3D content being reviewed, so its recorded accessibility
+  name and node path correspond to a focus indicator inside the captured frame.
+- Custom diagram canvases and exploratory 3D views now draw an explicit
+  `#006fff` focus border on keyboard focus. Headless tests verify the state
+  transition; only a real rendered inspection can accept its visual clarity.
+- The real-window runner uses isolated Godot data/config/cache directories,
+  refuses an existing output directory, and refuses dummy/headless display
+  mode. A successful run must produce exact-size PNGs on X11 or Wayland before
+  it can write a combined manifest.
+- Independent validation checks all PNG headers, dimensions, byte counts,
+  SHA-256 digests, safe relative names, fixture provenance, workspace coverage,
+  selections, and focus metadata. It emits a human `REVIEW.md` checklist.
+  Receipts are always `not-reviewed` with `visual_acceptance_claimed: false`;
+  capture success cannot silently become visual acceptance.
+- The harness and its tests are excluded from Web and portable Linux packages.
+  No screenshot, generated manifest, build product, or engine cache is committed.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **957 Godot assertions**, including **63 visual-review plan
+  assertions**, all bridge/browser harnesses, deterministic demo, two-run
+  bounded benchmark, private portable-package scenarios, and intentional
+  failure harness.
+- Full repository and adapter regression: **232 Python tests with 359 subtests**
+  and **8 browser-editor tests**. The seven new validator tests cover PNG
+  dimensions, command construction, workspace coverage, checksum rejection,
+  and the prohibition on claiming acceptance.
+- Final portable-package verification passed outside the checkout with 53 files
+  and 147,294,779 bytes. Static Web export rebuilt with a 230,896-byte PCK.
+  Both packages were checked to exclude the visual-review harness.
+- The expected headless refusal was exercised in both Godot and Python. This
+  worker has no `DISPLAY`, `WAYLAND_DISPLAY`, Xvfb, or Weston, so no rendered
+  PNG is claimed and the manual checklist remains unrun.
+
+No controller/test failure remains. Real desktop/phone captures, WebGL,
+physical-phone, visible-focus inspection, and screen-reader review remain
+pending.
+
+**Next specific task:** run the fixed twelve-frame harness on an actual X11 or
+Wayland display, inspect every PNG against its generated checklist, record the
+environment and first concrete failures, and repair any clipped layout,
+scroll-target, or visible-focus defect before marking a visual item passed.
+
+## Earlier increment: guarded last-known-good recovery slots
 
 Built from live fork head `ced34c9d4e8fbcc3dc6a318bb05877b47b7f458f`
 in an isolated worktree under the exclusive Studio lock.

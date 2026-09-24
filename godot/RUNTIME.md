@@ -75,3 +75,21 @@ runtime, the pack, and the fixed Python authority into a private directory and
 tests it from outside the source checkout. See [desktop/README.md](desktop/README.md).
 The package is deliberately not committed or published. Python 3 is still
 required for exact geometry validation and publication.
+
+## Display-enabled visual evidence
+
+Headless controller checks do not establish that the interface is legible or
+usable. On an actual X11 or Wayland display, capture the fixed desktop and phone
+review set with:
+
+```sh
+python3 godot/visual_review/run_visual_review.py \
+  --godot /path/to/Godot_v4.7.2-stable_linux.x86_64 \
+  --output /tmp/surface-studio-visual-review
+```
+
+The runner refuses dummy/headless display mode and an existing output path. It
+writes twelve dimension- and checksum-verified PNGs plus fixture, viewport,
+selection, scroll-target, and focus metadata. All receipts remain explicitly
+unreviewed until a person inspects them. See
+[visual_review/README.md](visual_review/README.md).

@@ -1,6 +1,7 @@
 .godot/
 builds/
 test-output/
+visual-review-output/
 __pycache__/
 *.py[cod]
 *.tmp

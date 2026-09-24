@@ -65,6 +65,13 @@ actions. These commands are view state and never edit mathematical JSON. See
 [ACCESSIBILITY.md](ACCESSIBILITY.md) for the exact shortcuts and current
 screen-reader/visual-acceptance limits.
 
+For real-window visual evidence, [visual_review/README.md](visual_review/README.md)
+defines twelve fixed editor/workspace captures at desktop, phone portrait, and
+phone landscape sizes. The runner isolates recovery state, records fixture,
+viewport, selection, scroll target, focus, dimensions, byte counts, and SHA-256
+checksums, and refuses dummy/headless rendering. Generated evidence remains
+explicitly unreviewed until a person inspects it.
+
 For release review, [DEMO_REVIEW.md](DEMO_REVIEW.md) defines one fixed
 end-to-end workflow spanning validated editing, exact undo/redo, factor and
 signed-braid inspection, linked exploratory records, and deterministic

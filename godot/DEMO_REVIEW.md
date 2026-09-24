@@ -35,6 +35,17 @@ review artifact; this command does not upload or publish it.
 The automated receipt does not answer these questions. Record each environment
 and result separately rather than editing the deterministic receipt.
 
+Generate a fixed real-window capture set before the desktop/phone review:
+
+```sh
+python3 godot/visual_review/run_visual_review.py \
+  --godot /path/to/Godot_v4.7.2-stable_linux.x86_64 \
+  --output /tmp/surface-studio-visual-review
+```
+
+`manifest.json` records the pixels and setup; `REVIEW.md` is the inspection
+checklist. Capture success alone does not check any item below.
+
 - [ ] Desktop: visible focus follows Tab and Shift+Tab through the editor, then
       returns to the invoking control after Escape from each workspace.
 - [ ] Desktop: the complete edit, undo, factor, walkthrough, and publication
