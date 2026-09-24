@@ -65,6 +65,9 @@ func _run() -> void:
 	_require(history_measurement.retention.totals.command_count == HISTORY_COMMANDS
 		and history_measurement.retention.totals.snapshot_count == HISTORY_COMMANDS,
 		"history retention reports the complete command and runtime snapshot bounds")
+	_require(history_measurement.retention.totals.snapshot_source_bytes == 0
+		and history_measurement.retention.bounds.maximum_snapshot_source_bytes == 0,
+		"runtime snapshots retain immutable documents without duplicate source strings")
 	_require(timeline_measurement.final_crossings == 128 and timeline_measurement.final_paths == 32, "timeline reaches the exact maximum braid endpoint")
 	_require(geometry_measurement.svg_sha256 == _sha_text(warm_geometry.svg), "geometry output remains byte-identical after warmup")
 	_require(geometry_measurement.tikz_sha256 == _sha_text(warm_geometry.tikz), "TikZ output remains byte-identical after warmup")

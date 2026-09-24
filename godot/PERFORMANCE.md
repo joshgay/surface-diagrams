@@ -145,3 +145,32 @@ logical slot even where the runtime shares storage. The exercised maximum
 structural fixture uses about 4.14 percent of it. Compact command serialization
 is reported separately because it is an equivalent diagnostic representation,
 not another retained runtime buffer.
+
+## Document-only runtime snapshot cache
+
+Runtime snapshot entries now retain only the already validated immutable
+`DiagramDocument`. The document's cached canonical JSON is the source of truth,
+so storing that same string a second time beside the document was unnecessary.
+Undo and redo compare the document's canonical JSON directly with the public
+serialized command. A mismatch still discards the cache path and parses the
+command text through the original strict validation path.
+
+The [document-only cache receipt](benchmark/receipts/linux-headless-2026-09-24-snapshot-document-cache.json)
+reproduced the same fixtures, command serialization, snapshot count, endpoint
+hashes, exact SVG/TikZ, and publication bundle across two complete runs:
+
+| Retained quantity at 100 commands | Source + document cache | Document-only cache | Change |
+| --- | ---: | ---: | ---: |
+| Compact serialized command equivalent | 3,036,447 bytes | 3,036,447 bytes | unchanged |
+| Runtime snapshot source slots | 1,085,572 bytes | 0 bytes | -100% |
+| Runtime immutable snapshot documents | 1,085,572 bytes | 1,085,572 bytes | unchanged |
+| Total logical source slots | 4,353,148 bytes | 3,267,576 bytes | -24.94% |
+| Runtime snapshots | 100 | 100 | unchanged |
+| Stale, missing, or orphaned snapshots | 0 | 0 | unchanged |
+
+The conservative logical source-slot ceiling falls exactly 25 percent, from
+105,119,744 to 78,905,344 bytes. Public command JSON, recovery JSON, the
+100-command bound, tamper fallback, and eviction semantics are unchanged. These
+remain logical retention counts, not measurements of physical process memory.
+Timing differences between receipts are host observations and are not attributed
+to this storage-only change.

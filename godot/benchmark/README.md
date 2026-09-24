@@ -33,7 +33,8 @@ The integrity profile also contains a versioned history-retention audit at the
 source bytes, runtime snapshot counts, cache alignment, and the conservative
 schema envelope. These are deterministic logical quantities, not allocator,
 heap, resident-memory, or process measurements; immutable string storage may be
-shared by the engine.
+shared by the engine. Current snapshots retain only immutable documents, so the
+audit requires zero separately stored snapshot-source bytes.
 
 History measurements also contain separate edit, undo, and redo phase samples.
 Their sum is the recorded total for each sample, allowing changes to record

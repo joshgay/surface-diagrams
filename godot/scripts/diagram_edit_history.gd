@@ -98,7 +98,9 @@ func to_state() -> Dictionary:
 # does not claim to measure allocator, heap, or process memory: Godot may share
 # immutable String storage. Serialized command bytes are the compact UTF-8 JSON
 # equivalent of the retained command dictionaries. Snapshot byte counts report
-# the source and immutable document slots held by the runtime-only caches.
+# the source and immutable document slots held by the runtime-only caches; the
+# source count remains explicit so audits prove that cache entries retain only
+# canonical immutable documents rather than a duplicate source string.
 func retention_audit() -> Dictionary:
 	var undo := _stack_retention(undo_stack, _undo_targets, "before")
 	var redo := _stack_retention(redo_stack, _redo_targets, "after")
@@ -109,7 +111,7 @@ func retention_audit() -> Dictionary:
 	var snapshot_source_bytes: int = undo.snapshot_source_bytes + redo.snapshot_source_bytes
 	var snapshot_document_bytes: int = undo.snapshot_document_bytes + redo.snapshot_document_bytes
 	var logical_source_bytes := command_source_bytes + snapshot_source_bytes + snapshot_document_bytes + current_bytes
-	var maximum_logical_source_bytes := (MAX_HISTORY * 4 + 1) * DiagramDocument.MAX_BYTES
+	var maximum_logical_source_bytes := (MAX_HISTORY * 3 + 1) * DiagramDocument.MAX_BYTES
 	return {
 		"format": RETENTION_AUDIT_FORMAT,
 		"version": RETENTION_AUDIT_VERSION,
@@ -133,7 +135,7 @@ func retention_audit() -> Dictionary:
 			"maximum_commands": MAX_HISTORY,
 			"maximum_document_bytes": DiagramDocument.MAX_BYTES,
 			"maximum_command_source_bytes": MAX_HISTORY * 2 * DiagramDocument.MAX_BYTES,
-			"maximum_snapshot_source_bytes": MAX_HISTORY * DiagramDocument.MAX_BYTES,
+			"maximum_snapshot_source_bytes": 0,
 			"maximum_snapshot_document_bytes": MAX_HISTORY * DiagramDocument.MAX_BYTES,
 			"maximum_current_document_bytes": DiagramDocument.MAX_BYTES,
 			"maximum_logical_source_bytes": maximum_logical_source_bytes,
@@ -142,7 +144,7 @@ func retention_audit() -> Dictionary:
 		"within_source_bounds": command_count <= MAX_HISTORY \
 			and snapshot_count <= MAX_HISTORY \
 			and command_source_bytes <= MAX_HISTORY * 2 * DiagramDocument.MAX_BYTES \
-			and snapshot_source_bytes <= MAX_HISTORY * DiagramDocument.MAX_BYTES \
+			and snapshot_source_bytes == 0 \
 			and snapshot_document_bytes <= MAX_HISTORY * DiagramDocument.MAX_BYTES \
 			and current_bytes <= DiagramDocument.MAX_BYTES \
 			and logical_source_bytes <= maximum_logical_source_bytes,
@@ -179,7 +181,7 @@ func restore_state(state: Variant) -> Dictionary:
 			return _failure("Recovery undo history is not contiguous")
 		expected = checked.command.after
 		validated_undo.append(checked.command)
-		validated_undo_targets.append(_target(checked.command.before, checked.before_document))
+		validated_undo_targets.append(_target(checked.before_document))
 	if not validated_undo.is_empty() and expected != parsed_current.document.to_json():
 		return _failure("Recovery undo history does not end at the current record")
 	expected = parsed_current.document.to_json()
@@ -191,7 +193,7 @@ func restore_state(state: Variant) -> Dictionary:
 			return _failure("Recovery redo history is not contiguous")
 		expected = checked.command.after
 		validated_redo.push_front(checked.command)
-		validated_redo_targets.push_front(_target(checked.command.after, checked.after_document))
+		validated_redo_targets.push_front(_target(checked.after_document))
 	current = parsed_current.document
 	undo_stack = validated_undo
 	redo_stack = validated_redo
@@ -214,7 +216,7 @@ func undo() -> Dictionary:
 	if not _undo_targets.is_empty():
 		_undo_targets.pop_back()
 	redo_stack.append(command)
-	_redo_targets.append(_target(command.after, after_document) if after_document.to_json() == command.after else {})
+	_redo_targets.append(_target(after_document) if after_document.to_json() == command.after else {})
 	current = resolved.document
 	return {"ok": true, "error": "", "document": current,
 		"label": "Undo " + command.label, "selection": command.selection.duplicate(true)}
@@ -234,7 +236,7 @@ func redo() -> Dictionary:
 	if not _redo_targets.is_empty():
 		_redo_targets.pop_back()
 	undo_stack.append(command)
-	_undo_targets.append(_target(command.before, before_document) if before_document.to_json() == command.before else {})
+	_undo_targets.append(_target(before_document) if before_document.to_json() == command.before else {})
 	current = resolved.document
 	return {"ok": true, "error": "", "document": current,
 		"label": "Redo " + command.label, "selection": command.selection.duplicate(true)}
@@ -249,7 +251,7 @@ func _validate_and_commit(candidate: DiagramDocument, validator: Callable,
 	var command := {"label": label, "selection": selection.duplicate(true),
 		"before": current.to_json(), "after": candidate.to_json()}
 	undo_stack.append(command)
-	_undo_targets.append(_target(command.before, current))
+	_undo_targets.append(_target(current))
 	if undo_stack.size() > MAX_HISTORY:
 		undo_stack.pop_front()
 		_undo_targets.pop_front()
@@ -262,8 +264,8 @@ func _validate_and_commit(candidate: DiagramDocument, validator: Callable,
 static func _failure(message: String) -> Dictionary:
 	return {"ok": false, "error": message}
 
-static func _target(source: String, document: DiagramDocument) -> Dictionary:
-	return {"source": source, "document": document}
+static func _target(document: DiagramDocument) -> Dictionary:
+	return {"document": document}
 
 static func _stack_retention(commands: Array[Dictionary], targets: Array[Dictionary],
 		target_field: String) -> Dictionary:
@@ -278,6 +280,8 @@ static func _stack_retention(commands: Array[Dictionary], targets: Array[Diction
 	var snapshot_source_bytes := 0
 	var snapshot_document_bytes := 0
 	for target in targets:
+		# A nonzero count identifies a legacy or malformed cache entry. Current
+		# targets retain only the immutable document and derive canonical text.
 		var source = target.get("source", null)
 		if typeof(source) == TYPE_STRING:
 			snapshot_source_bytes += source.to_utf8_buffer().size()
@@ -289,21 +293,21 @@ static func _stack_retention(commands: Array[Dictionary], targets: Array[Diction
 	for index in paired:
 		var expected = commands[index].get(target_field, null)
 		var target: Dictionary = targets[index]
-		var source = target.get("source", null)
 		var document = target.get("document")
-		if typeof(expected) != TYPE_STRING or typeof(source) != TYPE_STRING \
-				or source != expected or not (document is DiagramDocument) \
-				or document.to_json() != source:
+		if typeof(expected) != TYPE_STRING or not (document is DiagramDocument) \
+				or document.to_json() != expected or target.has("source"):
 			stale += 1
 	var missing := maxi(commands.size() - targets.size(), 0)
 	var orphan := maxi(targets.size() - commands.size(), 0)
 	var first_source := ""
 	var last_source := ""
 	if not targets.is_empty():
-		if typeof(targets.front().get("source", null)) == TYPE_STRING:
-			first_source = targets.front().source
-		if typeof(targets.back().get("source", null)) == TYPE_STRING:
-			last_source = targets.back().source
+		var first_document = targets.front().get("document")
+		var last_document = targets.back().get("document")
+		if first_document is DiagramDocument:
+			first_source = first_document.to_json()
+		if last_document is DiagramDocument:
+			last_source = last_document.to_json()
 	return {
 		"command_count": commands.size(),
 		"serialized_command_bytes": serialized_command_bytes,
@@ -330,8 +334,9 @@ static func _sha256_text(value: String) -> String:
 static func _resolve_target(targets: Array[Dictionary], index: int, source: String) -> Dictionary:
 	if index >= 0 and index < targets.size():
 		var target: Dictionary = targets[index]
-		if target.get("source", "") == source and target.get("document") is DiagramDocument:
-			return {"ok": true, "error": "", "document": target.document}
+		var document = target.get("document")
+		if document is DiagramDocument and document.to_json() == source and not target.has("source"):
+			return {"ok": true, "error": "", "document": document}
 	# Serialized stacks are intentionally public and recovery data is untrusted.
 	# If a command changed or has no cache, preserve the old parse-and-reject path.
 	var parsed := DiagramDocument.parse(source)

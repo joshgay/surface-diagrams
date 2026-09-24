@@ -16,7 +16,50 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: deterministic bounded history-retention audit
+## Latest increment: document-only runtime history snapshots
+
+Built from live fork head `b1fb69c6897bf2f9c200767e7105b53856eafb0d`
+in an isolated worktree under the exclusive Studio lock.
+
+- Runtime undo/redo snapshot entries now retain only an already validated
+  immutable `DiagramDocument`. The duplicate canonical source string formerly
+  stored beside each document has been removed.
+- Cache resolution and the retention audit derive canonical text from the
+  immutable document and compare it directly with the public serialized
+  command. A mismatch still bypasses the cache and enters the original strict
+  parse-and-reject path, so serialized-command tampering cannot be hidden.
+- Exact public command JSON, workspace recovery JSON, 100-command eviction,
+  redo invalidation, and undo/redo endpoints remain unchanged. Recovery rebuilds
+  document-only snapshots and never serializes cache objects.
+- The maximum structural benchmark still retains 100 commands and 100 aligned
+  snapshots with identical endpoint, SVG/TikZ, and publication hashes. Runtime
+  snapshot source slots fell from 1,085,572 bytes to zero; total logical source
+  slots fell from 4,353,148 to 3,267,576 bytes, a 24.94 percent reduction.
+- The conservative logical source-slot ceiling fell exactly 25 percent, from
+  105,119,744 to 78,905,344 bytes. These are deterministic logical counts, not
+  physical process-memory measurements.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- Aggregate: **865 Godot assertions**, all bridge/browser harnesses,
+  deterministic demo, two-run bounded benchmark with document-only retention
+  validation, private portable-package scenarios, and intentional failure
+  harness. The package contained 53 files and ran outside the checkout.
+- Full repository regression: **225 Python tests with 359 subtests** and **8
+  browser-editor tests**.
+- Static Web export rebuilt successfully. This remains a build check, not
+  display-enabled WebGL or physical-phone acceptance. No Site deployment,
+  download publication, release, or email occurred.
+
+No controller/test failure remains. Display-enabled desktop, mobile, WebGL,
+visible-focus, and screen-reader review remain unavailable in this environment.
+
+**Next specific task:** add a versioned compact workspace-recovery history that
+deduplicates adjacent command endpoint documents, retains version-1 recovery
+compatibility, and demonstrates exact 100-command recovery for the maximum
+structural fixture within an explicit bounded envelope.
+
+## Earlier increment: deterministic bounded history-retention audit
 
 Built from live fork head `2cd48105340636e8e0749af00ae3786d5dd957dd`
 in an isolated worktree under the exclusive Studio lock.

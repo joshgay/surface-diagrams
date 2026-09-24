@@ -93,6 +93,8 @@ def validate(path: Path) -> dict:
             or totals.get("stale_snapshot_count") != 0
             or totals.get("missing_snapshot_count") != 0
             or totals.get("orphan_snapshot_count") != 0
+            or totals.get("snapshot_source_bytes") != 0
+            or bounds.get("maximum_snapshot_source_bytes") != 0
             or not 0 < totals.get("serialized_command_bytes", 0) < 128 * 1024 * 1024
             or not 0 < totals.get("logical_source_bytes", 0) <= bounds.get("maximum_logical_source_bytes", 0)):
         raise SystemExit("history retention audit is malformed or outside its bound")
