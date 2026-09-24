@@ -26,6 +26,8 @@ var browser_drafts: CheckButton
 var browser_file_menu: MenuButton
 var upload_callback: JavaScriptObject
 var recovery_upload_callback: JavaScriptObject
+var local_recovery_load_callback: JavaScriptObject
+var local_recovery_write_callback: JavaScriptObject
 var browser_unsaved_state := false
 var baseline_source := ""
 var pending_action: Callable
@@ -33,6 +35,7 @@ var pending_description := ""
 var unsaved_dialog: ConfirmationDialog
 var recovery_dialog: ConfirmationDialog
 var startup_recovery: Dictionary = {}
+var startup_recovery_browser := false
 var recovery_error := ""
 var recovery_timer: Timer
 var row_reindex_panel: HFlowContainer
@@ -79,8 +82,12 @@ func _ready() -> void:
 	if browser_mode and OS.has_feature("web"):
 		upload_callback = JavaScriptBridge.create_callback(_browser_file_received)
 		recovery_upload_callback = JavaScriptBridge.create_callback(_browser_workspace_received)
+		local_recovery_load_callback = JavaScriptBridge.create_callback(_browser_local_workspace_received)
+		local_recovery_write_callback = JavaScriptBridge.create_callback(_browser_local_workspace_written)
 	_open_result(DiagramDocument.load_path("res://fixtures/planar-v1.json"), "res://fixtures/planar-v1.json", false)
-	if not browser_mode:
+	if browser_mode:
+		_offer_browser_local_recovery()
+	else:
 		_offer_recovery()
 	if "--portable-self-test" in OS.get_cmdline_user_args():
 		call_deferred("_run_portable_self_test")
@@ -688,7 +695,7 @@ func _show_save() -> void:
 			baseline_source = document.to_json()
 			if not curve_inspector.drafts.is_empty() or curve_creator.active:
 				status_label.text += " Unapplied curve drafts are NOT in this download."
-			_sync_browser_unload_guard()
+			_persist_recovery()
 		return
 	save_dialog.current_file = _safe_filename(document.data.title) + ".json"
 	save_dialog.popup_centered_ratio(0.8)
@@ -736,6 +743,8 @@ func _open_result(result: Dictionary, path: String, clear_recovery: bool = true)
 	if browser_mode:
 		status_label.text = "Browser proof of concept: inspect records, or explicitly enable unvalidated draft editing. No geometry certification. Save JSON downloads a local file; this site does not upload your data to a server."
 	_sync_browser_unload_guard()
+	if browser_mode and clear_recovery:
+		_schedule_recovery()
 
 func _browser_file_received(arguments: Array) -> void:
 	if arguments.size() != 2:
@@ -804,9 +813,57 @@ func _browser_workspace_received(arguments: Array) -> void:
 		_show_edit_error("Workspace not restored: " + recovered.error + ". The current workspace is unchanged.")
 		return
 	startup_recovery = recovered
+	startup_recovery_browser = false
 	if _restore_startup_recovery():
 		status_label.text = "Restored complete browser workspace data: accepted records, exact undo/redo, selection, drafts, and separate view state. Geometry remains unvalidated in the browser."
 		status_label.add_theme_color_override("font_color", Color("#167464"))
+
+func _offer_browser_local_recovery() -> void:
+	if not browser_mode or not OS.has_feature("web"):
+		return
+	var files = JavaScriptBridge.get_interface("SurfaceStudioFiles")
+	if files == null:
+		return
+	files.loadLocalWorkspace(local_recovery_load_callback)
+
+func _browser_local_workspace_received(arguments: Array) -> void:
+	if arguments.size() != 2:
+		_show_edit_error("Invalid local browser recovery response; the initial fixture remains open.")
+		return
+	var source := str(arguments[0])
+	var error := str(arguments[1])
+	if not error.is_empty():
+		recovery_error = error
+		_show_edit_error(error + " The initial fixture remains open; use a downloaded workspace backup if available.")
+		return
+	if source.is_empty():
+		return
+	var recovered := WorkspaceRecovery.parse(source)
+	if not recovered.ok:
+		recovery_error = recovered.error
+		_clear_browser_local_recovery()
+		_show_edit_error("Ignored an invalid local browser recovery: " + recovered.error + ". The initial fixture remains open.")
+		return
+	_offer_recovered_workspace(recovered, true)
+
+func _browser_local_workspace_written(arguments: Array) -> void:
+	if arguments.size() != 1:
+		return
+	var error := str(arguments[0])
+	if error.is_empty():
+		recovery_error = ""
+		return
+	if error == recovery_error:
+		return
+	recovery_error = error
+	_show_edit_error(error + " Unsaved work remains in memory; download a complete workspace backup before leaving.")
+
+func _clear_browser_local_recovery() -> void:
+	if not browser_mode or not OS.has_feature("web"):
+		return
+	var files = JavaScriptBridge.get_interface("SurfaceStudioFiles")
+	if files != null:
+		files.clearLocalWorkspace(local_recovery_write_callback)
 
 func _present_document(value: DiagramDocument, reset_camera: bool,
 		selection: Dictionary = {}, rendered: Dictionary = {}) -> void:
@@ -1180,6 +1237,21 @@ func _discard_and_continue() -> void:
 func _persist_recovery() -> void:
 	if browser_mode:
 		_sync_browser_unload_guard()
+		if not OS.has_feature("web") or document == null or baseline_source.is_empty():
+			return
+		if not startup_recovery.is_empty():
+			return
+		var files = JavaScriptBridge.get_interface("SurfaceStudioFiles")
+		if files == null:
+			return
+		if not _has_unsaved_work():
+			files.clearLocalWorkspace(local_recovery_write_callback)
+			return
+		var encoded := _encode_browser_workspace()
+		if not encoded.ok:
+			_browser_local_workspace_written(["Could not prepare local browser recovery: " + encoded.error])
+			return
+		files.saveLocalWorkspace(encoded.text, local_recovery_write_callback)
 		return
 	if document == null or baseline_source.is_empty():
 		return
@@ -1216,7 +1288,7 @@ func _current_creation_state() -> Dictionary:
 func _schedule_recovery() -> void:
 	if browser_mode:
 		_sync_browser_unload_guard()
-	elif recovery_timer != null:
+	if recovery_timer != null:
 		recovery_timer.start()
 
 func _sync_browser_unload_guard() -> void:
@@ -1254,16 +1326,21 @@ func _offer_recovery() -> void:
 		status_label.text = "Ignored an invalid workspace recovery record: " + recovered.error
 		status_label.add_theme_color_override("font_color", Color("#a54439"))
 		return
+	_offer_recovered_workspace(recovered, false)
+
+func _offer_recovered_workspace(recovered: Dictionary, from_browser: bool) -> void:
 	startup_recovery = recovered
+	startup_recovery_browser = from_browser
 	var drafts: Dictionary = recovered.drafts
 	var undo_count: int = recovered.history_state.undo.size()
 	var redo_count: int = recovered.history_state.redo.size()
 	var recovery_version: int = recovered.get("recovery_version", 1)
 	var creation_count := 1 if recovered.creation_state.active else 0
 	var fallback_note := " The newest primary slot was unavailable, so this is the validated last-known-good checkpoint." if recovered.get("recovered_from_backup", false) else ""
-	recovery_dialog.dialog_text = "A bounded version-%d recovery record contains view state, %d existing-curve draft%s, %d new-curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", creation_count, "" if creation_count == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
+	var location := "browser-local " if from_browser else ""
+	recovery_dialog.dialog_text = "A bounded %sversion-%d recovery record contains view state, %d existing-curve draft%s, %d new-curve draft%s, %d undo step%s, and %d redo step%s.%s Restore it, or explicitly discard it." % [location, recovery_version, drafts.size(), "" if drafts.size() == 1 else "s", creation_count, "" if creation_count == 1 else "s", undo_count, "" if undo_count == 1 else "s", redo_count, "" if redo_count == 1 else "s", fallback_note]
 	_popup_fitted(recovery_dialog, Vector2i(580, 230), recovery_dialog.get_ok_button())
-	status_label.text = "Recovered work is available. The initial fixture remains unchanged until you choose Restore or Discard."
+	status_label.text = ("Browser-local recovered work" if from_browser else "Recovered work") + " is available. The initial fixture remains unchanged until you choose Restore or Discard."
 	status_label.add_theme_color_override("font_color", Color("#a06a1a"))
 
 func _restore_startup_recovery() -> bool:
@@ -1285,6 +1362,7 @@ func _restore_startup_recovery() -> bool:
 	if startup_recovery.creation_state.active:
 		restored_creation = curve_creator.restore_draft(startup_recovery.creation_state.draft)
 	startup_recovery.clear()
+	startup_recovery_browser = false
 	_persist_recovery()
 	status_label.text = "Recovered accepted edits, exact undo/redo history, selection, all unapplied curve drafts, and separate camera/timeline/panel state. Recovery is workspace data, not mathematical JSON." if restored_view and restored_creation else "Recovered mathematical workspace data, but some separate presentation or creation-draft state could not be applied."
 	status_label.add_theme_color_override("font_color", Color("#167464"))
@@ -1293,8 +1371,13 @@ func _restore_startup_recovery() -> bool:
 func _discard_startup_recovery() -> void:
 	recovery_dialog.hide()
 	_restore_modal_focus(record_list)
+	var browser_recovery := startup_recovery_browser
 	startup_recovery.clear()
-	WorkspaceRecovery.clear_file()
+	startup_recovery_browser = false
+	if browser_recovery:
+		_clear_browser_local_recovery()
+	else:
+		WorkspaceRecovery.clear_file()
 	status_label.text = "Discarded the recovery record. The initial fixture remains open."
 	status_label.add_theme_color_override("font_color", Color("#415b55"))
 

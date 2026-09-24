@@ -249,8 +249,14 @@ When browser edits or unapplied curve drafts differ from the last opened or
 downloaded JSON, Studio also requests the browser's standard close/reload
 confirmation. Downloading accepted JSON clears that warning only when no
 unapplied draft remains. Browser vendors may suppress this prompt, especially
-on mobile, so it is a safeguard rather than persistence: download JSON before
-leaving the Site.
+on mobile, so the prompt remains a secondary safeguard.
+
+While work is unsaved, Studio stores the same strict version-4 workspace record
+in origin-local browser storage and offers it explicitly after a reload. A clean
+opened/downloaded baseline or explicit Discard removes that local slot. The
+record is bounded to 32 MiB, parsed fail-closed before restore, and never sent to
+a server. Browser storage can still be denied, evicted, or cleared and is tied to
+this Site origin, so use **Backup complete workspace** for a portable copy.
 
 **Backup workspace** downloads a separate bounded
 `.surface-workspace.json` recovery record containing the accepted baseline and

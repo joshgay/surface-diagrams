@@ -5,8 +5,55 @@ const fs = require('node:fs');
 const path = require('node:path');
 const source = fs.readFileSync(path.join(__dirname, '../web/browser_files.js'), 'utf8');
 
-function harness() {
+function storageHarness() {
+  const records = new Map();
+  let created = false;
+  const database = {
+    objectStoreNames: {contains() { return created; }},
+    createObjectStore() { created = true; },
+    close() {},
+    transaction() {
+      const transaction = {};
+      transaction.objectStore = () => ({
+        put(value, key) {
+          const request = {};
+          queueMicrotask(() => { records.set(key, value); request.onsuccess(); });
+          return request;
+        },
+        get(key) {
+          const request = {};
+          queueMicrotask(() => {
+            request.result = records.get(key);
+            request.onsuccess();
+          });
+          return request;
+        },
+        delete(key) {
+          const request = {};
+          queueMicrotask(() => { records.delete(key); request.onsuccess(); });
+          return request;
+        }
+      });
+      return transaction;
+    }
+  };
+  return {
+    records,
+    indexedDB: {open() {
+      const request = {};
+      queueMicrotask(() => {
+        request.result = database;
+        if (!created) request.onupgradeneeded();
+        request.onsuccess();
+      });
+      return request;
+    }}
+  };
+}
+
+function harness(withStorage = false) {
   const elements = [], blobs = [], revoked = [], timers = [], rootListeners = {};
+  const storage = withStorage ? storageHarness() : null;
   const context = {
     TextDecoder, Blob,
     addEventListener(event, callback) { rootListeners[event] = callback; },
@@ -25,8 +72,10 @@ function harness() {
     URL: {createObjectURL(blob) { blobs.push(blob); return 'blob:test'; }, revokeObjectURL(url) { revoked.push(url); }},
     setTimeout(cb) { timers.push(cb); }
   };
+  if (storage) context.indexedDB = storage.indexedDB;
   vm.runInNewContext(source, context);
-  return { api: context.SurfaceStudioFiles, elements, blobs, revoked, timers, rootListeners };
+  return { api: context.SurfaceStudioFiles, elements, blobs, revoked, timers,
+    rootListeners, records: storage && storage.records };
 }
 
 test('unsaved edits request a close or reload warning until cleared', () => {
@@ -114,4 +163,27 @@ test('workspace download preserves exact recovery bytes and filename', async () 
   assert.equal(h.api.downloadWorkspace(recovery, 'draft.surface-workspace.json'), '');
   assert.equal(await h.blobs[0].text(), recovery);
   assert.equal(h.elements[0].download, 'draft.surface-workspace.json');
+});
+test('origin-local recovery preserves exact bytes and can be cleared', async () => {
+  const h = harness(true);
+  const recovery = '{"format":"surface-diagrams-studio-recovery","title":"α"}\n';
+  assert.equal(await new Promise(resolve => h.api.saveLocalWorkspace(recovery, resolve)), '');
+  const loaded = await new Promise(resolve =>
+    h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  assert.deepEqual(loaded, [recovery, '']);
+  assert.equal(await new Promise(resolve => h.api.clearLocalWorkspace(resolve)), '');
+  const empty = await new Promise(resolve =>
+    h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  assert.deepEqual(empty, ['', '']);
+});
+test('local recovery fails closed when persistent storage is unavailable or invalid', async () => {
+  const unavailable = harness();
+  assert.match(await new Promise(resolve =>
+    unavailable.api.saveLocalWorkspace('{}', resolve)), /unavailable/);
+  const h = harness(true);
+  h.records.set('current', {not: 'text'});
+  const invalid = await new Promise(resolve =>
+    h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  assert.equal(invalid[0], '');
+  assert.match(invalid[1], /invalid type/);
 });

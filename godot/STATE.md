@@ -16,7 +16,60 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: complete browser workspace backup and restore
+## Latest increment: bounded origin-local browser recovery
+
+Built from live fork head `1bf6fdef471e1ab5e99e5d9b210e4ecc01398588`
+in an isolated worktree under the exclusive Studio lock.
+
+- Unsaved browser work is now encoded with the same strict, checksum-protected
+  version-4 workspace format and stored in this Site origin's IndexedDB. The
+  record retains exact accepted and baseline mathematics, bounded undo/redo,
+  stable-ID selection, existing-curve and new-curve drafts, and separate view
+  state without extending the mathematical schema.
+- Startup reads at most one 32 MiB local slot, validates the entire record, and
+  offers Restore or Discard before changing the initial fixture. Restore remains
+  explicit. Invalid, oversized, wrong-type, unknown-field, or checksum-mismatched
+  data fails closed and is never interpreted as code.
+- Accepted edits and drafts checkpoint locally; view changes use the existing
+  short debounce. Returning to a clean opened/downloaded baseline or choosing
+  Discard clears the slot. Downloadable workspace backup remains the portable
+  path because browser storage can be denied, evicted, cleared, or tied to a
+  different origin.
+- Storage denial and write failure keep the unload warning active and direct the
+  user to download a complete workspace backup. Diagram and diagnostic data are
+  never uploaded automatically; the adapter uses only origin-local storage.
+- The live public target remains
+  <https://surface-diagrams-studio.joshgay.chatgpt.site>. It is still the older
+  legacy publication without `studio-build.json`; this run did not deploy these
+  recovery changes there.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- **1,131 headless Godot assertions**, including 5 new explicit-offer,
+  nonmutation, exact-restore, origin-marker, and storage-failure assertions,
+  deterministic demo, two-run bounded benchmark, bridge harnesses, intentional
+  failure detection, and private portable Linux success/missing-authority/
+  missing-Python checks (53 files, 147,323,007 bytes).
+- **240 Python tests with 359 subtests**, **8 browser-editor tests**, and **32 Web
+  adapter tests**. The 11 file/storage adapter cases include exact Unicode-byte
+  round trip, clear, unavailable-storage, and invalid stored-type behavior.
+- Static Web export succeeded with a 259,124-byte PCK. This is controller and
+  build evidence, not browser rendering or visual acceptance.
+
+No regression failure remains. This worker still has no X11/Wayland display or
+WebGL 2 browser. Actual IndexedDB persistence across reload, private-mode/quota
+behavior, eviction, multiple-tab behavior, visible recovery focus, Orca,
+keyboard-open rotation, and physical-phone acceptance remain pending. No Site
+deployment was performed.
+
+**Next specific task:** in an explicitly authorized foreground Site publication,
+deploy the exact clean candidate, require its `studio-build.json` to match the
+GitHub checkpoint and assets, then verify local recovery and portable workspace
+download/restore across reload on desktop and phone WebGL 2 browsers, including
+disabled storage, quota failure, picker cancel, and keyboard-open rotation;
+repair the first observed defect.
+
+## Earlier increment: complete browser workspace backup and restore
 
 Built from live fork head `3a4413fe71298993f6d0e2a9321dda2d433beaf2`
 in an isolated worktree under the exclusive Studio lock.
