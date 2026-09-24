@@ -8,7 +8,8 @@
   const RECOVERY_STORE = 'workspace-recovery';
   const RECOVERY_KEY = 'current';
   const SLOT_FORMAT = 'surface-diagrams-studio-browser-recovery-slot';
-  const SLOT_VERSION = 1;
+  const LEGACY_SLOT_VERSION = 1;
+  const SLOT_VERSION = 2;
   const CONFLICT_ERROR = 'Local recovery changed in another Studio tab. ' +
     'Reload before replacing it, and download a complete workspace backup first.';
   let busy = false;
@@ -147,16 +148,29 @@
       return { ok: true, found: true, revision: 0, text: value, error: '' };
     }
     if (!value || typeof value !== 'object' || Array.isArray(value) ||
-        Object.keys(value).sort().join(',') !== 'format,revision,text,version' ||
-        value.format !== SLOT_FORMAT || value.version !== SLOT_VERSION ||
+        value.format !== SLOT_FORMAT ||
         !Number.isSafeInteger(value.revision) || value.revision < 1 ||
         typeof value.text !== 'string') {
       return { ok: false,
         error: 'The local browser recovery slot is invalid: unknown envelope.' };
     }
+    let deleted = false;
+    if (value.version === LEGACY_SLOT_VERSION &&
+        Object.keys(value).sort().join(',') === 'format,revision,text,version') {
+      deleted = false;
+    } else if (value.version === SLOT_VERSION &&
+        Object.keys(value).sort().join(',') === 'deleted,format,revision,text,version' &&
+        typeof value.deleted === 'boolean') {
+      deleted = value.deleted;
+    } else {
+      return { ok: false,
+        error: 'The local browser recovery slot is invalid: unknown envelope.' };
+    }
+    if (deleted && value.text !== '') return { ok: false,
+      error: 'The local browser recovery slot is invalid: deleted slot contains workspace data.'};
     if (workspaceBytes(value.text) > MAX_WORKSPACE_BYTES) return {
       ok: false, error: 'The local browser recovery slot is invalid: workspace exceeds 32 MiB.'};
-    return { ok: true, found: true, revision: value.revision,
+    return { ok: true, found: !deleted, revision: value.revision,
       text: value.text, error: '' };
   }
   root.SurfaceStudioFiles = Object.freeze({
@@ -198,7 +212,7 @@
               'Local browser recovery revision limit reached. Download a complete workspace backup.');
             const nextRevision = expected + 1;
             const request = store.put({format: SLOT_FORMAT, version: SLOT_VERSION,
-              revision: nextRevision, text}, RECOVERY_KEY);
+              revision: nextRevision, deleted: false, text}, RECOVERY_KEY);
             request.onerror = () => finish(null,
               'Could not save the local browser recovery.');
             request.onsuccess = () => {
@@ -238,11 +252,24 @@
                 current.revision !== localRevision)) {
               return finish(null, CONFLICT_ERROR);
             }
-            const request = store.delete(RECOVERY_KEY);
+            if (current.ok && !current.found) {
+              localRevision = current.revision;
+              finish(null, '');
+              return;
+            }
+            if (current.revision >= Number.MAX_SAFE_INTEGER) return finish(null,
+              'Local browser recovery revision limit reached. Download a complete workspace backup.');
+            const nextRevision = current.revision + 1;
+            // Keep a tombstone instead of deleting the revision. Otherwise a
+            // clear followed by a save could reuse a stale tab's revision and
+            // defeat the compare-and-swap guard (the ABA problem).
+            const request = current.ok ? store.put({format: SLOT_FORMAT,
+              version: SLOT_VERSION, revision: nextRevision, deleted: true,
+              text: ''}, RECOVERY_KEY) : store.delete(RECOVERY_KEY);
             request.onerror = () => finish(null,
               'Could not clear the local browser recovery.');
             request.onsuccess = () => {
-              localRevision = 0;
+              localRevision = current.ok ? nextRevision : 0;
               finish(null, '');
             };
           };

@@ -258,8 +258,10 @@ record is bounded to 32 MiB, parsed fail-closed before restore, and never sent t
 a server. Browser storage can still be denied, evicted, or cleared and is tied to
 this Site origin, so use **Backup complete workspace** for a portable copy. The
 local slot has a monotone revision: a stale or not-yet-loaded tab cannot overwrite
-or clear a newer tab's recovery. Studio reports that conflict and preserves the
-newer slot until the stale tab reloads it.
+or clear a newer tab's recovery. Clearing writes a data-free tombstone instead of
+resetting that revision, so clear-then-save cannot reuse an old generation.
+Studio reports a conflict and preserves the newer slot until the stale tab
+reloads it.
 
 **Backup workspace** downloads a separate bounded
 `.surface-workspace.json` recovery record containing the accepted baseline and

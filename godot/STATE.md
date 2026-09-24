@@ -16,7 +16,55 @@
   assistive-technology acceptance pending**.
 - Pull request status: **not opened; explicitly prohibited until Josh approves**.
 
-## Latest increment: conflict-safe multi-tab browser recovery
+## Latest increment: monotone clear generations for browser recovery
+
+Built from live fork head `7de0b778d5f7b9cc0720a6bade608d7a3e104d28`
+in an isolated worktree under the exclusive Studio lock.
+
+- Clearing origin-local recovery now writes a strict version-2 tombstone instead
+  of deleting the IndexedDB key and resetting its revision. The tombstone has a
+  monotone generation, an explicit `deleted` boolean, and no workspace text.
+- This closes an ABA race in which one tab could miss another tab's clear, see
+  its old revision reused by a subsequent save, and overwrite that newer
+  workspace. Clear-then-save now advances through distinct revisions and the
+  stale tab fails the existing atomic comparison without changing stored data.
+- Existing direct-string and version-1 envelope slots remain readable and
+  migrate on the next write. Version-2 slots accept only their exact field set;
+  a tombstone containing workspace text, an unknown field, or a wrong type fails
+  closed. Explicit corrupt-slot discard remains available.
+- Tombstones are internal browser concurrency metadata. The mathematical record,
+  strict version-4 portable workspace format, undo/redo history, camera state,
+  and normal JSON downloads are unchanged.
+- The live public browser target remains
+  <https://surface-diagrams-studio.joshgay.chatgpt.site>. It is still the older
+  legacy publication without `studio-build.json`; this run did not deploy these
+  changes there.
+
+Runtime: `4.7.2.stable.official.ed1daf0bf`. Checks actually run and passed:
+
+- **1,132 headless Godot assertions**, deterministic demo, two-run bounded
+  benchmark, bridge harnesses, intentional failure detection, and private
+  portable Linux success/missing-authority/missing-Python checks (53 files,
+  147,323,231 bytes).
+- **240 Python tests with 359 subtests**, **8 browser-editor tests**, and **36 Web
+  adapter tests**. The 15 storage/file cases reproduce the full ABA sequence,
+  verify monotone revisions, migrate version-1 envelopes, reject malformed
+  tombstones, and preserve exact recovery bytes.
+- Static Web export succeeded with a 259,348-byte PCK. This is controller and
+  mocked IndexedDB evidence, not real multi-tab or visual acceptance.
+
+No regression failure remains. This worker still has no X11/Wayland display or
+WebGL 2 browser. Actual transaction behavior across live tabs, reload persistence,
+private-mode/quota behavior, eviction, visible recovery focus, Orca,
+keyboard-open rotation, and physical-phone acceptance remain pending. No Site
+deployment was performed.
+
+**Next specific task:** add a data-free `BroadcastChannel` generation notice so
+an open stale tab warns as soon as another tab saves or clears recovery, while
+retaining IndexedDB compare-and-swap as the authority and testing unsupported-
+browser fallback and exact message validation.
+
+## Earlier increment: conflict-safe multi-tab browser recovery
 
 Built from live fork head `be530b689000fa356006656abf92fab744917c0c`
 in an isolated worktree under the exclusive Studio lock.

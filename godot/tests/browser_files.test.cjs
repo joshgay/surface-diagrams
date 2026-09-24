@@ -175,6 +175,9 @@ test('origin-local recovery preserves exact bytes and can be cleared', async () 
   const empty = await new Promise(resolve =>
     h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
   assert.deepEqual(empty, ['', '']);
+  assert.deepEqual(JSON.parse(JSON.stringify(h.records.get('current'))), {
+    format: 'surface-diagrams-studio-browser-recovery-slot',
+    version: 2, revision: 2, deleted: true, text: ''});
 });
 test('local recovery fails closed when persistent storage is unavailable or invalid', async () => {
   const unavailable = harness();
@@ -218,10 +221,54 @@ test('legacy text migrates once and invalid envelopes require explicit discard',
   assert.equal(await new Promise(resolve =>
     h.api.saveLocalWorkspace('{"migrated":true}', resolve)), '');
   assert.equal(storage.records.get('current').revision, 1);
+  assert.equal(storage.records.get('current').version, 2);
   storage.records.set('current', {unexpected: true});
   assert.match(await new Promise(resolve =>
     h.api.clearLocalWorkspace(resolve)), /invalid.*envelope/);
   assert.equal(await new Promise(resolve =>
     h.api.clearLocalWorkspace(resolve, true)), '');
   assert.equal(storage.records.has('current'), false);
+});
+
+test('clear tombstones keep revisions monotone and prevent ABA overwrites', async () => {
+  const storage = storageHarness();
+  const first = harness(storage), second = harness(storage);
+  const load = api => new Promise(resolve =>
+    api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  const save = (api, text) => new Promise(resolve =>
+    api.saveLocalWorkspace(text, resolve));
+  const clear = api => new Promise(resolve => api.clearLocalWorkspace(resolve));
+  assert.deepEqual(await load(first.api), ['', '']);
+  assert.equal(await save(first.api, '{"generation":1}'), '');
+  assert.deepEqual(await load(second.api), ['{"generation":1}', '']);
+  assert.equal(await clear(second.api), '');
+  assert.deepEqual(JSON.parse(JSON.stringify(storage.records.get('current'))), {
+    format: 'surface-diagrams-studio-browser-recovery-slot',
+    version: 2, revision: 2, deleted: true, text: ''});
+  assert.equal(await save(second.api, '{"generation":3}'), '');
+  assert.equal(storage.records.get('current').revision, 3);
+  assert.match(await save(first.api, '{"stale":true}'), /another Studio tab/);
+  assert.deepEqual(await load(first.api), ['{"generation":3}', '']);
+});
+
+test('version-one envelopes migrate and malformed tombstones fail closed', async () => {
+  const storage = storageHarness();
+  storage.records.set('current', {format:
+    'surface-diagrams-studio-browser-recovery-slot', version: 1,
+    revision: 7, text: '{"version":1}'});
+  const h = harness(storage);
+  const load = () => new Promise(resolve =>
+    h.api.loadLocalWorkspace((text, error) => resolve([text, error])));
+  assert.deepEqual(await load(), ['{"version":1}', '']);
+  assert.equal(await new Promise(resolve =>
+    h.api.saveLocalWorkspace('{"version":2}', resolve)), '');
+  assert.deepEqual(JSON.parse(JSON.stringify(storage.records.get('current'))), {format:
+    'surface-diagrams-studio-browser-recovery-slot', version: 2,
+    revision: 8, deleted: false, text: '{"version":2}'});
+  storage.records.set('current', {format:
+    'surface-diagrams-studio-browser-recovery-slot', version: 2,
+    revision: 9, deleted: true, text: '{"hidden":"data"}'});
+  const invalid = await load();
+  assert.equal(invalid[0], '');
+  assert.match(invalid[1], /deleted slot contains workspace data/);
 });
